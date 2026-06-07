@@ -27,14 +27,14 @@ function EvaluationTally({ tally }: { tally: FrameworkEvaluationTally }) {
     label: string;
     color: string;
   }> = [
-    { key: 'pass', label: 'Pass', color: 'bg-emerald-500/15 text-emerald-700 border-emerald-500/30' },
-    { key: 'partial', label: 'Partial', color: 'bg-amber-500/15 text-amber-700 border-amber-500/30' },
-    { key: 'fail', label: 'Fail', color: 'bg-red-500/15 text-red-700 border-red-500/30' },
-    { key: 'not_evaluated', label: 'Manual', color: 'bg-slate-500/15 text-slate-700 border-slate-500/30' },
+    { key: 'pass', label: 'Pass', color: 'bg-success/15 text-success border-success/30' },
+    { key: 'partial', label: 'Partial', color: 'bg-warning/15 text-warning border-warning/30' },
+    { key: 'fail', label: 'Fail', color: 'bg-destructive/15 text-destructive border-destructive/30' },
+    { key: 'not_evaluated', label: 'Manual', color: 'bg-muted text-muted-foreground border-border' },
   ];
 
   return (
-    <div className="mt-4 rounded-lg border border-glass-border bg-glass-subtle p-3" data-testid="framework-evaluation-tally">
+    <div className="mt-4 rounded-lg border border-border bg-surface-1 p-3" data-testid="framework-evaluation-tally">
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <span className="font-medium uppercase tracking-wider">Per-control status</span>
         <span>{formatTallyTimestamp(tally.lastEvaluatedAt)}</span>
@@ -70,8 +70,8 @@ async function FrameworkGrid({ orgId }: { orgId: string }) {
 
   if (frameworks.length === 0) {
     return (
-      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-8 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-glass-border bg-glass-subtle">
+      <div className="rounded-2xl border border-border bg-surface-1 p-8 text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-1">
           <ShieldCheck className="h-5 w-5 text-muted-foreground" />
         </div>
         <div className="mt-4 text-sm font-semibold text-foreground">
@@ -90,12 +90,12 @@ async function FrameworkGrid({ orgId }: { orgId: string }) {
       {frameworks.map((framework) => (
         <div
           key={framework.slug}
-          className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6 shadow-premium-lg transition-all duration-200 hover:border-glass-border-strong hover:shadow-premium-xl"
+          className="rounded-2xl border border-border bg-card p-6 shadow-premium-lg transition-all duration-200 hover:border-edge-3 hover:shadow-premium-xl"
         >
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-                <Layers className="h-4 w-4 text-info" />
+                <Layers className="h-4 w-4 text-muted-foreground" />
                 <span>Enabled framework</span>
               </div>
               <h2 className="mt-2 text-xl font-semibold text-foreground">
@@ -107,7 +107,7 @@ async function FrameworkGrid({ orgId }: { orgId: string }) {
                 </p>
               ) : null}
             </div>
-            <div className="rounded-xl border border-glass-border bg-glass-subtle px-3 py-2 text-right shrink-0">
+            <div className="rounded-xl border border-border bg-surface-1 px-3 py-2 text-right shrink-0">
               <div className="text-xs text-muted-foreground">Controls</div>
               <div className="text-lg font-semibold text-foreground">
                 {framework.controlCount}
@@ -135,7 +135,7 @@ async function FrameworkGrid({ orgId }: { orgId: string }) {
           {framework.id && tallyMap.get(framework.id) ? (
             <EvaluationTally tally={tallyMap.get(framework.id)!} />
           ) : (
-            <div className="mt-4 rounded-lg border border-dashed border-glass-border p-3 text-xs text-muted-foreground">
+            <div className="mt-4 rounded-lg border border-dashed border-border p-3 text-xs text-muted-foreground">
               No per-control evaluations recorded yet. Trigger an evaluation
               from /app/controls or wait for the nightly job.
             </div>
@@ -156,7 +156,7 @@ async function Soc2MappingSection({ orgId }: { orgId: string }) {
   if (!soc2Mappings.length) return null;
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6">
+    <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
         <CheckCircle2 className="h-4 w-4 text-success" />
         <span>SOC 2 Mapping Coverage</span>
@@ -170,7 +170,7 @@ async function Soc2MappingSection({ orgId }: { orgId: string }) {
 
       <div className="mt-4 overflow-x-auto">
         <table className="min-w-[640px] w-full text-sm">
-          <thead className="border-b border-glass-border text-muted-foreground">
+          <thead className="border-b border-border text-muted-foreground">
             <tr>
               <th className="px-3 py-2 text-left font-medium">Control</th>
               <th className="px-3 py-2 text-left font-medium">
@@ -179,11 +179,11 @@ async function Soc2MappingSection({ orgId }: { orgId: string }) {
               <th className="px-3 py-2 text-left font-medium">Coverage</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-glass-border">
+          <tbody className="divide-y divide-border">
             {soc2Mappings.map((mapping) => (
               <tr
                 key={mapping.controlId}
-                className="transition-colors hover:bg-glass-subtle"
+                className="transition-colors hover:bg-surface-1"
               >
                 <td className="px-3 py-3">
                   <div className="text-sm font-semibold text-foreground">
@@ -207,7 +207,7 @@ async function Soc2MappingSection({ orgId }: { orgId: string }) {
                 </td>
                 <td className="px-3 py-3">
                   <div className="flex items-center gap-2">
-                    <div className="h-2 w-24 rounded-full bg-glass-border overflow-hidden">
+                    <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
                       <div
                         className="h-2 rounded-full bg-success transition-all duration-500"
                         style={{ width: `${mapping.coverageScore}%` }}
@@ -253,11 +253,11 @@ export default async function ComplianceFrameworksPage() {
       {/* SOC 2 Readiness CTA */}
       <Link
         href="/app/compliance/soc2"
-        className="flex items-center justify-between rounded-2xl border border-info/20 bg-gradient-to-r from-info/10 to-transparent p-6 hover:border-info/30 transition-colors group"
+        className="flex items-center justify-between rounded-2xl border border-border bg-card p-6 hover:border-primary/40 transition-colors group"
       >
         <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-info/20 bg-info/10">
-            <ShieldCheck className="h-5 w-5 text-info" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-1">
+            <ShieldCheck className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>
             <div className="text-lg font-semibold text-foreground">
@@ -269,7 +269,7 @@ export default async function ComplianceFrameworksPage() {
             </div>
           </div>
         </div>
-        <ArrowRight className="h-5 w-5 text-info group-hover:translate-x-1 transition-transform" />
+        <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-transform" />
       </Link>
 
       {/* SOC2 mapping table — streams independently */}

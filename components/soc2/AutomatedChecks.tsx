@@ -19,16 +19,16 @@ export function AutomatedChecks({ checks }: AutomatedChecksProps) {
   const total = checks.length;
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6">
+    <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <Cpu className="h-4 w-4 text-cyan-400" />
+            <Cpu className="h-4 w-4 text-muted-foreground" />
             <h3 className="text-lg font-semibold text-foreground">Automated Checks</h3>
           </div>
           <p className="mt-1 text-xs text-muted-foreground/60">System-verified compliance evidence.</p>
         </div>
-        <div className="rounded-xl border border-glass-border bg-glass-subtle px-3 py-2 text-right">
+        <div className="rounded-xl border border-border bg-surface-1 px-3 py-2 text-right">
           <div className="text-xs text-muted-foreground">Passing</div>
           <div className="text-lg font-semibold text-foreground tabular-nums">
             {totalPassed}<span className="text-muted-foreground/60">/{total}</span>
@@ -46,19 +46,19 @@ export function AutomatedChecks({ checks }: AutomatedChecksProps) {
                   key={`${check.controlCode}-${check.checkName}`}
                   className={`flex items-start gap-3 rounded-xl border p-3 ${
                     check.passed
-                      ? 'border-emerald-400/10 bg-emerald-400/5'
-                      : 'border-rose-400/10 bg-rose-400/5'
+                      ? 'border-success/20 bg-success/10'
+                      : 'border-destructive/20 bg-destructive/10'
                   }`}
                 >
                   {check.passed ? (
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                   ) : (
-                    <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" />
+                    <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-foreground/90">{check.checkName}</span>
-                      <span className="rounded border border-glass-border bg-glass-subtle px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/60">
+                      <span className="rounded border border-border bg-surface-1 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/60">
                         {check.controlCode}
                       </span>
                     </div>

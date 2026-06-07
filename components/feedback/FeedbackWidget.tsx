@@ -74,16 +74,16 @@ export function FeedbackWidget() {
         <div
           ref={panelRef}
           className={cn(
-            'w-80 rounded-2xl border border-white/[0.08] bg-background shadow-2xl',
+            'w-80 rounded-2xl border border-edge-2 bg-popover shadow-2xl',
             'backdrop-blur-xl',
           )}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-4">
-            <span className="text-sm font-semibold text-white">Share feedback</span>
+          <div className="flex items-center justify-between border-b border-edge-1 px-5 py-4">
+            <span className="text-sm font-semibold text-foreground">Share feedback</span>
             <button
               onClick={() => setState('idle')}
-              className="rounded-lg p-1 text-muted-foreground/60 transition hover:bg-white/[0.06] hover:text-foreground/70"
+              className="rounded-lg p-1 text-muted-foreground/60 transition hover:bg-surface-1 hover:text-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Close feedback"
             >
               <X className="h-4 w-4" />
@@ -101,9 +101,10 @@ export function FeedbackWidget() {
                   onClick={() => setSentiment(value)}
                   className={cn(
                     'flex flex-1 flex-col items-center gap-1.5 rounded-xl border py-2.5 text-xs font-semibold uppercase tracking-wide transition',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     sentiment === value
-                      ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-400'
-                      : 'border-white/[0.06] text-muted-foreground/60 hover:border-white/[0.12] hover:text-foreground/70',
+                      ? 'border-primary/50 bg-primary/10 text-primary'
+                      : 'border-edge-1 text-muted-foreground/60 hover:border-edge-2 hover:text-foreground/70',
                   )}
                   aria-pressed={sentiment === value}
                 >
@@ -121,9 +122,9 @@ export function FeedbackWidget() {
               placeholder="Tell us more (optional)..."
               rows={3}
               className={cn(
-                'w-full resize-none rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3',
+                'w-full resize-none rounded-xl border border-edge-1 bg-surface-1 px-4 py-3',
                 'text-sm text-foreground/90 placeholder:text-muted-foreground/40',
-                'focus:border-cyan-500/40 focus:outline-none focus:ring-1 focus:ring-cyan-500/20',
+                'focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-ring',
               )}
             />
 
@@ -132,9 +133,10 @@ export function FeedbackWidget() {
               disabled={!sentiment || state === 'submitting'}
               className={cn(
                 'mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 sentiment
-                  ? 'bg-cyan-500/10 text-cyan-400 ring-1 ring-cyan-500/20 hover:bg-cyan-500/20'
-                  : 'cursor-not-allowed bg-white/[0.03] text-muted-foreground/40',
+                  ? 'bg-primary/10 text-primary ring-1 ring-primary/20 hover:bg-primary/20'
+                  : 'cursor-not-allowed bg-surface-1 text-muted-foreground/40',
               )}
             >
               <Send className="h-4 w-4" />
@@ -146,8 +148,8 @@ export function FeedbackWidget() {
 
       {/* Done state */}
       {state === 'done' && (
-        <div className="rounded-2xl border border-emerald-500/20 bg-background px-5 py-4 shadow-xl backdrop-blur-xl">
-          <p className="text-sm font-semibold text-emerald-400">Thanks for the feedback!</p>
+        <div className="rounded-2xl border border-success/20 bg-popover px-5 py-4 shadow-xl backdrop-blur-xl">
+          <p className="text-sm font-semibold text-success">Thanks for the feedback!</p>
           <p className="mt-0.5 text-xs text-muted-foreground/60">We read every response.</p>
         </div>
       )}
@@ -158,8 +160,9 @@ export function FeedbackWidget() {
           onClick={() => setState(state === 'open' ? 'idle' : 'open')}
           className={cn(
             'flex h-11 w-11 items-center justify-center rounded-full shadow-lg transition',
-            'bg-background ring-1 ring-white/[0.08] hover:ring-white/[0.16]',
-            state === 'open' && 'ring-cyan-500/40',
+            'bg-popover ring-1 ring-edge-2 hover:ring-edge-3',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            state === 'open' && 'ring-primary/40',
           )}
           aria-label="Share feedback"
           aria-expanded={state === 'open'}

@@ -34,10 +34,10 @@ export function CertificationReportCard({
   }, [])
 
   const colorClasses = {
-    sky: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20 text-zinc-300',
-    indigo: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20 text-zinc-300',
-    pink: 'from-pink-500/20 to-pink-500/5 border-pink-400/20 text-pink-400',
-    emerald: 'from-emerald-500/20 to-emerald-500/5 border-emerald-400/20 text-emerald-400',
+    sky: 'bg-surface-1 border-border text-muted-foreground',
+    indigo: 'bg-surface-1 border-border text-muted-foreground',
+    pink: 'bg-surface-1 border-border text-muted-foreground',
+    emerald: 'bg-surface-1 border-border text-muted-foreground',
   }
 
   async function pollJob(jobId: string) {
@@ -104,13 +104,13 @@ export function CertificationReportCard({
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
-      className={`rounded-2xl border bg-gradient-to-br p-6 relative overflow-hidden transition-all ${
+      className={`rounded-2xl border p-6 relative overflow-hidden transition-all ${
         disabled ? 'opacity-50 cursor-not-allowed' : 'motion-safe:hover:scale-[1.02] cursor-pointer'
       } ${colorClasses[color]}`}
       onClick={handleDownload}
     >
       <div className="flex items-start justify-between mb-4">
-        <div className="p-2 rounded-xl bg-glass-strong">
+        <div className="p-2 rounded-xl bg-surface-2">
           <ShieldCheck className="h-5 w-5" />
         </div>
         <div className="flex items-center gap-1">
@@ -122,7 +122,7 @@ export function CertificationReportCard({
       <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
 
       {disabled && (
-        <div className="mt-3 text-xs text-amber-400 flex items-center gap-1">
+        <div className="mt-3 text-xs text-warning flex items-center gap-1">
           <AlertTriangle className="h-3 w-3" />
           Upgrade required
         </div>
@@ -135,13 +135,13 @@ export function CertificationReportCard({
       )}
 
       {!disabled && status === 'ready' && downloadUrl && (
-        <div className="mt-3 text-xs text-emerald-300">
+        <div className="mt-3 text-xs text-success">
           Export ready. Download opened in a new tab.
         </div>
       )}
 
       {!disabled && status === 'error' && error && (
-        <div className="mt-3 text-xs text-rose-300">
+        <div className="mt-3 text-xs text-destructive">
           {error}
         </div>
       )}

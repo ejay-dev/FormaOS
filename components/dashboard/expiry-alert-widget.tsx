@@ -11,15 +11,15 @@ export function ExpiryAlertWidget({
   if (atRiskDocs.length === 0) return null;
 
   return (
-    <div className="bg-amber-400/10 border border-amber-400/30 rounded-[2.5rem] p-8 space-y-6 shadow-sm animate-in slide-in-from-right-4 duration-500">
+    <div className="bg-warning/10 border border-warning/20 rounded-[2.5rem] p-8 space-y-6 shadow-sm animate-in slide-in-from-right-4 duration-500">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 text-amber-300">
+        <div className="flex items-center gap-3 text-warning">
           <AlertCircle className="h-5 w-5" />
           <h3 className="text-xs font-black uppercase tracking-[0.2em]">
             Expiring Credentials
           </h3>
         </div>
-        <span className="bg-amber-400/10 text-amber-300 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
+        <span className="bg-warning/10 text-warning px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
           {atRiskDocs.length} At Risk
         </span>
       </div>
@@ -28,17 +28,17 @@ export function ExpiryAlertWidget({
         {atRiskDocs.map((doc) => (
           <div
             key={doc.id}
-            className="bg-glass-strong backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-amber-400/30/50 group hover:bg-glass-strong transition-all"
+            className="bg-surface-2 rounded-2xl p-4 flex items-center justify-between border border-warning/20 group hover:bg-surface-3 transition-all"
           >
             <div className="flex items-center gap-4">
-              <div className="h-10 w-10 rounded-xl bg-amber-400/10 flex items-center justify-center text-amber-300">
+              <div className="h-10 w-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
                 <User className="h-5 w-5" />
               </div>
               <div>
                 <p className="text-xs font-black text-foreground">
                   {doc.document_type}
                 </p>
-                <p className="text-xs font-bold text-amber-300 uppercase tracking-tighter mt-0.5">
+                <p className="text-xs font-bold text-warning uppercase tracking-tighter mt-0.5">
                   Expiring: {new Date(doc.expiry_date).toLocaleDateString()}
                 </p>
               </div>
@@ -53,7 +53,7 @@ export function ExpiryAlertWidget({
         ))}
       </div>
 
-      <p className="text-[9px] text-amber-300 font-bold uppercase tracking-widest text-center pt-2">
+      <p className="text-[9px] text-warning font-bold uppercase tracking-widest text-center pt-2">
         System Notice: Impacted personnel have been notified.
       </p>
     </div>

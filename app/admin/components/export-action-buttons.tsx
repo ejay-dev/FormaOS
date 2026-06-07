@@ -60,8 +60,8 @@ export function ExportActionButtons({ jobId, jobType, status }: ExportActionButt
           onClick={() => handleAction("retry")}
           disabled={loading !== null}
           className={cn(
-            "inline-flex items-center gap-1 rounded-md border border-sky-400/30 px-2 py-1",
-            "text-[11px] font-semibold text-sky-300 hover:bg-sky-500/20 transition-all",
+            "inline-flex items-center gap-1 rounded-md border border-primary/30 px-2 py-1",
+            "text-[11px] font-semibold text-primary hover:bg-primary/10 transition-all",
             "disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
           )}
         >
@@ -78,8 +78,8 @@ export function ExportActionButtons({ jobId, jobType, status }: ExportActionButt
           onClick={() => handleAction("cancel")}
           disabled={loading !== null}
           className={cn(
-            "inline-flex items-center gap-1 rounded-md border border-rose-400/30 px-2 py-1",
-            "text-[11px] font-semibold text-rose-300 hover:bg-rose-500/20 transition-all",
+            "inline-flex items-center gap-1 rounded-md border border-destructive/30 px-2 py-1",
+            "text-[11px] font-semibold text-destructive hover:bg-destructive/10 transition-all",
             "disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
           )}
         >

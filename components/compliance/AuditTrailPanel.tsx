@@ -88,11 +88,11 @@ function AuditTrailInner({
         >
           {/* Timeline line */}
           {idx < entries.length - 1 && (
-            <div className="absolute left-[13px] top-9 bottom-0 w-px bg-glass-border" />
+            <div className="absolute left-[13px] top-9 bottom-0 w-px bg-border" />
           )}
 
           {/* Avatar */}
-          <div className="relative flex h-7 w-7 items-center justify-center rounded-full bg-glass-subtle border border-glass-border shrink-0 z-10">
+          <div className="relative flex h-7 w-7 items-center justify-center rounded-full bg-surface-1 border border-border shrink-0 z-10">
             {entry.actor.avatarUrl ? (
               <img
                 src={entry.actor.avatarUrl}
@@ -126,7 +126,7 @@ function AuditTrailInner({
               </span>
               {entry.locked && (
                 <Lock
-                  className="h-2.5 w-2.5 text-amber-400"
+                  className="h-2.5 w-2.5 text-warning"
                   aria-label="Immutable audit entry"
                 />
               )}
@@ -145,12 +145,12 @@ function AuditTrailInner({
 export function AuditTrailPanel(props: AuditTrailPanelProps) {
   return (
     <ErrorBoundary name="AuditTrailPanel" level="component">
-      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+      <div className="rounded-xl border border-border bg-surface-1 p-4">
         <div className="flex items-center gap-2 mb-3">
           <History className="h-4 w-4 text-foreground/70" />
           <h3 className="text-sm font-semibold">Audit Trail</h3>
           <Lock
-            className="h-3 w-3 text-amber-400 ml-auto"
+            className="h-3 w-3 text-warning ml-auto"
             aria-label="Immutable record"
           />
         </div>

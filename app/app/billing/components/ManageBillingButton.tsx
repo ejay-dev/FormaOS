@@ -25,11 +25,11 @@ export function ManageBillingButton() {
       <button
         onClick={handleManageBilling}
         disabled={isPending}
-        className="relative overflow-hidden inline-flex min-h-[44px] items-center justify-center rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-foreground transition-all hover:bg-surface-1 disabled:opacity-50 disabled:cursor-not-allowed group"
+        className="relative overflow-hidden inline-flex min-h-[44px] items-center justify-center rounded-lg border border-edge-2 px-6 py-3 text-sm font-semibold text-foreground transition-all hover:bg-surface-1 disabled:opacity-50 disabled:cursor-not-allowed group"
       >
         {/* Loading overlay */}
         {isPending && (
-          <div className="absolute inset-0 bg-glass-strong flex items-center justify-center">
+          <div className="absolute inset-0 bg-surface-2 flex items-center justify-center">
             <Loader2 className="h-4 w-4 animate-spin" />
           </div>
         )}
@@ -46,7 +46,7 @@ export function ManageBillingButton() {
 
       {/* Error state */}
       {error && (
-        <div className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+        <div className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
           <div className="font-medium">Portal access failed</div>
           <div className="mt-1 text-xs opacity-80">{error}</div>
           <button

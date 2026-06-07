@@ -567,10 +567,10 @@ export default async function SettingsPage() {
         : 'Action required';
   const healthTone =
     healthState === 'healthy'
-      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+      ? 'bg-success/10 text-success border-success/20'
       : healthState === 'review'
-        ? 'bg-amber-500/10 text-amber-500 border-amber-500/30'
-        : 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+        ? 'bg-warning/10 text-warning border-warning/20'
+        : 'bg-destructive/10 text-destructive border-destructive/20';
 
   return (
     <div className="space-y-8 pb-24" data-tour="settings-header">
@@ -595,7 +595,7 @@ export default async function SettingsPage() {
       />
 
       {(hasMissingIdentityData || atRiskCount > 0) && (
-        <section className="rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-500">
+        <section className="rounded-md border border-warning/20 bg-warning/10 px-4 py-3 text-sm text-warning">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 h-4 w-4 flex-none" />
             <div className="space-y-1">
@@ -996,9 +996,9 @@ export default async function SettingsPage() {
               compliance suite finds [data-testid="delete-account"] at the
               URL it probes. The actual delete + export flow lives on
               /app/privacy. */}
-          <section className="rounded-[2rem] border border-rose-500/30 bg-card p-6 shadow-sm">
+          <section className="rounded-lg border border-destructive/20 bg-card p-6 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
                 <AlertTriangle className="h-5 w-5" />
               </div>
               <div>
@@ -1015,7 +1015,7 @@ export default async function SettingsPage() {
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/app/privacy#export"
-                className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/40"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Export your data
                 <ArrowRight className="h-4 w-4" />
@@ -1023,7 +1023,7 @@ export default async function SettingsPage() {
               <Link
                 href="/app/privacy#delete"
                 data-testid="delete-account"
-                className="inline-flex items-center gap-2 rounded-full border border-rose-500/40 bg-rose-500/5 px-4 py-2 text-sm font-medium text-rose-600 hover:bg-rose-500/10 dark:text-rose-400"
+                className="inline-flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Delete your account
                 <ArrowRight className="h-4 w-4" />
@@ -1168,11 +1168,11 @@ function InlineMetaRow({
       <span
         className={`text-sm font-medium ${
           tone === 'positive'
-            ? 'text-emerald-300'
+            ? 'text-success'
             : tone === 'warning'
-              ? 'text-amber-200'
+              ? 'text-warning'
               : tone === 'danger'
-                ? 'text-rose-300'
+                ? 'text-destructive'
                 : 'text-foreground'
         }`}
       >
@@ -1193,11 +1193,11 @@ function StatusBadge({
     <span
       className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${
         tone === 'positive'
-          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
+          ? 'border-success/20 bg-success/10 text-success'
           : tone === 'warning'
-            ? 'border-amber-500/30 bg-amber-500/10 text-amber-500'
+            ? 'border-warning/20 bg-warning/10 text-warning'
             : tone === 'danger'
-              ? 'border-rose-500/30 bg-rose-500/10 text-rose-500'
+              ? 'border-destructive/20 bg-destructive/10 text-destructive'
               : 'border-border bg-card text-muted-foreground'
       }`}
     >

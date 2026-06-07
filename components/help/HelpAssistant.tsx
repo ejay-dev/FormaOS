@@ -11,7 +11,6 @@ import {
   Search,
   X,
   Send,
-  Sparkles,
 } from 'lucide-react';
 import { HELP_ARTICLES, type HelpArticle } from '@/lib/help/articles';
 import { useHelpAssistant } from '@/components/help/help-assistant-context';
@@ -147,7 +146,7 @@ export function HelpAssistant() {
       <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+5rem)] right-4 z-[80] md:bottom-[calc(env(safe-area-inset-bottom)+1rem)]">
         <button
           onClick={toggle}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-glass-border bg-foreground text-background shadow-lg transition-transform hover:-translate-y-0.5"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-foreground text-background shadow-lg transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Open help assistant"
         >
           <LifeBuoy className="h-5 w-5" />
@@ -155,10 +154,10 @@ export function HelpAssistant() {
       </div>
 
       {isOpen ? (
-        <div className="fixed bottom-0 left-0 right-0 z-[var(--z-overlay)] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-glass-border bg-[hsl(var(--card))] shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-glass-border pb-[env(safe-area-inset-bottom)]">
-          <div className="flex items-center justify-between border-b border-glass-border px-5 py-4">
+        <div className="fixed bottom-0 left-0 right-0 z-[var(--z-overlay)] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-border bg-card shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-border pb-[env(safe-area-inset-bottom)]">
+          <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-cyan-300" />
+              <LifeBuoy className="h-4 w-4 text-muted-foreground" />
               <div>
                 <p className="text-sm font-semibold text-foreground">Help Assistant</p>
                 <p className="text-xs text-muted-foreground">Find answers fast</p>
@@ -166,7 +165,7 @@ export function HelpAssistant() {
             </div>
             <button
               onClick={close}
-              className="rounded-full border border-glass-border p-2 text-muted-foreground hover:text-white"
+              className="rounded-full border border-border p-2 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Close"
             >
               <span className="sr-only">Close</span>
@@ -181,13 +180,13 @@ export function HelpAssistant() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search help articles"
-                className="h-9 bg-glass-subtle text-sm"
+                className="h-9 bg-surface-1 text-sm"
               />
             </div>
 
             {panel === 'bug' ? (
               <div className="mt-5 space-y-3">
-                <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+                <div className="rounded-xl border border-border bg-surface-1 p-4">
                   <p className="text-sm font-semibold text-foreground">
                     Report a bug
                   </p>
@@ -198,7 +197,7 @@ export function HelpAssistant() {
                     value={bugMessage}
                     onChange={(event) => setBugMessage(event.target.value)}
                     placeholder="Describe the issue..."
-                    className="mt-3 h-24 w-full rounded-xl border border-glass-border bg-transparent p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-colors"
+                    className="mt-3 h-24 w-full rounded-xl border border-border bg-transparent p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary/40 transition-colors"
                   />
                   <div className="mt-3 flex items-center justify-between gap-3">
                     <label className="text-xs text-muted-foreground">
@@ -221,12 +220,12 @@ export function HelpAssistant() {
                     </Button>
                   </div>
                   {submitStatus === 'success' ? (
-                    <p className="mt-3 text-xs text-emerald-300">
+                    <p className="mt-3 text-xs text-success">
                       Bug report sent. We will follow up soon.
                     </p>
                   ) : null}
                   {submitStatus === 'error' ? (
-                    <p className="mt-3 text-xs text-rose-300">
+                    <p className="mt-3 text-xs text-destructive">
                       Unable to send report. Try again or contact support.
                     </p>
                   ) : null}
@@ -290,7 +289,7 @@ export function HelpAssistant() {
                         <button
                           key={article.id}
                           onClick={() => setActiveArticle(article)}
-                          className="w-full rounded-xl border border-glass-border bg-glass-subtle p-3 text-left text-sm text-foreground hover:bg-glass-strong"
+                          className="w-full rounded-xl border border-border bg-surface-1 p-3 text-left text-sm text-foreground hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           <div className="font-semibold">{article.title}</div>
                           <div className="mt-1 text-xs text-muted-foreground">
@@ -312,7 +311,7 @@ export function HelpAssistant() {
                         <button
                           key={article.id}
                           onClick={() => setActiveArticle(article)}
-                          className="w-full rounded-xl border border-glass-border bg-glass-subtle p-3 text-left text-sm text-foreground hover:bg-glass-strong"
+                          className="w-full rounded-xl border border-border bg-surface-1 p-3 text-left text-sm text-foreground hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           <div className="font-semibold">{article.title}</div>
                           <div className="mt-1 text-xs text-muted-foreground">
@@ -327,7 +326,7 @@ export function HelpAssistant() {
             ) : null}
 
             {panel === 'home' && activeArticle ? (
-              <div className="mt-5 rounded-2xl border border-glass-border bg-glass-subtle p-4">
+              <div className="mt-5 rounded-2xl border border-border bg-surface-1 p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <p className="text-sm font-semibold text-foreground">
@@ -339,7 +338,7 @@ export function HelpAssistant() {
                   </div>
                   <button
                     onClick={() => setActiveArticle(null)}
-                    className="rounded-full border border-glass-border px-2 py-1 text-xs text-foreground/70"
+                    className="rounded-full border border-border px-2 py-1 text-xs text-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     Close
                   </button>
@@ -351,13 +350,13 @@ export function HelpAssistant() {
                   {activeArticle.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full bg-glass-strong px-2 py-1 text-xs text-foreground/70"
+                      className="rounded-full bg-surface-2 px-2 py-1 text-xs text-foreground/70"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <div className="mt-4 flex items-center gap-2 text-xs text-emerald-300">
+                <div className="mt-4 flex items-center gap-2 text-xs text-success">
                   <CheckCircle2 className="h-4 w-4" />
                   Suggested for {pathname}
                 </div>

@@ -40,25 +40,25 @@ const EXPORT_CARDS: ExportCard[] = [
     title: 'SOC 2',
     description: 'Service Organization Control Type II readiness assessment',
     type: 'soc2',
-    color: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20',
+    color: 'bg-card border-border',
   },
   {
     title: 'ISO 27001',
     description: 'Statement of Applicability with implementation coverage',
     type: 'iso27001',
-    color: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20',
+    color: 'bg-card border-border',
   },
   {
     title: 'NDIS',
     description: 'Practice Standards posture with workforce evidence summary',
     type: 'ndis',
-    color: 'from-pink-500/20 to-pink-500/5 border-pink-400/20',
+    color: 'bg-card border-border',
   },
   {
     title: 'HIPAA',
     description: 'Privacy and Security rule coverage readiness package',
     type: 'hipaa',
-    color: 'from-emerald-500/20 to-emerald-500/5 border-emerald-400/20',
+    color: 'bg-card border-border',
   },
 ];
 
@@ -136,14 +136,14 @@ async function ComplianceScoreSection({
   return (
     <>
       {(isExportBlocked || isControlBlocked) && (
-        <div className="rounded-xl border border-rose-700 bg-rose-950/40 px-6 py-4">
-          <div className="flex items-start gap-3 text-rose-200">
+        <div className="rounded-xl border border-destructive/20 bg-destructive/10 px-6 py-4">
+          <div className="flex items-start gap-3 text-destructive">
             <AlertTriangle className="mt-0.5 h-5 w-5" />
             <div>
               <div className="text-sm font-semibold">
                 Export blocked by compliance requirements
               </div>
-              <div className="text-xs text-rose-300">
+              <div className="text-xs text-destructive/80">
                 Resolve unresolved controls before generating audit exports.
               </div>
             </div>
@@ -183,12 +183,12 @@ async function ComplianceScoreSection({
                 className="flex items-center justify-between border-b border-edge-2 px-4 py-3 last:border-b-0"
               >
                 <div className="flex items-center gap-3 text-sm text-foreground">
-                  <XCircle className="h-4 w-4 text-rose-300" />
+                  <XCircle className="h-4 w-4 text-destructive" />
                   Control {code} missing approved evidence
                 </div>
                 <Link
                   href="/app/evidence"
-                  className="text-xs font-semibold text-cyan-300 hover:text-cyan-200"
+                  className="text-xs font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Resolve
                 </Link>
@@ -253,11 +253,11 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
           </div>
         </div>
         {disableExports ? (
-          <p className="text-[10px] text-amber-500">
+          <p className="text-[10px] text-warning">
             Requires active subscription + admin access.
           </p>
         ) : (
-          <p className="text-[10px] text-emerald-500 flex items-center gap-1">
+          <p className="text-[10px] text-success flex items-center gap-1">
             <CheckCircle2 className="h-3 w-3" /> Export enabled
           </p>
         )}
@@ -354,9 +354,9 @@ export default async function ReportsPage() {
       />
       <div className="page-content space-y-4">
         {!hasSubscription && (
-          <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-500">
+          <div className="rounded-md border border-warning/20 bg-warning/10 px-4 py-3 text-warning">
             <div className="text-sm font-semibold">Subscription required</div>
-            <div className="mt-1 text-xs text-amber-500/80">
+            <div className="mt-1 text-xs text-warning/80">
               Activate your plan to unlock report exports and framework
               evaluations.
             </div>

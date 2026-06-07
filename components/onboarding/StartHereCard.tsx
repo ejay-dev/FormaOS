@@ -3,8 +3,8 @@ import {
   ArrowRight,
   CheckCircle2,
   Circle,
+  ListChecks,
   ShieldCheck,
-  Sparkles,
   TriangleAlert,
 } from 'lucide-react';
 
@@ -29,12 +29,12 @@ export function StartHereCard({ state }: StartHereCardProps) {
   return (
     <section
       data-testid="start-here-card"
-      className="rounded-2xl border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6"
+      className="rounded-2xl border border-edge-2 bg-card p-6"
     >
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-edge-2 bg-surface-1">
-            <Sparkles className="h-5 w-5 text-foreground/80" />
+            <ListChecks className="h-5 w-5 text-foreground/80" />
           </div>
           <div>
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -55,13 +55,13 @@ export function StartHereCard({ state }: StartHereCardProps) {
         >
           <div className="flex items-center justify-between text-xs">
             <span
-              className="text-muted-foreground"
+              className="text-muted-foreground tabular-nums"
               data-testid="start-here-progress-count"
             >
               {completed} of {total} completed
             </span>
             <span
-              className="font-medium text-foreground"
+              className="font-medium text-foreground tabular-nums"
               data-testid="start-here-progress-value"
             >
               {progress}%
@@ -93,11 +93,11 @@ export function StartHereCard({ state }: StartHereCardProps) {
         </Link>
       ) : (
         <div
-          className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4"
+          className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-success/20 bg-success/10 p-4"
           data-testid="start-here-complete"
         >
           <div className="flex items-center gap-3">
-            <CheckCircle2 className="h-5 w-5 text-emerald-500" aria-hidden="true" />
+            <CheckCircle2 className="h-5 w-5 text-success" aria-hidden="true" />
             <div>
               <p className="text-sm font-semibold text-foreground">
                 You&apos;re fully set up.
@@ -113,7 +113,7 @@ export function StartHereCard({ state }: StartHereCardProps) {
               data-testid="start-here-complete-incidents"
               className="inline-flex items-center gap-1.5 rounded-md border border-edge-2 bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/40"
             >
-              <TriangleAlert className="h-3.5 w-3.5 text-amber-500" />
+              <TriangleAlert className="h-3.5 w-3.5 text-warning" />
               Manage incidents
             </Link>
             <Link
@@ -166,7 +166,7 @@ function StepRow({
       >
         <div className="mt-0.5" role="img" aria-hidden="true">
           {step.done ? (
-            <CheckCircle2 className="h-5 w-5 text-green-500" />
+            <CheckCircle2 className="h-5 w-5 text-success" />
           ) : (
             <Circle
               className={`h-5 w-5 ${isNext ? 'text-primary' : 'text-muted-foreground/60'}`}

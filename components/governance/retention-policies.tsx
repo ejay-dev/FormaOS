@@ -81,7 +81,7 @@ export function RetentionPolicies({
   };
 
   return (
-    <section className="rounded-3xl border border-glass-border bg-glass-subtle p-6 space-y-5">
+    <section className="rounded-3xl border border-border bg-surface-1 p-6 space-y-5">
       <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
         <div>
           <h2 className="text-xl font-black text-foreground">Retention Policies</h2>
@@ -89,7 +89,7 @@ export function RetentionPolicies({
             Configure record lifecycles, preview impact, and execute dry-runs.
           </p>
           {disabledReason ? (
-            <p className="mt-2 text-sm text-amber-300" data-testid="retention-schema-disabled">
+            <p className="mt-2 text-sm text-warning" data-testid="retention-schema-disabled">
               {disabledReason}
             </p>
           ) : null}
@@ -99,7 +99,7 @@ export function RetentionPolicies({
             type="button"
             onClick={() => runRetention(true)}
             disabled={actionsDisabled}
-            className="rounded-xl border border-glass-border bg-glass-subtle px-4 py-2 text-sm text-foreground/90 disabled:opacity-50"
+            className="rounded-xl border border-border bg-surface-2 px-4 py-2 text-sm text-foreground/90 disabled:opacity-50"
           >
             Dry Run
           </button>
@@ -107,7 +107,7 @@ export function RetentionPolicies({
             type="button"
             onClick={() => runRetention(false)}
             disabled={actionsDisabled}
-            className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-100 disabled:opacity-50"
+            className="rounded-xl border border-primary bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-50"
           >
             Execute
           </button>
@@ -119,7 +119,7 @@ export function RetentionPolicies({
           value={resourceType}
           onChange={(event) => setResourceType(event.target.value)}
           disabled={actionsDisabled}
-          className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
+          className="rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-foreground"
         >
           <option value="identity_audit">identity_audit</option>
           <option value="notifications">notifications</option>
@@ -134,13 +134,13 @@ export function RetentionPolicies({
           value={retentionDays}
           onChange={(event) => setRetentionDays(Number(event.target.value || 365))}
           disabled={actionsDisabled}
-          className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
+          className="rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-foreground"
         />
         <select
           value={action}
           onChange={(event) => setAction(event.target.value as typeof action)}
           disabled={actionsDisabled}
-          className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
+          className="rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-foreground"
         >
           <option value="archive">archive</option>
           <option value="delete">delete</option>
@@ -150,27 +150,27 @@ export function RetentionPolicies({
 
       <div className="flex items-center justify-between gap-4">
         <div className="text-sm">
-          {error ? <span className="text-rose-300">{error}</span> : null}
-          {message ? <span className="text-emerald-300">{message}</span> : null}
+          {error ? <span className="text-destructive">{error}</span> : null}
+          {message ? <span className="text-success">{message}</span> : null}
         </div>
         <button
           type="button"
           onClick={savePolicy}
           disabled={actionsDisabled}
-          className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 disabled:opacity-50"
+          className="rounded-xl border border-primary bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
         >
           Save Policy
         </button>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+        <div className="rounded-2xl border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold text-foreground">Configured Policies</div>
           <div className="space-y-3 text-sm text-foreground/70">
             {policies.map((policy) => (
               <div
                 key={policy.id}
-                className="rounded-xl border border-glass-border bg-glass-subtle p-3"
+                className="rounded-xl border border-border bg-surface-1 p-3"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -196,7 +196,7 @@ export function RetentionPolicies({
                       setMessage('Policy loaded for editing.');
                       setError(null);
                     }}
-                    className="rounded-lg border border-glass-border px-3 py-1 text-xs text-foreground/80 hover:bg-white/[0.06] disabled:opacity-50"
+                    className="rounded-lg border border-border px-3 py-1 text-xs text-foreground/80 hover:bg-surface-2 disabled:opacity-50"
                   >
                     Edit
                   </button>
@@ -204,17 +204,17 @@ export function RetentionPolicies({
               </div>
             ))}
             {policies.length === 0 ? (
-              <p className="rounded-xl border border-dashed border-glass-border p-4 text-center text-xs text-muted-foreground">
+              <p className="rounded-xl border border-dashed border-border p-4 text-center text-xs text-muted-foreground">
                 No retention policies configured yet.
               </p>
             ) : null}
           </div>
         </div>
-        <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+        <div className="rounded-2xl border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold text-foreground">Execution History</div>
           <div className="space-y-3 text-sm text-foreground/70">
             {executions.map((execution) => (
-              <div key={execution.id} className="rounded-xl border border-glass-border bg-glass-subtle p-3">
+              <div key={execution.id} className="rounded-xl border border-border bg-surface-1 p-3">
                 <div className="font-semibold text-foreground">{execution.resource_type}</div>
                 <div className="text-xs text-muted-foreground">
                   {execution.action} • {execution.affected_count} records •{' '}
@@ -223,7 +223,7 @@ export function RetentionPolicies({
               </div>
             ))}
             {executions.length === 0 ? (
-              <p className="rounded-xl border border-dashed border-glass-border p-4 text-center text-xs text-muted-foreground">
+              <p className="rounded-xl border border-dashed border-border p-4 text-center text-xs text-muted-foreground">
                 No retention dry-runs or executions yet.
               </p>
             ) : null}

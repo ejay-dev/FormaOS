@@ -65,8 +65,8 @@ export function DashboardAuditStream({ orgId }: { orgId: string }) {
   }
 
   return (
-    <div className="bg-glass-strong border border-glass-border rounded-2xl shadow-sm overflow-hidden flex flex-col h-full min-h-[280px] sm:min-h-[400px]">
-      <div className="p-4 border-b border-glass-border flex items-center justify-between bg-glass-strong">
+    <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden flex flex-col h-full min-h-[280px] sm:min-h-[400px]">
+      <div className="p-4 border-b border-border flex items-center justify-between bg-card">
         <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
           <Activity className="h-4 w-4 text-muted-foreground" />
           Audit Stream
@@ -92,8 +92,8 @@ export function DashboardAuditStream({ orgId }: { orgId: string }) {
           </div>
         ) : (
           logs.map((log) => (
-            <div key={log.id} className="relative pl-6 pb-2 border-l border-glass-border last:border-0">
-              <div className="absolute left-[-5px] top-1.5 h-2 w-2 rounded-full bg-glass-strong border-2 border-white" />
+            <div key={log.id} className="relative pl-6 pb-2 border-l border-border last:border-0">
+              <div className="absolute left-[-5px] top-1.5 h-2 w-2 rounded-full bg-surface-2 border-2 border-edge-2" />
               <div className="flex flex-col gap-1.5">
                 <p className="text-xs font-bold text-foreground leading-snug">
                     {log.target}

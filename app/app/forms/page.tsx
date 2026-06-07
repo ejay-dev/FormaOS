@@ -29,13 +29,13 @@ function formatDate(date: string | null) {
 function getStatusBadge(status: string) {
   switch (status) {
     case 'published':
-      return 'bg-green-500/10 text-green-400 border-green-500/20';
+      return 'bg-success/10 text-success border-success/20';
     case 'draft':
-      return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+      return 'bg-warning/10 text-warning border-warning/20';
     case 'archived':
-      return 'bg-gray-500/10 text-gray-400 border-gray-500/20';
+      return 'bg-muted text-muted-foreground border-border';
     default:
-      return 'bg-gray-500/10 text-gray-400 border-gray-500/20';
+      return 'bg-muted text-muted-foreground border-border';
   }
 }
 

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTrialState } from '@/lib/trial/use-trial-state';
 import { getFeatureBenefit } from '@/lib/upgrade-intelligence/feature-benefits';
-import { Lock, ArrowRight, Zap, Check, Sparkles, Crown } from 'lucide-react';
+import { Lock, ArrowRight, Zap, Check, Crown } from 'lucide-react';
 import { UpgradeIntelligenceModal } from './UpgradeIntelligenceModal';
 
 /**
@@ -49,7 +49,7 @@ export function SmartUpgradeGate({
         <div className={`${showPreview ? 'absolute inset-0' : ''} flex items-center justify-center py-12`}>
           <div className="text-center max-w-lg mx-auto px-6">
             {/* Feature-specific icon */}
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-zinc-700/20 to-zinc-900/20 border border-zinc-600/20 shadow-lg">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-2 border border-border shadow-lg">
               {featureBenefit ? (
                 <featureBenefit.icon className="h-7 w-7 text-foreground" />
               ) : (
@@ -70,13 +70,13 @@ export function SmartUpgradeGate({
 
             {/* Benefits preview */}
             {featureBenefit && featureBenefit.benefits.length > 0 && (
-              <ul className="text-left bg-glass-subtle rounded-xl p-4 mb-6 space-y-2">
+              <ul className="text-left bg-surface-1 rounded-xl p-4 mb-6 space-y-2">
                 {featureBenefit.benefits.slice(0, 3).map((benefit, index) => (
                   <li
                     key={index}
                     className="flex items-start gap-2 text-sm text-foreground/70"
                   >
-                    <Check className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
+                    <Check className="h-4 w-4 text-success mt-0.5 shrink-0" />
                     {benefit}
                   </li>
                 ))}
@@ -87,7 +87,7 @@ export function SmartUpgradeGate({
             {featureBenefit && (
               <div className="mb-6 flex items-center justify-center gap-2">
                 <span className="text-xs text-muted-foreground/60">Available on</span>
-                <span className="inline-flex items-center gap-1 text-xs font-bold text-zinc-200 bg-zinc-500/15 px-2 py-1 rounded-full">
+                <span className="inline-flex items-center gap-1 text-xs font-bold text-foreground bg-muted px-2 py-1 rounded-full">
                   <Crown className="h-3 w-3" />
                   {featureBenefit.requiredPlan.toUpperCase()}
                 </span>
@@ -153,10 +153,10 @@ export function SmartFeatureTeaser({
   return (
     <>
       <div
-        className={`rounded-lg border border-zinc-600/20 bg-zinc-500/5 p-3 ${className}`}
+        className={`rounded-lg border border-border bg-surface-1 p-3 ${className}`}
       >
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-zinc-700/10">
+          <div className="p-2 rounded-lg bg-muted">
             {featureBenefit ? (
               <featureBenefit.icon className="h-4 w-4 text-foreground" />
             ) : (
@@ -174,9 +174,8 @@ export function SmartFeatureTeaser({
           {canManageBilling && (
             <button
               onClick={() => setShowModal(true)}
-              className="shrink-0 text-xs font-medium text-zinc-300 hover:text-zinc-200 flex items-center gap-1"
+              className="shrink-0 text-xs font-medium text-foreground hover:text-foreground/80 flex items-center gap-1"
             >
-              <Sparkles className="h-3 w-3" />
               Upgrade
             </button>
           )}

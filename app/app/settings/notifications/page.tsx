@@ -12,7 +12,7 @@ export default async function NotificationSettingsPage() {
   return (
     <div className="space-y-8">
       <header>
-        <p className="text-xs font-black uppercase tracking-[0.26em] text-sky-200">
+        <p className="text-xs font-black uppercase tracking-[0.26em] text-muted-foreground">
           Notifications
         </p>
         <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">

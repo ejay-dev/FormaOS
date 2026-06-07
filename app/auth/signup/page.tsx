@@ -274,11 +274,11 @@ function SignUpContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
-        <Logo variant="wordmark" size={28} className="text-white" />
-        <div className="text-xs sm:text-sm text-slate-400 text-center sm:text-left">
+        <Logo variant="wordmark" size={28} className="text-foreground" />
+        <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
           Secure · Compliance-First · Enterprise-Ready
         </div>
       </div>
@@ -286,21 +286,21 @@ function SignUpContent() {
       <div className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-lg">
           {/* Main Signup Card */}
-          <div className="rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm p-8">
+          <div className="rounded-2xl border border-border bg-card p-8">
             <div className="text-center mb-8">
               {plan ? (
                 <>
                   <div className="flex items-center justify-center gap-2 mb-3">
-                    <Star className="h-5 w-5 text-yellow-400" />
-                    <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold">
+                    <Star className="h-5 w-5 text-muted-foreground" />
+                    <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                       {plan.name} Plan Selected
                     </span>
                   </div>
-                  <h1 className="text-3xl font-bold text-white mb-2">
+                  <h1 className="text-3xl font-bold text-foreground mb-2">
                     Start Your {plan.name} Assessment
                   </h1>
-                  <p className="text-slate-400 mb-4">{plan.summary}</p>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-medium">
+                  <p className="text-muted-foreground mb-4">{plan.summary}</p>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-success/10 text-success border border-success/20 text-xs font-medium">
                     <CheckCircle2 className="h-3 w-3" />
                     {plan.key !== 'enterprise'
                       ? 'Guided onboarding assessment'
@@ -309,14 +309,14 @@ function SignUpContent() {
                 </>
               ) : (
                 <>
-                  <h1 className="text-3xl font-bold text-white mb-2">
+                  <h1 className="text-3xl font-bold text-foreground mb-2">
                     Join FormaOS
                   </h1>
-                  <p className="text-slate-400">
+                  <p className="text-muted-foreground">
                     Start building compliance into your organization
                   </p>
                   {journeyParam ? (
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-cyan-300">
+                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-primary">
                       Journey selected: {journeyParam}
                     </p>
                   ) : null}
@@ -326,14 +326,14 @@ function SignUpContent() {
 
             {/* Plan Features */}
             {plan && (
-              <div className="mb-8 p-4 rounded-lg bg-white/[0.04] border border-sky-400/20">
-                <div className="text-sm font-medium text-sky-200 mb-3">
+              <div className="mb-8 p-4 rounded-lg bg-surface-1 border border-border">
+                <div className="text-sm font-medium text-foreground mb-3">
                   What's included:
                 </div>
-                <ul className="space-y-2 text-sm text-slate-300">
+                <ul className="space-y-2 text-sm text-muted-foreground">
                   {plan.features.slice(0, 4).map((feature, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                      <CheckCircle2 className="h-4 w-4 text-success mt-0.5 flex-shrink-0" />
                       <span>{feature}</span>
                     </li>
                   ))}
@@ -342,13 +342,13 @@ function SignUpContent() {
             )}
 
             {errorMessage && (
-              <div className="mb-6 rounded-lg border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+              <div className="mb-6 rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
                 {errorMessage}
               </div>
             )}
 
             {successMessage && (
-              <div className="mb-6 rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+              <div className="mb-6 rounded-lg border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">
                 {successMessage}
               </div>
             )}
@@ -357,7 +357,7 @@ function SignUpContent() {
             <button
               onClick={signUpWithGoogle}
               disabled={isLoading}
-              className="w-full rounded-lg bg-white text-slate-900 px-6 py-4 text-sm font-semibold hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 mb-6"
+              className="w-full rounded-lg bg-foreground text-background px-6 py-4 text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 mb-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
@@ -384,9 +384,9 @@ function SignUpContent() {
 
             {/* Divider */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="flex-1 border-t border-edge-3" />
-              <span className="text-xs text-slate-400">or use email</span>
-              <div className="flex-1 border-t border-edge-3" />
+              <div className="flex-1 border-t border-border" />
+              <span className="text-xs text-muted-foreground">or use email</span>
+              <div className="flex-1 border-t border-border" />
             </div>
 
             {/* Email/Password Form */}
@@ -394,7 +394,7 @@ function SignUpContent() {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-xs font-semibold text-slate-300 mb-2"
+                  className="block text-xs font-semibold text-foreground mb-2"
                 >
                   Email Address
                 </label>
@@ -404,7 +404,7 @@ function SignUpContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@company.com"
-                  className="w-full rounded-lg border border-edge-3 bg-surface-2 px-4 py-3 text-base md:text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-border bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                   required
                   disabled={isLoading}
                   autoComplete="email"
@@ -419,7 +419,7 @@ function SignUpContent() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-xs font-semibold text-slate-300 mb-2"
+                  className="block text-xs font-semibold text-foreground mb-2"
                 >
                   Password
                 </label>
@@ -429,7 +429,7 @@ function SignUpContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="12+ chars, upper/lower, number, symbol"
-                  className="w-full rounded-lg border border-edge-3 bg-surface-2 px-4 py-3 text-base md:text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-border bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                   required
                   disabled={isLoading}
                   autoComplete="new-password"
@@ -440,7 +440,7 @@ function SignUpContent() {
               <div>
                 <label
                   htmlFor="confirm-password"
-                  className="block text-xs font-semibold text-slate-300 mb-2"
+                  className="block text-xs font-semibold text-foreground mb-2"
                 >
                   Confirm Password
                 </label>
@@ -450,7 +450,7 @@ function SignUpContent() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm your password"
-                  className="w-full rounded-lg border border-edge-3 bg-surface-2 px-4 py-3 text-base md:text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-border bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                   required
                   disabled={isLoading}
                   autoComplete="new-password"
@@ -458,7 +458,7 @@ function SignUpContent() {
                 />
               </div>
 
-              <div className="marketing-consent flex items-start gap-3 rounded-lg border border-edge-2 bg-surface-2/50 p-3">
+              <div className="marketing-consent flex items-start gap-3 rounded-lg border border-border bg-surface-2/50 p-3">
                 <input
                   id="marketing-consent"
                   name="marketing_optin"
@@ -466,11 +466,11 @@ function SignUpContent() {
                   checked={marketingConsent}
                   onChange={(e) => setMarketingConsent(e.target.checked)}
                   disabled={isLoading}
-                  className="mt-0.5 h-4 w-4 rounded border-slate-500 bg-slate-800 text-cyan-400 focus:ring-2 focus:ring-cyan-400"
+                  className="mt-0.5 h-4 w-4 rounded border-border bg-surface-2 text-primary focus:ring-2 focus:ring-ring"
                 />
                 <label
                   htmlFor="marketing-consent"
-                  className="text-xs leading-relaxed text-slate-300"
+                  className="text-xs leading-relaxed text-muted-foreground"
                 >
                   Send me FormaOS product updates and compliance insights via
                   email. Optional — you can unsubscribe at any time. This is
@@ -482,7 +482,7 @@ function SignUpContent() {
                 type="submit"
                 data-testid="signup-submit-button"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {isLoading ? (
                   'Creating account...'
@@ -496,16 +496,16 @@ function SignUpContent() {
             </form>
 
             {!plan && (
-              <div className="mt-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-400/20">
+              <div className="mt-6 p-4 rounded-lg bg-surface-1 border border-border">
                 <div className="text-center">
-                  <p className="text-xs text-slate-300 mb-2">
+                  <p className="text-xs text-muted-foreground mb-2">
                     Haven't chosen a plan yet?
                   </p>
                   <button
                     onClick={() =>
                       window.location.assign(`${resolveSiteBase()}/pricing`)
                     }
-                    className="text-xs font-semibold text-emerald-300 hover:text-emerald-200 transition-colors"
+                    className="text-xs font-semibold text-primary hover:opacity-90 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     Compare Plans →
                   </button>
@@ -514,12 +514,12 @@ function SignUpContent() {
             )}
 
             {/* Sign In Link */}
-            <div className="mt-8 pt-6 border-t border-edge-2">
-              <p className="text-center text-sm text-slate-400">
+            <div className="mt-8 pt-6 border-t border-border">
+              <p className="text-center text-sm text-muted-foreground">
                 Already have an account?{' '}
                 <Link
                   href="/auth/signin"
-                  className="font-semibold text-sky-400 hover:text-sky-300 transition-colors"
+                  className="font-semibold text-primary hover:opacity-90 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Sign in to FormaOS
                 </Link>
@@ -536,9 +536,9 @@ export default function SignUpPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-          <div className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm px-6 py-4 text-sm text-slate-300">
-            <Logo variant="mark" size={18} className="text-white" />
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="flex items-center gap-3 rounded-2xl border border-border bg-card px-6 py-4 text-sm text-muted-foreground">
+            <Logo variant="mark" size={18} className="text-foreground" />
             <span>Loading FormaOS signup...</span>
           </div>
         </div>

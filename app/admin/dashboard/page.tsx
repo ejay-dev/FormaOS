@@ -61,27 +61,21 @@ function KPICard({
   detail?: string;
   color: 'blue' | 'green' | 'purple' | 'amber';
 }) {
-  const colorMap = {
-    blue: 'from-blue-500/10 to-blue-600/5 border-blue-400/20 text-blue-300',
-    green:
-      'from-emerald-500/10 to-emerald-600/5 border-emerald-400/20 text-emerald-300',
-    purple:
-      'from-purple-500/10 to-purple-600/5 border-purple-400/20 text-purple-300',
-    amber:
-      'from-amber-500/10 to-amber-600/5 border-amber-400/20 text-amber-300',
-  };
+  // KPI accent colour is decorative, not status — flatten the rainbow to a
+  // single neutral card surface across all variants.
+  void color;
 
   return (
-    <div
-      className={`rounded-lg border bg-gradient-to-br ${colorMap[color]} p-6 space-y-2`}
-    >
+    <div className="rounded-lg border border-border bg-card p-6 space-y-2">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-muted-foreground">
           {label}
         </span>
-        <Icon className="h-5 w-5 opacity-50" />
+        <Icon className="h-5 w-5 text-muted-foreground" />
       </div>
-      <div className="text-3xl font-bold text-foreground">{value}</div>
+      <div className="text-3xl font-bold text-foreground tabular-nums">
+        {value}
+      </div>
       {detail && <div className="text-xs text-muted-foreground">{detail}</div>}
     </div>
   );
@@ -110,13 +104,13 @@ function riskGradeLabel(grade: RiskGrade): string {
 function riskGradeStyles(grade: RiskGrade): string {
   switch (grade) {
     case 'critical':
-      return 'border-rose-400/35 bg-rose-500/10 text-rose-200';
+      return 'border-destructive/20 bg-destructive/10 text-destructive';
     case 'high':
-      return 'border-amber-400/35 bg-amber-500/10 text-amber-200';
+      return 'border-warning/20 bg-warning/10 text-warning';
     case 'watch':
-      return 'border-sky-400/30 bg-sky-500/10 text-sky-200';
+      return 'border-info/20 bg-info/10 text-info';
     default:
-      return 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200';
+      return 'border-success/20 bg-success/10 text-success';
   }
 }
 
@@ -133,17 +127,17 @@ function RiskHeatmap({
   }>;
 }) {
   const intensity = {
-    low: 'bg-emerald-500/10',
-    watch: 'bg-sky-500/10',
-    high: 'bg-amber-500/10',
-    critical: 'bg-rose-500/10',
+    low: 'bg-success/10',
+    watch: 'bg-info/10',
+    high: 'bg-warning/10',
+    critical: 'bg-destructive/10',
   } as const;
 
   return (
     <div className="rounded-lg border border-border bg-card p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Layers className="h-5 w-5 text-cyan-200" />
+          <Layers className="h-5 w-5 text-muted-foreground" />
           <h2 className="text-lg font-semibold text-foreground">
             Risk Heatmap
           </h2>
@@ -157,7 +151,7 @@ function RiskHeatmap({
           <Link
             key={cell.key}
             href={cell.href}
-            className={`rounded-lg border border-border p-4 transition-colors hover:bg-muted/60 ${intensity[cell.grade]}`}
+            className={`rounded-lg border border-border p-4 transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${intensity[cell.grade]}`}
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -177,7 +171,7 @@ function RiskHeatmap({
             <div className="mt-3">
               <div className="h-2 w-full rounded-full bg-muted">
                 <div
-                  className="h-2 rounded-full bg-gradient-to-r from-zinc-700 to-zinc-900"
+                  className="h-2 rounded-full bg-primary"
                   style={{
                     width: `${Math.min(Math.round(cell.ratio * 100), 100)}%`,
                   }}
@@ -324,9 +318,9 @@ export default async function AdminDashboard() {
     },
   ] as const;
   const statusStyles = {
-    healthy: 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200',
-    watch: 'border-amber-400/30 bg-amber-500/10 text-amber-200',
-    critical: 'border-rose-400/30 bg-rose-500/10 text-rose-200',
+    healthy: 'border-success/20 bg-success/10 text-success',
+    watch: 'border-warning/20 bg-warning/10 text-warning',
+    critical: 'border-destructive/20 bg-destructive/10 text-destructive',
   } as const;
   const healthRatio =
     data.totalOrgs > 0 ? Math.min(data.failedPayments / data.totalOrgs, 1) : 0;
@@ -549,7 +543,7 @@ export default async function AdminDashboard() {
           {/* Section A: User Analytics */}
           <div className="rounded-lg border border-border bg-card p-6">
             <div className="mb-4 flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-300" />
+              <Users className="h-5 w-5 text-muted-foreground" />
               <h2 className="text-lg font-semibold text-foreground">
                 User Analytics
               </h2>
@@ -582,27 +576,27 @@ export default async function AdminDashboard() {
           {/* Section B: Engagement Summary */}
           <div className="rounded-lg border border-border bg-card p-6">
             <div className="mb-4 flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-purple-300" />
+              <BarChart3 className="h-5 w-5 text-muted-foreground" />
               <h2 className="text-lg font-semibold text-foreground">
                 Engagement Summary
               </h2>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg border bg-gradient-to-br from-purple-500/10 to-purple-600/5 border-purple-400/20 p-6 space-y-3">
+              <div className="rounded-lg border border-border bg-card p-6 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-muted-foreground">
                     Avg Engagement Score
                   </span>
-                  <Activity className="h-5 w-5 opacity-50 text-purple-300" />
+                  <Activity className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-3xl font-bold text-foreground">
+                  <span className="text-3xl font-bold text-foreground tabular-nums">
                     {engagement.avgEngagementScore}
                   </span>
                   <div className="flex-1">
                     <div className="h-2 w-full rounded-full bg-muted">
                       <div
-                        className="h-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500"
+                        className="h-2 rounded-full bg-primary"
                         style={{
                           width: `${Math.min(engagement.avgEngagementScore, 100)}%`,
                         }}
@@ -635,49 +629,49 @@ export default async function AdminDashboard() {
           <div className="rounded-lg border border-border bg-card p-6">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <Heart className="h-5 w-5 text-emerald-300" />
+                <Heart className="h-5 w-5 text-muted-foreground" />
                 <h2 className="text-lg font-semibold text-foreground">
                   Health Summary
                 </h2>
               </div>
               <Link
                 href="/admin/customer-health"
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/60"
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 View Details
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
             <div className="grid gap-4 md:grid-cols-4">
-              <div className="rounded-lg border border-emerald-400/20 bg-emerald-500/10 p-5 space-y-1">
-                <span className="text-sm font-medium text-emerald-300">
+              <div className="rounded-lg border border-success/20 bg-success/10 p-5 space-y-1">
+                <span className="text-sm font-medium text-success">
                   Healthy
                 </span>
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-foreground tabular-nums">
                   {engagement.healthDistribution.healthy}
                 </div>
               </div>
-              <div className="rounded-lg border border-yellow-400/20 bg-yellow-500/10 p-5 space-y-1">
-                <span className="text-sm font-medium text-yellow-300">
+              <div className="rounded-lg border border-info/20 bg-info/10 p-5 space-y-1">
+                <span className="text-sm font-medium text-info">
                   Warning
                 </span>
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-foreground tabular-nums">
                   {engagement.healthDistribution.warning}
                 </div>
               </div>
-              <div className="rounded-lg border border-amber-400/20 bg-amber-500/10 p-5 space-y-1">
-                <span className="text-sm font-medium text-amber-300">
+              <div className="rounded-lg border border-warning/20 bg-warning/10 p-5 space-y-1">
+                <span className="text-sm font-medium text-warning">
                   At Risk
                 </span>
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-foreground tabular-nums">
                   {engagement.healthDistribution.atRisk}
                 </div>
               </div>
-              <div className="rounded-lg border border-rose-400/20 bg-rose-500/10 p-5 space-y-1">
-                <span className="text-sm font-medium text-rose-300">
+              <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-5 space-y-1">
+                <span className="text-sm font-medium text-destructive">
                   Critical
                 </span>
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-foreground tabular-nums">
                   {engagement.healthDistribution.critical}
                 </div>
               </div>
@@ -696,7 +690,7 @@ export default async function AdminDashboard() {
             {data.orgsByDay.map((day, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center">
                 <div
-                  className="w-full bg-blue-500/40 hover:bg-blue-500/60 rounded-t transition-colors"
+                  className="w-full bg-primary/40 hover:bg-primary/60 rounded-t transition-colors"
                   style={{
                     height: `${Math.max(Math.round((day.count / maxOrgCount) * 140), 4)}px`,
                   }}
@@ -723,13 +717,13 @@ export default async function AdminDashboard() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-muted-foreground">Starter</span>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-semibold text-foreground tabular-nums">
                   {basicCount}
                 </span>
               </div>
               <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-purple-500"
+                  className="h-full bg-primary"
                   style={{
                     width: `${
                       (basicCount / Math.max(data.totalOrgs, 1)) * 100
@@ -742,13 +736,13 @@ export default async function AdminDashboard() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-muted-foreground">Pro</span>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-semibold text-foreground tabular-nums">
                   {proCount}
                 </span>
               </div>
               <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-emerald-500"
+                  className="h-full bg-primary"
                   style={{
                     width: `${(proCount / Math.max(data.totalOrgs, 1)) * 100}%`,
                   }}
@@ -761,13 +755,13 @@ export default async function AdminDashboard() {
                 <span className="text-sm text-muted-foreground">
                   Enterprise
                 </span>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-semibold text-foreground tabular-nums">
                   {enterpriseCount}
                 </span>
               </div>
               <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-blue-500"
+                  className="h-full bg-primary"
                   style={{
                     width: `${
                       (enterpriseCount / Math.max(data.totalOrgs, 1)) * 100
@@ -785,7 +779,7 @@ export default async function AdminDashboard() {
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-lg border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-2">
-            <ShieldAlert className="h-5 w-5 text-amber-300" />
+            <ShieldAlert className="h-5 w-5 text-muted-foreground" />
             <h2 className="text-lg font-semibold text-foreground">
               Risk Alert Triage
             </h2>
@@ -795,7 +789,7 @@ export default async function AdminDashboard() {
               <Link
                 key={risk.label}
                 href={risk.href}
-                className="flex items-center justify-between rounded-lg border border-border bg-card/60 px-4 py-3 transition-colors hover:bg-muted/60"
+                className="flex items-center justify-between rounded-lg border border-border bg-card/60 px-4 py-3 transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div>
                   <p className="text-sm font-medium text-foreground">
@@ -807,12 +801,12 @@ export default async function AdminDashboard() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span
-                    className={`rounded px-2 py-1 text-xs font-semibold ${
+                    className={`rounded px-2 py-1 text-xs font-semibold tabular-nums ${
                       risk.severity === 'high'
-                        ? 'bg-rose-500/15 text-rose-300'
+                        ? 'bg-destructive/10 text-destructive'
                         : risk.severity === 'medium'
-                          ? 'bg-amber-500/15 text-amber-300'
-                          : 'bg-emerald-500/15 text-emerald-300'
+                          ? 'bg-warning/10 text-warning'
+                          : 'bg-success/10 text-success'
                     }`}
                   >
                     {risk.value}
@@ -826,7 +820,7 @@ export default async function AdminDashboard() {
 
         <div className="rounded-lg border border-border bg-card p-6">
           <div className="mb-4 flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-blue-300" />
+            <AlertTriangle className="h-5 w-5 text-muted-foreground" />
             <h2 className="text-lg font-semibold text-foreground">
               Operator Shortcuts
             </h2>
@@ -836,7 +830,7 @@ export default async function AdminDashboard() {
               <Link
                 key={shortcut.href}
                 href={shortcut.href}
-                className="rounded-lg border border-border bg-card/60 px-4 py-3 text-sm text-foreground transition-colors hover:bg-muted/60"
+                className="rounded-lg border border-border bg-card/60 px-4 py-3 text-sm text-foreground transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span>{shortcut.label}</span>
@@ -864,7 +858,7 @@ export default async function AdminDashboard() {
           </div>
           <Link
             href="/admin/support"
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/60"
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Open Support
             <ArrowRight className="h-3.5 w-3.5" />
@@ -875,7 +869,7 @@ export default async function AdminDashboard() {
             <Link
               key={item.id}
               href={item.href}
-              className="rounded-lg border border-border bg-card/60 p-4 transition-colors hover:bg-muted/70"
+              className="rounded-lg border border-border bg-card/60 p-4 transition-colors hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -901,10 +895,10 @@ export default async function AdminDashboard() {
                 </span>
               </div>
               <div className="mt-3 flex items-center justify-between gap-3">
-                <span className="text-2xl font-bold text-foreground">
+                <span className="text-2xl font-bold text-foreground tabular-nums">
                   {item.count}
                 </span>
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-200">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground">
                   Open queue
                   <ArrowRight className="h-3.5 w-3.5" />
                 </span>
@@ -927,7 +921,7 @@ export default async function AdminDashboard() {
           </div>
           <Link
             href="/admin/security/triage"
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/60"
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Open Triage
             <ArrowRight className="h-3.5 w-3.5" />
@@ -938,7 +932,7 @@ export default async function AdminDashboard() {
             <Link
               key={item.key}
               href={item.href}
-              className="rounded-lg border border-border bg-card/60 p-4 transition-colors hover:bg-muted/70"
+              className="rounded-lg border border-border bg-card/60 p-4 transition-colors hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm font-semibold text-foreground">

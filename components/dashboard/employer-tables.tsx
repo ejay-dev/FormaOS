@@ -113,7 +113,7 @@ export function TeamComplianceTable({
               <th className="px-4 py-2 text-left font-semibold">Last Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10">
+          <tbody className="divide-y divide-edge-2">
             {members.length === 0 ? (
               <tr>
                 <td
@@ -127,7 +127,7 @@ export function TeamComplianceTable({
               members.map((member) => (
                 <tr
                   key={member.id}
-                  className="hover:bg-glass-subtle transition-colors"
+                  className="hover:bg-surface-1 transition-colors"
                 >
                   <td className="px-4 py-2">
                     <div>
@@ -138,15 +138,15 @@ export function TeamComplianceTable({
                     </div>
                   </td>
                   <td className="px-4 py-2 capitalize">
-                    <span className="inline-block px-2 py-1 rounded bg-slate-700/50 text-xs">
+                    <span className="inline-block px-2 py-1 rounded bg-surface-2 text-xs">
                       {member.role}
                     </span>
                   </td>
                   <td className="px-4 py-2 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <div className="h-2 w-16 bg-slate-700 rounded-full overflow-hidden">
+                      <div className="h-2 w-16 bg-surface-2 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-green-500"
+                          className="h-full bg-success"
                           style={{ width: `${member.complianceScore}%` }}
                         />
                       </div>
@@ -182,13 +182,13 @@ export function CertificatesExpiry({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-green-500/20 text-green-300 border-green-400/30';
+        return 'bg-success/10 text-success border-success/20';
       case 'expiring_soon':
-        return 'bg-amber-500/20 text-amber-300 border-amber-400/30';
+        return 'bg-warning/10 text-warning border-warning/20';
       case 'expired':
-        return 'bg-red-500/20 text-red-300 border-red-400/30';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       default:
-        return 'bg-slate-500/20 text-foreground/70';
+        return 'bg-muted text-foreground/70';
     }
   };
 
@@ -207,7 +207,7 @@ export function CertificatesExpiry({
           certificates.map((cert) => (
             <div
               key={cert.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-edge-2"
+              className="flex items-center justify-between p-3 rounded-lg bg-surface-1 border border-edge-2"
             >
               <div className="flex-1">
                 <p className="font-medium">{cert.title}</p>
@@ -249,13 +249,13 @@ export function EvidenceReview({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-blue-500/20 text-blue-300 border-blue-400/30';
+        return 'bg-info/10 text-info border-info/20';
       case 'approved':
-        return 'bg-green-500/20 text-green-300 border-green-400/30';
+        return 'bg-success/10 text-success border-success/20';
       case 'rejected':
-        return 'bg-red-500/20 text-red-300 border-red-400/30';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       default:
-        return 'bg-slate-500/20 text-foreground/70';
+        return 'bg-muted text-foreground/70';
     }
   };
 
@@ -274,7 +274,7 @@ export function EvidenceReview({
           submissions.map((sub) => (
             <div
               key={sub.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-edge-2"
+              className="flex items-center justify-between p-3 rounded-lg bg-surface-1 border border-edge-2"
             >
               <div className="flex-1">
                 <p className="font-medium">{sub.title}</p>
@@ -285,10 +285,10 @@ export function EvidenceReview({
               <div className="flex items-center gap-2">
                 {sub.status === 'pending' && (
                   <>
-                    <button className="px-3 py-1 rounded text-xs font-semibold bg-green-500/20 text-green-300 hover:bg-green-500/30 transition-colors">
+                    <button className="px-3 py-1 rounded text-xs font-semibold bg-success/10 text-success hover:bg-success/20 transition-colors">
                       Approve
                     </button>
-                    <button className="px-3 py-1 rounded text-xs font-semibold bg-red-500/20 text-red-300 hover:bg-red-500/30 transition-colors">
+                    <button className="px-3 py-1 rounded text-xs font-semibold bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
                       Reject
                     </button>
                   </>
@@ -335,7 +335,7 @@ export function TaskManagement({
           tasks.map((task) => (
             <div
               key={task.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-edge-2"
+              className="flex items-center justify-between p-3 rounded-lg bg-surface-1 border border-edge-2"
             >
               <div className="flex-1">
                 <p className="font-medium">{task.title}</p>
@@ -347,9 +347,9 @@ export function TaskManagement({
                 <div className="text-xs font-semibold mb-1">
                   {task.completionRate}% Complete
                 </div>
-                <div className="h-2 w-24 bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-2 w-24 bg-surface-2 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-blue-500"
+                    className="h-full bg-primary"
                     style={{ width: `${task.completionRate}%` }}
                   />
                 </div>
@@ -386,9 +386,9 @@ export function AuditActivityLog({
           activities.map((activity) => (
             <div
               key={activity.id}
-              className="flex gap-3 pb-3 border-b border-glass-border last:border-0"
+              className="flex gap-3 pb-3 border-b border-border last:border-0"
             >
-              <div className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-blue-400" />
+              <div className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-muted-foreground" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm">
                   <span className="font-medium">{activity.actor}</span>{' '}

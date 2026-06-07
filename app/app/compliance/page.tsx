@@ -18,7 +18,7 @@ export default function ComplianceIndexPage() {
       <div className="mx-4 mb-4 grid gap-2 sm:mx-0 md:grid-cols-2">
         <Link
           href="/app/compliance/health"
-          className="flex items-center justify-between rounded-lg border border-slate-800 bg-card/60 px-4 py-3 transition-colors hover:border-slate-700 hover:bg-card"
+          className="flex items-center justify-between rounded-lg border border-border bg-card/60 px-4 py-3 transition-colors hover:border-edge-2 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           data-testid="compliance-health-link"
         >
           <div className="flex items-center gap-3">
@@ -36,7 +36,7 @@ export default function ComplianceIndexPage() {
         </Link>
         <Link
           href="/app/compliance/attestations"
-          className="flex items-center justify-between rounded-lg border border-slate-800 bg-card/60 px-4 py-3 transition-colors hover:border-slate-700 hover:bg-card"
+          className="flex items-center justify-between rounded-lg border border-border bg-card/60 px-4 py-3 transition-colors hover:border-edge-2 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <div className="flex items-center gap-3">
             <ClipboardCheck className="h-5 w-5 text-muted-foreground" />

@@ -29,7 +29,7 @@ const uploadArtifactSchema = z.object({
 /**
  * =========================================================
  * UPLOAD ARTIFACT MODAL
- * Node Type: Evidence (violet)
+ * Node Type: Evidence
  * Creates a new evidence node in the compliance graph
  * =========================================================
  */
@@ -222,10 +222,10 @@ export function UploadArtifactModal({
           role="dialog"
           aria-modal="true"
           aria-labelledby="upload-artifact-success-title"
-          className="w-full max-w-md bg-gradient-to-br from-slate-900 to-slate-800 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden p-10 sm:p-12 flex flex-col items-center justify-center animate-in zoom-in-95"
+          className="w-full max-w-md bg-popover rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden p-10 sm:p-12 flex flex-col items-center justify-center animate-in zoom-in-95"
         >
-          <div className="h-20 w-20 rounded-full bg-violet-400/20 flex items-center justify-center mb-4 border-2 border-violet-400/40">
-            <CheckCircle2 className="h-10 w-10 text-violet-400" />
+          <div className="h-20 w-20 rounded-full bg-success/10 flex items-center justify-center mb-4 border-2 border-success/20">
+            <CheckCircle2 className="h-10 w-10 text-success" />
           </div>
           <h3
             id="upload-artifact-success-title"
@@ -248,12 +248,12 @@ export function UploadArtifactModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="upload-artifact-title"
-        className="w-full max-w-md bg-gradient-to-br from-slate-900 to-slate-800 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto"
+        className="w-full max-w-md bg-popover rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto"
       >
-        <div className="p-6 border-b border-glass-border flex items-center justify-between">
+        <div className="p-6 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-full bg-violet-400/20 flex items-center justify-center">
-              <div className="h-2 w-2 rounded-full bg-violet-400" />
+            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+              <div className="h-2 w-2 rounded-full bg-primary" />
             </div>
             <h3 id="upload-artifact-title" className="font-bold text-foreground">
               Upload Evidence Artifact
@@ -262,7 +262,7 @@ export function UploadArtifactModal({
           <button
             onClick={onClose}
             aria-label="Close"
-            className="p-2 hover:bg-glass-strong rounded-xl transition-colors"
+            className="p-2 hover:bg-surface-2 rounded-xl transition-colors focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
@@ -270,12 +270,12 @@ export function UploadArtifactModal({
 
         <form onSubmit={handleUpload} className="p-6 space-y-6">
           {validationError && (
-            <div className="p-3 rounded-xl border border-red-400/30 bg-red-400/10 text-sm text-red-400">
+            <div className="p-3 rounded-xl border border-destructive/20 bg-destructive/10 text-sm text-destructive">
               {validationError}
             </div>
           )}
           {/* File Dropzone */}
-          <div className="group relative border-2 border-dashed border-violet-400/30 rounded-2xl p-8 transition-all hover:border-violet-400/50 hover:bg-violet-400/5 flex flex-col items-center justify-center text-center">
+          <div className="group relative border-2 border-dashed border-border rounded-2xl p-8 transition-all hover:border-primary hover:bg-muted flex flex-col items-center justify-center text-center">
             <input
               type="file"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
@@ -283,19 +283,19 @@ export function UploadArtifactModal({
             />
             {file ? (
               <div className="flex flex-col items-center">
-                <div className="h-12 w-12 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center mb-2 border border-violet-400/30">
+                <div className="h-12 w-12 rounded-full bg-muted text-foreground flex items-center justify-center mb-2 border border-border">
                   <FileText className="h-6 w-6" />
                 </div>
                 <p className="text-sm font-bold text-foreground truncate max-w-[200px]">
                   {file.name}
                 </p>
-                <p className="text-xs text-violet-300 uppercase font-bold mt-1">
+                <p className="text-xs text-muted-foreground uppercase font-bold mt-1">
                   Ready to Secure
                 </p>
               </div>
             ) : (
               <>
-                <FileUp className="h-8 w-8 text-violet-400/50 mb-3 group-hover:text-violet-400 transition-colors" />
+                <FileUp className="h-8 w-8 text-muted-foreground mb-3 group-hover:text-foreground transition-colors" />
                 <p className="text-sm font-bold text-foreground">
                   Drop artifact here
                 </p>
@@ -318,7 +318,7 @@ export function UploadArtifactModal({
               placeholder="e.g. Annual Fire Safety Certificate 2025"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-4 rounded-xl border border-glass-border bg-glass-subtle focus:border-violet-400/50 focus:ring-2 focus:ring-violet-400/20 text-sm transition-all outline-none"
+              className="w-full p-4 rounded-xl border border-border bg-surface-1 focus:border-primary focus-visible:ring-2 focus-visible:ring-ring text-sm transition-all outline-none"
             />
           </div>
 
@@ -334,7 +334,7 @@ export function UploadArtifactModal({
                 id="vault-link-policy"
                 value={policyId}
                 onChange={(e) => setPolicyId(e.target.value)}
-                className="w-full p-4 rounded-xl border border-glass-border bg-glass-subtle focus:border-violet-400/50 focus:ring-2 focus:ring-violet-400/20 text-sm transition-all outline-none"
+                className="w-full p-4 rounded-xl border border-border bg-surface-1 focus:border-primary focus-visible:ring-2 focus-visible:ring-ring text-sm transition-all outline-none"
               >
                 <option value="">Not linked</option>
                 {policies.map((p) => (
@@ -350,14 +350,16 @@ export function UploadArtifactModal({
           {uploading && (
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span className="text-violet-300 font-medium">
+                <span className="text-foreground font-medium">
                   Securing artifact...
                 </span>
-                <span className="text-muted-foreground">{uploadProgress}%</span>
+                <span className="text-muted-foreground tabular-nums">
+                  {uploadProgress}%
+                </span>
               </div>
-              <div className="h-2 bg-glass-strong rounded-full overflow-hidden">
+              <div className="h-2 bg-surface-2 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-violet-500 to-purple-500 rounded-full transition-all duration-300"
+                  className="h-full bg-primary rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
@@ -367,7 +369,7 @@ export function UploadArtifactModal({
           <button
             type="submit"
             disabled={!file || uploading}
-            className="w-full bg-foreground text-background p-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 min-h-[44px] hover:opacity-90 transition-all disabled:opacity-50 shadow-lg motion-safe:active:scale-[0.98]"
+            className="w-full bg-foreground text-background p-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 min-h-[44px] hover:opacity-90 transition-all disabled:opacity-50 shadow-lg motion-safe:active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             {uploading ? (
               <>

@@ -12,7 +12,6 @@ import {
   Crown,
   Zap,
   Shield,
-  Sparkles,
 } from 'lucide-react';
 
 interface UpgradeIntelligenceModalProps {
@@ -110,7 +109,7 @@ export function UpgradeIntelligenceModal({
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-4xl mx-4 rounded-2xl border border-white/15 bg-[hsl(var(--card))] shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300"
+        className="relative w-full max-w-4xl mx-4 rounded-2xl border border-border bg-[hsl(var(--card))] shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300"
         role="dialog"
         aria-modal="true"
         aria-label="Upgrade your plan"
@@ -118,7 +117,7 @@ export function UpgradeIntelligenceModal({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-1 rounded-full hover:bg-glass-strong transition-colors text-muted-foreground hover:text-foreground/90"
+          className="absolute top-4 right-4 z-10 p-1 rounded-full hover:bg-surface-2 transition-colors text-muted-foreground hover:text-foreground/90"
           aria-label="Close"
         >
           <X className="h-5 w-5" />
@@ -127,7 +126,7 @@ export function UpgradeIntelligenceModal({
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-edge-2">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-xl bg-white/[0.04]">
+            <div className="p-2 rounded-xl bg-surface-2">
               {featureBenefit ? (
                 <featureBenefit.icon className="h-5 w-5 text-foreground" />
               ) : (
@@ -147,7 +146,7 @@ export function UpgradeIntelligenceModal({
         </div>
 
         {error && (
-          <div className="mx-6 mt-4 rounded-lg border border-rose-400/30 bg-rose-500/10 px-4 py-2 text-sm text-rose-200">
+          <div className="mx-6 mt-4 rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-2 text-sm text-destructive">
             {error}
           </div>
         )}
@@ -176,17 +175,16 @@ export function UpgradeIntelligenceModal({
                   onClick={() => meetsRequirement && setSelectedPlan(key)}
                   className={`relative rounded-xl border p-5 transition-all cursor-pointer ${
                     isSelected
-                      ? 'border-zinc-400/50 bg-zinc-500/5 ring-2 ring-zinc-400/30'
+                      ? 'border-primary bg-surface-2 ring-2 ring-ring'
                       : meetsRequirement
-                        ? 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong'
-                        : 'border-edge-1 bg-white/[0.02] opacity-50 cursor-not-allowed'
+                        ? 'border-border bg-surface-1 hover:border-edge-3 hover:bg-surface-2'
+                        : 'border-edge-1 bg-surface-1 opacity-50 cursor-not-allowed'
                   }`}
                 >
                   {/* Recommended badge */}
                   {recommended && meetsRequirement && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="text-xs font-bold text-zinc-200 bg-zinc-500/20 px-3 py-1 rounded-full flex items-center gap-1 border border-zinc-400/20">
-                        <Sparkles className="h-2.5 w-2.5" />
+                      <span className="text-xs font-bold text-primary-foreground bg-primary px-3 py-1 rounded-full flex items-center gap-1 border border-primary">
                         RECOMMENDED
                       </span>
                     </div>
@@ -197,9 +195,9 @@ export function UpgradeIntelligenceModal({
                     <Crown
                       className={`h-5 w-5 ${
                         key === 'enterprise'
-                          ? 'text-amber-400'
+                          ? 'text-foreground'
                           : key === 'pro'
-                            ? 'text-zinc-300'
+                            ? 'text-foreground/70'
                             : 'text-muted-foreground'
                       }`}
                     />
@@ -238,7 +236,7 @@ export function UpgradeIntelligenceModal({
                         key={idx}
                         className="flex items-start gap-2 text-xs text-foreground/70"
                       >
-                        <Check className="h-3 w-3 text-emerald-400 mt-0.5 shrink-0" />
+                        <Check className="h-3 w-3 text-success mt-0.5 shrink-0" />
                         {feature}
                       </li>
                     ))}
@@ -246,7 +244,7 @@ export function UpgradeIntelligenceModal({
 
                   {/* Required indicator */}
                   {featureBenefit && featureBenefit.requiredPlan === key && (
-                    <div className="mt-2 text-xs text-emerald-400 flex items-center gap-1">
+                    <div className="mt-2 text-xs text-success flex items-center gap-1">
                       <Check className="h-3 w-3" />
                       Includes {featureBenefit.title}
                     </div>
@@ -260,7 +258,7 @@ export function UpgradeIntelligenceModal({
         {/* Feature-specific benefits */}
         {featureBenefit && featureBenefit.useCases.length > 0 && (
           <div className="px-6 pb-4">
-            <div className="rounded-xl bg-glass-subtle p-4">
+            <div className="rounded-xl bg-surface-1 p-4">
               <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">
                 Perfect for
               </h4>
@@ -268,7 +266,7 @@ export function UpgradeIntelligenceModal({
                 {featureBenefit.useCases.map((useCase, idx) => (
                   <span
                     key={idx}
-                    className="text-xs text-foreground/70 bg-glass-strong px-3 py-1 rounded-full"
+                    className="text-xs text-foreground/70 bg-surface-2 px-3 py-1 rounded-full"
                   >
                     {useCase}
                   </span>
@@ -279,7 +277,7 @@ export function UpgradeIntelligenceModal({
         )}
 
         {/* Actions */}
-        <div className="px-6 py-5 border-t border-glass-border flex flex-col sm:flex-row items-center gap-4">
+        <div className="px-6 py-5 border-t border-border flex flex-col sm:flex-row items-center gap-4">
           <button
             onClick={() => handleUpgrade(selectedPlan)}
             disabled={loadingPlan !== null}

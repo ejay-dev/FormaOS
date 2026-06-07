@@ -49,7 +49,7 @@ export function PiiDashboard({
   };
 
   return (
-    <section className="rounded-3xl border border-glass-border bg-glass-subtle p-6 space-y-5">
+    <section className="rounded-3xl border border-border bg-surface-1 p-6 space-y-5">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-black text-foreground">PII Inventory</h2>
@@ -61,7 +61,7 @@ export function PiiDashboard({
           type="button"
           onClick={runScan}
           disabled={isPending}
-          className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 disabled:opacity-50"
+          className="rounded-xl border border-primary bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
         >
           Trigger Scan
         </button>
@@ -69,19 +69,19 @@ export function PiiDashboard({
 
       <div className="grid gap-4 md:grid-cols-4">
         {Object.entries(initialClassificationReport.breakdown ?? {}).map(([key, value]) => (
-          <div key={key} className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+          <div key={key} className="rounded-2xl border border-border bg-card p-4">
             <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground/60">{key}</div>
             <div className="mt-2 text-2xl font-black text-foreground">{value}</div>
           </div>
         ))}
       </div>
 
-      {error ? <div className="text-sm text-rose-300">{error}</div> : null}
-      {message ? <div className="text-sm text-emerald-300">{message}</div> : null}
+      {error ? <div className="text-sm text-destructive">{error}</div> : null}
+      {message ? <div className="text-sm text-success">{message}</div> : null}
 
       <div className="grid gap-4 lg:grid-cols-2">
         {scans.map((scan) => (
-          <div key={scan.id} className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+          <div key={scan.id} className="rounded-2xl border border-border bg-card p-4">
             <div className="flex items-center justify-between gap-3">
               <div className="text-sm font-semibold text-foreground">{scan.table_name}</div>
               <div className="text-xs text-muted-foreground">{new Date(scan.created_at).toLocaleString()}</div>
@@ -89,7 +89,7 @@ export function PiiDashboard({
             <div className="mt-2 text-xs text-muted-foreground">
               Sample size {scan.sample_size} • Findings {(scan.findings ?? []).length}
             </div>
-            <pre className="mt-3 whitespace-pre-wrap rounded-xl bg-slate-950 p-3 text-[11px] text-foreground/70">
+            <pre className="mt-3 whitespace-pre-wrap rounded-xl bg-surface-2 p-3 text-[11px] text-foreground/70">
               {JSON.stringify(scan.findings ?? [], null, 2)}
             </pre>
           </div>

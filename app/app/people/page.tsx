@@ -131,7 +131,7 @@ export default function PeoplePage() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
+          className="flex items-center gap-2 bg-surface-2 text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
         >
           <UserPlus className="h-4 w-4" />
           Provision Access
@@ -185,7 +185,7 @@ export default function PeoplePage() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
           {error}
         </div>
       ) : null}
@@ -229,10 +229,10 @@ export default function PeoplePage() {
             return (
               <div
                 key={member.user_id}
-                className="group bg-surface-1 border border-edge-2 rounded-[2.5rem] p-6 hover:border-glass-border-strong transition-all shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+                className="group bg-surface-1 border border-edge-2 rounded-[2.5rem] p-6 hover:border-edge-2 transition-all shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6"
               >
                 <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 rounded-[1.25rem] bg-glass-strong border border-edge-2 flex items-center justify-center text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-300">
+                  <div className="h-14 w-14 rounded-[1.25rem] bg-surface-2 border border-edge-2 flex items-center justify-center text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-300">
                     <User className="h-6 w-6" />
                   </div>
                   <div>
@@ -244,8 +244,8 @@ export default function PeoplePage() {
                       <div
                         className={`px-2 py-0.5 rounded-md border text-xs font-semibold uppercase tracking-wide flex items-center gap-1 ${
                           complianceStatus === 'active'
-                            ? 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30'
-                            : 'bg-rose-500/10 text-rose-300 border-rose-400/30'
+                            ? 'bg-success/10 text-success border-success/20'
+                            : 'bg-destructive/10 text-destructive border-destructive/20'
                         }`}
                       >
                         {complianceStatus === 'active' ? (
@@ -269,7 +269,7 @@ export default function PeoplePage() {
                       Tasks
                     </p>
                     <div className="flex items-center gap-2 justify-center">
-                      <CheckSquare className="h-3.5 w-3.5 text-sky-300" />
+                      <CheckSquare className="h-3.5 w-3.5 text-muted-foreground" />
                       <span className="text-sm font-black text-foreground">
                         {member.taskCount}
                       </span>
@@ -280,7 +280,7 @@ export default function PeoplePage() {
                       Evidence
                     </p>
                     <div className="flex items-center gap-2 justify-center">
-                      <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                      <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
                       <span className="text-sm font-black text-foreground">
                         {member.evidenceCount}
                       </span>
@@ -292,7 +292,7 @@ export default function PeoplePage() {
                     </p>
                     <div className="flex items-center gap-2 justify-center">
                       <Shield
-                        className={`h-3.5 w-3.5 ${roleLabel === 'ADMIN' ? 'text-sky-300' : 'text-muted-foreground'}`}
+                        className={`h-3.5 w-3.5 ${roleLabel === 'ADMIN' ? 'text-primary' : 'text-muted-foreground'}`}
                       />
                       <span className="text-xs font-semibold text-foreground/70 uppercase tracking-wider">
                         {roleLabel}
@@ -304,7 +304,7 @@ export default function PeoplePage() {
                 <div className="flex items-center gap-3">
                   <Link
                     href={`/app/staff-compliance?member=${member.user_id}`}
-                    className="px-6 py-3 bg-glass-strong text-foreground rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all"
+                    className="px-6 py-3 bg-surface-2 text-foreground rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all"
                   >
                     View Records
                   </Link>

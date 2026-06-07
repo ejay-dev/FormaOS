@@ -41,11 +41,11 @@ function StepIndicator({
       {Array.from({ length: totalSteps }).map((_, i) => (
         <div key={i} className="flex items-center">
           <div
-            className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold transition-all duration-300 ${
+            className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-semibold tabular-nums transition-all duration-300 ${
               i < currentStep
-                ? 'bg-[var(--wire-success)] text-white'
+                ? 'bg-success text-background'
                 : i === currentStep
-                  ? 'bg-[var(--wire-action)] text-white ring-2 ring-[var(--wire-action)]/30 ring-offset-2 ring-offset-background'
+                  ? 'bg-primary text-primary-foreground ring-2 ring-ring ring-offset-2 ring-offset-background'
                   : 'bg-muted text-muted-foreground'
             }`}
           >
@@ -54,7 +54,7 @@ function StepIndicator({
           {i < totalSteps - 1 && (
             <div
               className={`w-12 h-0.5 transition-all duration-300 ${
-                i < currentStep ? 'bg-[var(--wire-success)]' : 'bg-muted'
+                i < currentStep ? 'bg-success' : 'bg-muted'
               }`}
             />
           )}

@@ -84,38 +84,38 @@ const FEEDBACK_CONFIG: Record<
 > = {
   success: {
     icon: CheckCircle2,
-    bgClass: 'bg-emerald-500/10',
-    borderClass: 'border-emerald-400/40',
-    iconClass: 'text-emerald-400',
-    titleClass: 'text-emerald-200',
+    bgClass: 'bg-success/10',
+    borderClass: 'border-success/40',
+    iconClass: 'text-success',
+    titleClass: 'text-success',
   },
   error: {
     icon: AlertCircle,
-    bgClass: 'bg-rose-500/10',
-    borderClass: 'border-rose-400/40',
-    iconClass: 'text-rose-400',
-    titleClass: 'text-rose-200',
+    bgClass: 'bg-destructive/10',
+    borderClass: 'border-destructive/40',
+    iconClass: 'text-destructive',
+    titleClass: 'text-destructive',
   },
   info: {
     icon: Info,
-    bgClass: 'bg-sky-500/10',
-    borderClass: 'border-sky-400/40',
-    iconClass: 'text-sky-400',
-    titleClass: 'text-sky-200',
+    bgClass: 'bg-info/10',
+    borderClass: 'border-info/40',
+    iconClass: 'text-info',
+    titleClass: 'text-info',
   },
   warning: {
     icon: AlertCircle,
-    bgClass: 'bg-amber-500/10',
-    borderClass: 'border-amber-400/40',
-    iconClass: 'text-amber-400',
-    titleClass: 'text-amber-200',
+    bgClass: 'bg-warning/10',
+    borderClass: 'border-warning/40',
+    iconClass: 'text-warning',
+    titleClass: 'text-warning',
   },
   processing: {
     icon: Loader2,
-    bgClass: 'bg-blue-500/10',
-    borderClass: 'border-blue-400/40',
-    iconClass: 'text-blue-400 animate-spin',
-    titleClass: 'text-blue-200',
+    bgClass: 'bg-info/10',
+    borderClass: 'border-info/40',
+    iconClass: 'text-info animate-spin',
+    titleClass: 'text-info',
   },
 };
 
@@ -130,13 +130,13 @@ const NODE_ICONS: Record<string, LucideIcon> = {
 };
 
 const NODE_COLORS: Record<string, string> = {
-  policy: 'text-cyan-300',
-  control: 'text-teal-300',
-  evidence: 'text-violet-300',
-  audit: 'text-amber-300',
-  risk: 'text-rose-300',
-  task: 'text-emerald-300',
-  entity: 'text-foreground/70',
+  policy: 'text-muted-foreground',
+  control: 'text-muted-foreground',
+  evidence: 'text-muted-foreground',
+  audit: 'text-muted-foreground',
+  risk: 'text-muted-foreground',
+  task: 'text-muted-foreground',
+  entity: 'text-muted-foreground',
 };
 
 export function SystemFeedback({
@@ -180,7 +180,7 @@ export function SystemFeedback({
         {onDismiss && (
           <button
             onClick={onDismiss}
-            className="ml-auto p-1 rounded-lg hover:bg-glass-strong transition-colors"
+            className="ml-auto p-1 rounded-lg hover:bg-surface-2 transition-colors"
           >
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
@@ -222,7 +222,7 @@ export function SystemFeedback({
         {onDismiss && (
           <button
             onClick={onDismiss}
-            className="p-1.5 rounded-lg hover:bg-glass-strong transition-colors"
+            className="p-1.5 rounded-lg hover:bg-surface-2 transition-colors"
           >
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
@@ -250,11 +250,11 @@ export function SystemFeedback({
                   <span
                     className={cn(
                       'text-xs font-bold uppercase',
-                      change.action === 'created' && 'text-emerald-400',
-                      change.action === 'updated' && 'text-sky-400',
-                      change.action === 'deleted' && 'text-rose-400',
-                      change.action === 'linked' && 'text-violet-400',
-                      change.action === 'verified' && 'text-emerald-400',
+                      change.action === 'created' && 'text-success',
+                      change.action === 'updated' && 'text-info',
+                      change.action === 'deleted' && 'text-destructive',
+                      change.action === 'linked' && 'text-muted-foreground',
+                      change.action === 'verified' && 'text-success',
                     )}
                   >
                     {change.action}
@@ -279,9 +279,9 @@ export function SystemFeedback({
                 <ArrowRight
                   className={cn(
                     'h-3 w-3',
-                    change.action === 'connected' && 'text-cyan-400',
-                    change.action === 'strengthened' && 'text-emerald-400',
-                    change.action === 'broken' && 'text-rose-400',
+                    change.action === 'connected' && 'text-muted-foreground',
+                    change.action === 'strengthened' && 'text-success',
+                    change.action === 'broken' && 'text-destructive',
                   )}
                 />
                 <span className="text-foreground/70">{change.to}</span>
@@ -304,11 +304,11 @@ export function SystemFeedback({
                 className={cn(
                   'flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs font-bold',
                   impact.change === 'improved' &&
-                    'bg-emerald-500/10 text-emerald-300 border border-emerald-400/30',
+                    'bg-success/10 text-success border border-success/20',
                   impact.change === 'degraded' &&
-                    'bg-rose-500/10 text-rose-300 border border-rose-400/30',
+                    'bg-destructive/10 text-destructive border border-destructive/20',
                   impact.change === 'unchanged' &&
-                    'bg-slate-500/10 text-muted-foreground border border-slate-400/30',
+                    'bg-muted text-muted-foreground border border-border',
                 )}
               >
                 {impact.change === 'improved' && <Zap className="h-3 w-3" />}

@@ -21,14 +21,17 @@ const sizeMap: Record<Size, { box: string; text: string }> = {
   lg: { box: 'h-10 w-10', text: 'text-sm' },
 };
 
+// Monochrome-brand palette: neutral + slate + info-blue + amber. The decorative
+// violet/cyan/emerald/rose keys are kept for API compatibility but collapsed onto
+// the approved set so no off-palette accent ever renders.
 const toneBg: Record<AvatarTone, string> = {
-  blue: 'bg-blue-700',
-  emerald: 'bg-emerald-700',
-  amber: 'bg-amber-800',
-  rose: 'bg-rose-700',
+  blue: 'bg-info',
+  emerald: 'bg-slate-700',
+  amber: 'bg-amber-700',
+  rose: 'bg-slate-700',
   slate: 'bg-slate-700',
-  violet: 'bg-violet-700',
-  cyan: 'bg-cyan-800',
+  violet: 'bg-muted-foreground',
+  cyan: 'bg-info',
 };
 
 export interface AvatarProps {
@@ -49,14 +52,11 @@ function initialsFrom(name: string): string {
 }
 
 function toneFromName(name: string): AvatarTone {
+  // Auto-selection draws only from the approved monochrome-brand set.
   const tones: AvatarTone[] = [
-    'blue',
-    'emerald',
-    'amber',
-    'rose',
     'slate',
-    'violet',
-    'cyan',
+    'blue',
+    'amber',
   ];
   let h = 0;
   for (let i = 0; i < name.length; i += 1)
@@ -183,10 +183,22 @@ export function OwnerChip({
     </span>
   );
 
-  if (href) return <Link href={href}>{content}</Link>;
+  if (href)
+    return (
+      <Link
+        href={href}
+        className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {content}
+      </Link>
+    );
   if (onClick)
     return (
-      <button type="button" onClick={onClick}>
+      <button
+        type="button"
+        onClick={onClick}
+        className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
         {content}
       </button>
     );

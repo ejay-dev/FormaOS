@@ -70,11 +70,11 @@ export function EvidencePackExport({ frameworkSlug, frameworkName }: Props) {
   }
 
   return (
-    <div className="rounded-xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-xl border border-border bg-card p-6">
       <div className="flex items-start gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <FileArchive className="h-5 w-5 text-sky-400" />
+            <FileArchive className="h-5 w-5 text-muted-foreground" />
             <h3 className="text-lg font-semibold text-foreground">Evidence Pack Export</h3>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -101,7 +101,7 @@ export function EvidencePackExport({ frameworkSlug, frameworkName }: Props) {
                 checked={passwordProtected}
                 onChange={(e) => setPasswordProtected(e.target.checked)}
                 disabled={exporting}
-                className="rounded border-glass-border-strong"
+                className="rounded border-edge-2"
               />
               <Lock className="h-4 w-4" />
               Password protect export
@@ -114,9 +114,9 @@ export function EvidencePackExport({ frameworkSlug, frameworkName }: Props) {
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Preparing export... {progress}%</span>
               </div>
-              <div className="h-2 bg-glass-strong rounded-full overflow-hidden">
+              <div className="h-2 bg-surface-2 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-sky-500 transition-all duration-300"
+                  className="h-full bg-primary transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -124,12 +124,12 @@ export function EvidencePackExport({ frameworkSlug, frameworkName }: Props) {
           )}
 
           {downloadUrl && (
-            <div className="mt-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-400/30">
-              <div className="text-sm text-emerald-300 mb-2">Export ready!</div>
+            <div className="mt-4 p-3 rounded-lg bg-success/10 border border-success/20">
+              <div className="text-sm text-success mb-2">Export ready!</div>
               <a
                 href={downloadUrl}
                 download
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500/20 text-emerald-300 text-sm font-semibold hover:bg-emerald-500/30 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-success/20 text-success text-sm font-semibold hover:bg-success/30 transition-colors"
               >
                 <Download className="h-4 w-4" />
                 Download Evidence Pack
@@ -141,7 +141,7 @@ export function EvidencePackExport({ frameworkSlug, frameworkName }: Props) {
         <button
           onClick={startExport}
           disabled={exporting}
-          className="px-4 py-2 rounded-lg bg-sky-500/20 text-sky-300 text-sm font-semibold border border-sky-400/30 hover:bg-sky-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold border border-primary hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {exporting ? 'Exporting...' : 'Start Export'}
         </button>

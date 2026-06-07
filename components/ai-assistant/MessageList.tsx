@@ -29,11 +29,11 @@ function renderMarkdown(text: string): string {
   return escapeHtml(text)
     .replace(
       /```([\s\S]*?)```/g,
-      '<pre class="my-2 rounded-lg bg-black/30 p-3 text-xs overflow-x-auto"><code>$1</code></pre>',
+      '<pre class="my-2 rounded-lg bg-surface-2 p-3 text-xs overflow-x-auto"><code>$1</code></pre>',
     )
     .replace(
       /`([^`]+)`/g,
-      '<code class="rounded bg-glass-strong px-1.5 py-0.5 text-xs font-mono">$1</code>',
+      '<code class="rounded bg-surface-2 px-1.5 py-0.5 text-xs font-mono">$1</code>',
     )
     .replace(
       /\*\*(.+?)\*\*/g,
@@ -78,8 +78,8 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
     return (
       <div className="flex flex-1 items-center justify-center p-8">
         <div className="text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10">
-            <Bot className="h-7 w-7 text-cyan-400" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-surface-2">
+            <Bot className="h-7 w-7 text-muted-foreground" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-foreground/90">
             AI Compliance Assistant
@@ -103,12 +103,12 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
           <div
             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
               message.role === 'user'
-                ? 'bg-cyan-400/20'
-                : 'border border-glass-border bg-surface-1'
+                ? 'bg-primary/15'
+                : 'border border-border bg-surface-1'
             }`}
           >
             {message.role === 'user' ? (
-              <User className="h-4 w-4 text-cyan-300" />
+              <User className="h-4 w-4 text-primary" />
             ) : (
               <Bot className="h-4 w-4 text-muted-foreground" />
             )}
@@ -117,8 +117,8 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
           <div
             className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
               message.role === 'user'
-                ? 'bg-cyan-500/20 text-foreground/90 border border-cyan-400/20'
-                : 'bg-glass-subtle text-foreground/70 border border-edge-2'
+                ? 'bg-primary/10 text-foreground/90 border border-primary/20'
+                : 'bg-surface-1 text-foreground/70 border border-edge-2'
             }`}
           >
             {message.role === 'assistant' ? (
@@ -137,14 +137,14 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
 
       {isLoading && (
         <div className="flex gap-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-glass-border bg-surface-1">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-surface-1">
             <Bot className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="rounded-2xl border border-glass-border bg-glass-subtle px-4 py-3">
+          <div className="rounded-2xl border border-border bg-surface-1 px-4 py-3">
             <div className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse [animation-delay:0.2s]" />
-              <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse [animation-delay:0.4s]" />
+              <span className="h-2 w-2 rounded-full bg-muted-foreground animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-muted-foreground animate-pulse [animation-delay:0.2s]" />
+              <span className="h-2 w-2 rounded-full bg-muted-foreground animate-pulse [animation-delay:0.4s]" />
             </div>
           </div>
         </div>

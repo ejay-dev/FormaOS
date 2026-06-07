@@ -200,7 +200,7 @@ export function ProductTourOverlay() {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       {highlightStyle ? (
         <div
-          className="absolute rounded-2xl border border-glass-border-strong shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] transition-all duration-200"
+          className="absolute rounded-2xl border border-border shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] transition-all duration-200"
           style={highlightStyle}
         />
       ) : null}
@@ -208,8 +208,8 @@ export function ProductTourOverlay() {
       <div
         className={`absolute z-[var(--z-tour)] w-full sm:w-[min(420px,calc(100vw-2rem))] ${
           isMobile
-            ? 'bottom-0 left-0 right-0 rounded-t-3xl border-t border-glass-border bg-[hsl(var(--card))] p-6'
-            : 'rounded-2xl border border-glass-border bg-[hsl(var(--card))] p-6 shadow-2xl'
+            ? 'bottom-0 left-0 right-0 rounded-t-3xl border-t border-border bg-[hsl(var(--card))] p-6'
+            : 'rounded-2xl border border-border bg-[hsl(var(--card))] p-6 shadow-2xl'
         }`}
         style={
           isMobile
@@ -233,14 +233,14 @@ export function ProductTourOverlay() {
           <button
             onClick={skipTour}
             aria-label="Close tour"
-            className="rounded-full border border-glass-border p-2 text-muted-foreground hover:text-white"
+            className="rounded-full border border-border p-2 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-          <span>
+          <span className="tabular-nums">
             Step {currentStep + 1} of {totalSteps}
           </span>
           <div className="flex items-center gap-1">
@@ -249,10 +249,10 @@ export function ProductTourOverlay() {
                 key={index}
                 className={`h-1.5 rounded-full transition-all ${
                   index === currentStep
-                    ? 'w-8 bg-cyan-400'
+                    ? 'w-8 bg-primary'
                     : index < currentStep
-                      ? 'w-4 bg-white/30'
-                      : 'w-4 bg-glass-strong'
+                      ? 'w-4 bg-muted-foreground/40'
+                      : 'w-4 bg-surface-2'
                 }`}
               />
             ))}

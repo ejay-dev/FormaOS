@@ -13,7 +13,6 @@ import {
   Building2,
   Layers,
   Loader2,
-  Sparkles,
 } from 'lucide-react';
 
 /**
@@ -209,7 +208,7 @@ export function PlanComparisonTable() {
       </div>
 
       {error && (
-        <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200 text-center">
+        <div className="rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive text-center">
           {error}
         </div>
       )}
@@ -230,23 +229,22 @@ export function PlanComparisonTable() {
               key={planKey}
               className={`relative rounded-2xl border p-6 transition-all ${
                 isRecommended
-                  ? 'border-zinc-400/50 bg-zinc-500/5 ring-1 ring-zinc-400/20'
+                  ? 'border-primary/50 bg-primary/5 ring-1 ring-primary/20'
                   : isCurrent
-                    ? 'border-emerald-400/30 bg-emerald-500/5'
-                    : 'border-glass-border bg-surface-1'
+                    ? 'border-success/20 bg-success/5'
+                    : 'border-border bg-surface-1'
               }`}
             >
               {/* Recommended badge */}
               {isRecommended && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-foreground text-background text-xs font-bold px-3 py-1 rounded-full">
-                  <Sparkles className="h-3 w-3" />
                   RECOMMENDED
                 </div>
               )}
 
               {/* Current badge */}
               {isCurrent && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-500 text-emerald-950 text-xs font-bold px-3 py-1 rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-success text-success-foreground text-xs font-bold px-3 py-1 rounded-full">
                   CURRENT PLAN
                 </div>
               )}
@@ -282,14 +280,14 @@ export function PlanComparisonTable() {
 
                 {/* CTA */}
                 {isCurrent ? (
-                  <div className="rounded-lg bg-emerald-500/10 border border-emerald-400/20 px-4 py-2.5 text-sm font-semibold text-emerald-300 text-center">
+                  <div className="rounded-lg bg-success/10 border border-success/20 px-4 py-2.5 text-sm font-semibold text-success text-center">
                     Active
                   </div>
                 ) : isUpgrade ? (
                   isCustomPrice ? (
                     <a
                       href="/contact?intent=enterprise"
-                      className="inline-flex min-h-[44px] w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-glass-strong text-foreground hover:bg-white/15"
+                      className="inline-flex min-h-[44px] w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-surface-2 text-foreground hover:bg-surface-3"
                     >
                       <ArrowRight className="h-4 w-4" />
                       Contact sales
@@ -301,7 +299,7 @@ export function PlanComparisonTable() {
                       className={`inline-flex min-h-[44px] w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
                         isRecommended
                           ? 'bg-foreground text-background hover:opacity-90 motion-safe:hover:scale-[1.02]'
-                          : 'bg-glass-strong text-foreground hover:bg-white/15'
+                          : 'bg-surface-2 text-foreground hover:bg-surface-3'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {isLoading ? (
@@ -316,13 +314,13 @@ export function PlanComparisonTable() {
               </div>
 
               {/* Feature list */}
-              <ul className="mt-6 space-y-2 border-t border-white/8 pt-4">
+              <ul className="mt-6 space-y-2 border-t border-edge-2 pt-4">
                 {catalog.features.map((feature) => (
                   <li
                     key={feature}
                     className="flex items-start gap-2 text-xs text-foreground/70"
                   >
-                    <Check className="h-3.5 w-3.5 flex-shrink-0 text-emerald-400 mt-0.5" />
+                    <Check className="h-3.5 w-3.5 flex-shrink-0 text-success mt-0.5" />
                     {feature}
                   </li>
                 ))}
@@ -333,7 +331,7 @@ export function PlanComparisonTable() {
       </div>
 
       {/* Detailed comparison table (desktop) */}
-      <div className="hidden lg:block overflow-x-auto rounded-2xl border border-glass-border bg-surface-1">
+      <div className="hidden lg:block overflow-x-auto rounded-2xl border border-border bg-surface-1">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-edge-2">
@@ -354,7 +352,7 @@ export function PlanComparisonTable() {
             {FEATURE_ROWS.map((row, i) => (
               <tr
                 key={row.label}
-                className={i % 2 === 0 ? 'bg-white/[0.02]' : ''}
+                className={i % 2 === 0 ? 'bg-surface-1' : ''}
               >
                 <td className="px-6 py-3 text-foreground/70">{row.label}</td>
                 {plans.map((p) => {
@@ -364,7 +362,7 @@ export function PlanComparisonTable() {
                   return (
                     <td key={p} className="text-center px-6 py-3">
                       {isCheck ? (
-                        <Check className="h-4 w-4 text-emerald-400 mx-auto" />
+                        <Check className="h-4 w-4 text-success mx-auto" />
                       ) : isDash ? (
                         <X className="h-4 w-4 text-muted-foreground/40 mx-auto" />
                       ) : (

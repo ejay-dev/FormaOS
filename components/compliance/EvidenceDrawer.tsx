@@ -193,7 +193,7 @@ export function EvidenceDrawer({
         side="right"
         className="w-[90vw] max-w-[480px] sm:max-w-lg flex flex-col"
       >
-        <SheetHeader className="border-b border-glass-border pb-4">
+        <SheetHeader className="border-b border-border pb-4">
           <SheetTitle className="text-base font-semibold">
             Evidence & Activity
           </SheetTitle>
@@ -213,7 +213,7 @@ export function EvidenceDrawer({
         />
 
         {/* Tabs */}
-        <div className="flex gap-1 border-b border-glass-border">
+        <div className="flex gap-1 border-b border-border">
           <button
             onClick={() => setTab('evidence')}
             className={`px-3 py-2 text-xs font-medium transition-colors ${
@@ -262,8 +262,8 @@ export function EvidenceDrawer({
                 data-testid="evidence-dropzone"
                 className={`flex w-full flex-col items-center gap-2 rounded-lg border-2 border-dashed p-4 text-center transition-colors disabled:opacity-60 ${
                   isDragOver
-                    ? 'border-[var(--wire-action)] bg-[var(--wire-action)]/5'
-                    : 'border-glass-border hover:border-glass-border-strong'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-edge-2'
                 }`}
               >
                 <Upload className="h-5 w-5 text-muted-foreground" />
@@ -278,7 +278,7 @@ export function EvidenceDrawer({
                 <div
                   role="alert"
                   data-testid="evidence-upload-error"
-                  className="flex items-start gap-2 rounded-md border border-red-400/40 bg-red-400/10 px-3 py-2 text-xs text-red-500"
+                  className="flex items-start gap-2 rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs text-destructive"
                 >
                   <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                   <span>{uploadError}</span>
@@ -300,7 +300,7 @@ export function EvidenceDrawer({
                     <div
                       key={item.id}
                       data-testid="evidence-item"
-                      className="flex items-start gap-3 rounded-lg border border-glass-border bg-glass-subtle p-3"
+                      className="flex items-start gap-3 rounded-lg border border-border bg-surface-1 p-3"
                     >
                       <Icon className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
                       <div className="min-w-0 flex-1">
@@ -310,7 +310,7 @@ export function EvidenceDrawer({
                           </p>
                           {item.locked && (
                             <Lock
-                              className="h-3 w-3 text-amber-400 shrink-0"
+                              className="h-3 w-3 text-warning shrink-0"
                               aria-label="Immutable — cannot be edited"
                             />
                           )}
@@ -354,7 +354,7 @@ export function EvidenceDrawer({
                     key={entry.id}
                     className="flex items-start gap-3 rounded-lg px-2 py-2"
                   >
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-glass-subtle border border-glass-border shrink-0">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-surface-1 border border-border shrink-0">
                       {entry.actor.avatarUrl ? (
                         <img
                           src={entry.actor.avatarUrl}
@@ -378,7 +378,7 @@ export function EvidenceDrawer({
                         </span>
                         {entry.locked && (
                           <Lock
-                            className="h-2.5 w-2.5 text-amber-400"
+                            className="h-2.5 w-2.5 text-warning"
                             aria-label="Immutable entry"
                           />
                         )}

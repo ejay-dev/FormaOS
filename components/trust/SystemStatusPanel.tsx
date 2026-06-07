@@ -93,21 +93,21 @@ export function SystemStatusPanel() {
     switch (status.subscriptionStatus) {
       case 'active':
         return (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 border border-emerald-500/20">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-3 py-1 text-xs font-medium text-success border border-success/20">
             <CheckCircle2 className="h-3 w-3" />
             Active
           </span>
         );
       case 'trialing':
         return (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-400 border border-cyan-500/20">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-info/10 px-3 py-1 text-xs font-medium text-info border border-info/20">
             <Clock className="h-3 w-3" />
             Trial {status.subscriptionDaysRemaining ? `(${status.subscriptionDaysRemaining}d left)` : ''}
           </span>
         );
       case 'expired':
         return (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-xs font-medium text-red-400 border border-red-500/20">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive border border-destructive/20">
             Expired
           </span>
         );
@@ -135,12 +135,12 @@ export function SystemStatusPanel() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6 backdrop-blur-sm">
+      <div className="rounded-2xl border border-border bg-surface-1 p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-4 w-32 rounded bg-glass-strong" />
+          <div className="h-4 w-32 rounded bg-surface-2" />
           <div className="space-y-2">
-            <div className="h-3 w-full rounded bg-glass-strong" />
-            <div className="h-3 w-3/4 rounded bg-glass-strong" />
+            <div className="h-3 w-full rounded bg-surface-2" />
+            <div className="h-3 w-3/4 rounded bg-surface-2" />
           </div>
         </div>
       </div>
@@ -148,12 +148,12 @@ export function SystemStatusPanel() {
   }
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-slate-900/50 to-slate-800/50 p-6 backdrop-blur-sm">
+    <div className="rounded-2xl border border-border bg-card p-6">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-emerald-400" />
-          <h3 className="text-lg font-semibold text-white">System Status</h3>
+          <Shield className="h-5 w-5 text-success" />
+          <h3 className="text-lg font-semibold text-foreground">System Status</h3>
         </div>
         {getSubscriptionBadge()}
       </div>
@@ -161,60 +161,60 @@ export function SystemStatusPanel() {
       {/* Status Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Automation Status */}
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+        <div className="rounded-xl border border-border bg-surface-1 p-4">
           <div className="mb-2 flex items-center gap-2">
-            <Zap className={`h-4 w-4 ${status.automationRunning ? 'text-emerald-400' : 'text-gray-500'}`} />
-            <span className="text-xs font-medium text-gray-400">Automation</span>
+            <Zap className={`h-4 w-4 ${status.automationRunning ? 'text-success' : 'text-muted-foreground'}`} />
+            <span className="text-xs font-medium text-muted-foreground">Automation</span>
           </div>
-          <p className="text-sm font-semibold text-white">
+          <p className="text-sm font-semibold text-foreground">
             {status.automationRunning ? 'Running' : 'Idle'}
           </p>
         </div>
 
         {/* Last Scan */}
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+        <div className="rounded-xl border border-border bg-surface-1 p-4">
           <div className="mb-2 flex items-center gap-2">
-            <Clock className="h-4 w-4 text-cyan-400" />
-            <span className="text-xs font-medium text-gray-400">Last Scan</span>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">Last Scan</span>
           </div>
-          <p className="text-sm font-semibold text-white">{formatLastScan()}</p>
+          <p className="text-sm font-semibold text-foreground tabular-nums">{formatLastScan()}</p>
         </div>
 
         {/* System Status */}
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+        <div className="rounded-xl border border-border bg-surface-1 p-4">
           <div className="mb-2 flex items-center gap-2">
-            <Activity className="h-4 w-4 text-emerald-400" />
-            <span className="text-xs font-medium text-gray-400">Status</span>
+            <Activity className="h-4 w-4 text-success" />
+            <span className="text-xs font-medium text-muted-foreground">Status</span>
           </div>
-          <p className="text-sm font-semibold text-white">{status.uptime}</p>
+          <p className="text-sm font-semibold text-foreground">{status.uptime}</p>
         </div>
 
         {/* Security Status */}
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+        <div className="rounded-xl border border-border bg-surface-1 p-4">
           <div className="mb-2 flex items-center gap-2">
-            <Shield className="h-4 w-4 text-emerald-400" />
-            <span className="text-xs font-medium text-gray-400">Security</span>
+            <Shield className="h-4 w-4 text-success" />
+            <span className="text-xs font-medium text-muted-foreground">Security</span>
           </div>
-          <p className="text-sm font-semibold text-white">Protected</p>
+          <p className="text-sm font-semibold text-foreground">Protected</p>
         </div>
       </div>
 
       {/* Trust Badges */}
-      <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-glass-border pt-4">
-        <div className="flex items-center gap-2 text-xs text-gray-400">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+      <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-4">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
           <span>Region-aware hosting</span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-400">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
           <span>Privacy-ready workflows</span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-400">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
           <span>Framework-aligned controls</span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-400">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
           <span>Enterprise Security</span>
         </div>
       </div>

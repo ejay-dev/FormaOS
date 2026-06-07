@@ -7,9 +7,9 @@ export function PlainEnglishToggle() {
   const { plainEnglish, setPlainEnglish } = useLabelToggle();
 
   return (
-    <div className="bg-surface-1 border border-glass-border rounded-[2.5rem] p-8 shadow-sm">
+    <div className="bg-surface-1 border border-border rounded-[2.5rem] p-8 shadow-sm">
       <div className="flex items-center gap-4 mb-4">
-        <div className="h-10 w-10 rounded-xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-glass-border">
+        <div className="h-10 w-10 rounded-xl bg-surface-2 flex items-center justify-center text-muted-foreground border border-border">
           <Languages className="h-5 w-5" />
         </div>
         <div>
@@ -24,7 +24,7 @@ export function PlainEnglishToggle() {
           type="checkbox"
           checked={plainEnglish}
           onChange={(e) => setPlainEnglish(e.target.checked)}
-          className="mt-1 h-4 w-4 rounded border-glass-border bg-glass-strong text-[var(--wire-action)] focus:ring-[var(--wire-action)]/30 focus:ring-offset-0 cursor-pointer"
+          className="mt-1 h-4 w-4 rounded border-border bg-surface-2 text-primary focus:ring-ring focus:ring-offset-0 cursor-pointer"
         />
         <div>
           <span className="text-sm font-semibold text-foreground">

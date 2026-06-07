@@ -58,7 +58,7 @@ export function FilterBar({
               type="button"
               onClick={f.onRemove}
               aria-label={`Remove ${f.label} filter`}
-              className="rounded-full p-0.5 text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
+              className="rounded-full p-0.5 text-muted-foreground transition-colors outline-none hover:bg-muted/40 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             >
               <X className="h-3 w-3" />
             </button>
@@ -70,7 +70,7 @@ export function FilterBar({
         <button
           type="button"
           onClick={onClearAll}
-          className="rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
+          className="rounded-md px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
         >
           Clear all ({active})
         </button>

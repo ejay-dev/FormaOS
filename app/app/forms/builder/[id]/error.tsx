@@ -16,21 +16,21 @@ export default function FormBuilderError({
 
   return (
     <div className="mx-auto max-w-3xl p-6">
-      <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 p-6 text-rose-100">
+      <div className="rounded-2xl border border-destructive/30 bg-destructive/10 p-6 text-foreground">
         <h1 className="text-xl font-semibold">Form builder failed to load</h1>
-        <p className="mt-2 text-sm text-rose-100/80">
+        <p className="mt-2 text-sm text-muted-foreground">
           {error.message || 'An unexpected error interrupted the form builder.'}
         </p>
         <div className="mt-4 flex gap-3">
           <button
             onClick={() => reset()}
-            className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-white hover:bg-rose-400"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90"
           >
             Retry
           </button>
           <Link
             href="/app"
-            className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-glass-strong"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-surface-2"
           >
             Back to dashboard
           </Link>

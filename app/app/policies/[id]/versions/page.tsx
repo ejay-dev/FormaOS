@@ -14,14 +14,14 @@ function statusClass(status: string) {
   switch (status) {
     case 'published':
     case 'approved':
-      return 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300';
+      return 'border-success/20 bg-success/10 text-success';
     case 'pending_approval':
     case 'review':
-      return 'border-amber-500/25 bg-amber-500/10 text-amber-300';
+      return 'border-warning/20 bg-warning/10 text-warning';
     case 'archived':
-      return 'border-slate-500/25 bg-muted/10 text-muted-foreground';
+      return 'border-border bg-muted/10 text-muted-foreground';
     default:
-      return 'border-sky-500/25 bg-sky-500/10 text-sky-300';
+      return 'border-info/20 bg-info/10 text-info';
   }
 }
 

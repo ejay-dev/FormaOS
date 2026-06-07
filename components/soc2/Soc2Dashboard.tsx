@@ -101,7 +101,7 @@ export function Soc2Dashboard({
           <button
             onClick={handleRunAssessment}
             disabled={isAssessing}
-            className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2.5 text-sm font-semibold text-cyan-300 hover:bg-cyan-400/20 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-primary bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {isAssessing ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
@@ -113,7 +113,7 @@ export function Soc2Dashboard({
           <button
             onClick={handleGenerateReport}
             disabled={isGenerating || !assessment}
-            className="inline-flex items-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2.5 text-sm font-semibold text-emerald-300 hover:bg-emerald-400/20 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface-2 px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors disabled:opacity-50"
           >
             {isGenerating ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
@@ -126,15 +126,15 @@ export function Soc2Dashboard({
       </div>
 
       {reportStatus && (
-        <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/5 p-4 text-sm text-emerald-300">
+        <div className="rounded-xl border border-border bg-surface-1 p-4 text-sm text-foreground">
           {reportStatus}
         </div>
       )}
 
       {!assessment ? (
-        <div className="rounded-2xl border border-glass-border bg-glass-subtle p-12 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-glass-border bg-surface-1">
-            <Play className="h-6 w-6 text-cyan-400" />
+        <div className="rounded-2xl border border-border bg-card p-12 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-surface-1">
+            <Play className="h-6 w-6 text-muted-foreground" />
           </div>
           <h2 className="mt-4 text-lg font-semibold text-foreground/90">
             No Assessment Yet
@@ -146,7 +146,7 @@ export function Soc2Dashboard({
           <button
             onClick={handleRunAssessment}
             disabled={isAssessing}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 text-sm font-semibold text-white hover:bg-cyan-600 transition-colors disabled:opacity-50"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {isAssessing ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
@@ -160,7 +160,7 @@ export function Soc2Dashboard({
         <>
           {/* Score + Domains */}
           <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
-            <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] flex items-center justify-center">
+            <div className="rounded-2xl border border-border bg-card p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] flex items-center justify-center">
               <ReadinessScoreRing score={assessment.overallScore} />
             </div>
             <div className="space-y-4">

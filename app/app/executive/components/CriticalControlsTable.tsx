@@ -16,10 +16,10 @@ export function CriticalControlsTable({
   if (isLoading) {
     return (
       <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 animate-pulse">
-        <div className="h-5 w-40 rounded bg-glass-strong mb-6" />
+        <div className="h-5 w-40 rounded bg-surface-2 mb-6" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-16 rounded-lg bg-glass-strong" />
+            <div key={i} className="h-16 rounded-lg bg-surface-2" />
           ))}
         </div>
       </div>
@@ -28,8 +28,8 @@ export function CriticalControlsTable({
 
   if (controls.length === 0) {
     return (
-      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-6 text-center">
-        <CheckCircle className="h-10 w-10 text-emerald-400 mx-auto mb-3" />
+      <div className="rounded-2xl border border-success/20 bg-success/10 p-6 text-center">
+        <CheckCircle className="h-10 w-10 text-success mx-auto mb-3" />
         <p className="text-foreground/90 font-medium">No Critical Gaps</p>
         <p className="text-sm text-muted-foreground mt-1">
           All controls are at acceptable compliance levels.
@@ -39,10 +39,10 @@ export function CriticalControlsTable({
   }
 
   return (
-    <div className="rounded-2xl border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-edge-2 bg-card p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10">
-          <AlertTriangle className="h-4 w-4 text-red-400" />
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-destructive/20 bg-destructive/10">
+          <AlertTriangle className="h-4 w-4 text-destructive" />
         </div>
         <div>
           <h3 className="text-sm font-semibold text-foreground">Critical Control Gaps</h3>
@@ -61,9 +61,9 @@ export function CriticalControlsTable({
 
 function ControlRow({ control }: { control: CriticalControl }) {
   const statusColors = {
-    critical: 'bg-red-500/10 border-red-500/30 text-red-400',
-    high: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
-    medium: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400',
+    critical: 'bg-destructive/10 border-destructive/30 text-destructive',
+    high: 'bg-warning/10 border-warning/30 text-warning',
+    medium: 'bg-warning/10 border-warning/30 text-warning',
   };
 
   const statusLabels = {
@@ -73,7 +73,7 @@ function ControlRow({ control }: { control: CriticalControl }) {
   };
 
   return (
-    <div className="group rounded-lg border border-edge-2 bg-surface-1 p-4 hover:bg-glass-strong transition-colors">
+    <div className="group rounded-lg border border-edge-2 bg-surface-1 p-4 hover:bg-surface-2 transition-colors">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
@@ -98,7 +98,7 @@ function ControlRow({ control }: { control: CriticalControl }) {
 
           <Link
             href={`/app/compliance?control=${control.controlCode}`}
-            className="p-2 rounded-lg border border-edge-2 hover:bg-glass-strong transition-colors"
+            className="p-2 rounded-lg border border-edge-2 hover:bg-surface-2 transition-colors"
           >
             <ExternalLink className="h-4 w-4 text-muted-foreground" />
           </Link>

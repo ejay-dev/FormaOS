@@ -69,14 +69,14 @@ export function DirectorySyncPanel({
   };
 
   return (
-    <section className="rounded-3xl border border-glass-border bg-glass-subtle p-6 space-y-5">
+    <section className="rounded-3xl border border-border bg-surface-1 p-6 space-y-5">
       <div>
         <h2 className="text-xl font-black text-foreground">Directory Sync</h2>
         <p className="text-sm text-muted-foreground">
           Pull users and groups from Azure AD, Okta, or Google Workspace on demand.
         </p>
         {disabledReason ? (
-          <p className="mt-2 text-sm text-amber-300">{disabledReason}</p>
+          <p className="mt-2 text-sm text-warning">{disabledReason}</p>
         ) : null}
       </div>
 
@@ -89,7 +89,7 @@ export function DirectorySyncPanel({
             value={provider}
             onChange={(event) => setProvider(event.target.value as Props['initialProvider'])}
             disabled={controlsDisabled}
-            className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground"
           >
             <option value="">Select provider</option>
             <option value="azure-ad">Azure AD</option>
@@ -107,7 +107,7 @@ export function DirectorySyncPanel({
             value={intervalMinutes}
             onChange={(event) => setIntervalMinutes(Number(event.target.value || 60))}
             disabled={controlsDisabled}
-            className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground"
           />
         </label>
         <label className="space-y-2 text-sm text-foreground/90">
@@ -119,7 +119,7 @@ export function DirectorySyncPanel({
             onChange={(event) => setConfigText(event.target.value)}
             rows={8}
             disabled={controlsDisabled}
-            className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 font-mono text-xs text-foreground"
+            className="w-full rounded-xl border border-border bg-card px-3 py-2 font-mono text-xs text-foreground"
             placeholder='{"accessToken":"...","tenantId":"..."}'
           />
         </label>
@@ -130,7 +130,7 @@ export function DirectorySyncPanel({
           type="button"
           onClick={() => runSync(true)}
           disabled={controlsDisabled || !provider}
-          className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 disabled:opacity-50"
+          className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
         >
           Save + Sync Now
         </button>
@@ -138,30 +138,30 @@ export function DirectorySyncPanel({
           type="button"
           onClick={() => runSync(false)}
           disabled={controlsDisabled || !provider}
-          className="rounded-xl border border-glass-border bg-glass-subtle px-4 py-2 text-sm font-semibold text-foreground/90 disabled:opacity-50"
+          className="rounded-xl border border-border bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground/90 disabled:opacity-50"
         >
           Run One-Off Sync
         </button>
-        {error ? <span className="text-sm text-rose-300">{error}</span> : null}
-        {message ? <span className="text-sm text-emerald-300">{message}</span> : null}
+        {error ? <span className="text-sm text-destructive">{error}</span> : null}
+        {message ? <span className="text-sm text-success">{message}</span> : null}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+        <div className="rounded-2xl border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold text-foreground">Configured Providers</div>
           <div className="space-y-3 text-sm text-foreground/70">
             {(status.configs ?? []).length === 0 ? (
               <div className="text-muted-foreground/60">No directory sync providers configured yet.</div>
             ) : (
               status.configs.map((config) => (
-                <div key={config.id} className="rounded-xl border border-glass-border bg-glass-subtle p-3">
+                <div key={config.id} className="rounded-xl border border-border bg-surface-1 p-3">
                   <div className="font-semibold text-foreground">{config.provider}</div>
                   <div className="text-xs text-muted-foreground">
                     Interval: {config.interval_minutes} min
                     {config.last_sync_at ? ` • Last sync ${new Date(config.last_sync_at).toLocaleString()}` : ''}
                   </div>
                   {config.last_error ? (
-                    <div className="mt-2 text-xs text-rose-300">{config.last_error}</div>
+                    <div className="mt-2 text-xs text-destructive">{config.last_error}</div>
                   ) : null}
                 </div>
               ))
@@ -169,14 +169,14 @@ export function DirectorySyncPanel({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+        <div className="rounded-2xl border border-border bg-card p-4">
           <div className="mb-3 text-sm font-semibold text-foreground">Recent Sync Runs</div>
           <div className="space-y-3 text-sm text-foreground/70">
             {(status.runs ?? []).length === 0 ? (
               <div className="text-muted-foreground/60">No sync runs yet.</div>
             ) : (
               status.runs.map((run) => (
-                <div key={run.id} className="rounded-xl border border-glass-border bg-glass-subtle p-3">
+                <div key={run.id} className="rounded-xl border border-border bg-surface-1 p-3">
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-semibold text-foreground">{run.provider}</span>
                     <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{run.status}</span>
@@ -185,12 +185,12 @@ export function DirectorySyncPanel({
                     Started {new Date(run.started_at).toLocaleString()}
                   </div>
                   {run.summary ? (
-                    <pre className="mt-2 whitespace-pre-wrap rounded-lg bg-slate-950/70 p-2 text-[11px] text-foreground/70">
+                    <pre className="mt-2 whitespace-pre-wrap rounded-lg bg-card p-2 text-[11px] text-foreground/70">
                       {JSON.stringify(run.summary, null, 2)}
                     </pre>
                   ) : null}
                   {run.error_message ? (
-                    <div className="mt-2 text-xs text-rose-300">{run.error_message}</div>
+                    <div className="mt-2 text-xs text-destructive">{run.error_message}</div>
                   ) : null}
                 </div>
               ))

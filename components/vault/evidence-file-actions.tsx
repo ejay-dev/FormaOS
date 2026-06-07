@@ -93,7 +93,7 @@ export function EvidenceFileActions({
         type="button"
         disabled={!filePath || loading}
         onClick={() => openFile('view')}
-        className="flex-1 py-3 flex items-center justify-center gap-2 rounded-xl bg-glass-strong hover:bg-surface-3 text-xs font-bold text-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex-1 py-3 flex items-center justify-center gap-2 rounded-xl bg-surface-2 hover:bg-surface-3 text-xs font-bold text-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -111,7 +111,7 @@ export function EvidenceFileActions({
         type="button"
         disabled={!filePath || loading}
         onClick={() => openFile('view')}
-        className="p-2 hover:bg-glass-strong text-muted-foreground rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="p-2 hover:bg-surface-2 text-muted-foreground rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         title="Open file"
         aria-label="Open file"
       >
@@ -122,7 +122,7 @@ export function EvidenceFileActions({
         disabled={!filePath || loading}
         onClick={() => openFile('download')}
         data-testid="evidence-download-button"
-        className="p-2 hover:bg-glass-strong rounded-lg text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="p-2 hover:bg-surface-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         title="Download file"
         aria-label="Download file"
       >
@@ -139,7 +139,7 @@ export function EvidenceFileActions({
             disabled={isDeleting}
             onClick={() => setConfirmOpen(true)}
             data-testid="evidence-delete-button"
-            className="p-2 hover:bg-rose-500/20 rounded-lg text-muted-foreground hover:text-rose-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 hover:bg-destructive/10 rounded-lg text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title="Delete evidence"
             aria-label="Delete evidence"
           >

@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, ListChecks } from 'lucide-react';
 
 import { useOnboarding } from '@/lib/onboarding/onboarding-context';
 import type { FirstSessionStepId } from '@/lib/onboarding/first-session';
@@ -44,7 +44,7 @@ export function OnboardingBanner({
     >
       <div className="flex items-start gap-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-primary/30 bg-primary/10">
-          <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
+          <ListChecks className="h-4 w-4 text-primary" aria-hidden="true" />
         </div>
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">

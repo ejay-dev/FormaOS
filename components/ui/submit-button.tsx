@@ -57,19 +57,19 @@ export function SubmitButton({
 
   const variantClasses: Record<SubmitButtonVariant, string> = {
     primary: cn(
-      "bg-[hsl(var(--card))] text-white",
-      "hover:brightness-110",
+      "bg-primary text-primary-foreground",
+      "hover:bg-primary/90",
       "shadow-xl",
       "disabled:opacity-70"
     ),
     secondary: cn(
       "bg-transparent text-foreground/90 border border-edge-2",
-      "hover:bg-glass-subtle hover:border-glass-border-strong",
+      "hover:bg-surface-1 hover:border-border",
       "disabled:opacity-60"
     ),
     danger: cn(
-      "bg-rose-500/20 text-rose-300 border border-rose-400/30",
-      "hover:bg-rose-500/30",
+      "bg-destructive/10 text-destructive border border-destructive/20",
+      "hover:bg-destructive/20",
       "disabled:opacity-60"
     ),
     ghost: cn(
@@ -85,12 +85,13 @@ export function SubmitButton({
       disabled={isDisabled}
       className={cn(
         // Base styles
-        "rounded-2xl font-black uppercase tracking-[0.2em]",
+        "rounded-2xl font-semibold normal-case",
         "flex items-center justify-center gap-3",
         "transition-all duration-200",
         "motion-safe:active:scale-95 disabled:active:scale-100",
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "group",
-        
+
         // Width
         fullWidth && "w-full",
         
@@ -142,8 +143,8 @@ export function AdminActionButton({
   const isDisabled = disabled || pending
 
   const variantClasses: Record<string, string> = {
-    secondary: "border-glass-border text-foreground/90 hover:bg-surface-1",
-    danger: "border-rose-400/30 text-rose-300 hover:bg-rose-500/20",
+    secondary: "border-border text-foreground/90 hover:bg-surface-1",
+    danger: "border-destructive/20 text-destructive hover:bg-destructive/10",
   }
 
   return (
@@ -153,6 +154,7 @@ export function AdminActionButton({
       className={cn(
         "rounded-lg border px-3 py-1.5 text-xs font-bold",
         "transition-all duration-200",
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "motion-safe:active:scale-95 disabled:active:scale-100",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         "flex items-center gap-2",
@@ -188,10 +190,11 @@ export function SaveButton({ className, disabled = false }: SaveButtonProps) {
       type="submit"
       disabled={isDisabled}
       className={cn(
-        "w-full bg-glass-subtle text-foreground py-4 rounded-2xl",
-        "font-black text-xs uppercase tracking-[0.2em]",
+        "w-full bg-surface-1 text-foreground py-4 rounded-2xl",
+        "font-semibold text-xs normal-case",
         "flex items-center justify-center gap-3",
-        "hover:bg-glass-strong transition-all shadow-xl",
+        "hover:bg-surface-2 transition-all shadow-xl",
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "motion-safe:active:scale-95 disabled:active:scale-100",
         "disabled:opacity-60 disabled:cursor-not-allowed",
         "relative z-10 group/btn",

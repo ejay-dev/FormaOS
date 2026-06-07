@@ -141,25 +141,25 @@ export default async function UsageAnalyticsPage() {
             label: 'Total Orgs',
             value: totalOrgs,
             icon: Users,
-            color: 'text-blue-600 dark:text-blue-400',
+            color: 'text-muted-foreground',
           },
           {
             label: 'Avg Engagement',
             value: `${avgEngagement}%`,
             icon: TrendingUp,
-            color: 'text-green-600 dark:text-green-400',
+            color: 'text-muted-foreground',
           },
           {
             label: 'At Risk',
             value: churnOrgs.filter((o) => o.riskScore > 50).length,
             icon: AlertTriangle,
-            color: 'text-red-600 dark:text-red-400',
+            color: 'text-destructive',
           },
           {
             label: 'Trial → Paid',
             value: `${funnelData.subscribed}/${funnelData.signedUp}`,
             icon: BarChart3,
-            color: 'text-purple-600 dark:text-purple-400',
+            color: 'text-muted-foreground',
           },
         ].map((card) => (
           <div

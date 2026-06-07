@@ -24,7 +24,7 @@ interface PromptTemplateSelectorProps {
 
 export function PromptTemplateSelector({ selectedId, onSelect }: PromptTemplateSelectorProps) {
   return (
-    <div className="border-b border-glass-border px-4 py-3">
+    <div className="border-b border-border px-4 py-3">
       <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
         {PROMPT_TEMPLATES.map((template) => {
           const Icon = ICON_MAP[template.icon] ?? MessageSquare;
@@ -37,8 +37,8 @@ export function PromptTemplateSelector({ selectedId, onSelect }: PromptTemplateS
               title={template.description}
               className={`flex shrink-0 min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
                 isActive
-                  ? 'border-cyan-400/40 bg-cyan-400/15 text-cyan-300'
-                  : 'border-glass-border bg-glass-subtle text-muted-foreground hover:bg-glass-strong hover:text-foreground/70'
+                  ? 'border-primary/40 bg-primary/15 text-primary'
+                  : 'border-border bg-surface-1 text-muted-foreground hover:bg-surface-2 hover:text-foreground/70'
               }`}
             >
               <Icon className="h-3.5 w-3.5" />

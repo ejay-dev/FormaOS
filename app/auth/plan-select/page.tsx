@@ -59,23 +59,23 @@ export default function PlanSelectPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] text-slate-100 p-6">
-      <div className="w-full max-w-4xl rounded-2xl border border-edge-2 bg-surface-1 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-background text-foreground p-6">
+      <div className="w-full max-w-4xl rounded-2xl border border-border bg-card p-8">
         <h2 className="text-2xl font-semibold mb-4">Choose a plan</h2>
-        <p className="text-sm text-slate-400 mb-6">Select a plan to continue into the app.</p>
+        <p className="text-sm text-muted-foreground mb-6">Select a plan to continue into the app.</p>
 
-        {error && <div className="mb-4 text-rose-300">{error}</div>}
+        {error && <div className="mb-4 text-destructive">{error}</div>}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.values(PLAN_CATALOG).map((p) => (
-            <div key={p.key} className={`rounded-lg border p-4 ${selected === p.key ? "border-sky-400" : "border-edge-2"}`}>
+            <div key={p.key} className={`rounded-lg border p-4 ${selected === p.key ? "border-primary" : "border-border"}`}>
               <h3 className="font-semibold">{p.name}</h3>
-              <p className="text-sm text-slate-400">{p.summary}</p>
+              <p className="text-sm text-muted-foreground">{p.summary}</p>
               <div className="mt-4">
                 <button
                   onClick={() => selectPlan(p.key)}
                   disabled={isLoading}
-                  className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold"
+                  className="rounded-md bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Choose {p.name}
                 </button>

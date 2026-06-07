@@ -106,19 +106,19 @@ function ActivationMilestones({
           {Array.from({ length: 4 }).map((_, idx) => (
             <div
               key={`loading-${idx}`}
-              className="h-16 animate-pulse rounded-xl border border-glass-border bg-surface-1"
+              className="h-16 animate-pulse rounded-xl border border-border bg-surface-1"
             />
           ))}
         </div>
       ) : (
         <>
-          <div className="mb-4 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-cyan-200">
+          <div className="mb-4 rounded-xl border border-border bg-surface-2 px-4 py-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Time-To-First-Proof Tracker
             </p>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-glass-strong">
+            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface-1">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-zinc-700 to-zinc-900"
+                className="h-full rounded-full bg-primary"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -132,14 +132,14 @@ function ActivationMilestones({
               <Link
                 key={milestone.id}
                 href={milestone.href}
-                className="group flex items-start justify-between gap-3 rounded-xl border border-glass-border bg-glass-subtle px-4 py-3 transition-colors hover:bg-glass-strong"
+                className="group flex items-start justify-between gap-3 rounded-xl border border-border bg-surface-1 px-4 py-3 transition-colors hover:bg-surface-2"
               >
                 <div className="flex items-start gap-3">
                   <span
                     className={`mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full border ${
                       milestone.done
-                        ? 'border-emerald-400/40 bg-emerald-500/20 text-emerald-200'
-                        : 'border-slate-500/40 bg-slate-700/20 text-foreground/70'
+                        ? 'border-success/20 bg-success/10 text-success'
+                        : 'border-border bg-surface-2 text-foreground/70'
                     }`}
                   >
                     <CheckCircle2 className="h-3.5 w-3.5" />
@@ -498,7 +498,7 @@ export function EmployerDashboard({
       {industry && industry !== 'other' && (
         <>
           {countsError ? (
-            <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-sm text-amber-400">
+            <div className="rounded-xl border border-warning/20 bg-warning/10 p-4 text-sm text-warning">
               {countsError}. Refresh the page to try again.
             </div>
           ) : (

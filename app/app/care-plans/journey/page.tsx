@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { LayoutList, HeartPulse, Plus, Radio } from 'lucide-react';
+import { LayoutList, HeartPulse, Plus, GripVertical } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SkeletonCard } from '@/components/ui/skeleton';
@@ -76,7 +76,7 @@ async function CarePlansJourney({ orgId }: { orgId: string }) {
   if (plans.length === 0) {
     return (
       <div className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-sm rounded-xl border border-glass-border bg-glass-subtle p-6 text-center">
+        <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6 text-center">
           <HeartPulse className="mx-auto h-5 w-5 text-muted-foreground" />
           <div className="mt-3 text-sm font-semibold">No care plans yet</div>
           <p className="mt-1 text-xs text-muted-foreground">
@@ -179,23 +179,27 @@ async function CarePlansJourney({ orgId }: { orgId: string }) {
             active
           </span>
           {reviewDueSoon > 0 && (
-            <span className="text-amber-400">{reviewDueSoon} due 14d</span>
+            <span className="text-warning tabular-nums">
+              {reviewDueSoon} due 14d
+            </span>
           )}
           {overdue > 0 && (
-            <span className="text-red-400">{overdue} overdue</span>
+            <span className="text-destructive tabular-nums">
+              {overdue} overdue
+            </span>
           )}
         </span>
         <span
-          className="hidden items-center gap-1 text-[10px] uppercase tracking-wider text-emerald-400/80 sm:inline-flex"
-          title="Live — drag cards to update status"
+          className="hidden items-center gap-1.5 text-[11px] text-muted-foreground sm:inline-flex"
+          title="Drag cards to update status"
         >
-          <Radio className="h-3 w-3 animate-pulse" />
-          Live
+          <GripVertical className="h-3 w-3" aria-hidden="true" />
+          Drag to update
         </span>
         <div className="ml-auto flex items-center gap-1.5">
           <Link
             href="/app/care-plans"
-            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1 rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-glass-strong hover:text-foreground"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <LayoutList className="h-3 w-3" />
             List

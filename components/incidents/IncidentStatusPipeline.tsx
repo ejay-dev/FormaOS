@@ -42,8 +42,8 @@ function PipelineInner({
         const isBlocked = step.id === blockedStep;
         const _isFuture = idx > currentIdx;
 
-        let dotColor = 'border-glass-border text-muted-foreground/40';
-        let lineColor = 'bg-glass-border';
+        let dotColor = 'border-border text-muted-foreground/40';
+        let lineColor = 'bg-border';
         let labelColor = 'text-muted-foreground/60';
 
         if (isComplete) {
@@ -88,7 +88,7 @@ function PipelineInner({
             {/* Connector line */}
             {idx < STEPS.length - 1 && (
               <div
-                className={`h-0.5 w-8 sm:w-12 mx-1 rounded-full transition-all ${isComplete ? lineColor : 'bg-glass-border'}`}
+                className={`h-0.5 w-8 sm:w-12 mx-1 rounded-full transition-all ${isComplete ? lineColor : 'bg-border'}`}
               />
             )}
           </div>
@@ -105,7 +105,7 @@ function PipelineInner({
 export function IncidentStatusPipeline(props: IncidentStatusPipelineProps) {
   return (
     <ErrorBoundary name="IncidentStatusPipeline" level="component">
-      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+      <div className="rounded-xl border border-border bg-surface-1 p-4">
         <PipelineInner {...props} />
       </div>
     </ErrorBoundary>

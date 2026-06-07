@@ -25,7 +25,7 @@ export function IntegrationCard(props: IntegrationCardProps) {
         : 'outline';
 
   return (
-    <Card className="rounded-[2rem] border border-glass-border bg-surface-1">
+    <Card className="rounded-[2rem] border border-border bg-surface-1">
       <CardHeader className="gap-3">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -52,16 +52,16 @@ export function IntegrationCard(props: IntegrationCardProps) {
           {props.capabilities.map((capability) => (
             <span
               key={capability}
-              className="rounded-full border border-glass-border bg-glass-subtle px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-foreground/70"
+              className="rounded-full border border-border bg-surface-1 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-foreground/70"
             >
               {capability}
             </span>
           ))}
         </div>
 
-        <div className="grid gap-3 rounded-2xl border border-glass-border bg-slate-950/50 p-4 text-sm text-muted-foreground md:grid-cols-2">
+        <div className="grid gap-3 rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground md:grid-cols-2">
           <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-cyan-300" />
+            <Activity className="h-4 w-4 text-muted-foreground" />
             <span>
               State:{' '}
               <span className="font-semibold text-foreground/90">
@@ -70,7 +70,7 @@ export function IntegrationCard(props: IntegrationCardProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Clock3 className="h-4 w-4 text-cyan-300" />
+            <Clock3 className="h-4 w-4 text-muted-foreground" />
             <span>
               Last sync:{' '}
               <span className="font-semibold text-foreground/90">
@@ -80,7 +80,7 @@ export function IntegrationCard(props: IntegrationCardProps) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="justify-between border-t border-glass-border pt-4">
+      <CardFooter className="justify-between border-t border-border pt-4">
         <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/60">
           Provider key: {props.id}
         </span>

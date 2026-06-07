@@ -4,7 +4,7 @@ export default function NotificationSettingsLoading() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       <header className="space-y-3">
-        <p className="text-xs font-black uppercase tracking-[0.26em] text-sky-200">
+        <p className="text-xs font-black uppercase tracking-[0.26em] text-muted-foreground">
           Notifications
         </p>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground/70">

@@ -23,8 +23,9 @@ const badgeVariants = cva(
           "border-transparent bg-warning/15 text-warning border-warning/20 [a&]:hover:bg-warning/25",
         info:
           "border-transparent bg-info/15 text-info border-info/20 [a&]:hover:bg-info/25",
+        // `glass` retired to a flat neutral surface (monochrome brand) — no glassmorphism/blur.
         glass:
-          "bg-glass-subtle border-glass-border text-foreground backdrop-blur-sm [a&]:hover:bg-glass-strong",
+          "bg-surface-1 border-border text-foreground [a&]:hover:bg-surface-2",
       },
     },
     defaultVariants: {

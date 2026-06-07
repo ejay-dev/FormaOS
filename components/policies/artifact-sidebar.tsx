@@ -18,8 +18,8 @@ import { useComplianceAction } from '@/components/compliance-system';
 /**
  * =========================================================
  * ARTIFACT SIDEBAR
- * Node Type: Evidence (violet) linking to Policy (cyan)
- * Wire: Policy ← Evidence (dashed violet)
+ * Node Type: Evidence linking to Policy
+ * Wire: Policy ← Evidence
  * =========================================================
  *
  * This component manages the evidence → policy relationship.
@@ -89,24 +89,24 @@ export function ArtifactSidebar({
   );
 
   return (
-    <div className="bg-glass-subtle border border-glass-border rounded-[2rem] p-6 shadow-sm space-y-8 md:sticky md:top-6">
+    <div className="bg-surface-1 border border-border rounded-[2rem] p-6 shadow-sm space-y-8 md:sticky md:top-6">
       {/* SECTION 1: LINKED EVIDENCE */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-2">
-            <LinkIcon className="h-3 w-3 text-violet-400" />
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+            <LinkIcon className="h-3 w-3 text-muted-foreground" />
             <span>Linked Evidence</span>
           </h3>
-          <span className="px-2 py-0.5 bg-violet-400/10 text-violet-300 rounded text-xs font-bold border border-violet-400/30 min-w-[20px] text-center">
+          <span className="px-2 py-0.5 bg-muted text-foreground rounded text-xs font-bold border border-border min-w-[20px] text-center tabular-nums">
             {(linkedArtifacts || []).length}
           </span>
         </div>
 
         <div className="space-y-2">
           {(linkedArtifacts || []).length === 0 ? (
-            <div className="p-6 border-2 border-dashed border-violet-400/20 rounded-2xl text-center bg-violet-400/5">
-              <Paperclip className="h-5 w-5 text-violet-400/50 mx-auto mb-2" />
-              <p className="text-xs text-violet-300/70 font-bold uppercase">
+            <div className="p-6 border-2 border-dashed border-border rounded-2xl text-center bg-muted">
+              <Paperclip className="h-5 w-5 text-muted-foreground mx-auto mb-2" />
+              <p className="text-xs text-muted-foreground font-bold uppercase">
                 No Evidence Linked
               </p>
               <p className="text-[9px] text-muted-foreground mt-1">
@@ -127,11 +127,11 @@ export function ArtifactSidebar({
                 <Link
                   key={file.id}
                   href={`/app/evidence?evidenceId=${file.id}`}
-                  className="group flex items-center justify-between p-3 bg-violet-400/5 rounded-xl border border-violet-400/20 hover:border-violet-400/40 hover:bg-violet-400/10 transition-all shadow-sm"
+                  className="group flex items-center justify-between p-3 bg-surface-1 rounded-xl border border-border hover:border-edge-2 hover:bg-surface-2 transition-all shadow-sm"
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
                     {/* Evidence node indicator */}
-                    <div className="h-8 w-8 rounded-full bg-violet-500/20 flex items-center justify-center shrink-0 text-violet-400 border border-violet-400/30">
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0 text-muted-foreground border border-border">
                       <FileText className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col min-w-0">
@@ -143,7 +143,7 @@ export function ArtifactSidebar({
                       </span>
                     </div>
                   </div>
-                  <ExternalLink className="h-3 w-3 text-violet-400 group-hover:text-violet-300 shrink-0 transition-colors" />
+                  <ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-foreground shrink-0 transition-colors" />
                 </Link>
               );
             })
@@ -153,7 +153,7 @@ export function ArtifactSidebar({
 
       {/* SECTION 2: VAULT BROWSER */}
       {!readOnly && (
-        <div className="pt-6 border-t border-glass-border space-y-4">
+        <div className="pt-6 border-t border-border space-y-4">
           <div className="flex items-center justify-between">
             <h4 className="text-xs font-black text-muted-foreground uppercase tracking-widest">
               Vault Browser
@@ -179,7 +179,7 @@ export function ArtifactSidebar({
                     key={item.id}
                     disabled={!!isLinking}
                     onClick={() => handleLink(item.id, itemName)}
-                    className="w-full flex items-center justify-between p-2 rounded-xl border border-transparent hover:border-violet-400/30 hover:bg-violet-400/10 transition-all text-left group disabled:opacity-50 motion-safe:active:scale-[0.98]"
+                    className="w-full flex items-center justify-between p-2 rounded-xl border border-transparent hover:border-edge-2 hover:bg-surface-2 transition-all text-left group disabled:opacity-50 motion-safe:active:scale-[0.98]"
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
                       <div
@@ -187,16 +187,16 @@ export function ArtifactSidebar({
                           wasJustLinked
                             ? 'bg-emerald-400/20 border-emerald-400/40'
                             : isCurrentlyLinking
-                              ? 'bg-violet-400/20 border-violet-400/40'
-                              : 'bg-glass-subtle border-glass-border group-hover:bg-violet-400/10 group-hover:border-violet-400/30'
+                              ? 'bg-primary/10 border-primary/30'
+                              : 'bg-surface-1 border-border group-hover:bg-surface-2 group-hover:border-edge-2'
                         }`}
                       >
                         {wasJustLinked ? (
                           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                         ) : isCurrentlyLinking ? (
-                          <Loader2 className="h-3.5 w-3.5 text-violet-400 animate-spin" />
+                          <Loader2 className="h-3.5 w-3.5 text-muted-foreground animate-spin" />
                         ) : (
-                          <Plus className="h-3.5 w-3.5 text-muted-foreground group-hover:text-violet-300 transition-colors" />
+                          <Plus className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
                         )}
                       </div>
                       <span
@@ -218,15 +218,14 @@ export function ArtifactSidebar({
       )}
 
       {/* INFO CARD - Updated with node language */}
-      <div className="relative overflow-hidden rounded-[1.25rem] p-5 text-white shadow-xl bg-gradient-to-br from-zinc-700 to-zinc-900 border border-white/10">
-        <div className="absolute top-0 right-0 w-24 h-24 bg-glass-strong rounded-full blur-2xl -mr-12 -mt-12" />
+      <div className="relative overflow-hidden rounded-[1.25rem] p-5 text-foreground shadow-sm bg-card border border-border">
         <div className="flex items-center gap-2 mb-3 relative z-10">
-          <ShieldCheck className="h-4 w-4 text-emerald-400" />
-          <span className="text-xs font-black uppercase tracking-widest text-emerald-200">
+          <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+          <span className="text-xs font-semibold uppercase tracking-widest text-foreground">
             Graph Defensibility
           </span>
         </div>
-        <p className="text-xs text-white/70 leading-relaxed relative z-10">
+        <p className="text-xs text-muted-foreground leading-relaxed relative z-10">
           Each linked artifact creates a wire in your compliance graph. Auditors
           trace these connections to verify implementation.
         </p>

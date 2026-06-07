@@ -123,40 +123,40 @@ const STATE_COLORS: Record<
   }
 > = {
   locked: {
-    border: 'border-slate-600/50',
-    bg: 'bg-slate-800/50',
+    border: 'border-edge-2',
+    bg: 'bg-surface-1',
     text: 'text-muted-foreground/60',
     glow: '',
   },
   activating: {
-    border: 'border-cyan-400/50',
-    bg: 'bg-cyan-500/10',
-    text: 'text-cyan-400',
+    border: 'border-info/40',
+    bg: 'bg-info/10',
+    text: 'text-info',
     glow: 'shadow-lg',
   },
   active: {
-    border: 'border-emerald-400/50',
-    bg: 'bg-emerald-500/10',
-    text: 'text-emerald-400',
-    glow: 'shadow-[0_0_15px_rgba(52,211,153,0.2)]',
+    border: 'border-success/40',
+    bg: 'bg-success/10',
+    text: 'text-success',
+    glow: 'shadow-lg',
   },
   restricted: {
-    border: 'border-amber-400/50',
-    bg: 'bg-amber-500/10',
-    text: 'text-amber-400',
-    glow: 'shadow-[0_0_15px_rgba(245,158,11,0.2)]',
+    border: 'border-warning/40',
+    bg: 'bg-warning/10',
+    text: 'text-warning',
+    glow: 'shadow-lg',
   },
   error: {
-    border: 'border-red-400/50',
-    bg: 'bg-red-500/10',
-    text: 'text-red-400',
-    glow: 'shadow-[0_0_15px_rgba(239,68,68,0.3)]',
+    border: 'border-destructive/40',
+    bg: 'bg-destructive/10',
+    text: 'text-destructive',
+    glow: 'shadow-lg',
   },
   processing: {
-    border: 'border-violet-400/50',
-    bg: 'bg-violet-500/10',
-    text: 'text-violet-400',
-    glow: 'shadow-[0_0_20px_rgba(139,92,246,0.3)]',
+    border: 'border-info/40',
+    bg: 'bg-info/10',
+    text: 'text-info',
+    glow: 'shadow-lg',
   },
 };
 
@@ -202,7 +202,7 @@ function ModuleNode({
     >
       {/* Lock overlay for locked modules */}
       {state === 'locked' && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/60 rounded-2xl backdrop-blur-[1px]">
+        <div className="absolute inset-0 flex items-center justify-center bg-card/80 rounded-2xl">
           <Lock className="h-6 w-6 text-muted-foreground/60" />
         </div>
       )}
@@ -210,13 +210,13 @@ function ModuleNode({
       {/* State indicator */}
       <div className="absolute -top-1 -right-1">
         {state === 'active' && (
-          <div className="h-3 w-3 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+          <div className="h-3 w-3 rounded-full bg-success" />
         )}
         {state === 'restricted' && (
-          <div className="h-3 w-3 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+          <div className="h-3 w-3 rounded-full bg-warning" />
         )}
         {state === 'error' && (
-          <div className="h-3 w-3 rounded-full bg-red-400 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+          <div className="h-3 w-3 rounded-full bg-destructive" />
         )}
       </div>
 
@@ -239,7 +239,7 @@ function ModuleNode({
       {/* Hover tooltip for locked modules */}
       {state === 'locked' && (
         <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-          <div className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-xs text-foreground/70 whitespace-nowrap">
+          <div className="px-3 py-1.5 bg-popover border border-border rounded-lg text-xs text-foreground/70 whitespace-nowrap">
             Upgrade to unlock
           </div>
         </div>
@@ -331,7 +331,7 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
       {/* Current Plan Indicator */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-white">System Modules</h3>
+          <h3 className="text-lg font-bold text-foreground">System Modules</h3>
           <p className="text-sm text-muted-foreground">
             {enabledModules.length} modules enabled on {plan} plan
           </p>
@@ -340,13 +340,13 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
           className={cn(
             'px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider',
             plan === 'enterprise' &&
-              'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-300 border border-violet-400/30',
+              'bg-primary/10 text-primary border border-primary/30',
             plan === 'pro' &&
-              'bg-gradient-to-r from-cyan-500/20 to-teal-500/20 text-cyan-300 border border-cyan-400/30',
+              'bg-surface-2 text-foreground border border-border',
             plan === 'basic' &&
-              'bg-gradient-to-r from-zinc-600/20 to-zinc-800/20 text-zinc-300 border border-zinc-500/30',
+              'bg-surface-1 text-muted-foreground border border-border',
             plan === 'trial' &&
-              'bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-400/30',
+              'bg-warning/10 text-warning border border-warning/20',
           )}
         >
           {plan}
@@ -422,7 +422,7 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
       {/* Status Summary */}
       <div className="flex items-center gap-6 pt-4 border-t border-edge-1">
         <div className="flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+          <CheckCircle2 className="h-4 w-4 text-success" />
           <span className="text-xs text-muted-foreground">
             {enabledModules.length} Active
           </span>
@@ -434,7 +434,7 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <AlertTriangle className="h-4 w-4 text-amber-400" />
+          <AlertTriangle className="h-4 w-4 text-warning" />
           <span className="text-xs text-muted-foreground">
             {plan === 'trial' ? 'Trial limits apply' : 'Full access'}
           </span>

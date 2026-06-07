@@ -54,15 +54,15 @@ function SheetContent({
         data-slot="sheet-content"
         style={{ zIndex: 'var(--z-modal)' }}
         className={cn(
-          "fixed flex flex-col gap-4 bg-glass-strong shadow-xl transition ease-in-out overflow-y-auto",
+          "fixed flex flex-col gap-4 bg-popover text-popover-foreground shadow-xl transition ease-in-out overflow-y-auto",
           side === "right" &&
-            "inset-y-0 right-0 h-full w-[90vw] max-w-[360px] border-l border-glass-border sm:w-3/4 sm:max-w-sm",
+            "inset-y-0 right-0 h-full w-[90vw] max-w-[360px] border-l border-border sm:w-3/4 sm:max-w-sm",
           side === "left" &&
-            "inset-y-0 left-0 h-full w-[90vw] max-w-[360px] border-r border-glass-border sm:w-3/4 sm:max-w-sm",
+            "inset-y-0 left-0 h-full w-[90vw] max-w-[360px] border-r border-border sm:w-3/4 sm:max-w-sm",
           side === "top" &&
             "inset-x-0 top-0 h-auto max-h-[90vh] border-b border-border",
           side === "bottom" &&
-            "inset-x-0 bottom-0 h-auto max-h-[90vh] border-t border-glass-border rounded-t-2xl",
+            "inset-x-0 bottom-0 h-auto max-h-[90vh] border-t border-border rounded-t-2xl",
           className
         )}
         {...props}

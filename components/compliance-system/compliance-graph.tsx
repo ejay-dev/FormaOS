@@ -238,10 +238,10 @@ function LifecycleGraph({
 
         {/* Loop back indicator */}
         <div className="relative ml-2">
-          <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 border-r-2 border-t-2 border-emerald-400/60 rounded-tr-xl" />
-          <div className="absolute -left-4 bottom-0 w-8 h-12 border-r-2 border-b-2 border-emerald-400/60 rounded-br-xl" />
+          <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 border-r-2 border-t-2 border-success/60 rounded-tr-xl" />
+          <div className="absolute -left-4 bottom-0 w-8 h-12 border-r-2 border-b-2 border-success/60 rounded-br-xl" />
           <div
-            className="absolute -left-20 bottom-0 w-16 border-b-2 border-emerald-400/60"
+            className="absolute -left-20 bottom-0 w-16 border-b-2 border-success/60"
             style={{ borderStyle: 'dashed' }}
           />
         </div>
@@ -299,13 +299,13 @@ export function LifecycleMini({
   ];
 
   const colors: Record<NodeType, string> = {
-    policy: 'bg-cyan-400',
-    control: 'bg-teal-400',
-    evidence: 'bg-violet-400',
-    audit: 'bg-amber-400',
-    risk: 'bg-rose-400',
-    task: 'bg-emerald-400',
-    entity: 'bg-slate-400',
+    policy: 'bg-foreground',
+    control: 'bg-foreground/70',
+    evidence: 'bg-muted-foreground',
+    audit: 'bg-warning',
+    risk: 'bg-destructive',
+    task: 'bg-success',
+    entity: 'bg-muted-foreground/60',
   };
 
   return (
@@ -324,8 +324,8 @@ export function LifecycleMini({
               className={cn(
                 'h-px w-2',
                 activeTypes.includes(type) && activeTypes.includes(types[i + 1])
-                  ? 'bg-white/40'
-                  : 'bg-glass-strong',
+                  ? 'bg-foreground/40'
+                  : 'bg-surface-2',
               )}
             />
           )}

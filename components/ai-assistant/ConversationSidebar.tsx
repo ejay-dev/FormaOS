@@ -84,11 +84,11 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
   };
 
   return (
-    <div className="flex h-full w-56 shrink-0 flex-col border-r border-glass-border bg-black/20">
-      <div className="border-b border-glass-border p-3">
+    <div className="flex h-full w-56 shrink-0 flex-col border-r border-border bg-surface-1">
+      <div className="border-b border-border p-3">
         <button
           onClick={onNew}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-glass-border bg-glass-subtle px-3 py-2 text-xs font-medium text-foreground/70 hover:bg-glass-strong transition-colors"
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-surface-2 px-3 py-2 text-xs font-medium text-foreground/70 hover:bg-surface-3 transition-colors"
         >
           <Plus className="h-3.5 w-3.5" />
           New Chat
@@ -99,7 +99,7 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
         {isLoading ? (
           <div className="space-y-2 p-2">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-10 rounded-lg bg-glass-subtle animate-pulse" />
+              <div key={i} className="h-10 rounded-lg bg-surface-2 animate-pulse" />
             ))}
           </div>
         ) : conversations.length === 0 ? (
@@ -113,8 +113,8 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
               onClick={() => onSelect(conv.id)}
               className={`group flex w-full items-start gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
                 activeId === conv.id
-                  ? 'bg-cyan-400/10 border border-cyan-400/20'
-                  : 'hover:bg-glass-subtle border border-transparent'
+                  ? 'bg-primary/10 border border-primary/20'
+                  : 'hover:bg-surface-2 border border-transparent'
               }`}
             >
               <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/60" />
@@ -128,9 +128,9 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
               </div>
               <button
                 onClick={(e) => handleDelete(e, conv.id)}
-                className="shrink-0 rounded p-0.5 opacity-0 hover:bg-rose-400/20 group-hover:opacity-100 transition-opacity"
+                className="shrink-0 rounded p-0.5 opacity-0 hover:bg-destructive/20 group-hover:opacity-100 transition-opacity"
               >
-                <Trash2 className="h-3 w-3 text-rose-400" />
+                <Trash2 className="h-3 w-3 text-destructive" />
               </button>
             </button>
           ))

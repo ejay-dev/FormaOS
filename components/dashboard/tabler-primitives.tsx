@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useId } from 'react';
 import {
   ChevronRight,
   Minus,
@@ -14,35 +13,25 @@ import { cn } from '@/lib/utils';
 type Tone = 'blue' | 'emerald' | 'amber' | 'rose' | 'slate';
 export type TrendDirection = 'up' | 'down' | 'flat';
 
-const tileBg: Record<Tone, string> = {
-  blue: 'bg-[hsl(var(--app-primary))]',
-  emerald: 'bg-emerald-500',
-  amber: 'bg-amber-500',
-  rose: 'bg-rose-500',
-  slate: 'bg-slate-500',
-};
-
-const tileRing: Record<Tone, string> = {
-  blue: 'ring-[hsl(var(--app-primary))]/15',
-  emerald: 'ring-emerald-500/15',
-  amber: 'ring-amber-500/15',
-  rose: 'ring-rose-500/15',
-  slate: 'ring-slate-500/15',
-};
-
+// IconTileStat now uses one neutral tile treatment regardless of tone —
+// the decorative coloured square + tinted ring halo is retired.
 const directionColor: Record<
   TrendDirection,
   { text: string; stroke: string; icon: LucideIcon }
 > = {
   up: {
-    text: 'text-emerald-500',
-    stroke: 'hsl(142 71% 45%)',
+    text: 'text-success',
+    stroke: 'hsl(var(--success))',
     icon: TrendingUp,
   },
-  down: { text: 'text-rose-500', stroke: 'hsl(0 72% 51%)', icon: TrendingDown },
+  down: {
+    text: 'text-destructive',
+    stroke: 'hsl(var(--destructive))',
+    icon: TrendingDown,
+  },
   flat: {
     text: 'text-muted-foreground',
-    stroke: 'hsl(var(--app-primary))',
+    stroke: 'hsl(var(--muted-foreground))',
     icon: Minus,
   },
 };
@@ -50,11 +39,10 @@ const directionColor: Record<
 const CARD_BASE =
   'rounded-lg border border-border bg-[hsl(var(--card))] transition-all';
 
-const CARD_HOVER =
-  'hover:-translate-y-[1px] hover:border-[hsl(var(--app-primary))]/40 hover:shadow-[0_1px_0_rgba(255,255,255,0.04),0_8px_24px_-12px_rgba(0,0,0,0.45)]';
+const CARD_HOVER = 'hover:border-edge-2 hover:bg-surface-1';
 
 const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--app-primary))]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--background))]';
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--background))]';
 
 // ---------- Sparkline ----------
 
@@ -72,13 +60,11 @@ export function Sparkline({
   data,
   direction = 'flat',
   stroke,
-  fill = true,
+  fill: _fill = true,
   height = 40,
   className,
   ariaLabel,
 }: SparklineProps) {
-  const gradId = useId();
-
   if (!data || data.length < 2) {
     return (
       <div
@@ -106,7 +92,6 @@ export function Sparkline({
     .map(({ x, y }, i) => `${i === 0 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`)
     .join(' ');
 
-  const areaPath = `${linePath} L${W.toFixed(2)},${H} L0,${H} Z`;
   const last = coords[coords.length - 1];
 
   return (
@@ -118,22 +103,11 @@ export function Sparkline({
       role="img"
       aria-label={ariaLabel ?? 'Trend'}
     >
-      {fill && (
-        <>
-          <defs>
-            <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity="0.28" />
-              <stop offset="100%" stopColor={color} stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <path d={areaPath} fill={`url(#${gradId})`} />
-        </>
-      )}
       <path
         d={linePath}
         fill="none"
         stroke={color}
-        strokeWidth={1.75}
+        strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
@@ -143,13 +117,6 @@ export function Sparkline({
         cy={last.y.toFixed(2)}
         r={2.25}
         fill={color}
-      />
-      <circle
-        cx={last.x.toFixed(2)}
-        cy={last.y.toFixed(2)}
-        r={5}
-        fill={color}
-        opacity={0.15}
       />
     </svg>
   );
@@ -268,10 +235,10 @@ interface GaugeCardProps {
 
 function gaugeTone(value: number): { stroke: string; text: string } {
   if (value >= 85)
-    return { stroke: 'hsl(142 71% 45%)', text: 'text-emerald-500' };
+    return { stroke: 'hsl(var(--success))', text: 'text-success' };
   if (value >= 70)
-    return { stroke: 'hsl(38 92% 50%)', text: 'text-amber-500' };
-  return { stroke: 'hsl(0 72% 51%)', text: 'text-rose-500' };
+    return { stroke: 'hsl(var(--warning))', text: 'text-warning' };
+  return { stroke: 'hsl(var(--destructive))', text: 'text-destructive' };
 }
 
 export function GaugeCard({
@@ -408,7 +375,7 @@ export function IconTileStat({
   label,
   sublabel,
   delta,
-  tone = 'blue',
+  tone: _tone = 'blue',
   href,
   className,
 }: IconTileStatProps) {
@@ -421,13 +388,7 @@ export function IconTileStat({
         className,
       )}
     >
-      <div
-        className={cn(
-          'flex h-10 w-10 shrink-0 items-center justify-center rounded-md text-white ring-4',
-          tileBg[tone],
-          tileRing[tone],
-        )}
-      >
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border bg-surface-1 text-muted-foreground">
         <Icon className="h-5 w-5" />
       </div>
       <div className="min-w-0 flex-1">
@@ -463,11 +424,11 @@ export function IconTileStat({
 // No icon block, no gradient. Use for hero KPI rows where the number is the point.
 
 const dotByTone: Record<Tone, string> = {
-  blue: 'bg-[hsl(var(--app-primary))]',
-  emerald: 'bg-emerald-500',
-  amber: 'bg-amber-500',
-  rose: 'bg-rose-500',
-  slate: 'bg-slate-400',
+  blue: 'bg-primary',
+  emerald: 'bg-success',
+  amber: 'bg-warning',
+  rose: 'bg-destructive',
+  slate: 'bg-muted-foreground',
 };
 
 interface StatTileProps {
@@ -594,11 +555,7 @@ export function WelcomeBackHero({
     >
       <span
         aria-hidden
-        className="absolute inset-y-0 left-0 w-1 bg-[hsl(var(--app-primary))]"
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 w-48 bg-gradient-to-r from-[hsl(var(--app-primary))]/10 to-transparent"
+        className="absolute inset-y-0 left-0 w-1 bg-primary"
       />
       <div className="relative min-w-0">
         <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -642,10 +599,10 @@ const statusTone: Record<
   NonNullable<PageTitleBarProps['status']>['tone'],
   string
 > = {
-  success: 'bg-emerald-500/10 text-emerald-500 ring-emerald-500/20',
-  warning: 'bg-amber-500/10 text-amber-500 ring-amber-500/20',
-  danger: 'bg-rose-500/10 text-rose-500 ring-rose-500/20',
-  info: 'bg-[hsl(var(--app-primary))]/10 text-[hsl(var(--app-primary))] ring-[hsl(var(--app-primary))]/20',
+  success: 'bg-success/10 text-success ring-success/20',
+  warning: 'bg-warning/10 text-warning ring-warning/20',
+  danger: 'bg-destructive/10 text-destructive ring-destructive/20',
+  info: 'bg-info/10 text-info ring-info/20',
 };
 
 export function PageTitleBar({

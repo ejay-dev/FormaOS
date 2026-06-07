@@ -100,7 +100,7 @@ export function MfaChallengeForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4" noValidate>
-      <label className="block text-sm font-medium text-white">
+      <label className="block text-sm font-medium text-foreground">
         Verification code
         <input
           type="text"
@@ -111,7 +111,7 @@ export function MfaChallengeForm() {
           onChange={(e) => setToken(e.target.value)}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={error ? 'mfa-error' : undefined}
-          className="mt-2 w-full rounded-md border border-white/10 bg-slate-900/60 px-3 py-2 text-base tracking-widest text-white placeholder:text-muted-foreground focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
+          className="mt-2 w-full rounded-md border border-border bg-surface-2 px-3 py-2 text-base tracking-widest tabular-nums text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
           placeholder="123456"
         />
       </label>
@@ -120,7 +120,7 @@ export function MfaChallengeForm() {
         <div
           id="mfa-error"
           role="alert"
-          className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200"
+          className="rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive"
         >
           {error}
         </div>
@@ -129,7 +129,7 @@ export function MfaChallengeForm() {
       <button
         type="submit"
         disabled={submitting || token.length < 6}
-        className="w-full rounded-md bg-emerald-500 px-4 py-2 text-sm font-medium text-slate-950 hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {submitting ? 'Verifying…' : 'Verify and continue'}
       </button>
@@ -138,7 +138,7 @@ export function MfaChallengeForm() {
         Lost your device?{' '}
         <a
           href="/auth/signout"
-          className="underline underline-offset-4 hover:text-white"
+          className="underline underline-offset-4 hover:text-foreground rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Sign out
         </a>{' '}

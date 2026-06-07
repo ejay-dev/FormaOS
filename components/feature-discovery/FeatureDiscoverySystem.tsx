@@ -8,7 +8,7 @@
 import { useState, useEffect } from 'react';
 import {
   X,
-  Sparkles,
+  Lightbulb,
   ChevronRight,
   Calendar,
   Users,
@@ -184,30 +184,30 @@ export function FeatureDiscoveryBanner({
         transition={{ duration: 0.3 }}
         className="relative mb-4"
       >
-        <div className="bg-gradient-to-r from-zinc-700/10 via-purple-500/10 to-pink-500/10 border border-zinc-700/20 rounded-2xl p-4 backdrop-blur-sm">
+        <div className="bg-card border border-border rounded-2xl p-4">
           <div className="flex items-start gap-4">
             {/* Icon */}
-            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-700/20 to-purple-500/20 flex items-center justify-center border border-zinc-600/30">
-              <Icon className="h-5 w-5 text-zinc-400" />
+            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-muted flex items-center justify-center border border-border">
+              <Icon className="h-5 w-5 text-muted-foreground" />
             </div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <Sparkles className="h-4 w-4 text-zinc-400" />
-                <span className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                <Lightbulb className="h-4 w-4 text-muted-foreground" />
+                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   Did you know?
                 </span>
                 {currentFeature.newFeature && (
-                  <span className="px-2 py-0.5 rounded-full bg-zinc-700/20 border border-zinc-600/30 text-xs font-bold text-zinc-300">
+                  <span className="px-2 py-0.5 rounded-full bg-muted border border-border text-xs font-bold text-foreground">
                     NEW
                   </span>
                 )}
               </div>
-              <h4 className="text-sm font-semibold text-white mb-1">
+              <h4 className="text-sm font-semibold text-foreground mb-1">
                 {currentFeature.title}
               </h4>
-              <p className="text-xs text-gray-400 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {currentFeature.description}
               </p>
             </div>
@@ -216,14 +216,14 @@ export function FeatureDiscoveryBanner({
             <div className="flex items-center gap-2">
               <a
                 href={currentFeature.href}
-                className="group flex items-center gap-1 px-3 py-1.5 rounded-lg bg-zinc-700/20 hover:bg-zinc-600/30 border border-zinc-600/30 hover:border-zinc-500/50 text-xs font-medium text-zinc-300 transition-all"
+                className="group flex items-center gap-1 px-3 py-1.5 rounded-lg bg-muted hover:bg-surface-3 border border-border hover:border-border text-xs font-medium text-foreground transition-all"
               >
                 <span>Explore</span>
                 <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
               </a>
               <button
                 onClick={handleDismiss}
-                className="flex-shrink-0 w-8 h-8 rounded-lg hover:bg-glass-strong flex items-center justify-center text-gray-400 hover:text-gray-200 transition-colors"
+                className="flex-shrink-0 w-8 h-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Dismiss"
               >
                 <X className="h-4 w-4" />
@@ -241,8 +241,8 @@ export function FeatureDiscoveryBanner({
                     onClick={() => setCurrentFeatureIndex(index)}
                     className={`h-1 rounded-full transition-all ${
                       index === currentFeatureIndex
-                        ? 'w-6 bg-zinc-400'
-                        : 'w-1 bg-gray-600 hover:bg-gray-500'
+                        ? 'w-6 bg-primary'
+                        : 'w-1 bg-muted hover:bg-surface-3'
                     }`}
                     aria-label={`Go to feature ${index + 1}`}
                   />
@@ -250,7 +250,7 @@ export function FeatureDiscoveryBanner({
               </div>
               <button
                 onClick={handleNext}
-                className="text-xs text-gray-400 hover:text-gray-200 font-medium uppercase tracking-wide transition-colors"
+                className="text-xs text-muted-foreground hover:text-foreground font-medium uppercase tracking-wide transition-colors"
               >
                 Next
               </button>
@@ -281,28 +281,28 @@ export function FeatureCard({
     return (
       <a
         href={feature.href}
-        className="group block p-4 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-zinc-600/30 transition-all motion-safe:hover:scale-105"
+        className="group block p-4 rounded-xl bg-surface-1 border border-border hover:border-primary transition-all motion-safe:hover:scale-105"
       >
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-zinc-700/20 to-purple-500/20 flex items-center justify-center border border-zinc-600/30">
-            <Icon className="h-4 w-4 text-zinc-400" />
+          <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center border border-border">
+            <Icon className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
-              <h4 className="text-sm font-semibold text-white group-hover:text-zinc-300 transition-colors">
+              <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                 {feature.title}
               </h4>
               {feature.newFeature && (
-                <span className="px-1.5 py-0.5 rounded-full bg-zinc-700/20 border border-zinc-600/30 text-[9px] font-bold text-zinc-300">
+                <span className="px-1.5 py-0.5 rounded-full bg-muted border border-border text-[9px] font-bold text-foreground">
                   NEW
                 </span>
               )}
             </div>
-            <p className="text-xs text-gray-400 line-clamp-2">
+            <p className="text-xs text-muted-foreground line-clamp-2">
               {feature.description}
             </p>
           </div>
-          <ChevronRight className="h-4 w-4 text-gray-500 group-hover:text-zinc-400 group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+          <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all flex-shrink-0" />
         </div>
       </a>
     );
@@ -311,29 +311,29 @@ export function FeatureCard({
   return (
     <a
       href={feature.href}
-      className="group block p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-zinc-600/30 transition-all motion-safe:hover:scale-105 hover:shadow-xl hover:shadow-zinc-700/10"
+      className="group block p-6 rounded-2xl bg-surface-1 border border-border hover:border-primary transition-all motion-safe:hover:scale-105 hover:shadow-xl"
     >
       <div className="flex items-start gap-4 mb-4">
-        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-700/20 to-purple-500/20 flex items-center justify-center border border-zinc-600/30 group-hover:scale-110 transition-transform">
-          <Icon className="h-6 w-6 text-zinc-400" />
+        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-muted flex items-center justify-center border border-border group-hover:scale-110 transition-transform">
+          <Icon className="h-6 w-6 text-muted-foreground" />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <h4 className="text-base font-bold text-white group-hover:text-zinc-300 transition-colors">
+            <h4 className="text-base font-bold text-foreground group-hover:text-primary transition-colors">
               {feature.title}
             </h4>
             {feature.newFeature && (
-              <span className="px-2 py-0.5 rounded-full bg-zinc-700/20 border border-zinc-600/30 text-xs font-bold text-zinc-300">
+              <span className="px-2 py-0.5 rounded-full bg-muted border border-border text-xs font-bold text-foreground">
                 NEW
               </span>
             )}
           </div>
-          <p className="text-sm text-gray-400 leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {feature.description}
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-2 text-xs font-medium text-zinc-400 group-hover:text-zinc-300 transition-colors">
+      <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">
         <span>Learn more</span>
         <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
       </div>
@@ -369,8 +369,8 @@ export function IndustryFeatureGrid({
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Sparkles className="h-5 w-5 text-zinc-400" />
-        <h3 className="text-lg font-bold text-white">
+        <Lightbulb className="h-5 w-5 text-muted-foreground" />
+        <h3 className="text-lg font-bold text-foreground">
           Features for Your Industry
         </h3>
       </div>

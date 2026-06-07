@@ -565,10 +565,10 @@ function SignInContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
-        <Logo variant="wordmark" size={28} className="text-white" />
+        <Logo variant="wordmark" size={28} className="text-foreground" />
         <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
           Secure · Compliance-First · Enterprise-Ready
         </div>
@@ -577,9 +577,9 @@ function SignInContent() {
       <div className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
           {/* Welcome Card */}
-          <div className="rounded-2xl border border-glass-border bg-glass-subtle backdrop-blur-sm p-8">
+          <div className="rounded-2xl border border-border bg-card p-8">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-white mb-2">
+              <h1 className="text-3xl font-bold text-foreground mb-2">
                 Welcome to FormaOS
               </h1>
               <p className="text-muted-foreground">
@@ -588,58 +588,58 @@ function SignInContent() {
             </div>
 
             {/* Trust Indicators */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 p-4 rounded-lg bg-white/[0.04] border border-emerald-400/20">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 p-4 rounded-lg bg-surface-1 border border-border">
               <div className="text-center">
-                <CheckCircle2 className="h-5 w-5 text-emerald-400 mx-auto mb-1" />
-                <div className="text-xs font-medium text-emerald-200">
+                <CheckCircle2 className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
+                <div className="text-xs font-medium text-muted-foreground">
                   Audit-ready controls
                 </div>
               </div>
               <div className="text-center">
-                <CheckCircle2 className="h-5 w-5 text-sky-400 mx-auto mb-1" />
-                <div className="text-xs font-medium text-sky-200">
+                <CheckCircle2 className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
+                <div className="text-xs font-medium text-muted-foreground">
                   Evidence integrity
                 </div>
               </div>
               <div className="text-center">
-                <CheckCircle2 className="h-5 w-5 text-cyan-400 mx-auto mb-1" />
-                <div className="text-xs font-medium text-cyan-200">
+                <CheckCircle2 className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
+                <div className="text-xs font-medium text-muted-foreground">
                   Access governance
                 </div>
               </div>
             </div>
 
             {successMessage && (
-              <div className="mb-6 rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+              <div className="mb-6 rounded-lg border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">
                 {successMessage}
               </div>
             )}
             {errorMessage && (
-              <div className="mb-6 rounded-lg border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+              <div className="mb-6 rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
                 {errorMessage}
               </div>
             )}
             {sessionTimeout && (
-              <div className="mb-6 rounded-lg border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+              <div className="mb-6 rounded-lg border border-warning/20 bg-warning/10 px-4 py-3 text-sm text-warning">
                 <div className="font-semibold">Having trouble?</div>
-                <div className="mt-1 text-amber-100/80">
+                <div className="mt-1 text-warning/80">
                   Refresh the page or try again.
                 </div>
                 <button
                   type="button"
                   onClick={() => window.location.reload()}
-                  className="mt-3 inline-flex items-center justify-center rounded-md border border-amber-300/40 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-100 hover:bg-amber-400/20"
+                  className="mt-3 inline-flex items-center justify-center rounded-md border border-warning/30 bg-warning/10 px-3 py-1.5 text-xs font-semibold text-warning hover:bg-warning/20 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   Refresh
                 </button>
               </div>
             )}
             {existingSessionEmail && (
-              <div className="mb-6 rounded-lg border border-sky-400/40 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
+              <div className="mb-6 rounded-lg border border-info/20 bg-info/10 px-4 py-3 text-sm text-info">
                 <div className="font-semibold">
                   You are already signed in as {existingSessionEmail}
                 </div>
-                <div className="mt-1 text-sky-100/80">
+                <div className="mt-1 text-info/80">
                   Continue to your dashboard, or sign out to use a different
                   account.
                 </div>
@@ -657,7 +657,7 @@ function SignInContent() {
                         );
                       }
                     }}
-                    className="inline-flex items-center justify-center rounded-md border border-sky-300/40 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold text-sky-100 hover:bg-sky-400/20"
+                    className="inline-flex items-center justify-center rounded-md border border-info/30 bg-info/10 px-3 py-1.5 text-xs font-semibold text-info hover:bg-info/20 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                   >
                     Continue to dashboard
                   </button>
@@ -673,7 +673,7 @@ function SignInContent() {
                       setExistingSessionEmail(null);
                       window.location.href = '/auth/signin?session_cleared=true';
                     }}
-                    className="inline-flex items-center justify-center rounded-md border border-edge-3 bg-surface-1 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-surface-2"
+                    className="inline-flex items-center justify-center rounded-md border border-edge-3 bg-surface-1 px-3 py-1.5 text-xs font-semibold text-foreground/90 hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                   >
                     Sign out & use a different account
                   </button>
@@ -710,11 +710,11 @@ function SignInContent() {
 
             {/* Divider */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="flex-1 border-t border-glass-border-strong" />
+              <div className="flex-1 border-t border-edge-2" />
               <span className="text-xs text-muted-foreground">
                 or use email
               </span>
-              <div className="flex-1 border-t border-glass-border-strong" />
+              <div className="flex-1 border-t border-edge-2" />
             </div>
 
             {/* Email/Password Form */}
@@ -732,7 +732,7 @@ function SignInContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@company.com"
-                  className="w-full rounded-lg border border-glass-border-strong bg-glass-strong px-4 py-3 text-base md:text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-edge-2 bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
                   required
                   disabled={isLoading}
                   autoComplete="email"
@@ -745,10 +745,10 @@ function SignInContent() {
               </div>
 
               {ssoOrgId ? (
-                <div className="rounded-lg border border-glass-border bg-glass-subtle p-4">
+                <div className="rounded-lg border border-border bg-surface-1 p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <div className="text-sm font-semibold text-white">
+                      <div className="text-sm font-semibold text-foreground">
                         Enterprise SSO detected
                       </div>
                       <div className="text-xs text-muted-foreground mt-1">
@@ -761,7 +761,7 @@ function SignInContent() {
                       type="button"
                       onClick={() => startSsoLogin('/app')}
                       disabled={isLoading}
-                      className="shrink-0 rounded-lg bg-glass-strong hover:bg-white/15 border border-glass-border px-3 py-2 text-xs font-semibold text-white transition-colors disabled:opacity-50"
+                      className="shrink-0 rounded-lg bg-surface-2 hover:bg-surface-3 border border-border px-3 py-2 text-xs font-semibold text-foreground transition-colors disabled:opacity-50"
                     >
                       Continue with SSO
                     </button>
@@ -781,7 +781,7 @@ function SignInContent() {
                   </label>
                   <Link
                     href="/auth/forgot-password"
-                    className="text-xs text-sky-400 hover:text-sky-300 transition-colors"
+                    className="text-xs text-foreground hover:text-foreground/70 transition-colors"
                   >
                     Forgot password?
                   </Link>
@@ -792,7 +792,7 @@ function SignInContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full rounded-lg border border-glass-border-strong bg-glass-strong px-4 py-3 text-base md:text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-edge-2 bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
                   required={!ssoRequired}
                   disabled={isLoading}
                   autoComplete="current-password"
@@ -822,7 +822,7 @@ function SignInContent() {
                 New to FormaOS?{' '}
                 <Link
                   href={`${RENDER_APP_BASE}/auth/signup`}
-                  className="font-semibold text-sky-400 hover:text-sky-300 transition-colors"
+                  className="font-semibold text-foreground hover:text-foreground/70 transition-colors"
                 >
                   Start your compliance journey
                 </Link>
@@ -833,7 +833,7 @@ function SignInContent() {
           {/* Security Notice */}
           <div className="mt-6 text-center text-xs text-muted-foreground/60">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Logo variant="mark" size={14} className="text-white" />
+              <Logo variant="mark" size={14} className="text-foreground" />
               <span>Enterprise-grade security</span>
             </div>
             <p>
@@ -851,9 +851,9 @@ export default function SignInPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-          <div className="flex items-center gap-3 rounded-2xl border border-glass-border bg-glass-subtle backdrop-blur-sm px-6 py-4 text-sm text-foreground/70">
-            <Logo variant="mark" size={18} className="text-white" />
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface-1 px-6 py-4 text-sm text-foreground/70">
+            <Logo variant="mark" size={18} className="text-foreground" />
             <span>Loading FormaOS...</span>
           </div>
         </div>

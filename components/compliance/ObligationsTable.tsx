@@ -68,11 +68,10 @@ const RISK_LABELS: Record<RiskLevel, string> = {
 };
 
 const RISK_BADGE_CLASSES: Record<RiskLevel, string> = {
-  critical: 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400',
-  high: 'border-orange-500/30 bg-orange-500/10 text-orange-700 dark:text-orange-400',
-  medium:
-    'border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
-  low: 'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400',
+  critical: 'border-destructive/20 bg-destructive/10 text-destructive',
+  high: 'border-warning/20 bg-warning/10 text-warning',
+  medium: 'border-warning/20 bg-warning/10 text-warning',
+  low: 'border-success/20 bg-success/10 text-success',
 };
 
 function computeRiskScore(row: ObligationRow): RiskLevel {
@@ -164,7 +163,7 @@ function FilterBar({
       <select
         value={selectedFramework}
         onChange={(e) => onFrameworkChange(e.target.value)}
-        className="rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-xs text-foreground"
+        className="rounded-md border border-border bg-surface-1 px-2 py-1 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <option value="">All Frameworks</option>
         {frameworks.map((f) => (
@@ -176,7 +175,7 @@ function FilterBar({
       <select
         value={selectedStatus}
         onChange={(e) => onStatusChange(e.target.value)}
-        className="rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-xs text-foreground"
+        className="rounded-md border border-border bg-surface-1 px-2 py-1 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <option value="">All Statuses</option>
         {Object.entries(STATUS_LABELS).map(([k, v]) => (
@@ -188,7 +187,7 @@ function FilterBar({
       <select
         value={selectedRisk}
         onChange={(e) => onRiskChange(e.target.value)}
-        className="rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-xs text-foreground"
+        className="rounded-md border border-border bg-surface-1 px-2 py-1 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <option value="">All Risk Levels</option>
         {Object.entries(RISK_LABELS).map(([k, v]) => (
@@ -281,7 +280,7 @@ function ObligationsTableInner() {
             type="checkbox"
             checked={table.getIsAllPageRowsSelected()}
             onChange={table.getToggleAllPageRowsSelectedHandler()}
-            className="h-3.5 w-3.5 rounded border-glass-border"
+            className="h-3.5 w-3.5 rounded border-border"
           />
         ),
         cell: ({ row }) => (
@@ -289,7 +288,7 @@ function ObligationsTableInner() {
             type="checkbox"
             checked={row.getIsSelected()}
             onChange={row.getToggleSelectedHandler()}
-            className="h-3.5 w-3.5 rounded border-glass-border"
+            className="h-3.5 w-3.5 rounded border-border"
           />
         ),
         size: 32,
@@ -555,9 +554,9 @@ function ObligationsTableInner() {
                         <dd
                           className={`font-semibold ${
                             row.riskScore === 'critical' || row.riskScore === 'high'
-                              ? 'text-rose-500'
+                              ? 'text-destructive'
                               : row.riskScore === 'medium'
-                                ? 'text-amber-500'
+                                ? 'text-warning'
                                 : 'text-foreground/85'
                           }`}
                         >
@@ -579,14 +578,14 @@ function ObligationsTableInner() {
         </div>
 
         {/* Compact table — desktop only */}
-        <div className="hidden md:block rounded-lg border border-glass-border bg-card overflow-hidden">
+        <div className="hidden md:block rounded-lg border border-border bg-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
                 {table.getHeaderGroups().map((hg) => (
                   <tr
                     key={hg.id}
-                    className="border-b border-glass-border bg-glass-subtle"
+                    className="border-b border-border bg-surface-1"
                   >
                     {hg.headers.map((header) => (
                       <th
@@ -620,7 +619,7 @@ function ObligationsTableInner() {
                   table.getRowModel().rows.map((row) => (
                     <tr
                       key={row.id}
-                      className="border-b border-glass-border/50 transition-colors hover:bg-glass-subtle h-8"
+                      className="border-b border-border/50 transition-colors hover:bg-surface-1 h-8"
                     >
                       {row.getVisibleCells().map((cell) => (
                         <td key={cell.id} className="px-3 py-1.5">

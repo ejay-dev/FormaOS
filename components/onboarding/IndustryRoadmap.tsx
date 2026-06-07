@@ -133,29 +133,25 @@ export function IndustryRoadmapEngine({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-2xl border border-glass-border bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 sm:p-8"
+          className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 sm:p-8"
           data-testid="industry-roadmap-header"
         >
-          {/* Background Glow */}
-          <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-blue-500/20 blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-cyan-500/20 blur-3xl" />
-
           <div className="relative z-10">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-glass-border-strong bg-surface-1">
-                  <IndustryIcon className="h-7 w-7 text-cyan-400" />
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-edge-2 bg-surface-1">
+                  <IndustryIcon className="h-7 w-7 text-muted-foreground" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">
+                  <h2 className="text-2xl font-bold text-foreground">
                     {roadmap.industryName}
                   </h2>
-                  <p className="mt-1 text-sm text-gray-400">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {roadmap.tagline}
                   </p>
 
                   {showEstimates && (
-                    <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                    <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1.5">
                         <Clock className="h-3.5 w-3.5" />
                         <span>
@@ -186,7 +182,7 @@ export function IndustryRoadmapEngine({
                         stroke="currentColor"
                         strokeWidth="6"
                         fill="transparent"
-                        className="text-white/10"
+                        className="text-border"
                       />
                       <circle
                         cx="40"
@@ -197,12 +193,12 @@ export function IndustryRoadmapEngine({
                         fill="transparent"
                         strokeDasharray={`${2 * Math.PI * 34}`}
                         strokeDashoffset={`${2 * Math.PI * 34 * (1 - progressStats.progress / 100)}`}
-                        className="text-cyan-400 transition-all duration-500"
+                        className="text-primary transition-all duration-500"
                         strokeLinecap="round"
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-lg font-bold text-white">
+                      <span className="text-lg font-bold text-foreground tabular-nums">
                         {progressStats.progress}%
                       </span>
                     </div>
@@ -217,19 +213,19 @@ export function IndustryRoadmapEngine({
                 className="mt-6 sm:hidden"
                 data-testid="industry-roadmap-mobile-progress"
               >
-                <div className="flex items-center justify-between text-xs text-gray-400 mb-2">
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-2 tabular-nums">
                   <span>
                     {progressStats.completed} of {progressStats.totalSteps}{' '}
                     completed
                   </span>
                   <span>{progressStats.progress}%</span>
                 </div>
-                <div className="h-2 w-full rounded-full bg-glass-strong">
+                <div className="h-2 w-full rounded-full bg-surface-2">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progressStats.progress}%` }}
                     transition={{ duration: 0.8, ease: 'easeOut' }}
-                    className="h-2 rounded-full bg-gradient-to-r from-zinc-400 to-zinc-600"
+                    className="h-2 rounded-full bg-primary"
                   />
                 </div>
               </div>
@@ -239,14 +235,14 @@ export function IndustryRoadmapEngine({
             <div className="mt-6 flex items-center gap-3">
               <button
                 onClick={expandAll}
-                className="text-xs text-gray-400 hover:text-gray-300 transition-colors"
+                className="rounded-md text-xs text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Expand All
               </button>
-              <span className="text-gray-600">•</span>
+              <span className="text-muted-foreground">•</span>
               <button
                 onClick={collapseAll}
-                className="text-xs text-gray-400 hover:text-gray-300 transition-colors"
+                className="rounded-md text-xs text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Collapse All
               </button>
@@ -277,13 +273,13 @@ export function IndustryRoadmapEngine({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl border border-green-500/20 bg-green-500/10 p-6 text-center"
+          className="rounded-2xl border border-success/20 bg-success/10 p-6 text-center"
         >
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-500/20">
-            <CheckCircle2 className="h-6 w-6 text-green-400" />
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-success/20">
+            <CheckCircle2 className="h-6 w-6 text-success" />
           </div>
-          <h3 className="text-lg font-bold text-white">Roadmap Complete! 🎉</h3>
-          <p className="mt-2 text-sm text-gray-400">
+          <h3 className="text-lg font-bold text-foreground">Roadmap Complete! 🎉</h3>
+          <p className="mt-2 text-sm text-muted-foreground">
             You've completed all onboarding steps. Your organization is now
             fully operational.
           </p>
@@ -328,22 +324,22 @@ function RoadmapPhaseCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="overflow-hidden rounded-xl border border-glass-border bg-surface-1"
+      className="overflow-hidden rounded-xl border border-border bg-surface-1"
       data-testid={`industry-roadmap-phase-${phase.id}`}
     >
       {/* Phase Header */}
       <button
         onClick={onToggle}
-        className="w-full px-6 py-4 text-left transition-colors hover:bg-surface-1"
+        className="w-full px-6 py-4 text-left transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             {/* Phase Number */}
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-bold ${
+              className={`flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-bold tabular-nums ${
                 isComplete
-                  ? 'border-green-500/30 bg-green-500/10 text-green-400'
-                  : 'border-glass-border-strong bg-glass-subtle text-gray-400'
+                  ? 'border-success/20 bg-success/10 text-success'
+                  : 'border-edge-2 bg-surface-1 text-muted-foreground'
               }`}
             >
               {isComplete ? <CheckCircle2 className="h-5 w-5" /> : phaseNumber}
@@ -351,22 +347,22 @@ function RoadmapPhaseCard({
 
             {/* Phase Info */}
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-lg font-semibold text-foreground">
                 {phase.title}
               </h3>
-              <p className="mt-0.5 text-sm text-gray-400">
+              <p className="mt-0.5 text-sm text-muted-foreground">
                 {phase.description}
               </p>
 
               {showEstimates && (
-                <div className="mt-2 flex items-center gap-4 text-xs text-gray-500">
+                <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground tabular-nums">
                   <span>~{phase.estimatedDays} days</span>
                   <span>•</span>
                   <span>{phase.steps.length} steps</span>
                   {phaseProgress.progress > 0 && (
                     <>
                       <span>•</span>
-                      <span className="text-cyan-400">
+                      <span className="text-primary">
                         {phaseProgress.completed}/{phaseProgress.total} complete
                       </span>
                     </>
@@ -380,15 +376,15 @@ function RoadmapPhaseCard({
           <div className="flex items-center gap-3">
             {/* Progress Badge */}
             {phaseProgress.progress > 0 && phaseProgress.progress < 100 && (
-              <div className="rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-400">
+              <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary tabular-nums">
                 {phaseProgress.progress}%
               </div>
             )}
 
             {isExpanded ? (
-              <ChevronDown className="h-5 w-5 text-gray-400" />
+              <ChevronDown className="h-5 w-5 text-muted-foreground" />
             ) : (
-              <ChevronRight className="h-5 w-5 text-gray-400" />
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
             )}
           </div>
         </div>
@@ -436,10 +432,10 @@ function RoadmapStepCard({
   showEstimates,
 }: RoadmapStepCardProps) {
   const priorityColors = {
-    critical: 'border-red-500/30 bg-red-500/5 text-red-400',
-    high: 'border-orange-500/30 bg-orange-500/5 text-orange-400',
-    medium: 'border-yellow-500/30 bg-yellow-500/5 text-yellow-400',
-    low: 'border-gray-500/30 bg-gray-500/5 text-gray-400',
+    critical: 'border-destructive/20 bg-destructive/10 text-destructive',
+    high: 'border-warning/20 bg-warning/10 text-warning',
+    medium: 'border-warning/20 bg-warning/10 text-warning',
+    low: 'border-border bg-muted text-muted-foreground',
   };
 
   const handleClick = () => {
@@ -458,17 +454,17 @@ function RoadmapStepCard({
         whileHover={{ x: 4 }}
         className={`group rounded-lg border p-4 transition-all ${
           isCompleted
-            ? 'border-green-500/20 bg-green-500/5'
-            : 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong'
+            ? 'border-success/20 bg-success/10'
+            : 'border-border bg-surface-1 hover:border-edge-2 hover:bg-surface-2'
         }`}
       >
         <div className="flex items-start gap-4">
           {/* Completion Indicator */}
           <div className="mt-1">
             {isCompleted ? (
-              <CheckCircle2 className="h-5 w-5 text-green-400" />
+              <CheckCircle2 className="h-5 w-5 text-success" />
             ) : (
-              <Circle className="h-5 w-5 text-gray-500 group-hover:text-gray-400" />
+              <Circle className="h-5 w-5 text-muted-foreground group-hover:text-foreground" />
             )}
           </div>
 
@@ -477,21 +473,21 @@ function RoadmapStepCard({
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h4
-                  className={`text-sm font-semibold ${isCompleted ? 'text-gray-400' : 'text-white'}`}
+                  className={`text-sm font-semibold ${isCompleted ? 'text-muted-foreground' : 'text-foreground'}`}
                 >
                   {step.title}
                 </h4>
-                <p className="mt-1 text-xs text-gray-500">{step.description}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{step.description}</p>
 
                 {showEstimates && (
-                  <div className="mt-2 flex items-center gap-3 text-xs text-gray-600">
+                  <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground tabular-nums">
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />~{step.estimatedMinutes} min
                     </span>
                     {step.automationTrigger && (
                       <>
                         <span>•</span>
-                        <span className="flex items-center gap-1 text-cyan-500">
+                        <span className="flex items-center gap-1 text-primary">
                           <Zap className="h-3 w-3" />
                           Auto-trigger
                         </span>
@@ -511,7 +507,7 @@ function RoadmapStepCard({
 
             {/* CTA */}
             {!isCompleted && (
-              <div className="mt-3 flex items-center gap-2 text-xs font-medium text-cyan-400 group-hover:text-cyan-300">
+              <div className="mt-3 flex items-center gap-2 text-xs font-medium text-primary group-hover:text-primary/80">
                 <span>{step.cta}</span>
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
               </div>

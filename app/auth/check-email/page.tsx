@@ -131,40 +131,40 @@ function CheckEmailContent() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6 py-12">
+    <div className="relative min-h-screen bg-background flex items-center justify-center px-6 py-12">
       {/* Header */}
       <div className="absolute top-6 left-6">
-        <Logo variant="wordmark" size={28} className="text-white" />
+        <Logo variant="wordmark" size={28} className="text-foreground" />
       </div>
 
       <div className="w-full max-w-md">
-        <div className="rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm p-8 text-center">
+        <div className="rounded-2xl border border-border bg-card p-8 text-center">
           {/* Icon */}
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
-            <Mail className="w-10 h-10 text-emerald-400" />
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted border border-border flex items-center justify-center">
+            <Mail className="w-10 h-10 text-muted-foreground" />
           </div>
 
           {/* Heading */}
-          <h1 className="text-3xl font-bold text-white mb-3">Check Your Email</h1>
-          <p className="text-gray-400 mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-3">Check Your Email</h1>
+          <p className="text-muted-foreground mb-8">
             We've sent a confirmation link to your email address. Click the link to verify your account and continue.
           </p>
           {email && (
-            <p className="text-xs text-slate-500 mb-6">
-              Sent to <span className="text-slate-200">{email}</span>
+            <p className="text-xs text-muted-foreground mb-6">
+              Sent to <span className="text-foreground">{email}</span>
             </p>
           )}
 
           {/* Error Message */}
           {errorMessage && (
-            <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+            <div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
               {errorMessage}
             </div>
           )}
 
           {/* Success Message */}
           {resendMessage && (
-            <div className="mb-6 p-4 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-sm flex items-center gap-2">
+            <div className="mb-6 p-4 rounded-lg bg-success/10 border border-success/20 text-success text-sm flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4" />
               {resendMessage}
             </div>
@@ -175,7 +175,7 @@ function CheckEmailContent() {
             onClick={handleContinue}
             data-testid="check-email-continue-button"
             disabled={isChecking}
-            className="w-full mb-3 py-4 px-6 rounded-xl bg-foreground text-background font-semibold shadow-lg hover:opacity-90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full mb-3 py-4 px-6 rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {isChecking ? (
               <>
@@ -194,7 +194,7 @@ function CheckEmailContent() {
           <button
             onClick={handleResend}
             disabled={isResending}
-            className="w-full py-3 px-6 rounded-xl border border-edge-3 text-white font-medium hover:bg-surface-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-3 px-6 rounded-xl border border-border text-foreground font-medium hover:bg-muted transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {isResending ? (
               <>
@@ -210,7 +210,7 @@ function CheckEmailContent() {
           </button>
 
           {/* Help Text */}
-          <p className="text-xs text-gray-500 mt-6">
+          <p className="text-xs text-muted-foreground mt-6">
             Didn't receive the email? Check your spam folder or click the resend button above.
           </p>
         </div>
@@ -223,7 +223,7 @@ export default function CheckEmailPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center text-slate-300">
+        <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground">
           Loading...
         </div>
       }

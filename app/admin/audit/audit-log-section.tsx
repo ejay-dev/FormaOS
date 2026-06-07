@@ -20,11 +20,11 @@ function formatDate(value?: string | null) {
 function getActionIcon(targetType: string) {
   switch (targetType) {
     case 'organization':
-      return <Building2 className="h-4 w-4 text-blue-400" />;
+      return <Building2 className="h-4 w-4 text-muted-foreground" />;
     case 'user':
-      return <User className="h-4 w-4 text-green-400" />;
+      return <User className="h-4 w-4 text-muted-foreground" />;
     case 'subscription':
-      return <Shield className="h-4 w-4 text-purple-400" />;
+      return <Shield className="h-4 w-4 text-muted-foreground" />;
     default:
       return <Calendar className="h-4 w-4 text-muted-foreground" />;
   }

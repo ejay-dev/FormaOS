@@ -34,7 +34,7 @@ const CARE_REGISTERS = [
       'Complete list of all clients/participants with contact and status info',
     icon: Users,
     href: '/app/participants',
-    color: 'bg-blue-500/10 text-blue-600',
+    color: 'bg-muted text-muted-foreground',
   },
   {
     id: 'incidents',
@@ -43,7 +43,7 @@ const CARE_REGISTERS = [
       'All reported incidents with severity, status, and follow-up tracking',
     icon: AlertTriangle,
     href: '/app/incidents',
-    color: 'bg-red-500/10 text-red-600',
+    color: 'bg-muted text-muted-foreground',
   },
   {
     id: 'visits',
@@ -51,7 +51,7 @@ const CARE_REGISTERS = [
     description: 'Service delivery logs, visits, and appointment records',
     icon: Calendar,
     href: '/app/visits',
-    color: 'bg-green-500/10 text-green-600',
+    color: 'bg-muted text-muted-foreground',
   },
   {
     id: 'staff',
@@ -60,7 +60,7 @@ const CARE_REGISTERS = [
       'Staff credentials, qualifications, checks, and expiry tracking',
     icon: Shield,
     href: '/app/staff-compliance',
-    color: 'bg-purple-500/10 text-purple-600',
+    color: 'bg-muted text-muted-foreground',
   },
 ];
 
@@ -132,11 +132,11 @@ export default function RegistersPage() {
   const _getRiskColor = (level: string) => {
     switch (level?.toLowerCase()) {
       case 'high':
-        return 'bg-rose-500/10 text-red-700 border-rose-400/30';
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'medium':
-        return 'bg-amber-400/10 text-amber-700 border-amber-400/30';
+        return 'bg-warning/10 text-warning border-warning/20';
       default:
-        return 'bg-emerald-400/10 text-emerald-700 border-emerald-400/30';
+        return 'bg-success/10 text-success border-success/20';
     }
   };
 

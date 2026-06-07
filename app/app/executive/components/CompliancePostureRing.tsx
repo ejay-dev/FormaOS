@@ -19,10 +19,10 @@ export function CompliancePostureRing({
 }: CompliancePostureRingProps) {
   // Color logic based on score
   const getColor = (s: number) => {
-    if (s >= 80) return { ring: 'text-emerald-500', bg: 'bg-emerald-500/10' };
-    if (s >= 60) return { ring: 'text-sky-500', bg: 'bg-sky-500/10' };
-    if (s >= 40) return { ring: 'text-amber-500', bg: 'bg-amber-500/10' };
-    return { ring: 'text-red-500', bg: 'bg-red-500/10' };
+    if (s >= 80) return { ring: 'text-success', bg: 'bg-success/10' };
+    if (s >= 60) return { ring: 'text-info', bg: 'bg-info/10' };
+    if (s >= 40) return { ring: 'text-warning', bg: 'bg-warning/10' };
+    return { ring: 'text-destructive', bg: 'bg-destructive/10' };
   };
 
   const getStatusLabel = (s: number) => {
@@ -40,16 +40,16 @@ export function CompliancePostureRing({
     trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
   const trendColor =
     trend === 'up'
-      ? 'text-emerald-400'
+      ? 'text-success'
       : trend === 'down'
-        ? 'text-red-400'
+        ? 'text-destructive'
         : 'text-muted-foreground';
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-8 animate-pulse">
-        <div className="w-48 h-48 rounded-full bg-glass-strong" />
-        <div className="mt-4 h-6 w-32 rounded bg-glass-strong" />
+        <div className="w-48 h-48 rounded-full bg-surface-2" />
+        <div className="mt-4 h-6 w-32 rounded bg-surface-2" />
       </div>
     );
   }

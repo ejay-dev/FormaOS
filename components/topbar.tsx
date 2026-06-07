@@ -216,7 +216,7 @@ export function TopBar({
 
               <button
                 onClick={handleSignOut}
-                className="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-destructive hover:bg-rose-500/10 transition-colors text-left"
+                className="w-full flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors text-left"
                 role="menuitem"
               >
                 <LogOut className="h-4 w-4" />

@@ -106,26 +106,26 @@ const CATEGORY_META: Record<Category, { icon: typeof Shield; label: string }> = 
 };
 
 const GRADE_COLORS: Record<Grade, { text: string; bg: string; border: string; gradient: string }> = {
-  A: { text: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', gradient: 'from-emerald-500/20 to-emerald-500/5' },
-  B: { text: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/30', gradient: 'from-blue-500/20 to-blue-500/5' },
-  C: { text: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30', gradient: 'from-amber-500/20 to-amber-500/5' },
-  D: { text: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/30', gradient: 'from-orange-500/20 to-orange-500/5' },
-  F: { text: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30', gradient: 'from-red-500/20 to-red-500/5' },
+  A: { text: 'text-success', bg: 'bg-success/10', border: 'border-success/30', gradient: 'from-success/20 to-success/5' },
+  B: { text: 'text-info', bg: 'bg-info/10', border: 'border-info/30', gradient: 'from-info/20 to-info/5' },
+  C: { text: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/30', gradient: 'from-warning/20 to-warning/5' },
+  D: { text: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/30', gradient: 'from-warning/20 to-warning/5' },
+  F: { text: 'text-destructive', bg: 'bg-destructive/10', border: 'border-destructive/30', gradient: 'from-destructive/20 to-destructive/5' },
 };
 
 const STATUS_CONFIG: Record<CheckStatus, { icon: typeof CheckCircle2; color: string; label: string }> = {
-  pass: { icon: CheckCircle2, color: 'text-emerald-400', label: 'Passed' },
-  warn: { icon: AlertTriangle, color: 'text-amber-400', label: 'Warnings' },
-  fail: { icon: XCircle, color: 'text-red-400', label: 'Failed' },
-  info: { icon: Info, color: 'text-sky-400', label: 'Info' },
+  pass: { icon: CheckCircle2, color: 'text-success', label: 'Passed' },
+  warn: { icon: AlertTriangle, color: 'text-warning', label: 'Warnings' },
+  fail: { icon: XCircle, color: 'text-destructive', label: 'Failed' },
+  info: { icon: Info, color: 'text-info', label: 'Info' },
 };
 
 const SEVERITY_STYLES: Record<Severity, string> = {
-  critical: 'bg-red-500/20 text-red-400 border border-red-500/30',
-  high: 'bg-orange-500/20 text-orange-400 border border-orange-500/30',
-  medium: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
-  low: 'bg-zinc-500/20 text-zinc-400 border border-zinc-500/30',
-  info: 'bg-sky-500/20 text-sky-400 border border-sky-500/30',
+  critical: 'bg-destructive/20 text-destructive border border-destructive/30',
+  high: 'bg-warning/20 text-warning border border-warning/30',
+  medium: 'bg-warning/20 text-warning border border-warning/30',
+  low: 'bg-muted text-muted-foreground border border-border',
+  info: 'bg-info/20 text-info border border-info/30',
 };
 
 const HISTORY_KEY = 'formaos-audit-runner-history-v2';
@@ -220,7 +220,7 @@ function ScopeSelector({
               disabled={disabled}
               className={`group relative flex items-start gap-3 p-4 rounded-xl text-left transition-all duration-200 hover:scale-[1.02] ${
                 isActive
-                  ? 'bg-primary/10 border-2 border-primary shadow-[0_0_20px_rgba(var(--primary-rgb,99,102,241),0.15)]'
+                  ? 'bg-primary/10 border-2 border-primary shadow-lg'
                   : 'bg-card border border-border hover:border-muted-foreground/30 hover:bg-muted/30'
               } disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
             >
@@ -256,7 +256,7 @@ function HealthScoreCard({ data }: { data: AuditResponse }) {
       <div className="flex flex-col sm:flex-row items-center gap-6">
         {/* Score Circle */}
         <div className="relative flex-shrink-0">
-          <div className={`w-32 h-32 rounded-full border-4 ${colors.border} flex items-center justify-center bg-card/50 backdrop-blur-sm`}>
+          <div className={`w-32 h-32 rounded-full border-4 ${colors.border} flex items-center justify-center bg-card`}>
             <div className="text-center">
               <div className={`text-5xl font-bold tabular-nums ${colors.text}`}>
                 {animatedScore}
@@ -304,10 +304,10 @@ function HealthScoreCard({ data }: { data: AuditResponse }) {
 function SummaryBar({ summary }: { summary: AuditSummary }) {
   const total = summary.total || 1;
   const segments: { key: CheckStatus; count: number; color: string }[] = [
-    { key: 'pass', count: summary.pass, color: 'bg-emerald-500' },
-    { key: 'warn', count: summary.warn, color: 'bg-amber-500' },
-    { key: 'fail', count: summary.fail, color: 'bg-red-500' },
-    { key: 'info', count: summary.info, color: 'bg-sky-500' },
+    { key: 'pass', count: summary.pass, color: 'bg-success' },
+    { key: 'warn', count: summary.warn, color: 'bg-warning' },
+    { key: 'fail', count: summary.fail, color: 'bg-destructive' },
+    { key: 'info', count: summary.info, color: 'bg-info' },
   ];
 
   return (
@@ -388,9 +388,9 @@ function CheckRow({ check }: { check: CheckResult }) {
             </ul>
           )}
           {check.recommendation && (
-            <div className="flex items-start gap-2 rounded-lg border border-sky-500/20 bg-sky-500/5 px-3 py-2.5">
-              <Info className="h-4 w-4 text-sky-400 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-sky-300 leading-relaxed">{check.recommendation}</p>
+            <div className="flex items-start gap-2 rounded-lg border border-info/20 bg-info/5 px-3 py-2.5">
+              <Info className="h-4 w-4 text-info flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-info leading-relaxed">{check.recommendation}</p>
             </div>
           )}
         </div>
@@ -434,25 +434,25 @@ function CategoryCard({
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           {counts.pass > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-400">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-success/15 text-success">
               <CheckCircle2 className="h-3 w-3" />
               {counts.pass}
             </span>
           )}
           {counts.warn > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-warning/15 text-warning">
               <AlertTriangle className="h-3 w-3" />
               {counts.warn}
             </span>
           )}
           {counts.fail > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-500/15 text-red-400">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-destructive/15 text-destructive">
               <XCircle className="h-3 w-3" />
               {counts.fail}
             </span>
           )}
           {counts.info > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-500/15 text-sky-400">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-info/15 text-info">
               <Info className="h-3 w-3" />
               {counts.info}
             </span>
@@ -548,7 +548,7 @@ function RecentRuns({
         <button
           type="button"
           onClick={onClear}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-all duration-200"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
         >
           <Trash2 className="h-3.5 w-3.5" />
           Clear History
@@ -576,9 +576,9 @@ function RecentRuns({
               <div className="flex items-center gap-3 flex-shrink-0">
                 <span className={`text-lg font-bold tabular-nums ${gradeColors.text}`}>{run.score}</span>
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="text-emerald-400 font-medium">{run.summary.pass}P</span>
-                  <span className="text-amber-400 font-medium">{run.summary.warn}W</span>
-                  <span className="text-red-400 font-medium">{run.summary.fail}F</span>
+                  <span className="text-success font-medium">{run.summary.pass}P</span>
+                  <span className="text-warning font-medium">{run.summary.warn}W</span>
+                  <span className="text-destructive font-medium">{run.summary.fail}F</span>
                 </div>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
@@ -718,12 +718,12 @@ export function AuditRunnerClient() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-5 py-4">
+        <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-5 py-4">
           <div className="flex items-start gap-3">
-            <XCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+            <XCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-red-400">Audit Failed</p>
-              <p className="text-xs text-red-400/80 mt-0.5">{error}</p>
+              <p className="text-sm font-semibold text-destructive">Audit Failed</p>
+              <p className="text-xs text-destructive/80 mt-0.5">{error}</p>
             </div>
           </div>
         </div>

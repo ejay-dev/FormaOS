@@ -71,7 +71,7 @@ function Field({
 }
 
 function inputClassName() {
-  return 'w-full rounded-xl border border-glass-border bg-slate-950/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60';
+  return 'w-full rounded-xl border border-border bg-surface-1 px-3 py-2 text-sm text-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus:border-primary';
 }
 
 export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) {
@@ -82,7 +82,7 @@ export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) 
 
   if (!step) {
     return (
-      <div className="rounded-3xl border border-glass-border bg-slate-950/70 p-6 text-sm text-muted-foreground">
+      <div className="rounded-3xl border border-border bg-card p-6 text-sm text-muted-foreground">
         Select a step to configure it.
       </div>
     );
@@ -91,7 +91,7 @@ export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) 
   const updateStep = (next: WorkflowStep) => onChange(next);
 
   return (
-    <div className="space-y-5 rounded-3xl border border-glass-border bg-slate-950/70 p-6">
+    <div className="space-y-5 rounded-3xl border border-border bg-card p-6">
       <div className="space-y-3">
         <Field label="Step Name">
           <input
@@ -160,13 +160,13 @@ export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) 
       ) : null}
 
       {step.type === 'parallel' ? (
-        <div className="rounded-2xl border border-sky-400/20 bg-sky-500/10 p-4 text-sm text-sky-100">
+        <div className="rounded-2xl border border-border bg-surface-1 p-4 text-sm text-foreground">
           Parallel steps are edited from the canvas structure. This step currently has {step.branches.length}{' '}
           branches.
         </div>
       ) : null}
 
-      <div className="rounded-2xl border border-glass-border bg-white/[0.03] p-4">
+      <div className="rounded-2xl border border-border bg-surface-1 p-4">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           Variable Tokens
         </p>
@@ -175,7 +175,7 @@ export function WorkflowStepConfig({ step, onChange }: WorkflowStepConfigProps) 
             <button
               type="button"
               key={suggestion}
-              className="rounded-full border border-glass-border px-3 py-1 text-xs text-foreground/70 hover:bg-glass-strong"
+              className="rounded-full border border-border px-3 py-1 text-xs text-foreground/70 hover:bg-surface-2"
               onClick={async () => {
                 try {
                   await navigator.clipboard.writeText(suggestion);
@@ -221,7 +221,7 @@ function ActionConfig({
   };
 
   return (
-    <div className="space-y-4 rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-4">
+    <div className="space-y-4 rounded-2xl border border-border bg-surface-1 p-4">
       <Field label="Action Type">
         <select
           className={inputClassName()}
@@ -300,7 +300,7 @@ function ConditionConfig({
   onChange: (step: ConditionStep) => void;
 }) {
   return (
-    <div className="space-y-4 rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4">
+    <div className="space-y-4 rounded-2xl border border-border bg-surface-1 p-4">
       <Field label="Combinator">
         <select
           className={inputClassName()}
@@ -364,7 +364,7 @@ function ConditionConfig({
       </div>
       <button
         type="button"
-        className="rounded-xl border border-glass-border px-3 py-2 text-sm text-foreground/90 hover:bg-glass-strong"
+        className="rounded-xl border border-border px-3 py-2 text-sm text-foreground/90 hover:bg-surface-2"
         onClick={() =>
           onChange({
             ...step,
@@ -395,7 +395,7 @@ function ApprovalConfig({
   onChange: (step: ApprovalStep) => void;
 }) {
   return (
-    <div className="space-y-4 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-4">
+    <div className="space-y-4 rounded-2xl border border-border bg-surface-1 p-4">
       <Field label="Approvers">
         <input
           list={datalistId}
@@ -472,7 +472,7 @@ function DelayConfig({
   onChange: (step: DelayStep) => void;
 }) {
   return (
-    <div className="rounded-2xl border border-violet-400/20 bg-violet-500/10 p-4">
+    <div className="rounded-2xl border border-border bg-surface-1 p-4">
       <Field label="Duration">
         <input
           className={inputClassName()}
@@ -500,7 +500,7 @@ function LoopConfig({
   onChange: (step: LoopStep) => void;
 }) {
   return (
-    <div className="space-y-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4">
+    <div className="space-y-4 rounded-2xl border border-border bg-surface-1 p-4">
       <Field label="Collection">
         <input
           list={datalistId}

@@ -54,12 +54,12 @@ const SPRING = { type: 'spring', stiffness: 340, damping: 32 } as const;
 function FormaLogo() {
   return (
     <div className="flex items-center gap-2">
-      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-zinc-700 to-zinc-900 shadow-md">
-        <span className="text-[10px] font-black text-white tracking-tight">
+      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary shadow-md">
+        <span className="text-[10px] font-black text-primary-foreground tracking-tight">
           F
         </span>
       </div>
-      <span className="text-sm font-black tracking-tight text-slate-300">
+      <span className="text-sm font-black tracking-tight text-foreground">
         FormaOS
       </span>
     </div>
@@ -82,16 +82,16 @@ function StepProgress({
   return (
     <div className="w-full space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground tabular-nums">
           Step {currentStep + 1} of {totalSteps}
         </span>
-        <span className="text-[10px] font-semibold text-slate-500">
+        <span className="text-[10px] font-semibold text-muted-foreground">
           {stepLabel}
         </span>
       </div>
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-1">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-zinc-400 to-zinc-600"
+          className="h-full rounded-full bg-primary"
           initial={false}
           animate={{ width: `${percent}%` }}
           transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
@@ -174,7 +174,7 @@ export function EmployeeOnboardingWizard({
   return (
     <div className="min-h-screen flex flex-col">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-20 w-full border-b border-white/5 bg-[hsl(var(--background))]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-20 w-full border-b border-border bg-[hsl(var(--background))]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-lg items-center justify-between px-5 py-4">
           <FormaLogo />
           <StepProgress
@@ -252,7 +252,7 @@ export function EmployeeOnboardingWizard({
 
       {/* ── Footer ── */}
       <footer className="py-6 text-center">
-        <p className="text-[10px] text-slate-700">
+        <p className="text-[10px] text-muted-foreground">
           FormaOS &mdash; Compliance Management Platform
         </p>
       </footer>

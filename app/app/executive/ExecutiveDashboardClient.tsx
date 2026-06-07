@@ -57,13 +57,13 @@ function severityLabel(severity: CommandSeverity) {
 function _severityStyles(severity: CommandSeverity) {
   switch (severity) {
     case 'critical':
-      return 'border-rose-400/30 bg-rose-500/10 text-rose-200';
+      return 'border-destructive/30 bg-destructive/10 text-destructive';
     case 'high':
-      return 'border-amber-400/30 bg-amber-500/10 text-amber-200';
+      return 'border-warning/30 bg-warning/10 text-warning';
     case 'watch':
-      return 'border-sky-400/30 bg-sky-500/10 text-sky-200';
+      return 'border-info/30 bg-info/10 text-info';
     default:
-      return 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200';
+      return 'border-success/30 bg-success/10 text-success';
   }
 }
 
@@ -409,7 +409,7 @@ export function ExecutiveDashboardClient({
                   <span className="text-sm text-muted-foreground">
                     Success Rate
                   </span>
-                  <span className="text-sm font-semibold text-emerald-500">
+                  <span className="text-sm font-semibold text-success">
                     {data.automationMetrics?.successRate ?? 0}%
                   </span>
                 </div>

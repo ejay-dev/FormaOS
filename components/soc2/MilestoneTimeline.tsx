@@ -8,10 +8,10 @@ interface MilestoneTimelineProps {
 }
 
 const STATUS_ICON = {
-  completed: { icon: Check, ringColor: 'border-emerald-400 bg-emerald-400/20', iconColor: 'text-emerald-400' },
-  in_progress: { icon: Clock, ringColor: 'border-amber-400 bg-amber-400/20', iconColor: 'text-amber-400' },
-  pending: { icon: Circle, ringColor: 'border-slate-600 bg-slate-600/20', iconColor: 'text-muted-foreground/60' },
-  blocked: { icon: XCircle, ringColor: 'border-rose-400 bg-rose-400/20', iconColor: 'text-rose-400' },
+  completed: { icon: Check, ringColor: 'border-success bg-success/20', iconColor: 'text-success' },
+  in_progress: { icon: Clock, ringColor: 'border-warning bg-warning/20', iconColor: 'text-warning' },
+  pending: { icon: Circle, ringColor: 'border-border bg-muted', iconColor: 'text-muted-foreground/60' },
+  blocked: { icon: XCircle, ringColor: 'border-destructive bg-destructive/20', iconColor: 'text-destructive' },
 } as const;
 
 function formatDate(dateStr: string | null): string {
@@ -24,7 +24,7 @@ export function MilestoneTimeline({ milestones }: MilestoneTimelineProps) {
   const sorted = [...milestones].sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6">
+    <div className="rounded-2xl border border-border bg-card p-6">
       <h3 className="text-lg font-semibold text-foreground">Certification Milestones</h3>
       <p className="mt-1 text-xs text-muted-foreground/60">Track your progress toward SOC 2 certification.</p>
 
@@ -42,7 +42,7 @@ export function MilestoneTimeline({ milestones }: MilestoneTimelineProps) {
                   <Icon className={`h-4 w-4 ${cfg.iconColor}`} />
                 </div>
                 {!isLast && (
-                  <div className="w-px flex-1 bg-glass-strong" />
+                  <div className="w-px flex-1 bg-border" />
                 )}
               </div>
 
@@ -54,7 +54,7 @@ export function MilestoneTimeline({ milestones }: MilestoneTimelineProps) {
                 )}
                 <div className="mt-1 flex items-center gap-3 text-[11px] text-muted-foreground/60">
                   {milestone.completedAt && (
-                    <span className="text-emerald-400">Completed {formatDate(milestone.completedAt)}</span>
+                    <span className="text-success">Completed {formatDate(milestone.completedAt)}</span>
                   )}
                   {milestone.targetDate && !milestone.completedAt && (
                     <span>Target: {formatDate(milestone.targetDate)}</span>

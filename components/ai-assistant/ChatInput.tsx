@@ -35,8 +35,8 @@ export function ChatInput({ value, onChange, onSubmit, isLoading, disabled }: Ch
   }, []);
 
   return (
-    <div className="border-t border-glass-border p-4">
-      <div className="flex items-end gap-2 rounded-xl border border-glass-border bg-glass-subtle p-2">
+    <div className="border-t border-border p-4">
+      <div className="flex items-end gap-2 rounded-xl border border-border bg-surface-1 p-2">
         <textarea
           ref={textareaRef}
           value={value}
@@ -48,14 +48,14 @@ export function ChatInput({ value, onChange, onSubmit, isLoading, disabled }: Ch
           placeholder="Ask about compliance..."
           disabled={isLoading || disabled}
           rows={1}
-          className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-foreground/90 placeholder:text-muted-foreground/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary/30 disabled:opacity-50"
+          className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-foreground/90 placeholder:text-muted-foreground/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
         />
         <button
           type="button"
           onClick={onSubmit}
           disabled={!value.trim() || isLoading || disabled}
           aria-label="Send message"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cyan-500 text-white hover:bg-cyan-600 transition-colors disabled:opacity-30 disabled:hover:bg-cyan-500"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-30 disabled:hover:bg-primary"
         >
           <Send className="h-4 w-4" aria-hidden="true" />
         </button>

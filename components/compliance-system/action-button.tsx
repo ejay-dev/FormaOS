@@ -42,26 +42,26 @@ const VARIANT_STYLES = {
   primary: {
     idle: "bg-foreground text-background shadow-lg hover:opacity-90",
     loading: "bg-foreground/80 text-background/80",
-    success: "bg-emerald-500 text-white shadow-[0_8px_24px_rgba(16,185,129,0.4)]",
-    error: "bg-rose-500 text-white shadow-[0_8px_24px_rgba(244,63,94,0.4)]",
+    success: "bg-success text-success-foreground shadow-lg",
+    error: "bg-destructive text-destructive-foreground shadow-lg",
   },
   secondary: {
-    idle: "bg-glass-subtle border border-glass-border-strong text-foreground hover:bg-glass-strong hover:border-white/30",
-    loading: "bg-glass-subtle border border-glass-border-strong text-foreground/70",
-    success: "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300",
-    error: "bg-rose-500/20 border border-rose-400/40 text-rose-300",
+    idle: "bg-surface-1 border border-edge-3 text-foreground hover:bg-surface-2 hover:border-edge-3",
+    loading: "bg-surface-1 border border-edge-3 text-foreground/70",
+    success: "bg-success/10 border border-success/20 text-success",
+    error: "bg-destructive/10 border border-destructive/20 text-destructive",
   },
   ghost: {
-    idle: "bg-transparent text-foreground/70 hover:bg-glass-subtle hover:text-foreground",
-    loading: "bg-glass-subtle text-muted-foreground",
-    success: "bg-emerald-500/10 text-emerald-300",
-    error: "bg-rose-500/10 text-rose-300",
+    idle: "bg-transparent text-foreground/70 hover:bg-surface-1 hover:text-foreground",
+    loading: "bg-surface-1 text-muted-foreground",
+    success: "bg-success/10 text-success",
+    error: "bg-destructive/10 text-destructive",
   },
   danger: {
-    idle: "bg-rose-500/10 border border-rose-400/30 text-rose-300 hover:bg-rose-500/20 hover:border-rose-400/50",
-    loading: "bg-rose-500/10 border border-rose-400/30 text-rose-300/80",
-    success: "bg-emerald-500/20 border border-emerald-400/40 text-emerald-300",
-    error: "bg-rose-500 text-white",
+    idle: "bg-destructive/10 border border-destructive/20 text-destructive hover:bg-destructive/20 hover:border-destructive/40",
+    loading: "bg-destructive/10 border border-destructive/20 text-destructive/80",
+    success: "bg-success/10 border border-success/20 text-success",
+    error: "bg-destructive text-destructive-foreground",
   },
 };
 
@@ -169,7 +169,7 @@ export function ActionButton({
       {/* Ripple effect on click */}
       {state === "loading" && (
         <span className="absolute inset-0 rounded-inherit overflow-hidden">
-          <span className="absolute inset-0 animate-pulse bg-glass-strong" />
+          <span className="absolute inset-0 animate-pulse bg-surface-2" />
         </span>
       )}
     </button>

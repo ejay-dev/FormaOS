@@ -17,9 +17,9 @@ export const metadata = {
 };
 
 const SCORE_BANDS = [
-  { min: 0.9, label: 'Healthy', color: 'text-emerald-700 bg-emerald-500/10' },
-  { min: 0.7, label: 'Watch', color: 'text-amber-700 bg-amber-500/10' },
-  { min: 0, label: 'At risk', color: 'text-red-700 bg-red-500/10' },
+  { min: 0.9, label: 'Healthy', color: 'text-success bg-success/10' },
+  { min: 0.7, label: 'Watch', color: 'text-warning bg-warning/10' },
+  { min: 0, label: 'At risk', color: 'text-destructive bg-destructive/10' },
 ] as const;
 
 function scoreBand(score: number) {
@@ -40,10 +40,10 @@ function formatDate(value: string | null): string {
 }
 
 const RISK_PILL: Record<OutstandingControl['risk_level'], string> = {
-  critical: 'bg-red-500/15 text-red-700 border-red-500/30',
-  high: 'bg-orange-500/15 text-orange-700 border-orange-500/30',
-  medium: 'bg-amber-500/15 text-amber-700 border-amber-500/30',
-  low: 'bg-slate-500/15 text-slate-700 border-slate-500/30',
+  critical: 'bg-destructive/15 text-destructive border-destructive/30',
+  high: 'bg-warning/15 text-warning border-warning/30',
+  medium: 'bg-warning/15 text-warning border-warning/30',
+  low: 'bg-muted text-muted-foreground border-border',
 };
 
 async function HealthBody({ orgId }: { orgId: string }) {
@@ -56,7 +56,7 @@ async function HealthBody({ orgId }: { orgId: string }) {
 
   if (overall.framework_count === 0) {
     return (
-      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-8 text-center">
+      <div className="rounded-2xl border border-border bg-surface-1 p-8 text-center">
         <ShieldCheck className="mx-auto h-8 w-8 text-muted-foreground" />
         <div className="mt-3 text-sm font-semibold">No frameworks enabled yet</div>
         <p className="mt-1 text-xs text-muted-foreground">
@@ -73,7 +73,7 @@ async function HealthBody({ orgId }: { orgId: string }) {
   return (
     <div className="space-y-6">
       <section
-        className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6 shadow-premium-lg"
+        className="rounded-2xl border border-border bg-card p-6 shadow-premium-lg"
         data-testid="health-overall-section"
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -107,7 +107,7 @@ async function HealthBody({ orgId }: { orgId: string }) {
       </section>
 
       <section
-        className="rounded-2xl border border-glass-border bg-glass-subtle p-6"
+        className="rounded-2xl border border-border bg-surface-1 p-6"
         data-testid="health-frameworks-section"
       >
         <h2 className="text-lg font-semibold">Per-framework breakdown</h2>
@@ -123,7 +123,7 @@ async function HealthBody({ orgId }: { orgId: string }) {
       </section>
 
       <section
-        className="rounded-2xl border border-glass-border bg-glass-subtle p-6"
+        className="rounded-2xl border border-border bg-surface-1 p-6"
         data-testid="health-outstanding-section"
       >
         <div className="flex items-center justify-between">
@@ -143,7 +143,7 @@ async function HealthBody({ orgId }: { orgId: string }) {
         </div>
 
         {outstanding.length === 0 ? (
-          <div className="mt-4 rounded-lg border border-dashed border-glass-border p-6 text-center text-sm text-muted-foreground">
+          <div className="mt-4 rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
             Nothing outstanding — every per-control evaluation is in the pass or manual band.
           </div>
         ) : (
@@ -151,9 +151,9 @@ async function HealthBody({ orgId }: { orgId: string }) {
             {outstanding.map((row, idx) => (
               <li
                 key={`${row.framework_id}-${row.control_key}`}
-                className="flex items-center gap-3 rounded-lg border border-glass-border bg-card/60 px-3 py-2"
+                className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2"
               >
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-glass-subtle text-xs font-semibold">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-surface-1 text-xs font-semibold">
                   {idx + 1}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -175,8 +175,8 @@ async function HealthBody({ orgId }: { orgId: string }) {
                 <span
                   className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-semibold uppercase tracking-wide ${
                     row.status === 'fail'
-                      ? 'bg-red-500/15 text-red-700 border-red-500/30'
-                      : 'bg-amber-500/15 text-amber-700 border-amber-500/30'
+                      ? 'bg-destructive/15 text-destructive border-destructive/30'
+                      : 'bg-warning/15 text-warning border-warning/30'
                   }`}
                 >
                   {row.status}
@@ -193,7 +193,7 @@ async function HealthBody({ orgId }: { orgId: string }) {
 function TrendChart({ trend }: { trend: HealthTrendPoint[] }) {
   if (trend.length === 0) {
     return (
-      <div className="mt-5 rounded-lg border border-dashed border-glass-border p-4 text-xs text-muted-foreground" data-testid="health-trend-empty">
+      <div className="mt-5 rounded-lg border border-dashed border-border p-4 text-xs text-muted-foreground" data-testid="health-trend-empty">
         Trend chart will populate after the first weekly snapshot
         (/api/cron/compliance-health-snapshot runs Monday at 07:00 UTC).
       </div>
@@ -218,12 +218,12 @@ function TrendChart({ trend }: { trend: HealthTrendPoint[] }) {
   const delta = lastPoint.overall_score - firstPoint.overall_score;
 
   return (
-    <div className="mt-5 rounded-lg border border-glass-border bg-glass-subtle p-4" data-testid="health-trend-chart">
+    <div className="mt-5 rounded-lg border border-border bg-surface-1 p-4" data-testid="health-trend-chart">
       <div className="flex items-center justify-between text-xs">
         <p className="font-medium uppercase tracking-wider text-muted-foreground">
           {trend.length}-week trend
         </p>
-        <p className={`font-semibold ${delta >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+        <p className={`font-semibold ${delta >= 0 ? 'text-success' : 'text-destructive'}`}>
           {delta >= 0 ? '+' : ''}
           {formatPercent(delta)}
         </p>
@@ -254,10 +254,10 @@ function StatusTile({
   tone: 'success' | 'warning' | 'danger' | 'neutral';
 }) {
   const colors: Record<typeof tone, string> = {
-    success: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700',
-    warning: 'border-amber-500/30 bg-amber-500/10 text-amber-700',
-    danger: 'border-red-500/30 bg-red-500/10 text-red-700',
-    neutral: 'border-slate-500/30 bg-slate-500/10 text-slate-700',
+    success: 'border-success/30 bg-success/10 text-success',
+    warning: 'border-warning/30 bg-warning/10 text-warning',
+    danger: 'border-destructive/30 bg-destructive/10 text-destructive',
+    neutral: 'border-border bg-muted text-muted-foreground',
   };
   return (
     <div
@@ -274,7 +274,7 @@ function FrameworkCard({ framework }: { framework: FrameworkHealth }) {
   const band = scoreBand(framework.score);
   return (
     <div
-      className="rounded-xl border border-glass-border bg-card/60 p-4"
+      className="rounded-xl border border-border bg-card p-4"
       data-testid={`health-framework-${framework.slug}`}
     >
       <div className="flex items-center justify-between gap-2">
@@ -295,10 +295,10 @@ function FrameworkCard({ framework }: { framework: FrameworkHealth }) {
       </div>
 
       <div className="mt-3 grid grid-cols-4 gap-1.5 text-xs">
-        <Mini label="Pass" value={framework.status_counts.pass} color="text-emerald-700" />
-        <Mini label="Partial" value={framework.status_counts.partial} color="text-amber-700" />
-        <Mini label="Fail" value={framework.status_counts.fail} color="text-red-700" />
-        <Mini label="Manual" value={framework.status_counts.not_evaluated} color="text-slate-700" />
+        <Mini label="Pass" value={framework.status_counts.pass} color="text-success" />
+        <Mini label="Partial" value={framework.status_counts.partial} color="text-warning" />
+        <Mini label="Fail" value={framework.status_counts.fail} color="text-destructive" />
+        <Mini label="Manual" value={framework.status_counts.not_evaluated} color="text-muted-foreground" />
       </div>
     </div>
   );
@@ -306,7 +306,7 @@ function FrameworkCard({ framework }: { framework: FrameworkHealth }) {
 
 function Mini({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-center">
+    <div className="rounded-md border border-border bg-surface-1 px-2 py-1 text-center">
       <p className={`text-sm font-semibold leading-none ${color}`}>{value}</p>
       <p className="mt-0.5 text-[9px] uppercase tracking-wide text-muted-foreground">{label}</p>
     </div>

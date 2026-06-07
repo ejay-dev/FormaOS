@@ -91,36 +91,36 @@ export function MobileReadinessCheckpoint({
   expiringCertsCount: number;
 }) {
   return (
-    <div className="rounded-2xl border border-cyan-400/30 bg-cyan-500/10 p-4 lg:hidden">
+    <div className="rounded-2xl border border-border bg-card p-4 lg:hidden">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-cyan-200">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             Readiness Checkpoint
           </p>
           <p className="mt-1 text-sm text-foreground">
             One-screen status before you dive into workflows.
           </p>
         </div>
-        <Shield className="h-5 w-5 text-cyan-300" />
+        <Shield className="h-5 w-5 text-muted-foreground" />
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-lg border border-glass-border bg-glass-subtle px-2 py-3">
-          <p className="text-lg font-bold text-foreground">
+        <div className="rounded-lg border border-border bg-surface-1 px-2 py-3">
+          <p className="text-lg font-bold tabular-nums text-foreground">
             {complianceScore}%
           </p>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Score
           </p>
         </div>
-        <div className="rounded-lg border border-glass-border bg-glass-subtle px-2 py-3">
-          <p className="text-lg font-bold text-foreground">{openTasksCount}</p>
+        <div className="rounded-lg border border-border bg-surface-1 px-2 py-3">
+          <p className="text-lg font-bold tabular-nums text-foreground">{openTasksCount}</p>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Open Tasks
           </p>
         </div>
-        <div className="rounded-lg border border-glass-border bg-glass-subtle px-2 py-3">
-          <p className="text-lg font-bold text-foreground">
+        <div className="rounded-lg border border-border bg-surface-1 px-2 py-3">
+          <p className="text-lg font-bold tabular-nums text-foreground">
             {expiringCertsCount}
           </p>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -132,19 +132,19 @@ export function MobileReadinessCheckpoint({
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href="/app/tasks"
-          className="rounded-lg border border-glass-border-strong bg-glass-subtle px-3 py-1.5 text-xs font-medium text-foreground/90"
+          className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Tasks
         </Link>
         <Link
           href="/app/vault/review"
-          className="rounded-lg border border-glass-border-strong bg-glass-subtle px-3 py-1.5 text-xs font-medium text-foreground/90"
+          className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Evidence Review
         </Link>
         <Link
           href="/app/audit-trail"
-          className="rounded-lg border border-glass-border-strong bg-glass-subtle px-3 py-1.5 text-xs font-medium text-foreground/90"
+          className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Audit Stream
         </Link>
@@ -262,13 +262,13 @@ export function AttentionRail({
       <div
         role="status"
         aria-live="polite"
-        className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/5 px-3 py-1"
+        className="inline-flex items-center gap-2 rounded-full border border-success/20 bg-success/10 px-3 py-1"
       >
         <CheckCircle2
-          className="h-3.5 w-3.5 shrink-0 text-emerald-400"
+          className="h-3.5 w-3.5 shrink-0 text-success"
           aria-hidden
         />
-        <p className="text-[12px] font-medium text-emerald-300">
+        <p className="text-[12px] font-medium text-success">
           No critical signals
           {parts.length > 0 && (
             <span className="ml-1.5 text-muted-foreground">
@@ -281,18 +281,18 @@ export function AttentionRail({
   }
 
   const urgencyStyles: Record<AttentionItem['urgency'], string> = {
-    critical: 'border-rose-400/30 bg-rose-500/10 hover:bg-rose-500/15',
-    warning: 'border-amber-400/25 bg-amber-500/10 hover:bg-amber-500/15',
+    critical: 'border-destructive/20 bg-destructive/10 hover:bg-destructive/15',
+    warning: 'border-warning/20 bg-warning/10 hover:bg-warning/15',
   };
 
   const urgencyIconColor: Record<AttentionItem['urgency'], string> = {
-    critical: 'text-rose-400',
-    warning: 'text-amber-400',
+    critical: 'text-destructive',
+    warning: 'text-warning',
   };
 
   const urgencyLabelColor: Record<AttentionItem['urgency'], string> = {
-    critical: 'text-rose-300',
-    warning: 'text-amber-300',
+    critical: 'text-destructive',
+    warning: 'text-warning',
   };
 
   return (
@@ -307,7 +307,7 @@ export function AttentionRail({
             <Link
               key={item.id}
               href={item.href}
-              className={`group flex items-center gap-2.5 rounded-lg border px-3 py-2.5 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--app-primary))]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--background))] ${urgencyStyles[item.urgency]}`}
+              className={`group flex items-center gap-2.5 rounded-lg border px-3 py-2.5 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--background))] ${urgencyStyles[item.urgency]}`}
             >
               <Icon
                 className={`h-3.5 w-3.5 shrink-0 ${urgencyIconColor[item.urgency]}`}

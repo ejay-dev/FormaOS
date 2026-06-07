@@ -72,7 +72,7 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
         </div>
         <Link
           href="/admin/orgs"
-          className="text-sm text-sky-300 hover:text-sky-200"
+          className="text-sm text-primary hover:text-primary/80"
         >
           Back to orgs
         </Link>
@@ -223,8 +223,8 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
                       key={key}
                       className={`rounded-full border px-2 py-1 text-[11px] ${
                         done
-                          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-                          : 'border-amber-500/30 bg-amber-500/10 text-amber-200'
+                          ? 'border-success/30 bg-success/10 text-success'
+                          : 'border-warning/30 bg-warning/10 text-warning'
                       }`}
                     >
                       {key}
@@ -511,12 +511,12 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
               {customerHealth?.billingRisk?.reasons?.map((reason: string) => (
                 <div
                   key={reason}
-                  className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4"
+                  className="rounded-xl border border-warning/20 bg-warning/5 p-4"
                 >
-                  <p className="text-sm font-medium text-amber-100">
+                  <p className="text-sm font-medium text-warning">
                     Billing / activation risk
                   </p>
-                  <p className="mt-1 text-xs text-amber-100/80">{reason}</p>
+                  <p className="mt-1 text-xs text-warning/80">{reason}</p>
                 </div>
               ))}
               {sessions.length === 0 && security.length === 0 ? (
@@ -558,7 +558,7 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
                       {job.file_url ? (
                         <a
                           href={job.file_url}
-                          className="mt-2 inline-block text-xs text-sky-300 hover:text-sky-200"
+                          className="mt-2 inline-block text-xs text-primary hover:text-primary/80"
                           target="_blank"
                           rel="noreferrer"
                         >

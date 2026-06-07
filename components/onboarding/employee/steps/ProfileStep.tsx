@@ -42,16 +42,16 @@ export function ProfileStep({
     <div className="flex flex-col space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Header */}
       <div className="space-y-2">
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1">
-          <User className="h-3 w-3 text-emerald-400" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">
+        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1">
+          <User className="h-3 w-3 text-muted-foreground" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
             Almost there
           </span>
         </div>
-        <h2 className="text-2xl font-black text-slate-100 leading-tight">
+        <h2 className="text-2xl font-black text-foreground leading-tight">
           Set up your profile.
         </h2>
-        <p className="text-sm text-slate-400 leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           Your name appears in progress notes, task assignments, and audit logs.
           Phone is optional — it helps your coordinator reach you directly.
         </p>
@@ -59,7 +59,7 @@ export function ProfileStep({
 
       {/* Error banner */}
       {saveError && (
-        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           Something went wrong saving your profile. Please try again.
         </div>
       )}
@@ -70,13 +70,13 @@ export function ProfileStep({
         <div className="space-y-2">
           <label
             htmlFor="displayName"
-            className="text-xs font-bold uppercase tracking-widest text-slate-400"
+            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
           >
-            Display name <span className="text-red-400">*</span>
+            Display name <span className="text-destructive">*</span>
           </label>
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <User className="h-4 w-4 text-slate-500" />
+              <User className="h-4 w-4 text-muted-foreground" />
             </div>
             <input
               id="displayName"
@@ -89,17 +89,17 @@ export function ProfileStep({
               autoComplete="name"
               placeholder="Your full name"
               className={[
-                'w-full rounded-xl border bg-surface-1 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-600',
+                'w-full rounded-xl border bg-surface-1 py-3.5 pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground',
                 'outline-none transition-all duration-150',
-                'focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/15',
+                'focus:border-ring focus:ring-2 focus:ring-ring',
                 nameError
-                  ? 'border-red-500/60 focus:border-red-500/60'
-                  : 'border-edge-2 hover:border-slate-600',
+                  ? 'border-destructive/60 focus:border-destructive/60'
+                  : 'border-edge-2 hover:border-border',
               ].join(' ')}
             />
           </div>
           {nameError && (
-            <p className="text-xs text-red-400">
+            <p className="text-xs text-destructive">
               Please enter your display name.
             </p>
           )}
@@ -109,16 +109,16 @@ export function ProfileStep({
         <div className="space-y-2">
           <label
             htmlFor="phone"
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400"
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground"
           >
             Phone
-            <span className="text-[9px] font-medium normal-case tracking-normal text-slate-600">
+            <span className="text-[9px] font-medium normal-case tracking-normal text-muted-foreground">
               Optional
             </span>
           </label>
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-              <Phone className="h-4 w-4 text-slate-500" />
+              <Phone className="h-4 w-4 text-muted-foreground" />
             </div>
             <input
               id="phone"
@@ -128,7 +128,7 @@ export function ProfileStep({
               maxLength={20}
               autoComplete="tel"
               placeholder="Mobile or work number"
-              className="w-full rounded-xl border border-edge-2 bg-surface-1 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-600 outline-none transition-all duration-150 hover:border-slate-600 focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/15"
+              className="w-full rounded-xl border border-edge-2 bg-surface-1 py-3.5 pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all duration-150 hover:border-border focus:border-ring focus:ring-2 focus:ring-ring"
             />
           </div>
         </div>
@@ -139,7 +139,7 @@ export function ProfileStep({
             type="button"
             onClick={onBack}
             disabled={pending}
-            className="flex items-center gap-2 rounded-2xl border border-edge-2 bg-surface-1 px-5 py-3.5 text-sm font-semibold text-slate-300 transition-all hover:bg-surface-2 active:scale-[0.98] disabled:opacity-50"
+            className="flex items-center gap-2 rounded-2xl border border-edge-2 bg-surface-1 px-5 py-3.5 text-sm font-semibold text-foreground transition-all hover:bg-surface-2 active:scale-[0.98] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
@@ -147,7 +147,7 @@ export function ProfileStep({
           <button
             type="submit"
             disabled={pending}
-            className="group flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-foreground px-6 py-3.5 text-sm font-bold text-background shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+            className="group flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-foreground px-6 py-3.5 text-sm font-bold text-background shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {pending ? (
               <>
@@ -169,7 +169,7 @@ export function ProfileStep({
         type="button"
         onClick={onSkip}
         disabled={pending}
-        className="text-xs text-slate-500 underline-offset-2 hover:text-slate-400 hover:underline disabled:opacity-50 mx-auto block"
+        className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline disabled:opacity-50 mx-auto block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
       >
         Skip this step
       </button>

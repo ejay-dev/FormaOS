@@ -8,19 +8,19 @@ export interface JourneySummarySegment {
 
 const STROKE: Record<JourneySummarySegment['tone'], string> = {
   primary: 'stroke-primary',
-  success: 'stroke-emerald-500',
-  warning: 'stroke-amber-500',
-  danger: 'stroke-red-500',
-  info: 'stroke-blue-500',
+  success: 'stroke-success',
+  warning: 'stroke-warning',
+  danger: 'stroke-destructive',
+  info: 'stroke-info',
   muted: 'stroke-muted-foreground/40',
 };
 
 const DOT: Record<JourneySummarySegment['tone'], string> = {
   primary: 'bg-primary',
-  success: 'bg-emerald-500',
-  warning: 'bg-amber-500',
-  danger: 'bg-red-500',
-  info: 'bg-blue-500',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  danger: 'bg-destructive',
+  info: 'bg-info',
   muted: 'bg-muted-foreground/40',
 };
 
@@ -59,7 +59,7 @@ export function JourneySummary({
   });
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-[hsl(var(--card))] p-5">
+    <div className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold text-foreground">{title}</h3>
@@ -87,7 +87,7 @@ export function JourneySummary({
               cx="64"
               cy="64"
               r={radius}
-              className="stroke-glass-border"
+              className="stroke-border"
               strokeWidth="14"
               fill="none"
               opacity={0.3}

@@ -151,14 +151,14 @@ export default async function StaffDashboardPage() {
         <div className="flex flex-wrap gap-3">
           <Link
             href="/app/progress-notes"
-            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-surface-2 px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-3"
           >
             New Progress Note
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             href="/app/tasks"
-            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-surface-2 px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-3"
           >
             View Tasks
             <ArrowRight className="h-4 w-4" />
@@ -167,7 +167,7 @@ export default async function StaffDashboardPage() {
       </div>
 
       {overdueTasks.length > 0 && (
-        <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-6 py-4 text-sm text-rose-200">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-6 py-4 text-sm text-destructive">
           <span className="inline-flex items-center gap-2 font-semibold">
             <AlertTriangle className="h-4 w-4" />
             {overdueTasks.length} overdue task
@@ -179,7 +179,7 @@ export default async function StaffDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <ClipboardCheck className="h-4 w-4 text-sky-300" />
+            <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
             Assigned Tasks
           </div>
           <div className="mt-4 space-y-3">
@@ -205,7 +205,7 @@ export default async function StaffDashboardPage() {
 
         <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <Users className="h-4 w-4 text-emerald-300" />
+            <Users className="h-4 w-4 text-muted-foreground" />
             Patient Caseload
           </div>
           <div className="mt-4 space-y-3">
@@ -216,7 +216,7 @@ export default async function StaffDashboardPage() {
                 <Link
                   key={patient.id}
                   href={`/app/patients/${patient.id}`}
-                  className="flex items-center justify-between rounded-xl border border-edge-2 bg-surface-1 px-4 py-3 text-sm text-foreground hover:bg-glass-strong"
+                  className="flex items-center justify-between rounded-xl border border-edge-2 bg-surface-1 px-4 py-3 text-sm text-foreground hover:bg-surface-2"
                 >
                   <span>{patient.full_name}</span>
                   <span className="text-xs uppercase tracking-widest text-muted-foreground">
@@ -230,7 +230,7 @@ export default async function StaffDashboardPage() {
 
         <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <FileText className="h-4 w-4 text-indigo-300" />
+            <FileText className="h-4 w-4 text-muted-foreground" />
             Recent Notes
           </div>
           <div className="mt-4 space-y-3">
@@ -258,7 +258,7 @@ export default async function StaffDashboardPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <AlertTriangle className="h-4 w-4 text-rose-300" />
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
             Open Incidents
           </div>
           <div className="mt-4 space-y-3">
@@ -270,7 +270,7 @@ export default async function StaffDashboardPage() {
                   key={incident.id}
                   className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
-                  <div className="text-xs uppercase tracking-widest text-rose-300">
+                  <div className="text-xs uppercase tracking-widest text-destructive">
                     {incident.severity}
                   </div>
                   <div className="text-xs text-foreground/70">
@@ -284,7 +284,7 @@ export default async function StaffDashboardPage() {
 
         <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <CalendarDays className="h-4 w-4 text-sky-300" />
+            <CalendarDays className="h-4 w-4 text-muted-foreground" />
             Recent Shifts
           </div>
           <div className="mt-4 space-y-3">

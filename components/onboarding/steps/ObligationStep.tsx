@@ -108,7 +108,7 @@ export function ObligationStep({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               disabled={created}
-              className="w-full rounded-lg border border-border bg-background pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--wire-action)]/50 disabled:opacity-60"
+              className="w-full rounded-lg border border-border bg-background pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
             />
           </div>
         </div>
@@ -127,7 +127,7 @@ export function ObligationStep({
               value={framework}
               onChange={(e) => setFramework(e.target.value)}
               disabled={created}
-              className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--wire-action)]/50 disabled:opacity-60"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
             />
           </div>
           <div>
@@ -143,7 +143,7 @@ export function ObligationStep({
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
               disabled={created}
-              className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--wire-action)]/50 disabled:opacity-60"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
             />
           </div>
         </div>
@@ -162,13 +162,13 @@ export function ObligationStep({
             onChange={(e) => setOwner(e.target.value)}
             placeholder="e.g. Compliance Manager"
             disabled={created}
-            className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--wire-action)]/50 disabled:opacity-60"
+            className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
           />
         </div>
       </div>
 
       {created && (
-        <div className="rounded-lg border border-[var(--wire-success)]/30 bg-[var(--wire-success)]/10 p-3 text-sm text-[var(--wire-success)]">
+        <div className="rounded-lg border border-success/20 bg-success/10 p-3 text-sm text-success">
           Obligation created successfully!
         </div>
       )}
@@ -187,7 +187,7 @@ export function ObligationStep({
           <button
             type="button"
             onClick={onNext}
-            className="inline-flex items-center gap-2 rounded-lg bg-[var(--wire-action)] px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Continue
           </button>
@@ -196,7 +196,7 @@ export function ObligationStep({
             type="button"
             onClick={handleCreate}
             disabled={isCreating || !title.trim()}
-            className="inline-flex items-center gap-2 rounded-lg bg-[var(--wire-action)] px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {isCreating ? 'Creating...' : 'Create Obligation'}
           </button>

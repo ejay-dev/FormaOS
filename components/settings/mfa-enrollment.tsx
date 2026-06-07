@@ -124,9 +124,9 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
   };
 
   return (
-    <section className="rounded-[2rem] border border-glass-border bg-glass-subtle p-8 shadow-sm">
+    <section className="rounded-[2rem] border border-border bg-surface-1 p-8 shadow-sm">
       <div className="flex items-center gap-4">
-        <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-300 flex items-center justify-center">
+        <div className="h-12 w-12 rounded-2xl bg-success/10 text-success flex items-center justify-center">
           <ShieldCheck className="h-6 w-6" />
         </div>
         <div>
@@ -135,7 +135,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               Multi-Factor Authentication
             </h3>
             {required && (
-              <span className="rounded-full border border-amber-400/40 bg-amber-500/10 px-2.5 py-1 text-xs font-black uppercase tracking-widest text-amber-200">
+              <span className="rounded-full border border-warning/40 bg-warning/10 px-2.5 py-1 text-xs font-black uppercase tracking-widest text-warning">
                 Required
               </span>
             )}
@@ -147,22 +147,22 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
       </div>
 
       {error && (
-        <div className="mt-6 rounded-lg border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-xs text-rose-200">
+        <div className="mt-6 rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="mt-6 rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-xs text-emerald-200">
+        <div className="mt-6 rounded-lg border border-success/40 bg-success/10 px-4 py-3 text-xs text-success">
           {success}
         </div>
       )}
 
       <div className="mt-6 flex flex-col gap-4">
-        <div className="flex items-center justify-between rounded-xl border border-glass-border bg-glass-subtle px-4 py-3">
+        <div className="flex items-center justify-between rounded-xl border border-border bg-surface-1 px-4 py-3">
           <div className="flex items-center gap-3">
             <CheckCircle2
-              className={`h-5 w-5 ${enabled ? 'text-emerald-400' : 'text-muted-foreground/60'}`}
+              className={`h-5 w-5 ${enabled ? 'text-success' : 'text-muted-foreground/60'}`}
             />
             <span className="text-sm font-semibold text-foreground">
               {enabled ? 'MFA Enabled' : 'MFA Not Enabled'}
@@ -173,7 +173,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               type="button"
               onClick={disableMFA}
               disabled={loading || disableMode}
-              className="text-xs font-semibold text-foreground/70 hover:text-white disabled:opacity-50"
+              className="text-xs font-semibold text-foreground/70 hover:text-foreground disabled:opacity-50"
             >
               Disable
             </button>
@@ -182,7 +182,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               type="button"
               onClick={startSetup}
               disabled={loading}
-              className="text-xs font-semibold text-emerald-300 hover:text-emerald-200"
+              className="text-xs font-semibold text-primary hover:text-primary/80"
             >
               Enable MFA
             </button>
@@ -190,8 +190,8 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
         </div>
 
         {enabled && disableMode && (
-          <div className="rounded-xl border border-rose-400/30 bg-rose-500/5 p-5 space-y-3">
-            <p className="text-xs text-rose-100/80">
+          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 space-y-3">
+            <p className="text-xs text-destructive">
               Enter your current authenticator code (or one backup code) to
               disable MFA. A password alone is not sufficient.
             </p>
@@ -200,14 +200,14 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               onChange={(event) => setDisableCode(event.target.value)}
               placeholder="123456"
               autoComplete="one-time-code"
-              className="w-full rounded-lg border border-glass-border bg-glass-subtle px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-rose-400/60 focus:outline-none focus:ring-2 focus:ring-rose-400/20"
+              className="w-full rounded-lg border border-border bg-surface-1 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-destructive/60 focus:outline-none focus:ring-2 focus:ring-destructive/20"
             />
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={submitDisableMFA}
                 disabled={loading}
-                className="inline-flex items-center gap-2 rounded-lg bg-rose-500/90 px-4 py-2 text-xs font-semibold text-rose-950 hover:bg-rose-400 transition disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-lg bg-destructive px-4 py-2 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 transition disabled:opacity-50"
               >
                 Disable MFA
               </button>
@@ -215,7 +215,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
                 type="button"
                 onClick={cancelDisableMFA}
                 disabled={loading}
-                className="text-xs font-semibold text-foreground/70 hover:text-white"
+                className="text-xs font-semibold text-foreground/70 hover:text-foreground"
               >
                 Cancel
               </button>
@@ -224,9 +224,9 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
         )}
 
         {!enabled && qrCode && (
-          <div className="grid grid-cols-1 lg:grid-cols-[200px,1fr] gap-6 rounded-xl border border-glass-border bg-glass-subtle p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[200px,1fr] gap-6 rounded-xl border border-border bg-surface-1 p-6">
             <div className="flex flex-col items-center gap-3">
-              <div className="h-40 w-40 rounded-xl border border-glass-border bg-white p-3">
+              <div className="h-40 w-40 rounded-xl border border-border bg-white p-3">
                 <img src={qrCode} alt="MFA QR Code" className="h-full w-full" />
               </div>
               <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-widest">
@@ -235,7 +235,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               </div>
             </div>
             <div className="space-y-4">
-              <div className="rounded-lg border border-glass-border bg-slate-900/40 px-4 py-3 text-xs text-foreground/70">
+              <div className="rounded-lg border border-border bg-surface-2 px-4 py-3 text-xs text-foreground/70">
                 <div className="flex items-center gap-2 font-semibold text-foreground/90">
                   <KeyRound className="h-3 w-3" />
                   Backup Codes
@@ -243,7 +243,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
                 <p className="mt-2 text-[11px] text-muted-foreground">
                   Store these codes safely. Each code can be used once.
                 </p>
-                <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-[11px] text-emerald-200">
+                <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-[11px] text-foreground">
                   {backupCodes.map((code) => (
                     <span key={code}>{code}</span>
                   ))}
@@ -258,7 +258,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
                   value={token}
                   onChange={(event) => setToken(event.target.value)}
                   placeholder="123456"
-                  className="w-full rounded-lg border border-glass-border bg-glass-subtle px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-emerald-400/60 focus:outline-none focus:ring-2 focus:ring-emerald-400/20"
+                  className="w-full rounded-lg border border-border bg-surface-1 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
 
@@ -266,7 +266,7 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
                 type="button"
                 onClick={verifyToken}
                 disabled={loading}
-                className="inline-flex items-center gap-2 rounded-lg bg-emerald-500/90 px-4 py-2 text-xs font-semibold text-emerald-950 hover:bg-emerald-400 transition"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition"
               >
                 <CheckCircle2 className="h-4 w-4" />
                 Verify & Enable MFA
@@ -276,11 +276,11 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
         )}
 
         {!enabled && !qrCode && (
-          <div className="flex items-start gap-3 rounded-xl border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-100">
-            <AlertTriangle className="h-4 w-4 text-amber-300 mt-0.5" />
+          <div className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 text-xs text-warning">
+            <AlertTriangle className="h-4 w-4 text-warning mt-0.5" />
             <div>
               <p className="font-semibold">MFA Required for Privileged Roles</p>
-              <p className="mt-1 text-amber-100/80">
+              <p className="mt-1 text-warning/80">
                 Enable MFA to access sensitive enterprise features.
               </p>
             </div>

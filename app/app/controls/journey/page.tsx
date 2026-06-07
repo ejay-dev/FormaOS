@@ -64,7 +64,7 @@ async function ControlsJourney({ orgId }: { orgId: string }) {
   if (controls.length === 0) {
     return (
       <div className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-sm rounded-xl border border-glass-border bg-glass-subtle p-6 text-center">
+        <div className="w-full max-w-sm rounded-xl border border-border bg-surface-1 p-6 text-center">
           <ShieldCheck className="mx-auto h-5 w-5 text-muted-foreground" />
           <div className="mt-3 text-sm font-semibold">No controls yet</div>
           <p className="mt-1 text-xs text-muted-foreground">
@@ -139,7 +139,7 @@ async function ControlsJourney({ orgId }: { orgId: string }) {
 
   return (
     <>
-      <div className="flex items-center gap-3 border-b border-border bg-[hsl(var(--card))]/60 px-4 py-2 sm:px-6">
+      <div className="flex items-center gap-3 border-b border-border bg-card px-4 py-2 sm:px-6">
         <h1 className="shrink-0 text-sm font-semibold tracking-tight">
           Controls Journey
         </h1>
@@ -174,23 +174,23 @@ async function ControlsJourney({ orgId }: { orgId: string }) {
           compliant · {total} total
         </span>
         <span
-          className="hidden items-center gap-1 text-[10px] uppercase tracking-wider text-emerald-400/80 sm:inline-flex"
+          className="hidden items-center gap-1 text-[10px] uppercase tracking-wider text-info sm:inline-flex"
           title="Live — updates stream from the evaluator"
         >
-          <Radio className="h-3 w-3 animate-pulse" />
+          <Radio className="h-3 w-3" />
           Live
         </span>
         <div className="ml-auto flex items-center gap-1.5">
           <Link
             href="/app/controls"
-            className="inline-flex items-center gap-1 rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-glass-strong hover:text-foreground"
+            className="inline-flex items-center gap-1 rounded-md border border-border bg-surface-1 px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-surface-2 hover:text-foreground"
           >
             <LayoutList className="h-3 w-3" />
             List
           </Link>
           <Link
             href="/app/compliance/frameworks"
-            className="rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-glass-strong hover:text-foreground"
+            className="rounded-md border border-border bg-surface-1 px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-surface-2 hover:text-foreground"
           >
             Frameworks
           </Link>

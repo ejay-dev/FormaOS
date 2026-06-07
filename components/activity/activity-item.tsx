@@ -39,7 +39,7 @@ export function ActivityItem({
           router.push(path);
         }
       }}
-      className="group rounded-[1.75rem] border border-glass-border bg-white/[0.04] px-5 py-4 transition hover:border-sky-400/20 hover:bg-white/[0.06]"
+      className="group rounded-[1.75rem] border border-border bg-surface-1 px-5 py-4 transition hover:border-primary/30 hover:bg-surface-2"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -48,7 +48,7 @@ export function ActivityItem({
               {describeActivity(item)}
             </span>
             {groupedCount && groupedCount > 1 && (
-              <span className="rounded-full border border-glass-border bg-white/[0.06] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/70">
+              <span className="rounded-full border border-edge-2 bg-surface-2 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] text-foreground/70">
                 {groupedCount} events
               </span>
             )}
@@ -56,8 +56,8 @@ export function ActivityItem({
               <span
                 className={`rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
                   delta >= 0
-                    ? 'bg-emerald-500/15 text-emerald-200'
-                    : 'bg-rose-500/15 text-rose-200'
+                    ? 'bg-success/10 text-success'
+                    : 'bg-destructive/10 text-destructive'
                 }`}
               >
                 {delta >= 0 ? '+' : ''}

@@ -10,7 +10,7 @@ import {
   AlertTriangle,
   Calendar,
   Target,
-  Sparkles,
+  Brain,
 } from 'lucide-react';
 import { useFeatureFlag } from '@/lib/feature-flags';
 
@@ -79,7 +79,7 @@ function MiniSparkline({ data, color = '#10b981' }: { data: number[]; color?: st
 function TrendIndicator({ value, reverse = false }: { value: number; reverse?: boolean }) {
   if (value === 0) {
     return (
-      <div className="flex items-center gap-1 text-gray-400">
+      <div className="flex items-center gap-1 text-muted-foreground">
         <Minus className="h-4 w-4" />
         <span className="text-sm font-medium">No change</span>
       </div>
@@ -88,12 +88,12 @@ function TrendIndicator({ value, reverse = false }: { value: number; reverse?: b
 
   const isPositive = reverse ? value < 0 : value > 0;
   const Icon = isPositive ? TrendingUp : TrendingDown;
-  const colorClass = isPositive ? 'text-emerald-400' : 'text-red-400';
+  const colorClass = isPositive ? 'text-success' : 'text-destructive';
 
   return (
     <div className={`flex items-center gap-1 ${colorClass}`}>
       <Icon className="h-4 w-4" />
-      <span className="text-sm font-medium">
+      <span className="text-sm font-medium tabular-nums">
         {Math.abs(value)}% {isPositive ? 'up' : 'down'}
       </span>
     </div>
@@ -146,9 +146,9 @@ export function ComplianceIntelligenceSummary() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-glass-border bg-white/[0.04] p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
+      <div className="rounded-2xl border border-border bg-card p-6" style={{ minHeight: '400px' }}>
         <div className="animate-pulse space-y-4">
-          <div className="h-6 w-48 rounded bg-glass-strong" />
+          <div className="h-6 w-48 rounded bg-surface-2" />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div className="h-24 rounded-xl bg-surface-1" />
             <div className="h-24 rounded-xl bg-surface-1" />
@@ -168,15 +168,15 @@ export function ComplianceIntelligenceSummary() {
   if (error && (error.code === 'AUTH_REQUIRED' || error.code === 'AUTH_ERROR')) {
     return (
       <div
-        className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-orange-500/5 p-6 backdrop-blur-sm"
+        className="rounded-2xl border border-warning/20 bg-warning/10 p-6"
         style={{ minHeight: '120px' }}
       >
         <div className="flex items-center gap-3">
-          <AlertTriangle className="h-5 w-5 text-amber-400" />
+          <AlertTriangle className="h-5 w-5 text-warning" />
           <div>
-            <h3 className="text-sm font-semibold text-white">Session Expired</h3>
-            <p className="mt-1 text-sm text-gray-400">
-              Please <a href="/auth/signin" className="text-amber-400 underline hover:text-amber-300">sign in again</a> to view intelligence insights.
+            <h3 className="text-sm font-semibold text-foreground">Session Expired</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Please <a href="/auth/signin" className="text-warning underline hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">sign in again</a> to view intelligence insights.
             </p>
           </div>
         </div>
@@ -188,14 +188,14 @@ export function ComplianceIntelligenceSummary() {
   if (error && (error.code === 'NO_ORGANIZATION' || error.code === 'ORG_LOOKUP_ERROR' || error.code === 'ORG_ERROR')) {
     return (
       <div
-        className="rounded-2xl border border-red-500/20 bg-gradient-to-br from-red-500/5 to-orange-500/5 p-6 backdrop-blur-sm"
+        className="rounded-2xl border border-destructive/20 bg-destructive/10 p-6"
         style={{ minHeight: '120px' }}
       >
         <div className="flex items-center gap-3">
-          <AlertTriangle className="h-5 w-5 text-red-400" />
+          <AlertTriangle className="h-5 w-5 text-destructive" />
           <div>
-            <h3 className="text-sm font-semibold text-white">Organization Not Found</h3>
-            <p className="mt-1 text-sm text-gray-400">
+            <h3 className="text-sm font-semibold text-foreground">Organization Not Found</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
               {error.message}
             </p>
           </div>
@@ -212,16 +212,16 @@ export function ComplianceIntelligenceSummary() {
   const scoreHistory = data.complianceScore.history.map((h) => h.score);
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-white/[0.04] p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
+    <div className="rounded-2xl border border-border bg-card p-6" style={{ minHeight: '400px' }}>
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20">
-            <Sparkles className="h-5 w-5 text-purple-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-1 border border-border">
+            <Brain className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">Executive Intelligence Dashboard</h3>
-            <p className="text-xs text-gray-400">AI-powered compliance analytics and risk insights</p>
+            <h3 className="text-lg font-semibold text-foreground">Executive Intelligence Dashboard</h3>
+            <p className="text-xs text-muted-foreground">AI-powered compliance analytics and risk insights</p>
           </div>
         </div>
       </div>
@@ -229,15 +229,15 @@ export function ComplianceIntelligenceSummary() {
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* Compliance Score */}
-        <div className="group rounded-xl border border-glass-border bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 p-4 transition-all hover:border-emerald-500/30">
+        <div className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/40">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Compliance Score
             </span>
-            <Shield className="h-4 w-4 text-emerald-400" />
+            <Shield className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="mb-2 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-white">
+            <span className="text-3xl font-bold text-foreground tabular-nums">
               {data.complianceScore.current}%
             </span>
             <TrendIndicator value={data.complianceScore.trend} />
@@ -246,62 +246,62 @@ export function ComplianceIntelligenceSummary() {
         </div>
 
         {/* Automation Performance */}
-        <div className="group rounded-xl border border-glass-border bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-4 transition-all hover:border-blue-500/30">
+        <div className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/40">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Automation
             </span>
-            <Zap className="h-4 w-4 text-blue-400" />
+            <Zap className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="mb-2 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-white">
+            <span className="text-3xl font-bold text-foreground tabular-nums">
               {data.automation.successRate}%
             </span>
-            <span className="text-sm text-gray-400">success rate</span>
+            <span className="text-sm text-muted-foreground">success rate</span>
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-muted-foreground tabular-nums">
             {data.automation.completedRuns} of {data.automation.totalRuns} runs completed
           </div>
         </div>
 
         {/* Risk Reduction */}
-        <div className="group rounded-xl border border-glass-border bg-gradient-to-br from-amber-500/10 to-orange-500/10 p-4 transition-all hover:border-amber-500/30">
+        <div className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/40">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Risk Reduction
             </span>
-            <AlertTriangle className="h-4 w-4 text-amber-400" />
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="mb-2 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-white">
+            <span className="text-3xl font-bold text-foreground tabular-nums">
               {data.riskReduction.percentage}%
             </span>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-muted-foreground">
               {data.riskReduction.trend === 'improving' ? '↓' : data.riskReduction.trend === 'worsening' ? '↑' : '→'}
             </span>
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-muted-foreground">
             vs. previous period
           </div>
         </div>
 
         {/* Audit Readiness */}
-        <div className="group rounded-xl border border-glass-border bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-4 transition-all hover:border-purple-500/30">
+        <div className="group rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/40">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-wider text-gray-400">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Audit Readiness
             </span>
-            <Target className="h-4 w-4 text-purple-400" />
+            <Target className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="mb-2 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-white">
+            <span className="text-3xl font-bold text-foreground tabular-nums">
               {data.auditReadiness.score}%
             </span>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-muted-foreground">
               {data.auditReadiness.trend === 'improving' ? '↑' : data.auditReadiness.trend === 'declining' ? '↓' : '→'}
             </span>
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-muted-foreground tabular-nums">
             {data.tasks.completed} of {data.tasks.total} tasks done
           </div>
         </div>
@@ -309,19 +309,19 @@ export function ComplianceIntelligenceSummary() {
 
       {/* Upcoming Deadlines */}
       {data.upcomingDeadlines.length > 0 && (
-        <div className="mt-4 rounded-xl border border-glass-border bg-glass-subtle p-4">
+        <div className="mt-4 rounded-xl border border-border bg-surface-1 p-4">
           <div className="mb-3 flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-cyan-400" />
-            <h4 className="text-sm font-semibold text-white">Upcoming Deadlines</h4>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <h4 className="text-sm font-semibold text-foreground">Upcoming Deadlines</h4>
           </div>
           <div className="space-y-2">
             {data.upcomingDeadlines.slice(0, 3).map((deadline, idx) => (
               <div
                 key={idx}
-                className="flex items-center justify-between rounded-lg bg-glass-subtle px-3 py-2"
+                className="flex items-center justify-between rounded-lg bg-surface-2 px-3 py-2"
               >
-                <span className="text-sm text-gray-300">{deadline.title}</span>
-                <span className="text-xs text-gray-400">
+                <span className="text-sm text-foreground">{deadline.title}</span>
+                <span className="text-xs text-muted-foreground tabular-nums">
                   {new Date(deadline.dueDate).toLocaleDateString()}
                 </span>
               </div>
@@ -331,14 +331,14 @@ export function ComplianceIntelligenceSummary() {
       )}
 
       {/* Executive Intelligence Narrative */}
-      <div className="mt-4 rounded-xl border border-purple-500/20 bg-gradient-to-r from-purple-500/10 to-blue-500/10 p-4">
+      <div className="mt-4 rounded-xl border border-border bg-surface-1 p-4">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
-            <Sparkles className="h-5 w-5 text-purple-400" />
+            <Brain className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>
-            <h4 className="mb-1 text-sm font-semibold text-white">AI Risk Narrative</h4>
-            <p className="text-sm leading-relaxed text-gray-300">
+            <h4 className="mb-1 text-sm font-semibold text-foreground">AI Risk Narrative</h4>
+            <p className="text-sm leading-relaxed text-foreground">
               {(() => {
                 const insights: string[] = [];
 

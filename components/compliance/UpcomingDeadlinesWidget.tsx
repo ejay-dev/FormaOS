@@ -29,19 +29,19 @@ const URGENCY_STYLES: Record<
   { dot: string; text: string; border: string }
 > = {
   red: {
-    dot: 'bg-[var(--wire-alert)]',
-    text: 'text-[var(--wire-alert)]',
-    border: 'border-l-[var(--wire-alert)]',
+    dot: 'bg-destructive',
+    text: 'text-destructive',
+    border: 'border-l-destructive',
   },
   amber: {
-    dot: 'bg-amber-400',
-    text: 'text-amber-400',
-    border: 'border-l-amber-400',
+    dot: 'bg-warning',
+    text: 'text-warning',
+    border: 'border-l-warning',
   },
   green: {
-    dot: 'bg-[var(--wire-success)]',
-    text: 'text-[var(--wire-success)]',
-    border: 'border-l-[var(--wire-success)]',
+    dot: 'bg-success',
+    text: 'text-success',
+    border: 'border-l-success',
   },
 };
 
@@ -145,7 +145,7 @@ function DeadlinesInner() {
           <Link
             key={d.id}
             href={d.href ?? '/app/compliance'}
-            className={`group flex items-center gap-3 rounded-lg border border-glass-border border-l-2 bg-glass-subtle px-3 py-2 transition-all hover:bg-glass-strong ${style.border}`}
+            className={`group flex items-center gap-3 rounded-lg border border-border border-l-2 bg-surface-1 px-3 py-2 transition-all hover:bg-surface-2 ${style.border}`}
           >
             <div className={`h-1.5 w-1.5 rounded-full shrink-0 ${style.dot}`} />
             <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
@@ -160,7 +160,7 @@ function DeadlinesInner() {
               )}
             </div>
             <span
-              className={`text-xs font-mono font-bold shrink-0 ${days <= 0 ? style.text : days <= 3 ? 'text-amber-400' : 'text-muted-foreground'}`}
+              className={`text-xs font-mono font-bold shrink-0 ${days <= 0 ? style.text : days <= 3 ? 'text-warning' : 'text-muted-foreground'}`}
             >
               {formatRelativeDate(d.dueDate)}
             </span>
@@ -178,7 +178,7 @@ function DeadlinesInner() {
 export function UpcomingDeadlinesWidget() {
   return (
     <ErrorBoundary name="UpcomingDeadlinesWidget" level="component">
-      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+      <div className="rounded-xl border border-border bg-surface-1 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-foreground/70" />
