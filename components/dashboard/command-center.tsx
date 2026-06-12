@@ -87,6 +87,14 @@ export interface CommandCenterProps {
   complianceScore?: number;
   expiringCertsCount?: number;
   openTasksCount?: number;
+  /**
+   * First-session focused mode. While the org works through the five guided
+   * actions, StartHereCard (rendered by DashboardWrapper) is the dashboard's
+   * centerpiece and the command center reduces to the live snapshot tiles —
+   * the toolbar, hero and widget wall would all render empty/zero states for
+   * a brand-new org and bury the guide.
+   */
+  firstSessionActive?: boolean;
 }
 
 type TabKey = 'command' | 'operations' | 'readiness' | 'pulse' | 'records';
@@ -134,6 +142,7 @@ export function CommandCenter({
   complianceScore: complianceScoreProp = 0,
   expiringCertsCount: expiringCertsCountProp = 0,
   openTasksCount: openTasksCountProp = 0,
+  firstSessionActive = false,
 }: CommandCenterProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('command');
 
@@ -478,6 +487,86 @@ export function CommandCenter({
       setRecordFilters((prev) => prev.filter((x) => x.id !== f.id)),
   }));
 
+  const liveSnapshotTiles = (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <StatTile
+        value={liveDataReady ? openTasksCount : '—'}
+        label="Open obligations"
+        caption={
+          !liveDataReady
+            ? 'Loading live count'
+            : openTasksCount > 10
+              ? `${openTasksCount} awaiting owner`
+              : openTasksCount > 0
+                ? 'On cadence'
+                : 'No open obligations'
+        }
+        tone="blue"
+        href="/app/tasks?status=open"
+      />
+      <StatTile
+        value={liveDataReady ? overdueTasksCount : '—'}
+        label="Overdue obligations"
+        caption={
+          !liveDataReady
+            ? 'Loading live count'
+            : overdueTasksCount > 0
+              ? 'Past SLA — resolve first'
+              : 'Nothing past SLA'
+        }
+        tone={overdueTasksCount > 0 ? 'rose' : 'slate'}
+        href="/app/tasks?filter=overdue"
+      />
+      <StatTile
+        value={liveDataReady ? dueSoonCount : '—'}
+        label="Due this week"
+        caption={
+          !liveDataReady
+            ? 'Loading live count'
+            : dueSoonCount > 0
+              ? `${dueSoonCount} within 7 days`
+              : 'Nothing due this week'
+        }
+        tone={dueSoonCount > 5 ? 'rose' : dueSoonCount > 0 ? 'amber' : 'slate'}
+        href="/app/tasks?filter=due_soon"
+      />
+      <StatTile
+        value={
+          complianceScore > 0
+            ? `${complianceScore}%`
+            : liveDataReady
+              ? `${completionPct}%`
+              : '—'
+        }
+        label={complianceScore > 0 ? 'Readiness' : 'Task completion'}
+        caption={
+          complianceScore >= 85
+            ? 'Buyer-ready'
+            : complianceScore >= 70
+              ? 'Approaching ready'
+              : complianceScore > 0
+                ? 'Needs attention'
+                : liveDataReady
+                  ? `${complianceSummary.completed} of ${complianceSummary.total} closed`
+                  : 'Loading completion'
+        }
+        tone="emerald"
+        href="/app/reports"
+      />
+    </div>
+  );
+
+  if (firstSessionActive) {
+    return (
+      <section
+        aria-label="Live workspace snapshot"
+        data-testid="command-center-first-session"
+      >
+        {liveSnapshotTiles}
+      </section>
+    );
+  }
+
   return (
     <div className="-mx-4 -my-4 flex h-[calc(100vh-6rem)] flex-col sm:-mx-6 sm:-my-6">
       <div className="command-toolbar">
@@ -525,72 +614,7 @@ export function CommandCenter({
 
               <NextActionsStrip />
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <StatTile
-                  value={liveDataReady ? openTasksCount : '—'}
-                  label="Open obligations"
-                  caption={
-                    !liveDataReady
-                      ? 'Loading live count'
-                      : openTasksCount > 10
-                        ? `${openTasksCount} awaiting owner`
-                        : openTasksCount > 0
-                          ? 'On cadence'
-                          : 'No open obligations'
-                  }
-                  tone="blue"
-                  href="/app/tasks?status=open"
-                />
-                <StatTile
-                  value={liveDataReady ? overdueTasksCount : '—'}
-                  label="Overdue obligations"
-                  caption={
-                    !liveDataReady
-                      ? 'Loading live count'
-                      : overdueTasksCount > 0
-                        ? 'Past SLA — resolve first'
-                        : 'Nothing past SLA'
-                  }
-                  tone={overdueTasksCount > 0 ? 'rose' : 'slate'}
-                  href="/app/tasks?filter=overdue"
-                />
-                <StatTile
-                  value={liveDataReady ? dueSoonCount : '—'}
-                  label="Due this week"
-                  caption={
-                    !liveDataReady
-                      ? 'Loading live count'
-                      : dueSoonCount > 0
-                        ? `${dueSoonCount} within 7 days`
-                        : 'Nothing due this week'
-                  }
-                  tone={dueSoonCount > 5 ? 'rose' : dueSoonCount > 0 ? 'amber' : 'slate'}
-                  href="/app/tasks?filter=due_soon"
-                />
-                <StatTile
-                  value={
-                    complianceScore > 0
-                      ? `${complianceScore}%`
-                      : liveDataReady
-                        ? `${completionPct}%`
-                        : '—'
-                  }
-                  label={complianceScore > 0 ? 'Readiness' : 'Task completion'}
-                  caption={
-                    complianceScore >= 85
-                      ? 'Buyer-ready'
-                      : complianceScore >= 70
-                        ? 'Approaching ready'
-                        : complianceScore > 0
-                          ? 'Needs attention'
-                          : liveDataReady
-                            ? `${complianceSummary.completed} of ${complianceSummary.total} closed`
-                            : 'Loading completion'
-                  }
-                  tone="emerald"
-                  href="/app/reports"
-                />
-              </div>
+              {liveSnapshotTiles}
 
               <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
                 <div className="space-y-3 lg:col-span-8">

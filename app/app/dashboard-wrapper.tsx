@@ -70,6 +70,7 @@ export function DashboardWrapper({
           userEmail={userEmail}
           teamMemberCount={teamMemberCount}
           expiringCertsCount={expiringCertsCount}
+          firstSessionActive={showStartHere}
         />
       </UnifiedDashboardLayout>
     );
