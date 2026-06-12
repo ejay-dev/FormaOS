@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { Layers, ShieldCheck } from 'lucide-react';
+import { Activity, ClipboardCheck, Layers, ShieldCheck } from 'lucide-react';
 import {
   useComplianceStore,
   useComplianceSummary,
@@ -73,6 +73,23 @@ export function CompliancePageHero() {
           >
             <Layers className="h-3.5 w-3.5" />
             Frameworks
+          </Link>
+          {/* Health + Attestations live here (not as standalone cards below)
+              so the landing page stays two blocks: hero + register. */}
+          <Link
+            href="/app/compliance/health"
+            data-testid="compliance-health-link"
+            className="inline-flex items-center gap-1.5 rounded-md px-3.5 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <Activity className="h-3.5 w-3.5" />
+            Health
+          </Link>
+          <Link
+            href="/app/compliance/attestations"
+            className="inline-flex items-center gap-1.5 rounded-md px-3.5 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ClipboardCheck className="h-3.5 w-3.5" />
+            Attestations
           </Link>
           <Link
             href="/app/compliance/cross-map"
