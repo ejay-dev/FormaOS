@@ -120,6 +120,23 @@ describe('createSupabaseOrgClient — table registry', () => {
     const sb = createSupabaseOrgClient(ORG);
     expect(() => sb.from('org_files')).not.toThrow();
   });
+
+  // Regression: lib/onboarding/first-session.ts reads all of these via the
+  // org client inside try/catch blocks that swallow the wrapper's
+  // unregistered-table throw. org_progress_notes (PR #192) and
+  // org_first_session_progress (2026-06 E2E run) were each missed here,
+  // silently breaking first-session state. Pin the whole set.
+  it.each([
+    'org_care_plans',
+    'org_tasks',
+    'org_evidence',
+    'org_incidents',
+    'org_progress_notes',
+    'org_first_session_progress',
+  ])('registers %s used by first-session onboarding', (table) => {
+    const sb = createSupabaseOrgClient(ORG);
+    expect(() => sb.from(table)).not.toThrow();
+  });
 });
 
 describe('createSupabaseOrgClient — select', () => {
