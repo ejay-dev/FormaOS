@@ -213,7 +213,7 @@ export default function EmailPreferencesPage() {
   if (!preferences) {
     return (
       <div className="p-6">
-        <div className="text-rose-300 font-medium">Failed to load email preferences. Please check your database connection.</div>
+        <div className="text-destructive font-medium">Failed to load email preferences. Please check your database connection.</div>
       </div>
     );
   }
@@ -234,10 +234,10 @@ export default function EmailPreferencesPage() {
               onChange={(e) =>
                 setPreferences({ ...preferences, unsubscribed_all: e.target.checked })
               }
-              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             />
             <div>
-              <div className="font-semibold text-rose-300 group-hover:text-rose-200">Unsubscribe from all emails</div>
+              <div className="font-semibold text-destructive group-hover:text-destructive/80">Unsubscribe from all emails</div>
               <div className="text-sm text-muted-foreground mt-1">
                 You will not receive any emails from FormaOS (including critical account notifications)
               </div>
@@ -254,7 +254,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, welcome_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Welcome emails</div>
@@ -272,7 +272,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, invitation_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Team invitations</div>
@@ -290,7 +290,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, alert_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Alerts and notifications</div>
@@ -308,7 +308,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, weekly_digest: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Weekly digest</div>
@@ -326,7 +326,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, marketing_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Marketing and product updates</div>
@@ -341,7 +341,7 @@ export default function EmailPreferencesPage() {
           <button
             onClick={savePreferences}
             disabled={saving}
-            className="px-6 py-2 bg-glass-strong text-foreground rounded-lg font-medium hover:bg-surface-3 disabled:bg-glass-strong transition-all motion-safe:active:scale-95"
+            className="px-6 py-2 bg-surface-2 text-foreground rounded-lg font-medium hover:bg-surface-3 disabled:bg-surface-2 transition-all motion-safe:active:scale-95"
           >
             {saving ? 'Saving...' : 'Save Preferences'}
           </button>
@@ -349,8 +349,8 @@ export default function EmailPreferencesPage() {
           {message && (
             <div className={`text-sm font-medium px-3 py-1 rounded-full ${
               message.includes('success')
-                ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-400/30'
-                : 'bg-rose-500/10 text-rose-300 border border-rose-400/30'
+                ? 'bg-success/10 text-success border border-success/20'
+                : 'bg-destructive/10 text-destructive border border-destructive/20'
             }`}>
               {message}
             </div>

@@ -96,7 +96,7 @@ export function NDISWorkerScreeningWidget() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-glass-border text-[10px] uppercase tracking-wider text-muted-foreground">
+                <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted-foreground">
                   <th className="py-1.5 px-2 text-left font-semibold">
                     Staff Member
                   </th>
@@ -112,7 +112,7 @@ export function NDISWorkerScreeningWidget() {
                 {workers.slice(0, 8).map((w) => (
                   <tr
                     key={w.id}
-                    className="border-b border-glass-border/50 h-8"
+                    className="border-b border-border/50 h-8"
                   >
                     <td className="px-2 py-1 font-medium">{w.name}</td>
                     <td className="px-2 py-1 font-mono text-muted-foreground">
@@ -163,13 +163,13 @@ export function NDISParticipantSnapshot() {
   return (
     <ErrorBoundary name="NDISParticipantSnapshot" level="component">
       <div className="grid grid-cols-3 gap-2">
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-3 text-center">
+        <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
           <p className="text-xl font-bold font-mono">{data?.total ?? '—'}</p>
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
             Participants
           </p>
         </div>
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-3 text-center">
+        <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
           <p className="text-xl font-bold font-mono text-amber-400">
             {data?.plansOverdue ?? '—'}
           </p>
@@ -177,7 +177,7 @@ export function NDISParticipantSnapshot() {
             Plans Due
           </p>
         </div>
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-3 text-center">
+        <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
           <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
             {data?.restrictivePractices ?? '—'}
           </p>
@@ -260,13 +260,13 @@ export function MentalHealthConsumerSnapshot() {
   return (
     <ErrorBoundary name="MentalHealthConsumerSnapshot" level="component">
       <div className="grid grid-cols-3 gap-2">
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-3 text-center">
+        <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
           <p className="text-xl font-bold font-mono">{data?.total ?? '—'}</p>
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
             Consumers
           </p>
         </div>
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-3 text-center">
+        <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
           <p className="text-xl font-bold font-mono text-amber-400">
             {data?.plansOverdue ?? '—'}
           </p>
@@ -274,7 +274,7 @@ export function MentalHealthConsumerSnapshot() {
             Reviews Due
           </p>
         </div>
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-3 text-center">
+        <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
           <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
             {data?.restrictivePractices ?? '—'}
           </p>
@@ -311,7 +311,7 @@ export function MentalHealthCarePlanWidget() {
         icon={HeartPulse}
       >
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+          <div className="rounded-lg border border-border bg-surface-1 p-3 text-center">
             <p className="text-xl font-bold font-mono text-amber-400">
               {data?.dueThisMonth ?? '—'}
             </p>
@@ -319,7 +319,7 @@ export function MentalHealthCarePlanWidget() {
               Due This Month
             </p>
           </div>
-          <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+          <div className="rounded-lg border border-border bg-surface-1 p-3 text-center">
             <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
               {data?.overdue ?? '—'}
             </p>
@@ -451,7 +451,7 @@ export function HealthcarePractitionerWidget() {
               return (
                 <div
                   key={p.id}
-                  className="rounded-lg border border-glass-border bg-glass-subtle p-3"
+                  className="rounded-lg border border-border bg-surface-1 p-3"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-medium">{p.name}</span>
@@ -471,7 +471,7 @@ export function HealthcarePractitionerWidget() {
                       <p className="text-[10px] text-muted-foreground mb-1">
                         CPD: {p.cpdLogged}/{p.cpdRequired}h
                       </p>
-                      <div className="h-1.5 w-full rounded-full bg-glass-strong">
+                      <div className="h-1.5 w-full rounded-full bg-surface-2">
                         <div
                           className="h-1.5 rounded-full bg-[var(--wire-action)] transition-all"
                           style={{ width: `${Math.min(100, cpdPercent)}%` }}
@@ -560,7 +560,7 @@ export function HealthcareNSQHSWidget() {
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-foreground truncate">{s.title}</p>
-                  <div className="mt-1 h-1.5 w-full rounded-full bg-glass-strong">
+                  <div className="mt-1 h-1.5 w-full rounded-full bg-surface-2">
                     <div
                       className={`h-1.5 rounded-full transition-all ${barColor}`}
                       style={{ width: `${s.progress}%` }}
@@ -603,7 +603,7 @@ export function AgedCareCarePlanWidget() {
         icon={Home}
       >
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+          <div className="rounded-lg border border-border bg-surface-1 p-3 text-center">
             <p className="text-xl font-bold font-mono text-amber-400">
               {data?.dueThisMonth ?? '—'}
             </p>
@@ -611,7 +611,7 @@ export function AgedCareCarePlanWidget() {
               Due This Month
             </p>
           </div>
-          <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+          <div className="rounded-lg border border-border bg-surface-1 p-3 text-center">
             <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
               {data?.overdue ?? '—'}
             </p>
@@ -656,7 +656,7 @@ export function AgedCareStarRatingWidget() {
         <div className="flex items-center gap-4">
           <div className={`text-3xl font-bold font-mono ${color}`}>{pct}%</div>
           <div className="flex-1">
-            <div className="h-3 w-full rounded-full bg-glass-strong">
+            <div className="h-3 w-full rounded-full bg-surface-2">
               <div
                 className={`h-3 rounded-full transition-all ${pct >= 80 ? 'bg-[var(--wire-success)]' : pct >= 50 ? 'bg-amber-400' : 'bg-[var(--wire-alert)]'}`}
                 style={{ width: `${pct}%` }}
@@ -735,7 +735,7 @@ export function ChildcareEducatorCredentialsWidget() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-glass-border text-[10px] uppercase tracking-wider text-muted-foreground">
+                <tr className="border-b border-border text-[10px] uppercase tracking-wider text-muted-foreground">
                   <th className="py-1.5 px-2 text-left font-semibold">
                     Educator
                   </th>
@@ -754,7 +754,7 @@ export function ChildcareEducatorCredentialsWidget() {
                 {educators.slice(0, 8).map((e) => (
                   <tr
                     key={e.id}
-                    className="border-b border-glass-border/50 h-8"
+                    className="border-b border-border/50 h-8"
                   >
                     <td className="px-2 py-1 font-medium">{e.name}</td>
                     <td className="px-2 py-1 text-center">
@@ -868,7 +868,7 @@ export function ChildcareNQFWidget() {
                       stroke="currentColor"
                       strokeWidth="3"
                       fill="transparent"
-                      className="text-glass-border"
+                      className="text-border"
                     />
                     <circle
                       cx="20"
@@ -926,19 +926,19 @@ export function FinancialBreachRegisterWidget() {
         icon={Scale}
       >
         <div className="grid grid-cols-3 gap-2">
-          <div className="text-center rounded-lg border border-glass-border bg-glass-subtle p-3">
+          <div className="text-center rounded-lg border border-border bg-surface-1 p-3">
             <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
               {data?.openBreaches ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Open</p>
           </div>
-          <div className="text-center rounded-lg border border-glass-border bg-glass-subtle p-3">
+          <div className="text-center rounded-lg border border-border bg-surface-1 p-3">
             <p className="text-xl font-bold font-mono text-[var(--wire-action)]">
               {data?.selfReported ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Self-Reported</p>
           </div>
-          <div className="text-center rounded-lg border border-glass-border bg-glass-subtle p-3">
+          <div className="text-center rounded-lg border border-border bg-surface-1 p-3">
             <p className="text-xl font-bold font-mono text-foreground">
               {data?.daysSinceDetection ?? '—'}
             </p>
@@ -956,7 +956,7 @@ export function FinancialBreachRegisterWidget() {
 export function FinancialBoardReportButton() {
   return (
     <ErrorBoundary name="FinancialBoardReportButton" level="component">
-      <div className="rounded-xl border border-glass-border bg-gradient-to-r from-glass-subtle to-glass-strong p-4">
+      <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold">Board Reporting Pack</h3>
@@ -966,7 +966,7 @@ export function FinancialBoardReportButton() {
           </div>
           <Link
             href="/app/reports?template=board-compliance"
-            className="rounded-lg bg-[var(--wire-action)] px-4 py-2 text-xs font-semibold text-black hover:opacity-90 transition-opacity"
+            className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Generate Report
           </Link>

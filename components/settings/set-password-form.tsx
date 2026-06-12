@@ -67,9 +67,9 @@ export function SetPasswordForm({ hasPassword }: SetPasswordFormProps) {
   };
 
   return (
-    <section className="rounded-[2rem] border border-glass-border bg-glass-subtle p-8 shadow-sm">
+    <section className="rounded-[2rem] border border-border bg-surface-1 p-8 shadow-sm">
       <div className="flex items-center gap-4">
-        <div className="h-12 w-12 rounded-2xl bg-sky-500/10 text-sky-300 flex items-center justify-center">
+        <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
           <KeyRound className="h-6 w-6" />
         </div>
         <div>
@@ -87,7 +87,7 @@ export function SetPasswordForm({ hasPassword }: SetPasswordFormProps) {
       {errorMessage && (
         <div
           role="alert"
-          className="mt-6 rounded-lg border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-xs text-rose-200"
+          className="mt-6 rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive"
         >
           {errorMessage}
         </div>
@@ -96,7 +96,7 @@ export function SetPasswordForm({ hasPassword }: SetPasswordFormProps) {
       {success && (
         <div
           role="status"
-          className="mt-6 flex items-center gap-2 rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-xs text-emerald-200"
+          className="mt-6 flex items-center gap-2 rounded-lg border border-success/40 bg-success/10 px-4 py-3 text-xs text-success"
         >
           <CheckCircle2 className="h-4 w-4" />
           <span>
@@ -121,7 +121,7 @@ export function SetPasswordForm({ hasPassword }: SetPasswordFormProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="12+ characters"
-              className="w-full rounded-lg border border-glass-border bg-background/40 px-4 pr-10 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20"
+              className="w-full rounded-lg border border-border bg-background/40 px-4 pr-10 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
               required
               disabled={isLoading}
               minLength={12}
@@ -155,7 +155,7 @@ export function SetPasswordForm({ hasPassword }: SetPasswordFormProps) {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Repeat new password"
-            className="w-full rounded-lg border border-glass-border bg-background/40 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20"
+            className="w-full rounded-lg border border-border bg-background/40 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
             required
             disabled={isLoading}
             minLength={12}
@@ -166,7 +166,7 @@ export function SetPasswordForm({ hasPassword }: SetPasswordFormProps) {
         <button
           type="submit"
           disabled={isLoading || !password || !confirmPassword}
-          className="inline-flex items-center justify-center rounded-lg bg-sky-500 hover:bg-sky-400 px-5 py-2.5 text-sm font-semibold text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="inline-flex items-center justify-center rounded-lg bg-primary hover:bg-primary/90 px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading
             ? 'Saving…'

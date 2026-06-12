@@ -3,7 +3,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
-import { Building2, ShieldCheck, Sparkles } from 'lucide-react';
+import { Building2, ShieldCheck } from 'lucide-react';
 import { SubmitButton } from '@/components/ui/submit-button';
 import { applyIndustryPack } from '@/app/app/onboarding/actions';
 import { createInvitation } from '@/lib/invitations/create-invitation';
@@ -952,13 +952,13 @@ export default async function OnboardingPage({
             <div className="absolute top-0 left-0 w-full h-1.5 bg-[hsl(var(--card))]" />
 
             <div className="mb-8 text-center md:text-left">
-              <div className="h-14 w-14 rounded-2xl bg-[hsl(var(--card))] text-white flex items-center justify-center mb-6 shadow-xl mx-auto md:mx-0">
+              <div className="h-14 w-14 rounded-2xl bg-[hsl(var(--card))] text-foreground flex items-center justify-center mb-6 shadow-xl mx-auto md:mx-0">
                 <Building2 className="h-7 w-7" />
               </div>
-              <h1 className="text-3xl font-black text-slate-100 tracking-tight">
+              <h1 className="text-3xl font-black text-foreground tracking-tight">
                 FormaOS onboarding
               </h1>
-              <p className="text-slate-400 mt-2 font-medium leading-relaxed text-sm">
+              <p className="text-muted-foreground mt-2 font-medium leading-relaxed text-sm tabular-nums">
                 Step {safeStep} of {TOTAL_STEPS} · {planLabel}
               </p>
               <div className="mt-5 space-y-3">
@@ -968,7 +968,7 @@ export default async function OnboardingPage({
                     style={{ width: `${completedRatio}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                <div className="grid grid-cols-3 gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                   {ONBOARDING_MILESTONES.map((milestone) => {
                     const isComplete = Math.max(...milestone.steps) < safeStep;
                     const isActive = milestone.steps.includes(safeStep);
@@ -977,9 +977,9 @@ export default async function OnboardingPage({
                         key={milestone.id}
                         className={`rounded-full border px-2 py-1 text-center ${
                           isActive
-                            ? 'border-cyan-400/50 bg-cyan-500/10 text-cyan-200'
+                            ? 'border-primary bg-primary/10 text-foreground'
                             : isComplete
-                              ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
+                              ? 'border-success/20 bg-success/10 text-success'
                               : 'border-edge-2 bg-surface-1'
                         }`}
                       >
@@ -990,12 +990,12 @@ export default async function OnboardingPage({
                 </div>
               </div>
               {errorState ? (
-                <div className="mt-4 rounded-xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-xs text-rose-200">
+                <div className="mt-4 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-xs text-destructive">
                   Please complete the required fields before continuing.
                 </div>
               ) : null}
               {fastTrack ? (
-                <div className="mt-4 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3 text-xs text-cyan-100">
+                <div className="mt-4 rounded-xl border border-border bg-surface-2 px-4 py-3 text-xs text-muted-foreground">
                   Fast-track enabled for this persona. Core governance defaults
                   are pre-configured so you can reach first proof faster.
                 </div>
@@ -1004,14 +1004,14 @@ export default async function OnboardingPage({
 
             {safeStep === 1 ? (
               <form action={advanceWelcome} className="space-y-6">
-                <div className="rounded-2xl border border-edge-2 bg-[hsl(var(--card))] p-6 text-sm text-slate-300">
+                <div className="rounded-2xl border border-edge-2 bg-[hsl(var(--card))] p-6 text-sm text-muted-foreground">
                   <div className="flex items-start gap-3">
-                    <Sparkles className="h-5 w-5 text-sky-400" />
+                    <ShieldCheck className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <div className="text-base font-semibold text-slate-100">
+                      <div className="text-base font-semibold text-foreground">
                         Welcome to FormaOS.
                       </div>
-                      <p className="mt-2 text-sm text-slate-400">
+                      <p className="mt-2 text-sm text-muted-foreground">
                         We will capture your organization details and configure
                         the compliance engine to match your obligations.
                       </p>
@@ -1031,7 +1031,7 @@ export default async function OnboardingPage({
                 <div className="space-y-4">
                   <label
                     htmlFor="field-221"
-                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
                   >
                     Organization name
                   </label>
@@ -1048,7 +1048,7 @@ export default async function OnboardingPage({
                 <div className="space-y-3">
                   <label
                     htmlFor="field-220"
-                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
                   >
                     Team size
                   </label>
@@ -1056,7 +1056,7 @@ export default async function OnboardingPage({
                     {TEAM_SIZE_OPTIONS.map((option) => (
                       <label
                         key={option.id}
-                        className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                        className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground"
                       >
                         <input
                           required
@@ -1065,7 +1065,7 @@ export default async function OnboardingPage({
                           value={option.id}
                           defaultChecked={orgRecord?.team_size === option.id}
                           data-testid={`team-size-${option.id}`}
-                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-primary"
                         />
                         <span>{option.label} people</span>
                       </label>
@@ -1076,7 +1076,7 @@ export default async function OnboardingPage({
                 <div className="space-y-3">
                   <label
                     htmlFor="field-219"
-                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
                   >
                     Plan
                   </label>
@@ -1084,7 +1084,7 @@ export default async function OnboardingPage({
                     {PLAN_CHOICES.map((option) => (
                       <label
                         key={option.key}
-                        className="flex flex-col gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-4 text-sm text-slate-200"
+                        className="flex flex-col gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-4 text-sm text-foreground"
                       >
                         <div className="flex items-center gap-3">
                           <input
@@ -1094,13 +1094,13 @@ export default async function OnboardingPage({
                             value={option.key}
                             defaultChecked={planKey === option.key}
                             data-testid={`plan-option-${option.key}`}
-                            className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
+                            className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-primary"
                           />
-                          <span className="text-sm font-semibold text-slate-100">
+                          <span className="text-sm font-semibold text-foreground">
                             {option.name}
                           </span>
                         </div>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-muted-foreground">
                           {option.summary}
                         </span>
                       </label>
@@ -1121,7 +1121,7 @@ export default async function OnboardingPage({
                 <div className="space-y-3">
                   <label
                     htmlFor="field-218"
-                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
                   >
                     Industry
                   </label>
@@ -1129,7 +1129,7 @@ export default async function OnboardingPage({
                     {INDUSTRY_OPTIONS.map((option) => (
                       <label
                         key={option.id}
-                        className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                        className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground"
                       >
                         <input
                           required
@@ -1138,7 +1138,7 @@ export default async function OnboardingPage({
                           value={option.id}
                           defaultChecked={orgRecord?.industry === option.id}
                           data-testid={`industry-option-${option.id}`}
-                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-primary"
                         />
                         <span>{option.label}</span>
                       </label>
@@ -1158,14 +1158,14 @@ export default async function OnboardingPage({
                 data-testid="onboarding-step-role"
               >
                 <div className="space-y-3">
-                  <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                  <div className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1">
                     Choose your onboarding persona
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
                     {ROLE_OPTIONS.map((option) => (
                       <label
                         key={option.id}
-                        className="flex gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                        className="flex gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground"
                       >
                         <input
                           required
@@ -1174,22 +1174,20 @@ export default async function OnboardingPage({
                           value={option.id}
                           defaultChecked={defaultRoleOptionId === option.id}
                           data-testid={`role-option-${option.id}`}
-                          className="mt-1 h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
+                          className="mt-1 h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-primary"
                         />
                         <div className="space-y-1">
-                          <div className="font-semibold text-slate-100">
+                          <div className="font-semibold text-foreground">
                             {option.label}
                           </div>
-                          <div className="text-xs text-slate-400">
+                          <div className="text-xs text-muted-foreground">
                             {option.description}
                           </div>
                           <span
                             className={`inline-flex rounded border px-2 py-0.5 text-[10px] uppercase tracking-wider ${
                               option.journey === 'full'
-                                ? 'border-cyan-400/30 bg-cyan-500/10 text-cyan-200'
-                                : option.journey === 'read-only'
-                                  ? 'border-slate-400/30 bg-slate-500/10 text-slate-200'
-                                  : 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
+                                ? 'border-primary bg-primary/10 text-foreground'
+                                : 'border-border bg-surface-2 text-muted-foreground'
                             }`}
                           >
                             {option.journey === 'full'
@@ -1216,7 +1214,7 @@ export default async function OnboardingPage({
                 data-testid="onboarding-step-frameworks"
               >
                 <div className="space-y-3">
-                  <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                  <div className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1">
                     Compliance frameworks (select at least one)
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
@@ -1229,7 +1227,7 @@ export default async function OnboardingPage({
                       return (
                         <label
                           key={framework.id}
-                          className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                          className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground"
                         >
                           <input
                             type="checkbox"
@@ -1237,7 +1235,7 @@ export default async function OnboardingPage({
                             value={framework.id}
                             defaultChecked={checked}
                             data-testid={`framework-option-${framework.id}`}
-                            className="h-4 w-4 rounded border-edge-3 bg-[hsl(var(--card))] text-sky-400"
+                            className="h-4 w-4 rounded border-edge-3 bg-[hsl(var(--card))] text-primary"
                           />
                           <span>{framework.label}</span>
                         </label>
@@ -1260,7 +1258,7 @@ export default async function OnboardingPage({
                 <div className="space-y-3">
                   <label
                     htmlFor="field-217"
-                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
                   >
                     Invite teammates (optional)
                   </label>
@@ -1269,7 +1267,7 @@ export default async function OnboardingPage({
                     rows={4}
                     placeholder="Add emails separated by commas or new lines"
                     data-testid="invite-emails"
-                    className="w-full p-4 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] text-sm font-semibold text-slate-100"
+                    className="w-full p-4 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] text-sm font-semibold text-foreground"
                   />
                 </div>
                 <SubmitButton loadingText="Sending invites...">
@@ -1285,24 +1283,24 @@ export default async function OnboardingPage({
                 data-testid="onboarding-step-first-action"
               >
                 <div className="space-y-3">
-                  <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                  <div className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1">
                     First system action
                   </div>
                   {isReadOnlyPersona ? (
-                    <div className="rounded-xl border border-slate-400/30 bg-slate-500/10 px-4 py-3 text-xs text-slate-300">
+                    <div className="rounded-xl border border-border bg-surface-2 px-4 py-3 text-xs text-muted-foreground">
                       Read-only persona detected. Choose a review-first action
                       to enter the workspace safely.
                     </div>
                   ) : null}
                   <div className="space-y-3">
                     {!isReadOnlyPersona ? (
-                      <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground">
                         <input
                           type="radio"
                           name="firstAction"
                           value="create_task"
                           data-testid="first-action-create-task"
-                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-primary"
                           defaultChecked={firstActionDefault === 'create_task'}
                           required
                         />
@@ -1310,13 +1308,13 @@ export default async function OnboardingPage({
                       </label>
                     ) : null}
                     {!isReadOnlyPersona ? (
-                      <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground">
                         <input
                           type="radio"
                           name="firstAction"
                           value="upload_evidence"
                           data-testid="first-action-upload-evidence"
-                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-primary"
                           defaultChecked={
                             firstActionDefault === 'upload_evidence'
                           }
@@ -1324,26 +1322,26 @@ export default async function OnboardingPage({
                         <span>Prepare an evidence upload task</span>
                       </label>
                     ) : null}
-                    <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                    <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground">
                       <input
                         type="radio"
                         name="firstAction"
                         value="run_evaluation"
                         data-testid="first-action-run-evaluation"
-                        className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
+                        className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-primary"
                         defaultChecked={firstActionDefault === 'run_evaluation'}
                         required={isReadOnlyPersona}
                       />
                       <span>Run the first compliance evaluation</span>
                     </label>
                     {isReadOnlyPersona ? (
-                      <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground">
                         <input
                           type="radio"
                           name="firstAction"
                           value="review_dashboard"
                           data-testid="first-action-review-dashboard"
-                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-primary"
                           defaultChecked={
                             firstActionDefault === 'review_dashboard'
                           }
@@ -1359,7 +1357,7 @@ export default async function OnboardingPage({
               </form>
             ) : null}
 
-            <div className="mt-10 pt-8 border-t border-edge-2 flex items-center gap-3 text-emerald-300">
+            <div className="mt-10 pt-8 border-t border-edge-2 flex items-center gap-3 text-muted-foreground">
               <ShieldCheck className="h-5 w-5" />
               <p className="text-[10px] font-black uppercase tracking-widest">
                 Onboarding progress stored securely

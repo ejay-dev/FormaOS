@@ -56,50 +56,45 @@ const STATE_STYLES: Record<
   }
 > = {
   locked: {
-    container: 'bg-slate-800/30 border-slate-700/50 opacity-50',
+    container: 'bg-surface-1 border-edge-2 opacity-50',
     icon: 'text-muted-foreground/60',
     label: 'text-muted-foreground/60',
     glow: '',
     pulse: false,
   },
   activating: {
-    container:
-      'bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border-cyan-400/50',
-    icon: 'text-cyan-400',
-    label: 'text-cyan-300',
+    container: 'bg-info/10 border-info/40',
+    icon: 'text-info',
+    label: 'text-info',
     glow: 'shadow-lg',
     pulse: true,
   },
   active: {
-    container:
-      'bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border-emerald-400/50',
-    icon: 'text-emerald-400',
-    label: 'text-emerald-300',
-    glow: 'shadow-[0_0_20px_rgba(52,211,153,0.3)]',
+    container: 'bg-success/10 border-success/40',
+    icon: 'text-success',
+    label: 'text-success',
+    glow: 'shadow-lg',
     pulse: false,
   },
   restricted: {
-    container:
-      'bg-gradient-to-br from-amber-500/20 to-orange-500/20 border-amber-400/50',
-    icon: 'text-amber-400',
-    label: 'text-amber-300',
-    glow: 'shadow-[0_0_15px_rgba(251,191,36,0.25)]',
+    container: 'bg-warning/10 border-warning/40',
+    icon: 'text-warning',
+    label: 'text-warning',
+    glow: 'shadow-lg',
     pulse: false,
   },
   error: {
-    container:
-      'bg-gradient-to-br from-rose-500/20 to-red-500/20 border-rose-400/50',
-    icon: 'text-rose-400',
-    label: 'text-rose-300',
-    glow: 'shadow-[0_0_20px_rgba(251,113,133,0.35)]',
+    container: 'bg-destructive/10 border-destructive/40',
+    icon: 'text-destructive',
+    label: 'text-destructive',
+    glow: 'shadow-lg',
     pulse: true,
   },
   processing: {
-    container:
-      'bg-gradient-to-br from-violet-500/20 to-purple-500/20 border-violet-400/50',
-    icon: 'text-violet-400',
-    label: 'text-violet-300',
-    glow: 'shadow-[0_0_25px_rgba(167,139,250,0.35)]',
+    container: 'bg-info/10 border-info/40',
+    icon: 'text-info',
+    label: 'text-info',
+    glow: 'shadow-lg',
     pulse: true,
   },
 };
@@ -183,13 +178,13 @@ export function SystemNode({
       >
         {/* Activation Ring */}
         {isActivating && (
-          <div className="absolute inset-0 rounded-2xl border-2 border-cyan-400/50 animate-ping" />
+          <div className="absolute inset-0 rounded-2xl border-2 border-info/50 animate-ping" />
         )}
 
         {/* Icon */}
         {isActivating ? (
           <Loader2
-            className={cn(iconSizes[size], 'text-cyan-400 animate-spin')}
+            className={cn(iconSizes[size], 'text-info animate-spin')}
           />
         ) : nodeState === 'error' ? (
           <AlertCircle className={cn(iconSizes[size], styles.icon)} />
@@ -199,21 +194,19 @@ export function SystemNode({
 
         {/* Lock Overlay */}
         {isLocked && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-900/60 rounded-2xl">
+          <div className="absolute inset-0 flex items-center justify-center bg-card/80 rounded-2xl">
             <LockIcon className="h-4 w-4 text-muted-foreground/60" />
           </div>
         )}
 
         {/* Active Indicator */}
         {nodeState === 'active' && (
-          <div className="absolute -top-1 -right-1 h-3 w-3 bg-emerald-400 rounded-full border-2 border-slate-900">
-            <div className="absolute inset-0 bg-emerald-400 rounded-full animate-ping opacity-75" />
-          </div>
+          <div className="absolute -top-1 -right-1 h-3 w-3 bg-success rounded-full border-2 border-card" />
         )}
 
         {/* Restricted Indicator */}
         {nodeState === 'restricted' && (
-          <div className="absolute -top-1 -right-1 h-3 w-3 bg-amber-400 rounded-full border-2 border-slate-900" />
+          <div className="absolute -top-1 -right-1 h-3 w-3 bg-warning rounded-full border-2 border-card" />
         )}
       </button>
 
@@ -234,14 +227,14 @@ export function SystemNode({
       {/* Upgrade Tooltip */}
       {(showUpgradeTooltip || (isHovered && isLocked)) && showTooltip && (
         <div className="absolute -top-12 left-1/2 -translate-x-1/2 z-50 animate-in fade-in zoom-in-95 duration-200">
-          <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 shadow-xl whitespace-nowrap">
+          <div className="bg-popover border border-border rounded-lg px-3 py-2 shadow-xl whitespace-nowrap">
             <div className="flex items-center gap-2">
-              <Zap className="h-3 w-3 text-amber-400" />
+              <Zap className="h-3 w-3 text-muted-foreground" />
               <span className="text-xs font-bold text-foreground/90">
                 Upgrade to unlock
               </span>
             </div>
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 h-2 w-2 bg-slate-800 border-r border-b border-slate-600" />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 h-2 w-2 bg-popover border-r border-b border-border" />
           </div>
         </div>
       )}
@@ -249,11 +242,11 @@ export function SystemNode({
       {/* State Tooltip */}
       {isHovered && !isLocked && showTooltip && (
         <div className="absolute -top-12 left-1/2 -translate-x-1/2 z-50 animate-in fade-in zoom-in-95 duration-200">
-          <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 shadow-xl whitespace-nowrap">
+          <div className="bg-popover border border-border rounded-lg px-3 py-2 shadow-xl whitespace-nowrap">
             <p className="text-xs font-medium text-foreground/90">
               {moduleConfig.description}
             </p>
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 h-2 w-2 bg-slate-800 border-r border-b border-slate-600" />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 h-2 w-2 bg-popover border-r border-b border-border" />
           </div>
         </div>
       )}

@@ -25,32 +25,32 @@ const ACTION_CONFIG: Record<
   refund_issued: {
     icon: DollarSign,
     label: 'Refund Issued',
-    color: 'text-red-500',
+    color: 'text-destructive',
   },
   dunning_paused: {
     icon: Pause,
     label: 'Dunning Paused',
-    color: 'text-yellow-500',
+    color: 'text-warning',
   },
   dunning_resumed: {
     icon: Play,
     label: 'Dunning Resumed',
-    color: 'text-green-500',
+    color: 'text-success',
   },
   invoice_rescued: {
     icon: RefreshCw,
     label: 'Invoice Rescued',
-    color: 'text-blue-500',
+    color: 'text-info',
   },
   credit_applied: {
     icon: CreditCard,
     label: 'Credit Applied',
-    color: 'text-purple-500',
+    color: 'text-muted-foreground',
   },
   trial_extended: {
     icon: Clock,
     label: 'Trial Extended',
-    color: 'text-cyan-500',
+    color: 'text-muted-foreground',
   },
 };
 

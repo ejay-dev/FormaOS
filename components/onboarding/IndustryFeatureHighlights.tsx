@@ -37,8 +37,8 @@ const INDUSTRY_CONFIGS: Record<string, IndustryOnboardingConfig> = {
   ndis: {
     industry: 'ndis',
     displayName: 'NDIS & Disability Services',
-    color: 'from-pink-500 to-rose-500',
-    gradient: 'from-pink-500/20 to-rose-500/20',
+    color: 'from-zinc-300 to-zinc-500',
+    gradient: 'from-zinc-700/20 to-zinc-900/20',
     features: [
       {
         icon: Users,
@@ -337,18 +337,16 @@ export function IndustryOnboardingFeatures({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${config.gradient} border border-glass-border mb-4">
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-            <span className="text-sm font-medium text-white">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-1 border border-border mb-4">
+            <span className="w-2 h-2 rounded-full bg-muted-foreground" />
+            <span className="text-sm font-medium text-foreground">
               {config.displayName}
             </span>
           </div>
-          <h2
-            className={`text-3xl font-bold bg-gradient-to-r ${config.color} bg-clip-text text-transparent mb-3`}
-          >
+          <h2 className="text-3xl font-bold text-foreground mb-3">
             Features Built for Your Industry
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             These features are ready to use right now. Click any card to get
             started.
           </p>
@@ -373,17 +371,15 @@ export function IndustryOnboardingFeatures({
                   onFeatureClick(feature.route);
                 }
               }}
-              className="group p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-zinc-600/30 transition-all cursor-pointer"
+              className="group p-6 rounded-2xl bg-surface-1 border border-border hover:border-edge-2 transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <div
-                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${config.gradient} border border-glass-border flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
-              >
-                <Icon className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-surface-2 border border-border flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Icon className="h-6 w-6 text-muted-foreground" />
               </div>
-              <h3 className="text-base font-bold text-white mb-2 group-hover:text-zinc-300 transition-colors">
+              <h3 className="text-base font-bold text-foreground mb-2 group-hover:text-muted-foreground transition-colors">
                 {feature.title}
               </h3>
-              <p className="text-sm text-gray-400 leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 {feature.description}
               </p>
             </motion.a>
@@ -392,9 +388,9 @@ export function IndustryOnboardingFeatures({
       </div>
 
       {/* Quick Wins */}
-      <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-edge-2">
-        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-          <Clock className="h-5 w-5 text-zinc-400" />
+      <div className="mt-8 p-6 rounded-2xl bg-surface-1 border border-edge-2">
+        <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+          <Clock className="h-5 w-5 text-muted-foreground" />
           Quick Wins (Next 30 Minutes)
         </h3>
         <ul className="space-y-2">
@@ -404,9 +400,9 @@ export function IndustryOnboardingFeatures({
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-              className="flex items-start gap-3 text-sm text-gray-300"
+              className="flex items-start gap-3 text-sm text-foreground"
             >
-              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-zinc-700/20 border border-zinc-600/30 flex items-center justify-center text-zinc-400 text-xs font-bold mt-0.5">
+              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-muted border border-border flex items-center justify-center text-muted-foreground text-xs font-bold mt-0.5 tabular-nums">
                 {index + 1}
               </span>
               <span>{win}</span>
@@ -437,8 +433,8 @@ export function IndustryFeatureSpotlight({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 px-1">
-        <Heart className="h-4 w-4 text-zinc-400" />
-        <h4 className="text-sm font-bold text-white">Recommended for You</h4>
+        <Heart className="h-4 w-4 text-muted-foreground" />
+        <h4 className="text-sm font-bold text-foreground">Recommended for You</h4>
       </div>
       {features.map((feature) => {
         const Icon = feature.icon;
@@ -446,19 +442,17 @@ export function IndustryFeatureSpotlight({
           <a
             key={feature.title}
             href={feature.route}
-            className="group block p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-zinc-600/30 transition-all motion-safe:hover:scale-102"
+            className="group block p-3 rounded-xl bg-surface-1 border border-border hover:border-edge-2 transition-all motion-safe:hover:scale-102 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <div className="flex items-start gap-3">
-              <div
-                className={`flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br ${config.gradient} border border-glass-border flex items-center justify-center`}
-              >
-                <Icon className="h-4 w-4 text-white" />
+              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-2 border border-border flex items-center justify-center">
+                <Icon className="h-4 w-4 text-muted-foreground" />
               </div>
               <div className="flex-1 min-w-0">
-                <h5 className="text-sm font-semibold text-white group-hover:text-zinc-300 transition-colors mb-0.5">
+                <h5 className="text-sm font-semibold text-foreground group-hover:text-muted-foreground transition-colors mb-0.5">
                   {feature.title}
                 </h5>
-                <p className="text-xs text-gray-400 line-clamp-2">
+                <p className="text-xs text-muted-foreground line-clamp-2">
                   {feature.description}
                 </p>
               </div>

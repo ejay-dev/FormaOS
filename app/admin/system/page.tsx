@@ -99,11 +99,11 @@ export default async function AdminSystemPage() {
             <span className="text-sm font-medium text-muted-foreground">
               DB Latency
             </span>
-            <Database className="h-5 w-5 text-emerald-500/50" />
+            <Database className="h-5 w-5 text-muted-foreground" />
           </div>
           <div
             className={`text-3xl font-bold ${
-              isDbHealthy ? 'text-emerald-400' : 'text-amber-400'
+              isDbHealthy ? 'text-success' : 'text-warning'
             }`}
           >
             {dbLatency}ms
@@ -116,7 +116,7 @@ export default async function AdminSystemPage() {
             <span className="text-sm font-medium text-muted-foreground">
               Organizations
             </span>
-            <Building2 className="h-5 w-5 text-blue-500/50" />
+            <Building2 className="h-5 w-5 text-muted-foreground" />
           </div>
           <div className="text-3xl font-bold text-foreground">
             {metric(data.total_organizations)}
@@ -129,7 +129,7 @@ export default async function AdminSystemPage() {
             <span className="text-sm font-medium text-muted-foreground">
               Team Members
             </span>
-            <Users className="h-5 w-5 text-purple-500/50" />
+            <Users className="h-5 w-5 text-muted-foreground" />
           </div>
           <div className="text-3xl font-bold text-foreground">
             {metric(data.total_members)}
@@ -151,7 +151,7 @@ export default async function AdminSystemPage() {
                 {data.recent_admin_actions_24h}
               </p>
             </div>
-            <FileText className="h-8 w-8 text-blue-500/30" />
+            <FileText className="h-8 w-8 text-muted-foreground/40" />
           </div>
           <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-muted/20">
             <div>
@@ -160,7 +160,7 @@ export default async function AdminSystemPage() {
                 {data.recent_billing_events_24h}
               </p>
             </div>
-            <Zap className="h-8 w-8 text-emerald-500/30" />
+            <Zap className="h-8 w-8 text-muted-foreground/40" />
           </div>
           <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-muted/20">
             <div>
@@ -169,7 +169,7 @@ export default async function AdminSystemPage() {
                 {metric(data.total_subscriptions)}
               </p>
             </div>
-            <Activity className="h-8 w-8 text-amber-500/30" />
+            <Activity className="h-8 w-8 text-muted-foreground/40" />
           </div>
         </div>
       </section>
@@ -189,7 +189,7 @@ export default async function AdminSystemPage() {
           </div>
           <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
             <p className="text-xs uppercase tracking-wider text-muted-foreground">Overall P50</p>
-            <p className="mt-1 text-2xl font-bold text-emerald-300">
+            <p className="mt-1 text-2xl font-bold text-success">
               {transitionP50 == null ? '—' : `${transitionP50}ms`}
             </p>
           </div>
@@ -200,10 +200,10 @@ export default async function AdminSystemPage() {
                 transitionP95 == null
                   ? 'text-muted-foreground'
                   : transitionP95 <= 600
-                    ? 'text-emerald-300'
+                    ? 'text-success'
                     : transitionP95 <= 1500
-                      ? 'text-amber-300'
-                      : 'text-rose-300'
+                      ? 'text-warning'
+                      : 'text-destructive'
               }`}
             >
               {transitionP95 == null ? '—' : `${transitionP95}ms`}
@@ -332,20 +332,20 @@ export default async function AdminSystemPage() {
                 key={service.name}
                 className={`flex items-center justify-between p-3 rounded-lg border ${
                   isHealthy
-                    ? 'border-emerald-800/30 bg-emerald-900/10'
-                    : 'border-amber-800/30 bg-amber-900/10'
+                    ? 'border-success/20 bg-success/10'
+                    : 'border-warning/20 bg-warning/10'
                 }`}
               >
                 <div className="flex items-center gap-2">
                   <Icon
                     className={`h-4 w-4 ${
-                      isHealthy ? 'text-emerald-400' : 'text-amber-400'
+                      isHealthy ? 'text-success' : 'text-warning'
                     }`}
                   />
                   <div>
                     <span
                       className={`text-sm font-medium ${
-                        isHealthy ? 'text-emerald-100' : 'text-amber-100'
+                        isHealthy ? 'text-success' : 'text-warning'
                       }`}
                     >
                       {service.name}
@@ -356,8 +356,8 @@ export default async function AdminSystemPage() {
                 <span
                   className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
                     isHealthy
-                      ? 'bg-emerald-500/20 text-emerald-200'
-                      : 'bg-amber-500/20 text-amber-200'
+                      ? 'bg-success/20 text-success'
+                      : 'bg-warning/20 text-warning'
                   }`}
                 >
                   <span className="h-2 w-2 rounded-full bg-current" />

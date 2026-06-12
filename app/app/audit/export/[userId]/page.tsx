@@ -90,7 +90,7 @@ export default async function AuditExportPage({
           </div>
         </div>
         <div className="text-right space-y-2">
-          <div className="inline-flex items-center gap-2 bg-emerald-400/10 text-emerald-200 px-4 py-1.5 rounded-full">
+          <div className="inline-flex items-center gap-2 bg-success/10 text-success px-4 py-1.5 rounded-full">
             <ShieldCheck className="h-4 w-4" />
             <span className="text-xs font-black uppercase tracking-widest">
               Audit Verified
@@ -143,7 +143,7 @@ export default async function AuditExportPage({
                       </p>
                     </div>
                   </div>
-                  <div className="h-10 w-10 bg-emerald-400/10 rounded-xl flex items-center justify-center text-emerald-300 border border-emerald-400/30">
+                  <div className="h-10 w-10 bg-success/10 rounded-xl flex items-center justify-center text-success border border-success/30">
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                 </div>
@@ -170,7 +170,7 @@ export default async function AuditExportPage({
                 className="flex flex-col md:flex-row md:items-center justify-between py-4 border-b border-edge-2 hover:bg-surface-1 px-4 -mx-4 rounded-xl transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-glass-strong" />
+                  <div className="h-2 w-2 rounded-full bg-muted-foreground" />
                   <span className="text-xs font-black uppercase tracking-wide text-foreground">
                     {log.action.replace(/_/g, ' ')}
                   </span>

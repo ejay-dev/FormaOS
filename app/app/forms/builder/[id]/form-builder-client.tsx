@@ -164,7 +164,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
 
   if (loading) {
     return (
-      <div className="p-6 max-w-6xl mx-auto space-y-6 animate-in fade-in duration-300">
+      <div className="p-6 max-w-6xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <Skeleton className="h-8 w-56" />
@@ -176,20 +176,20 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
           </div>
         </div>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="space-y-3 lg:col-span-2 rounded-lg border border-gray-800 bg-gray-900/50 p-6">
+          <div className="space-y-3 lg:col-span-2 rounded-lg border border-border bg-card p-6">
             <Skeleton className="h-6 w-40" />
             <Skeleton className="h-20 w-full rounded-lg" />
             <Skeleton className="h-20 w-full rounded-lg" />
             <Skeleton className="h-20 w-full rounded-lg" />
           </div>
           <div className="space-y-6">
-            <div className="space-y-3 rounded-lg border border-gray-800 bg-gray-900/50 p-6">
+            <div className="space-y-3 rounded-lg border border-border bg-card p-6">
               <Skeleton className="h-5 w-28" />
               <Skeleton className="h-10 w-full rounded-lg" />
               <Skeleton className="h-10 w-full rounded-lg" />
               <Skeleton className="h-10 w-full rounded-lg" />
             </div>
-            <div className="space-y-3 rounded-lg border border-gray-800 bg-gray-900/50 p-6">
+            <div className="space-y-3 rounded-lg border border-border bg-card p-6">
               <Skeleton className="h-5 w-36" />
               <Skeleton className="h-24 w-full rounded-lg" />
             </div>
@@ -202,22 +202,22 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
   if (loadError) {
     return (
       <div className="mx-auto max-w-3xl p-6">
-        <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 p-6 text-rose-100">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 p-6 text-foreground">
           <h1 className="text-xl font-semibold">Unable to load form builder</h1>
-          <p className="mt-2 text-sm text-rose-100/80">{loadError}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{loadError}</p>
           <div className="mt-4 flex gap-3">
             <button
               onClick={() => {
                 setLoading(true);
                 void loadForm();
               }}
-              className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-white hover:bg-rose-400"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Retry
             </button>
             <button
               onClick={() => router.push('/app')}
-              className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-glass-strong"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Back to dashboard
             </button>
@@ -235,19 +235,19 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">{form.title}</h1>
-          <p className="text-gray-400">{form.description}</p>
+          <h1 className="text-3xl font-bold text-foreground">{form.title}</h1>
+          <p className="text-muted-foreground">{form.description}</p>
         </div>
         <div className="flex gap-3">
           <button
             onClick={saveForm}
             disabled={saving}
-            className="flex min-h-[44px] md:min-h-0 items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="flex min-h-[44px] md:min-h-0 items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Save className="h-4 w-4" />
             {saving ? 'Saving...' : 'Save'}
           </button>
-          <button className="flex min-h-[44px] md:min-h-0 items-center gap-2 px-4 py-2 border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800 transition-colors">
+          <button className="flex min-h-[44px] md:min-h-0 items-center gap-2 px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <Eye className="h-4 w-4" />
             Preview
           </button>
@@ -256,8 +256,8 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">
+          <div className="bg-card border border-border rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">
               Form Fields
             </h2>
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -286,9 +286,9 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                             }}
                             ref={dragProvided.innerRef}
                             {...dragProvided.draggableProps}
-                            className={`bg-gray-800/50 border border-gray-700 rounded-lg p-4 cursor-pointer ${
+                            className={`bg-muted border border-border rounded-lg p-4 cursor-pointer ${
                               selectedField?.id === field.id
-                                ? 'ring-2 ring-blue-500'
+                                ? 'ring-2 ring-ring'
                                 : ''
                             }`}
                             onClick={() => setSelectedField(field)}
@@ -296,13 +296,13 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3">
                                 <div {...dragProvided.dragHandleProps}>
-                                  <GripVertical className="h-4 w-4 text-gray-400" />
+                                  <GripVertical className="h-4 w-4 text-muted-foreground" />
                                 </div>
                                 <div>
-                                  <p className="text-white font-medium">
+                                  <p className="text-foreground font-medium">
                                     {field.label}
                                   </p>
-                                  <p className="text-gray-400 text-sm">
+                                  <p className="text-muted-foreground text-sm">
                                     {field.type}
                                   </p>
                                 </div>
@@ -312,7 +312,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                                   e.stopPropagation();
                                   deleteField(field.id);
                                 }}
-                                className="text-gray-400 hover:text-red-400 transition-colors"
+                                className="text-muted-foreground hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -328,7 +328,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
             </DragDropContext>
 
             {fields.length === 0 && (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-8 text-muted-foreground">
                 No fields added yet. Add fields from the panel on the right.
               </div>
             )}
@@ -336,14 +336,14 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Add Field</h3>
+          <div className="bg-card border border-border rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Add Field</h3>
             <div className="space-y-2">
               {Object.entries(FIELD_TEMPLATES).map(([type, template]) => (
                 <button
                   key={type}
                   onClick={() => addField(type)}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-left text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-left text-muted-foreground hover:bg-muted rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Plus className="h-4 w-4" />
                   {template.label}
@@ -353,10 +353,10 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
           </div>
 
           {selectedField && (
-            <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
+            <div className="bg-card border border-border rounded-lg p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Settings className="h-4 w-4 text-gray-400" />
-                <h3 className="text-lg font-semibold text-white">
+                <Settings className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold text-foreground">
                   Field Settings
                 </h3>
               </div>
@@ -365,7 +365,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                 <div>
                   <label
                     htmlFor="field-6"
-                    className="block text-sm font-medium text-gray-400 mb-1"
+                    className="block text-sm font-medium text-muted-foreground mb-1"
                   >
                     Label
                   </label>
@@ -376,14 +376,14 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                     onChange={(e) =>
                       updateField(selectedField.id, { label: e.target.value })
                     }
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="field-5"
-                    className="block text-sm font-medium text-gray-400 mb-1"
+                    className="block text-sm font-medium text-muted-foreground mb-1"
                   >
                     Placeholder
                   </label>
@@ -396,7 +396,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                         placeholder: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
 
@@ -413,9 +413,9 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                         },
                       })
                     }
-                    className="rounded border-gray-700 bg-gray-800 text-blue-500 focus:ring-blue-500"
+                    className="rounded border-border bg-muted text-primary focus:ring-ring"
                   />
-                  <label htmlFor="field-4" className="text-sm text-gray-400">
+                  <label htmlFor="field-4" className="text-sm text-muted-foreground">
                     Required field
                   </label>
                 </div>

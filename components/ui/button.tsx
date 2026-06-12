@@ -30,9 +30,11 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        // `premium` is an alias of `default` (kept for API compatibility) — solid primary surface.
         premium: "bg-primary text-primary-foreground shadow-premium hover:shadow-premium-lg",
-        glass: "bg-transparent text-foreground border border-glass-border backdrop-blur-sm hover:bg-glass-bg hover:border-glass-border-strong",
-        // High-emphasis CTA — solid charcoal/ink, theme-aware high contrast (monochrome brand)
+        // `glass` retired to a flat neutral outline (monochrome brand) — no glassmorphism/blur.
+        glass: "border border-border bg-card text-foreground hover:bg-muted hover:text-foreground",
+        // `gradient` is a high-emphasis CTA — solid charcoal/ink, theme-aware high contrast (monochrome brand, not an actual gradient).
         gradient: "bg-foreground text-background shadow-premium-lg hover:shadow-premium-xl hover:opacity-90",
       },
       size: {

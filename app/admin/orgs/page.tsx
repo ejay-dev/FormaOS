@@ -51,11 +51,11 @@ function getPlanColor(plan?: string | null) {
   switch (plan?.toLowerCase()) {
     case 'starter':
     case 'basic':
-      return 'bg-purple-500/10 text-purple-300';
+      return 'bg-muted text-muted-foreground';
     case 'pro':
-      return 'bg-emerald-500/10 text-emerald-300';
+      return 'bg-surface-2 text-foreground';
     case 'enterprise':
-      return 'bg-blue-500/10 text-blue-300';
+      return 'bg-primary/10 text-primary';
     default:
       return 'bg-muted/40 text-muted-foreground';
   }
@@ -64,13 +64,13 @@ function getPlanColor(plan?: string | null) {
 function getStatusColor(status?: string) {
   switch (status?.toLowerCase()) {
     case 'active':
-      return 'bg-emerald-500/10 text-emerald-300';
+      return 'bg-success/10 text-success';
     case 'trialing':
-      return 'bg-amber-500/10 text-amber-300';
+      return 'bg-warning/10 text-warning';
     case 'suspended':
-      return 'bg-red-500/10 text-red-300';
+      return 'bg-destructive/10 text-destructive';
     case 'retired':
-      return 'bg-slate-500/20 text-slate-200';
+      return 'bg-muted text-muted-foreground';
     default:
       return 'bg-muted/40 text-muted-foreground';
   }
@@ -164,12 +164,12 @@ export default async function AdminOrgsPage({
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-white/[0.04] border border-border flex items-center justify-center">
+                      <div className="h-8 w-8 rounded-full bg-surface-1 border border-border flex items-center justify-center">
                         <Building2 className="h-4 w-4 text-muted-foreground" />
                       </div>
                       <Link
                         href={`/admin/orgs/${org.id}`}
-                        className="text-sm font-medium text-foreground hover:text-sky-300 transition-colors"
+                        className="text-sm font-medium text-foreground hover:text-primary transition-colors"
                       >
                         {org.name ?? 'Untitled Organization'}
                       </Link>

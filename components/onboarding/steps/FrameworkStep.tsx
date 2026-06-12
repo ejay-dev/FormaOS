@@ -126,16 +126,16 @@ export function FrameworkStep({
               type="button"
               disabled={isActivating || activated}
               onClick={() => setSelectedSlug(fw.slug)}
-              className={`w-full flex items-center gap-3 rounded-lg border p-4 text-left transition-all ${
+              className={`w-full flex items-center gap-3 rounded-lg border p-4 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 selectedSlug === fw.slug
-                  ? 'border-[var(--wire-action)] bg-[var(--wire-action)]/10'
+                  ? 'border-primary bg-primary/10'
                   : 'border-border hover:border-muted-foreground/40'
               } ${isActivating || activated ? 'opacity-60 cursor-not-allowed' : ''}`}
             >
-              <Shield className="h-5 w-5 shrink-0 text-[var(--wire-action)]" />
+              <Shield className="h-5 w-5 shrink-0 text-muted-foreground" />
               <div>
                 <div className="font-medium text-sm">{fw.name}</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-muted-foreground tabular-nums">
                   {fw.count} obligations
                 </div>
               </div>
@@ -148,11 +148,13 @@ export function FrameworkStep({
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm">
             <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Loading {selectedFramework?.count} obligations...</span>
+            <span className="tabular-nums">
+              Loading {selectedFramework?.count} obligations...
+            </span>
           </div>
           <div className="h-2 rounded-full bg-muted overflow-hidden">
             <div
-              className="h-full bg-[var(--wire-action)] transition-all duration-200 rounded-full"
+              className="h-full bg-primary transition-all duration-200 rounded-full"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -160,7 +162,7 @@ export function FrameworkStep({
       )}
 
       {activated && (
-        <div className="rounded-lg border border-[var(--wire-success)]/30 bg-[var(--wire-success)]/10 p-3 text-sm text-[var(--wire-success)]">
+        <div className="rounded-lg border border-success/20 bg-success/10 p-3 text-sm text-success">
           Framework activated successfully!
         </div>
       )}
@@ -179,7 +181,7 @@ export function FrameworkStep({
           <button
             type="button"
             onClick={onNext}
-            className="inline-flex items-center gap-2 rounded-lg bg-[var(--wire-action)] px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Continue
           </button>
@@ -188,7 +190,7 @@ export function FrameworkStep({
             type="button"
             onClick={handleActivate}
             disabled={isActivating || !selectedSlug}
-            className="inline-flex items-center gap-2 rounded-lg bg-[var(--wire-action)] px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Activate Framework
           </button>

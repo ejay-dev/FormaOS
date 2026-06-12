@@ -90,7 +90,7 @@ export function BillingActionButtons({
   return (
     <>
       {error && (
-        <div className="mt-4 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200 flex items-center gap-2">
+        <div className="mt-4 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive flex items-center gap-2">
           <AlertCircle className="h-4 w-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -101,7 +101,7 @@ export function BillingActionButtons({
           <button
             onClick={handleActivate}
             disabled={isPending}
-            className="group relative overflow-hidden rounded-lg bg-foreground text-background px-6 py-3 text-sm font-semibold transition-all duration-300 motion-safe:hover:scale-[1.02] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
+            className="rounded-lg bg-foreground text-background px-6 py-3 text-sm font-semibold transition-all duration-300 motion-safe:hover:scale-[1.02] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
           >
             {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -109,8 +109,6 @@ export function BillingActionButtons({
               <CreditCard className="h-4 w-4" />
             )}
             {isPending ? "Starting checkout..." : "Activate subscription"}
-            {/* Shimmer effect */}
-            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-1000" />
           </button>
         ) : null}
         
@@ -118,7 +116,7 @@ export function BillingActionButtons({
           <button
             onClick={handleManagePortal}
             disabled={isPending}
-            className="group relative overflow-hidden rounded-lg border border-white/15 bg-glass-subtle px-6 py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:bg-glass-strong hover:border-white/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="rounded-lg border border-edge-2 bg-surface-1 px-6 py-3 text-sm font-semibold text-foreground transition-all duration-300 hover:bg-surface-2 hover:border-edge-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -126,8 +124,6 @@ export function BillingActionButtons({
               <Settings className="h-4 w-4" />
             )}
             {isPending ? "Opening portal..." : "Manage billing"}
-            {/* Subtle glow effect on hover */}
-            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent group-hover:translate-x-full transition-transform duration-700" />
           </button>
         ) : null}
       </div>

@@ -62,66 +62,66 @@ const NODE_CONFIG: Record<NodeType, {
 }> = {
   policy: {
     icon: FileText,
-    baseClass: "border-cyan-400/40 bg-cyan-500/10",
+    baseClass: "border-border bg-surface-1",
     activeGlow: "shadow-lg",
     shape: "rounded-full", // Pill shape
-    borderColor: "border-cyan-400/60",
-    bgGradient: "bg-gradient-to-br from-cyan-500/20 via-cyan-500/10 to-transparent",
-    iconColor: "text-cyan-300",
+    borderColor: "border-primary",
+    bgGradient: "bg-surface-1",
+    iconColor: "text-muted-foreground",
   },
   control: {
     icon: Shield,
-    baseClass: "border-teal-400/40 bg-teal-500/10",
+    baseClass: "border-border bg-surface-1",
     activeGlow: "shadow-lg",
     shape: "rounded-lg", // Square-ish
-    borderColor: "border-teal-400/60",
-    bgGradient: "bg-gradient-to-br from-teal-500/20 via-teal-500/10 to-transparent",
-    iconColor: "text-teal-300",
+    borderColor: "border-primary",
+    bgGradient: "bg-surface-1",
+    iconColor: "text-muted-foreground",
   },
   evidence: {
     icon: FileCheck,
-    baseClass: "border-violet-400/40 bg-violet-500/10",
-    activeGlow: "shadow-[0_0_24px_rgba(139,92,246,0.5)]",
+    baseClass: "border-border bg-surface-1",
+    activeGlow: "shadow-lg",
     shape: "rounded-full", // Circle
-    borderColor: "border-violet-400/60",
-    bgGradient: "bg-gradient-to-br from-violet-500/20 via-violet-500/10 to-transparent",
-    iconColor: "text-violet-300",
+    borderColor: "border-primary",
+    bgGradient: "bg-surface-1",
+    iconColor: "text-muted-foreground",
   },
   audit: {
     icon: ClipboardCheck,
-    baseClass: "border-amber-400/40 bg-amber-500/10",
-    activeGlow: "shadow-[0_0_24px_rgba(245,158,11,0.5)]",
+    baseClass: "border-warning/20 bg-warning/10",
+    activeGlow: "shadow-lg",
     shape: "rounded-xl rotate-45", // Diamond effect via transform
-    borderColor: "border-amber-400/60",
-    bgGradient: "bg-gradient-to-br from-amber-500/20 via-amber-500/10 to-transparent",
-    iconColor: "text-amber-300",
+    borderColor: "border-warning/40",
+    bgGradient: "bg-warning/10",
+    iconColor: "text-warning",
   },
   risk: {
     icon: AlertTriangle,
-    baseClass: "border-rose-400/40 bg-rose-500/10",
-    activeGlow: "shadow-[0_0_24px_rgba(244,63,94,0.5)]",
+    baseClass: "border-destructive/20 bg-destructive/10",
+    activeGlow: "shadow-lg",
     shape: "rounded-lg", // Will use clip-path for triangle
-    borderColor: "border-rose-400/60",
-    bgGradient: "bg-gradient-to-br from-rose-500/20 via-rose-500/10 to-transparent",
-    iconColor: "text-rose-300",
+    borderColor: "border-destructive/40",
+    bgGradient: "bg-destructive/10",
+    iconColor: "text-destructive",
   },
   task: {
     icon: CheckSquare,
-    baseClass: "border-emerald-400/40 bg-emerald-500/10",
-    activeGlow: "shadow-[0_0_24px_rgba(16,185,129,0.5)]",
+    baseClass: "border-success/20 bg-success/10",
+    activeGlow: "shadow-lg",
     shape: "rounded-2xl", // Rounded rectangle
-    borderColor: "border-emerald-400/60",
-    bgGradient: "bg-gradient-to-br from-emerald-500/20 via-emerald-500/10 to-transparent",
-    iconColor: "text-emerald-300",
+    borderColor: "border-success/40",
+    bgGradient: "bg-success/10",
+    iconColor: "text-success",
   },
   entity: {
     icon: Building2,
-    baseClass: "border-slate-400/40 bg-slate-500/10",
-    activeGlow: "shadow-[0_0_24px_rgba(148,163,184,0.5)]",
+    baseClass: "border-border bg-surface-1",
+    activeGlow: "shadow-lg",
     shape: "rounded-3xl", // Large container
-    borderColor: "border-slate-400/60",
-    bgGradient: "bg-gradient-to-br from-slate-500/20 via-slate-500/10 to-transparent",
-    iconColor: "text-foreground/70",
+    borderColor: "border-primary",
+    bgGradient: "bg-surface-1",
+    iconColor: "text-muted-foreground",
   },
 };
 
@@ -164,9 +164,9 @@ export function ComplianceNode({
 
   const stateClasses = {
     idle: "",
-    active: cn(config.activeGlow, "ring-2 ring-offset-2 ring-offset-background", config.borderColor),
-    "at-risk": "ring-2 ring-rose-500/50 animate-pulse",
-    verified: cn("ring-2 ring-emerald-400/50", "after:absolute after:inset-0 after:rounded-inherit after:animate-shimmer after:bg-gradient-to-r after:from-transparent after:via-emerald-400/20 after:to-transparent"),
+    active: cn(config.activeGlow, "ring-2 ring-offset-2 ring-offset-background ring-ring", config.borderColor),
+    "at-risk": "ring-2 ring-destructive/50",
+    verified: cn("ring-2 ring-success/50", "after:absolute after:inset-0 after:rounded-inherit after:animate-shimmer after:bg-gradient-to-r after:from-transparent after:via-success/20 after:to-transparent"),
     linked: cn("ring-1", config.borderColor, "scale-105"),
     processing: "animate-pulse opacity-75",
   };
@@ -179,7 +179,7 @@ export function ComplianceNode({
       onClick={interactive ? onClick : undefined}
       className={cn(
         // Base structure
-        "relative group flex items-center gap-3 border backdrop-blur-sm transition-all duration-300",
+        "relative group flex items-center gap-3 border transition-all duration-300",
         config.baseClass,
         config.bgGradient,
         config.shape,
@@ -232,7 +232,7 @@ export function ComplianceNode({
       {/* Count badge */}
       {count !== undefined && (
         <div className={cn(
-          "flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full text-xs font-bold",
+          "flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full text-xs font-bold tabular-nums",
           config.baseClass,
           config.iconColor
         )}>
@@ -242,8 +242,8 @@ export function ComplianceNode({
 
       {/* Processing spinner overlay */}
       {state === "processing" && (
-        <div className="absolute inset-0 flex items-center justify-center rounded-inherit bg-black/30 backdrop-blur-sm">
-          <div className="h-5 w-5 border-2 border-white/30 border-t-white/80 rounded-full animate-spin" />
+        <div className="absolute inset-0 flex items-center justify-center rounded-inherit bg-background/60 backdrop-blur-sm">
+          <div className="h-5 w-5 border-2 border-border border-t-foreground rounded-full animate-spin" />
         </div>
       )}
     </div>

@@ -190,7 +190,7 @@ export function IntegrationConfigDialog({
               ))}
             </div>
 
-            <div className="rounded-lg border border-glass-border bg-glass-subtle p-4 text-sm text-muted-foreground">
+            <div className="rounded-lg border border-border bg-surface-1 p-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2 font-semibold text-foreground/90">
                 <Link2 className="h-4 w-4" />
                 Connection metadata
@@ -207,7 +207,7 @@ export function IntegrationConfigDialog({
             </div>
 
             {message ? (
-              <div className="rounded-lg border border-slate-700 bg-slate-800/40 px-4 py-3 text-sm text-slate-100">
+              <div className="rounded-lg border border-border bg-surface-2 px-4 py-3 text-sm text-foreground">
                 {message}
               </div>
             ) : null}

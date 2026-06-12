@@ -24,7 +24,7 @@ export function FeatureUsageIndicators() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-5 animate-pulse">
+      <div className="rounded-2xl border border-border bg-surface-1 p-5 animate-pulse">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
           Loading usage data...
@@ -39,16 +39,16 @@ export function FeatureUsageIndicators() {
   if (limitedItems.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-5 space-y-4">
+    <div className="rounded-2xl border border-border bg-surface-1 p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-sky-400" />
+          <TrendingUp className="h-4 w-4 text-muted-foreground" />
           <h3 className="text-sm font-semibold text-foreground/90">
             Feature Usage
           </h3>
         </div>
         {hasHighUsage && (
-          <span className="text-xs font-medium text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded-full">
+          <span className="text-xs font-medium text-warning bg-warning/10 px-2 py-0.5 rounded-full">
             Nearing limits
           </span>
         )}
@@ -65,10 +65,10 @@ export function FeatureUsageIndicators() {
 
 function UsageBar({ item }: { item: FeatureUsageItem }) {
   const statusColors = {
-    ok: { bar: 'bg-sky-400', text: 'text-muted-foreground' },
-    nudge: { bar: 'bg-amber-400', text: 'text-amber-300' },
-    warning: { bar: 'bg-orange-400', text: 'text-orange-300' },
-    exceeded: { bar: 'bg-rose-400', text: 'text-rose-300' },
+    ok: { bar: 'bg-success', text: 'text-muted-foreground' },
+    nudge: { bar: 'bg-warning', text: 'text-warning' },
+    warning: { bar: 'bg-warning', text: 'text-warning' },
+    exceeded: { bar: 'bg-destructive', text: 'text-destructive' },
   };
 
   const colors = statusColors[item.status];
@@ -84,11 +84,11 @@ function UsageBar({ item }: { item: FeatureUsageItem }) {
             <AlertCircle className="inline ml-1 h-3 w-3" />
           )}
           {item.status === 'ok' && item.limit !== -1 && (
-            <CheckCircle2 className="inline ml-1 h-3 w-3 text-emerald-400" />
+            <CheckCircle2 className="inline ml-1 h-3 w-3 text-success" />
           )}
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-700 ${colors.bar}`}
           style={{ width: `${item.percentage}%` }}

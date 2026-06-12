@@ -10,11 +10,11 @@ import {
 type Tone = 'blue' | 'emerald' | 'amber' | 'rose' | 'slate';
 
 const dotColor: Record<Tone, string> = {
-  blue: 'bg-[hsl(var(--app-primary))]',
-  emerald: 'bg-emerald-500',
-  amber: 'bg-amber-500',
-  rose: 'bg-rose-500',
-  slate: 'bg-slate-500',
+  blue: 'bg-primary',
+  emerald: 'bg-success',
+  amber: 'bg-warning',
+  rose: 'bg-destructive',
+  slate: 'bg-muted-foreground',
 };
 
 export interface KpiItem {
@@ -65,7 +65,7 @@ export function KpiBar({ items, className }: KpiBarProps) {
         const wrap = it.href ? (
           <Link
             href={it.href}
-            className="rounded-md transition-colors hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--app-primary))]/50"
+            className="rounded-md transition-colors hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {inner}
           </Link>

@@ -521,13 +521,13 @@ export function CommandPalette() {
               className="fixed inset-0 flex items-start justify-center px-4 pt-[15vh] sm:pt-[20vh]"
             >
               <Command
-                className="w-full max-w-[640px] overflow-hidden rounded-2xl border border-glass-border bg-background/95 shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-xl"
+                className="w-full max-w-[640px] overflow-hidden rounded-2xl border border-border bg-popover shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-xl"
                 label="Command Palette"
                 loop
                 shouldFilter={true}
               >
                 {/* Search input */}
-                <div className="flex items-center gap-3 border-b border-glass-border/50 px-4">
+                <div className="flex items-center gap-3 border-b border-border px-4">
                   <Search className="h-4 w-4 shrink-0 text-muted-foreground/60" />
                   <Command.Input
                     ref={inputRef}
@@ -541,10 +541,10 @@ export function CommandPalette() {
                     className="h-14 w-full border-none bg-transparent text-sm text-foreground/90 outline-none placeholder:text-muted-foreground/60"
                   />
                   <div className="flex shrink-0 items-center gap-1.5">
-                    <kbd className="hidden select-none items-center rounded-md border border-glass-border bg-glass-subtle px-1.5 py-0.5 font-mono text-[11px] font-medium text-muted-foreground/60 sm:inline-flex">
+                    <kbd className="hidden select-none items-center rounded-md border border-border bg-surface-1 px-1.5 py-0.5 font-mono text-[11px] font-medium text-muted-foreground/60 sm:inline-flex">
                       {isMac ? '\u2318' : 'Ctrl'}
                     </kbd>
-                    <kbd className="hidden select-none items-center rounded-md border border-glass-border bg-glass-subtle px-1.5 py-0.5 font-mono text-[11px] font-medium text-muted-foreground/60 sm:inline-flex">
+                    <kbd className="hidden select-none items-center rounded-md border border-border bg-surface-1 px-1.5 py-0.5 font-mono text-[11px] font-medium text-muted-foreground/60 sm:inline-flex">
                       K
                     </kbd>
                   </div>
@@ -584,7 +584,7 @@ export function CommandPalette() {
                           <div
                             className={cn(
                               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                              'bg-glass-subtle/50 text-muted-foreground/40',
+                              'bg-surface-1 text-muted-foreground/40',
                             )}
                           >
                             <Search className="h-4 w-4" />
@@ -607,7 +607,7 @@ export function CommandPalette() {
                           <div
                             className={cn(
                               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                              'bg-glass-subtle/50 text-muted-foreground/30',
+                              'bg-surface-1 text-muted-foreground/30',
                             )}
                           >
                             <Search className="h-4 w-4" />
@@ -649,15 +649,15 @@ export function CommandPalette() {
                                   'group flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
                                   'text-sm font-medium text-muted-foreground',
                                   'transition-colors duration-100',
-                                  'aria-selected:bg-glass-subtle aria-selected:text-foreground',
+                                  'aria-selected:bg-surface-2 aria-selected:text-foreground',
                                 )}
                               >
                                 <div
                                   className={cn(
                                     'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                                    'bg-glass-subtle/50 text-muted-foreground/60',
+                                    'bg-surface-1 text-muted-foreground/60',
                                     'transition-colors duration-100',
-                                    'group-aria-selected:bg-cyan-500/10 group-aria-selected:text-cyan-400',
+                                    'group-aria-selected:bg-primary/10 group-aria-selected:text-primary',
                                   )}
                                 >
                                   {React.createElement(icon, {
@@ -667,7 +667,7 @@ export function CommandPalette() {
                                 <span className="flex-1 truncate">
                                   {r.title}
                                 </span>
-                                <span className="shrink-0 rounded-md border border-glass-border bg-glass-subtle/50 px-2 py-1 text-xs font-medium text-muted-foreground/40">
+                                <span className="shrink-0 rounded-md border border-border bg-surface-1 px-2 py-1 text-xs font-medium text-muted-foreground/40">
                                   {r.type}
                                 </span>
                                 <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/40 opacity-0 transition-opacity group-aria-selected:opacity-100" />
@@ -700,22 +700,22 @@ export function CommandPalette() {
                             'group flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5',
                             'text-sm font-medium text-muted-foreground',
                             'transition-colors duration-100',
-                            'aria-selected:bg-glass-subtle aria-selected:text-foreground',
+                            'aria-selected:bg-surface-2 aria-selected:text-foreground',
                           )}
                         >
                           <div
                             className={cn(
                               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                              'bg-glass-subtle/50 text-muted-foreground/60',
+                              'bg-surface-1 text-muted-foreground/60',
                               'transition-colors duration-100',
-                              'group-aria-selected:bg-cyan-500/10 group-aria-selected:text-cyan-400',
+                              'group-aria-selected:bg-primary/10 group-aria-selected:text-primary',
                             )}
                           >
                             <item.icon className="h-4 w-4" />
                           </div>
                           <span className="flex-1 truncate">{item.label}</span>
                           {item.shortcut && (
-                            <kbd className="hidden select-none rounded-md border border-glass-border bg-glass-subtle/50 px-1.5 py-0.5 font-mono text-xs text-muted-foreground/40 sm:inline-flex">
+                            <kbd className="hidden select-none rounded-md border border-border bg-surface-1 px-1.5 py-0.5 font-mono text-xs text-muted-foreground/40 sm:inline-flex">
                               {item.shortcut}
                             </kbd>
                           )}
@@ -727,25 +727,25 @@ export function CommandPalette() {
                 </Command.List>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between border-t border-glass-border/50 px-4 py-2.5">
+                <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
                   <div className="flex items-center gap-3 text-[11px] text-muted-foreground/40">
                     <span className="flex items-center gap-1">
-                      <kbd className="rounded border border-glass-border bg-glass-subtle/50 px-1 py-0.5 font-mono text-xs">
+                      <kbd className="rounded border border-border bg-surface-1 px-1 py-0.5 font-mono text-xs">
                         &uarr;
                       </kbd>
-                      <kbd className="rounded border border-glass-border bg-glass-subtle/50 px-1 py-0.5 font-mono text-xs">
+                      <kbd className="rounded border border-border bg-surface-1 px-1 py-0.5 font-mono text-xs">
                         &darr;
                       </kbd>
                       <span className="ml-0.5">Navigate</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <kbd className="rounded border border-glass-border bg-glass-subtle/50 px-1 py-0.5 font-mono text-xs">
+                      <kbd className="rounded border border-border bg-surface-1 px-1 py-0.5 font-mono text-xs">
                         &crarr;
                       </kbd>
                       <span className="ml-0.5">Select</span>
                     </span>
                     <span className="flex items-center gap-1">
-                      <kbd className="rounded border border-glass-border bg-glass-subtle/50 px-1 py-0.5 font-mono text-xs">
+                      <kbd className="rounded border border-border bg-surface-1 px-1 py-0.5 font-mono text-xs">
                         Esc
                       </kbd>
                       <span className="ml-0.5">Close</span>

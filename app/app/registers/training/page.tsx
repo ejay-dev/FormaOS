@@ -154,7 +154,7 @@ export default function TrainingRegisterPage() {
               ? undefined
               : 'Training records are unavailable until the org_training_records table is migrated.'
           }
-          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
+          className="flex items-center gap-2 bg-surface-2 text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
         >
           <Plus className="h-4 w-4" />
           Add Certification
@@ -163,7 +163,7 @@ export default function TrainingRegisterPage() {
 
       {!schemaAvailable ? (
         <div
-          className="rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-sm text-amber-100"
+          className="rounded-2xl border border-warning/20 bg-warning/10 p-4 text-sm text-warning"
           data-testid="training-register-schema-disabled"
         >
           Training register actions are unavailable until the
@@ -200,7 +200,7 @@ export default function TrainingRegisterPage() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
           {error}
         </div>
       ) : null}
@@ -217,7 +217,7 @@ export default function TrainingRegisterPage() {
                 <th className="px-8 py-6 text-right">Reference</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
                   <td
@@ -232,7 +232,7 @@ export default function TrainingRegisterPage() {
               ) : filteredRecords.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-8 py-24 text-center">
-                    <div className="h-16 w-16 bg-glass-strong rounded-2xl flex items-center justify-center mx-auto mb-4 border border-edge-2">
+                    <div className="h-16 w-16 bg-surface-2 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-edge-2">
                       <GraduationCap className="h-8 w-8 text-muted-foreground" />
                     </div>
                     <p className="text-sm font-black text-foreground tracking-tight">
@@ -256,7 +256,7 @@ export default function TrainingRegisterPage() {
                     >
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-edge-2 group-hover:bg-surface-3 transition-colors">
+                          <div className="h-10 w-10 rounded-xl bg-surface-2 flex items-center justify-center text-muted-foreground border border-edge-2 group-hover:bg-surface-3 transition-colors">
                             <User className="h-5 w-5" />
                           </div>
                           <div className="flex flex-col">
@@ -286,8 +286,8 @@ export default function TrainingRegisterPage() {
                         <div
                           className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold uppercase tracking-wide w-fit shadow-sm ${
                             isExpired
-                              ? 'bg-rose-500/10 text-rose-300 border-rose-400/30'
-                              : 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30'
+                              ? 'bg-destructive/10 text-destructive border-destructive/20'
+                              : 'bg-success/10 text-success border-success/20'
                           }`}
                         >
                           {isExpired ? (

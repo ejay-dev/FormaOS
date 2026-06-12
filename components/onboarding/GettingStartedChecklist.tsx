@@ -29,7 +29,10 @@ function ConfettiBurst() {
           style={{
             left: `${(index / pieces.length) * 100}%`,
             animationDelay: `${index * 0.05}s`,
-            background: index % 2 === 0 ? '#38bdf8' : '#a78bfa',
+            background:
+              index % 2 === 0
+                ? 'hsl(var(--primary))'
+                : 'hsl(var(--muted-foreground))',
           }}
         />
       ))}
@@ -168,7 +171,7 @@ export function GettingStartedChecklist({
 
   return (
     <div
-      className="relative rounded-2xl border border-glass-border bg-gradient-to-br from-white/5 to-transparent p-6"
+      className="relative rounded-2xl border border-border bg-card p-6"
       data-testid="getting-started-checklist"
     >
       {showConfetti && <ConfettiBurst />}
@@ -196,11 +199,11 @@ export function GettingStartedChecklist({
             {progress < 100 && progress > 0 && (
               <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground/60">
                 <Clock className="h-3.5 w-3.5" />
-                <span>~{timeRemaining} remaining</span>
+                <span className="tabular-nums">~{timeRemaining} remaining</span>
               </div>
             )}
           </div>
-          <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-glass-border bg-glass-subtle text-muted-foreground group-hover:bg-glass-strong transition-colors">
+          <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border bg-surface-1 text-muted-foreground group-hover:bg-surface-2 transition-colors">
             {isCollapsed ? (
               <ChevronRight className="h-4 w-4" />
             ) : (
@@ -213,14 +216,14 @@ export function GettingStartedChecklist({
           data-testid="getting-started-progress"
         >
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>
+            <span className="tabular-nums">
               {completedCount} of {totalCount} done
             </span>
-            <span>{progress}%</span>
+            <span className="tabular-nums">{progress}%</span>
           </div>
-          <div className="mt-2 h-2 rounded-full bg-slate-800 overflow-hidden">
+          <div className="mt-2 h-2 rounded-full bg-surface-2 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
+              className="h-full bg-primary transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -235,13 +238,13 @@ export function GettingStartedChecklist({
 
             // Determine priority border color
             const priorityColors = {
-              critical: 'border-l-red-500',
-              high: 'border-l-orange-500',
-              medium: 'border-l-yellow-500',
-              low: 'border-l-slate-500',
+              critical: 'border-l-destructive',
+              high: 'border-l-warning',
+              medium: 'border-l-warning',
+              low: 'border-l-border',
             };
             const borderColor =
-              priorityColors[item.priority] || 'border-l-slate-500';
+              priorityColors[item.priority] || 'border-l-border';
 
             return (
               <Link
@@ -250,7 +253,7 @@ export function GettingStartedChecklist({
                 data-testid={`checklist-item-${item.id}`}
                 aria-label={`${isComplete ? 'Completed' : 'Pending'}: ${item.label}`}
                 aria-describedby={`desc-${item.id}`}
-                className={`flex items-start justify-between gap-3 rounded-xl border border-glass-border ${borderColor} border-l-2 bg-glass-subtle p-3 transition-colors hover:bg-glass-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900`}
+                className={`flex items-start justify-between gap-3 rounded-xl border border-border ${borderColor} border-l-2 bg-surface-1 p-3 transition-colors hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
               >
                 <div className="flex items-start gap-3 flex-1">
                   <div
@@ -260,7 +263,7 @@ export function GettingStartedChecklist({
                   >
                     {isComplete ? (
                       <CheckCircle2
-                        className="h-4 w-4 text-emerald-400"
+                        className="h-4 w-4 text-success"
                         aria-hidden="true"
                       />
                     ) : (
@@ -277,7 +280,7 @@ export function GettingStartedChecklist({
                       </p>
                       {item.estimatedMinutes > 0 && (
                         <span
-                          className="text-xs text-muted-foreground/60"
+                          className="text-xs text-muted-foreground/60 tabular-nums"
                           aria-label={`Estimated ${item.estimatedMinutes} minutes`}
                         >
                           ~{item.estimatedMinutes}min
@@ -287,7 +290,7 @@ export function GettingStartedChecklist({
                         <>
                           <span aria-hidden="true">•</span>
                           <span
-                            className="flex items-center gap-1 text-cyan-500 cursor-help"
+                            className="flex items-center gap-1 text-muted-foreground cursor-help"
                             aria-label="Automation enabled"
                             title="This step will be verified automatically once the underlying data exists — no manual check-off needed."
                           >

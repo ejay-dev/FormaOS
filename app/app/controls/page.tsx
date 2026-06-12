@@ -24,17 +24,17 @@ const STATUS_CONFIG: Record<
 > = {
   compliant: {
     label: 'Compliant',
-    className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+    className: 'border-success/30 bg-success/10 text-success',
     icon: CheckCircle2,
   },
   at_risk: {
     label: 'At Risk',
-    className: 'border-amber-500/30 bg-amber-500/10 text-amber-400',
+    className: 'border-warning/30 bg-warning/10 text-warning',
     icon: AlertTriangle,
   },
   non_compliant: {
     label: 'Non-Compliant',
-    className: 'border-red-500/30 bg-red-500/10 text-red-400',
+    className: 'border-destructive/30 bg-destructive/10 text-destructive',
     icon: XCircle,
   },
 };
@@ -54,8 +54,8 @@ async function ControlsList({ orgId }: { orgId: string }) {
 
   if (controls.length === 0) {
     return (
-      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-8 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-glass-border bg-glass-subtle">
+      <div className="rounded-2xl border border-border bg-surface-1 p-8 text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-2">
           <ShieldCheck className="h-5 w-5 text-muted-foreground" />
         </div>
         <div className="mt-4 text-sm font-semibold text-foreground">
@@ -91,7 +91,7 @@ async function ControlsList({ orgId }: { orgId: string }) {
           return (
             <div
               key={key}
-              className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-5 shadow-premium-lg"
+              className="rounded-2xl border border-border bg-card p-5 shadow-premium-lg"
             >
               <div className="flex items-center gap-2">
                 <Icon
@@ -161,10 +161,10 @@ async function ControlsList({ orgId }: { orgId: string }) {
       </div>
 
       {/* Controls table — desktop */}
-      <div className="hidden md:block rounded-2xl border border-glass-border bg-glass-subtle overflow-hidden">
+      <div className="hidden md:block rounded-2xl border border-border bg-surface-1 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-glass-border bg-glass-subtle text-muted-foreground">
+            <thead className="border-b border-border bg-surface-2 text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 text-left font-medium">Control</th>
                 <th className="px-4 py-3 text-left font-medium">Framework</th>
@@ -175,7 +175,7 @@ async function ControlsList({ orgId }: { orgId: string }) {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-glass-border">
+            <tbody className="divide-y divide-border">
               {controls.map((control) => {
                 const details = (control.details ?? {}) as Record<
                   string,
@@ -194,7 +194,7 @@ async function ControlsList({ orgId }: { orgId: string }) {
                 return (
                   <tr
                     key={control.id}
-                    className="transition-colors hover:bg-glass-subtle"
+                    className="transition-colors hover:bg-surface-2"
                   >
                     <td className="px-4 py-3">
                       <div className="font-semibold text-foreground">
@@ -277,13 +277,13 @@ export default async function ControlsPage() {
           </Link>
           <Link
             href="/app/compliance/frameworks"
-            className="rounded-lg border border-glass-border bg-glass-subtle px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-glass-strong transition-colors"
+            className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
           >
             Frameworks
           </Link>
           <Link
             href="/app/compliance/cross-map"
-            className="rounded-lg border border-glass-border bg-glass-subtle px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-glass-strong transition-colors"
+            className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
           >
             Cross-Map
           </Link>

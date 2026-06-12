@@ -93,9 +93,7 @@ export function DashboardHero({
               title={greeting}
               className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-border bg-muted/40 text-3xl leading-none select-none"
             >
-              <span className="origin-[70%_70%] motion-safe:animate-[wave_1.6s_ease-in-out_infinite]">
-                👋
-              </span>
+              👋
             </span>
           )}
           <div className="min-w-0">
@@ -173,9 +171,9 @@ function HeroMetric({
 }) {
   const valueClass =
     tone === 'warning'
-      ? 'text-amber-500'
+      ? 'text-warning'
       : tone === 'danger'
-        ? 'text-rose-500'
+        ? 'text-destructive'
         : 'text-foreground';
 
   return (

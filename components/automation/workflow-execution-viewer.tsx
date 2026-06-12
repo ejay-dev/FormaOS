@@ -32,7 +32,7 @@ export function WorkflowExecutionViewer({
 
   return (
     <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-      <div className="space-y-4 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
+      <div className="space-y-4 rounded-[28px] border border-border bg-card p-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -45,7 +45,7 @@ export function WorkflowExecutionViewer({
           {onRerun ? (
             <button
               type="button"
-              className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+              className="rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/20"
               onClick={onRerun}
             >
               Re-run Workflow
@@ -67,7 +67,7 @@ export function WorkflowExecutionViewer({
           ))}
         </div>
       </div>
-      <div className="space-y-4 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
+      <div className="space-y-4 rounded-[28px] border border-border bg-card p-5">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Timeline
@@ -83,7 +83,7 @@ export function WorkflowExecutionViewer({
             Click any step to inspect duration, output, and errors.
           </p>
         )}
-        <div className="rounded-2xl border border-glass-border bg-white/[0.03] p-4">
+        <div className="rounded-2xl border border-border bg-surface-1 p-4">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             Run Summary
           </p>
@@ -124,16 +124,16 @@ function StepExecutionDetail({ result }: { result: ExecutionResult }) {
           <dd>{result.duration} ms</dd>
         </div>
       </dl>
-      <div className="rounded-2xl border border-glass-border bg-white/[0.03] p-4">
+      <div className="rounded-2xl border border-border bg-surface-1 p-4">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Output</p>
         <pre className="mt-3 overflow-auto text-xs text-foreground/90">
           {JSON.stringify(result.output ?? null, null, 2)}
         </pre>
       </div>
       {result.error ? (
-        <div className="rounded-2xl border border-rose-400/20 bg-rose-500/10 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-200">Error</p>
-          <pre className="mt-2 whitespace-pre-wrap text-xs text-rose-100">{result.error}</pre>
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-destructive">Error</p>
+          <pre className="mt-2 whitespace-pre-wrap text-xs text-destructive">{result.error}</pre>
         </div>
       ) : null}
     </div>

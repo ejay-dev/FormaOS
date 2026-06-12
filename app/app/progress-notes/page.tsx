@@ -182,7 +182,7 @@ export default async function ProgressNotesPage() {
               </div>
             </form>
             {(patients ?? []).length === 0 && (
-              <p className="mt-3 text-xs text-amber-200">
+              <p className="mt-3 text-xs text-warning">
                 Add a patient first before logging progress notes.
               </p>
             )}
@@ -232,7 +232,7 @@ export default async function ProgressNotesPage() {
                     <div className="mt-3 flex flex-wrap items-center gap-3 text-xs">
                       <Link
                         href={`/app/patients/${note.patient_id}`}
-                        className="text-sky-300 hover:underline"
+                        className="text-primary hover:underline"
                       >
                         View patient record
                       </Link>

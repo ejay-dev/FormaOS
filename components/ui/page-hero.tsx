@@ -20,11 +20,13 @@ interface PageHeroProps {
   className?: string;
 }
 
+// Status tones route to functional tokens; each tile pairs the colour with a
+// text label (metric.label) so meaning is never conveyed by colour alone.
 const valueToneClass: Record<PageHeroMetricTone, string> = {
   neutral: 'text-foreground',
-  warning: 'text-amber-500',
-  danger: 'text-rose-500',
-  success: 'text-emerald-500',
+  warning: 'text-warning',
+  danger: 'text-destructive',
+  success: 'text-success',
 };
 
 function metricsGridClass(count: number): string {

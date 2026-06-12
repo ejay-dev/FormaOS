@@ -25,7 +25,7 @@ interface ComplianceChartProps {
 export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) {
   return (
     <motion.div
-      className="h-[240px] sm:h-[320px] w-full rounded-2xl border border-glass-border bg-glass-strong p-4 shadow-sm"
+      className="h-[240px] sm:h-[320px] w-full rounded-2xl border border-border bg-card p-4 shadow-sm"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
@@ -35,15 +35,15 @@ export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) 
           {/* ===== GRADIENTS ===== */}
           <defs>
             <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#000000" stopOpacity={0.18} />
-              <stop offset="95%" stopColor="#000000" stopOpacity={0} />
+              <stop offset="5%" stopColor="hsl(var(--foreground))" stopOpacity={0.18} />
+              <stop offset="95%" stopColor="hsl(var(--foreground))" stopOpacity={0} />
             </linearGradient>
 
-            {/* Risk zone shading */}
+            {/* Risk zone shading — RAG thresholds */}
             <linearGradient id="riskGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#16a34a" stopOpacity={0.12} />  {/* Green */}
-              <stop offset="50%" stopColor="#f59e0b" stopOpacity={0.12} /> {/* Amber */}
-              <stop offset="100%" stopColor="#dc2626" stopOpacity={0.12} /> {/* Red */}
+              <stop offset="0%" stopColor="hsl(var(--success))" stopOpacity={0.12} />  {/* Green */}
+              <stop offset="50%" stopColor="hsl(var(--warning))" stopOpacity={0.12} /> {/* Amber */}
+              <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0.12} /> {/* Red */}
             </linearGradient>
           </defs>
 
@@ -51,7 +51,7 @@ export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) 
           <CartesianGrid
             strokeDasharray="3 3"
             vertical={false}
-            stroke="#f5f5f5"
+            stroke="hsl(var(--border))"
           />
 
           {/* ===== AXES ===== */}
@@ -59,26 +59,26 @@ export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) 
             dataKey="month"
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 12, fill: "#a3a3a3" }}
+            tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
             dy={10}
           />
           <YAxis
             domain={[0, 100]}
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 12, fill: "#a3a3a3" }}
+            tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
           />
 
           {/* ===== BENCHMARK LINE ===== */}
           <ReferenceLine
             y={benchmark}
-            stroke="#16a34a"
+            stroke="hsl(var(--success))"
             strokeDasharray="6 6"
             strokeWidth={1.5}
             label={{
               value: `Target ${benchmark}%`,
               position: "right",
-              fill: "#16a34a",
+              fill: "hsl(var(--success))",
               fontSize: 11,
               fontWeight: 700,
             }}
@@ -86,13 +86,13 @@ export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) 
 
           {/* ===== TOOLTIP ===== */}
           <Tooltip
-            cursor={{ stroke: "#000", strokeWidth: 1, opacity: 0.05 }}
+            cursor={{ stroke: "hsl(var(--foreground))", strokeWidth: 1, opacity: 0.05 }}
             content={({ active, payload, label }) => {
               if (!active || !payload || !payload.length) return null;
               const value = payload[0].value as number;
 
               return (
-                <div className="rounded-xl border border-glass-border bg-glass-strong px-3 py-2 shadow-xl">
+                <div className="rounded-xl border border-border bg-popover px-3 py-2 shadow-xl">
                   <p className="text-xs font-bold text-foreground">{label}</p>
                   <p className="text-sm font-black text-foreground">
                     {value}%
@@ -113,11 +113,11 @@ export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) 
           <Area
             type="monotone"
             dataKey="score"
-            stroke="#000000"
+            stroke="hsl(var(--foreground))"
             strokeWidth={2.5}
             fillOpacity={1}
             fill="url(#scoreGradient)"
-            activeDot={{ r: 5, stroke: "#000", strokeWidth: 2 }}
+            activeDot={{ r: 5, stroke: "hsl(var(--foreground))", strokeWidth: 2 }}
           />
         </AreaChart>
       </ResponsiveContainer>

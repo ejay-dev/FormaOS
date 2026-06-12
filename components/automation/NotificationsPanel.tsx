@@ -97,9 +97,9 @@ export function NotificationsPanel() {
     return (
       <Card className="p-6">
         <div className="animate-pulse space-y-3">
-          <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+          <div className="h-6 bg-muted rounded w-1/3"></div>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-20 bg-gray-100 rounded"></div>
+            <div key={i} className="h-20 bg-muted rounded"></div>
           ))}
         </div>
       </Card>
@@ -111,10 +111,10 @@ export function NotificationsPanel() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Bell className="w-5 h-5 text-gray-700" />
-          <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+          <Bell className="w-5 h-5 text-muted-foreground" />
+          <h3 className="text-lg font-semibold text-foreground">Notifications</h3>
           {unreadCount > 0 && (
-            <Badge variant="default" className="bg-red-500">
+            <Badge variant="default" className="bg-primary text-primary-foreground">
               {unreadCount}
             </Badge>
           )}
@@ -122,7 +122,7 @@ export function NotificationsPanel() {
         {notifications.length > 0 && unreadCount > 0 && (
           <button
             onClick={markAllAsRead}
-            className="text-sm text-purple-600 hover:text-purple-700 font-medium"
+            className="text-sm text-primary hover:text-primary/80 font-medium"
           >
             Mark all as read
           </button>
@@ -132,11 +132,11 @@ export function NotificationsPanel() {
       {/* Notifications List */}
       {notifications.length === 0 ? (
         <div className="text-center py-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-3">
-            <CheckCircle2 className="w-8 h-8 text-gray-400" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-muted rounded-full mb-3">
+            <CheckCircle2 className="w-8 h-8 text-muted-foreground" />
           </div>
-          <p className="text-sm text-gray-600">All caught up!</p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground">All caught up!</p>
+          <p className="text-xs text-muted-foreground mt-1">
             No new notifications at the moment
           </p>
         </div>
@@ -182,8 +182,8 @@ function NotificationItem({
       }}
       className={`group relative p-4 rounded-lg border transition-all ${
         notification.read
-          ? 'bg-white border-gray-200'
-          : 'bg-blue-50 border-blue-200'
+          ? 'bg-surface-1 border-border'
+          : 'bg-muted border-primary/30'
       } hover:shadow-md`}
       onClick={() => !notification.read && onRead(notification.id)}
     >
@@ -199,23 +199,23 @@ function NotificationItem({
         <div
           className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
             notification.type === 'alert'
-              ? 'bg-red-100'
+              ? 'bg-destructive/10'
               : notification.type === 'warning'
-                ? 'bg-yellow-100'
+                ? 'bg-warning/10'
                 : notification.type === 'success'
-                  ? 'bg-green-100'
-                  : 'bg-blue-100'
+                  ? 'bg-success/10'
+                  : 'bg-info/10'
           }`}
         >
           <Icon
             className={`w-5 h-5 ${
               notification.type === 'alert'
-                ? 'text-red-600'
+                ? 'text-destructive'
                 : notification.type === 'warning'
-                  ? 'text-yellow-600'
+                  ? 'text-warning'
                   : notification.type === 'success'
-                    ? 'text-green-600'
-                    : 'text-blue-600'
+                    ? 'text-success'
+                    : 'text-info'
             }`}
           />
         </div>
@@ -225,7 +225,7 @@ function NotificationItem({
           <div className="flex items-start justify-between gap-2 mb-1">
             <h4
               className={`text-sm font-semibold ${
-                notification.read ? 'text-gray-700' : 'text-gray-900'
+                notification.read ? 'text-muted-foreground' : 'text-foreground'
               }`}
             >
               {notification.title}
@@ -235,13 +235,13 @@ function NotificationItem({
                 e.stopPropagation();
                 onDismiss(notification.id);
               }}
-              className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity text-gray-400 hover:text-gray-600"
+              className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
-          <p className="text-xs text-gray-600 mb-2">{notification.message}</p>
-          <div className="flex items-center gap-2 text-xs text-gray-500">
+          <p className="text-xs text-muted-foreground mb-2">{notification.message}</p>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Clock className="w-3 h-3" />
             {formatRelativeTime(notification.timestamp)}
           </div>
@@ -267,13 +267,13 @@ function getNotificationIcon(type: string) {
 function getPriorityColor(priority: string) {
   switch (priority) {
     case 'critical':
-      return 'bg-red-500';
+      return 'bg-destructive';
     case 'high':
-      return 'bg-orange-500';
+      return 'bg-warning';
     case 'medium':
-      return 'bg-yellow-500';
+      return 'bg-warning';
     default:
-      return 'bg-blue-500';
+      return 'bg-info';
   }
 }
 

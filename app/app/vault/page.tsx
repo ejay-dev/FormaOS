@@ -272,7 +272,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                     title={getFileName(item)}
                     subtitle={`${getFileType(item)} · ${getFileSizeKB(item)} KB`}
                     status={
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-400/10 text-amber-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-warning/10 text-warning px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                         <Clock className="h-3 w-3" />
                         Pending
                       </span>
@@ -325,7 +325,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                     >
                       <td className="px-3 py-2">
                         <div className="flex items-center gap-2">
-                          <FileText className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                          <FileText className="h-3.5 w-3.5 text-warning shrink-0" />
                           <span className="font-medium truncate max-w-[200px]">
                             {getFileName(item)}
                           </span>
@@ -383,12 +383,12 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                               <input
                                 name="reason"
                                 placeholder="Reason"
-                                className="h-7 w-24 rounded border border-border bg-background px-2 text-xs"
+                                className="h-7 w-24 rounded border border-border bg-background px-2 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                 required
                               />
                               <button
                                 type="submit"
-                                className="h-7 px-2 rounded bg-emerald-500/20 text-emerald-500 text-xs font-medium hover:bg-emerald-500/30"
+                                className="h-7 px-2 rounded bg-success/10 text-success text-xs font-medium hover:bg-success/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                               >
                                 <CheckCircle2 className="h-3 w-3 inline mr-1" />
                                 Verify
@@ -427,7 +427,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                     title={getFileName(item)}
                     subtitle={`${getFileType(item)} · ${getFileSizeKB(item)} KB`}
                     status={
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 text-emerald-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-success/10 text-success px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
                         <ShieldCheck className="h-3 w-3" />
                         Verified
                       </span>
@@ -490,7 +490,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                       >
                         <td className="px-8 py-4">
                           <div className="flex items-center gap-3">
-                            <FileText className="h-4 w-4 text-emerald-300" />
+                            <FileText className="h-4 w-4 text-success" />
                             <span className="text-xs font-bold text-foreground">
                               {getFileName(item)}
                             </span>
@@ -524,12 +524,12 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                           {item.quality_score != null ? (
                             <div className="flex items-center gap-2">
                               <div
-                                className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold tabular-nums ${
                                   item.quality_score >= 70
-                                    ? 'bg-emerald-400/10 text-emerald-300'
+                                    ? 'bg-success/10 text-success'
                                     : item.quality_score >= 50
-                                      ? 'bg-amber-400/10 text-amber-300'
-                                      : 'bg-rose-400/10 text-rose-300'
+                                      ? 'bg-warning/10 text-warning'
+                                      : 'bg-destructive/10 text-destructive'
                                 }`}
                               >
                                 {item.quality_score}
@@ -537,10 +537,10 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                               <span
                                 className={`text-[9px] font-bold uppercase ${
                                   item.risk_flag === 'low'
-                                    ? 'text-emerald-400'
+                                    ? 'text-success'
                                     : item.risk_flag === 'medium'
-                                      ? 'text-amber-400'
-                                      : 'text-rose-400'
+                                      ? 'text-warning'
+                                      : 'text-destructive'
                                 }`}
                               >
                                 {item.risk_flag || 'N/A'}
@@ -555,7 +555,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
 
                         <td className="px-8 py-4">
                           <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded-full bg-emerald-400/10 flex items-center justify-center text-emerald-300">
+                            <div className="h-6 w-6 rounded-full bg-success/10 flex items-center justify-center text-success">
                               <ShieldCheck className="h-3 w-3" />
                             </div>
                             <div className="flex flex-col">

@@ -648,7 +648,7 @@ export function CommandCenter({
               {industry && industry !== 'other' && (
                 <>
                   {countsError ? (
-                    <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-500">
+                    <div className="rounded-md border border-warning/20 bg-warning/10 px-4 py-3 text-sm text-warning">
                       {countsError}. Refresh the page to try again.
                     </div>
                   ) : (
@@ -789,7 +789,7 @@ export function CommandCenter({
                   </div>
                   <Link
                     href="/app/audit-trail"
-                    className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
+                    className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <Download className="h-3 w-3" />
                     Open audit trail
@@ -804,14 +804,14 @@ export function CommandCenter({
                     <>
                       <button
                         type="button"
-                        className="inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        className="inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         <Search className="h-3 w-3" />
                         Search
                       </button>
                       <button
                         type="button"
-                        className="inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        className="inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         <SlidersHorizontal className="h-3 w-3" />
                         Filters
@@ -819,7 +819,7 @@ export function CommandCenter({
                     </>
                   }
                 />
-                <div className="rounded-md border border-dashed border-border/80 bg-[hsl(var(--panel-2))] p-6 text-center">
+                <div className="rounded-md border border-dashed border-border/80 bg-surface-1 p-6 text-center">
                   <p className="text-xs font-medium text-foreground">
                     Detailed events live in the audit trail
                   </p>
@@ -829,7 +829,7 @@ export function CommandCenter({
                   </p>
                   <Link
                     href="/app/audit-trail"
-                    className="mt-3 inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
+                    className="mt-3 inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     View audit trail
                   </Link>
@@ -928,7 +928,7 @@ function ActivationMilestones({
           {Array.from({ length: 4 }).map((_, idx) => (
             <div
               key={`loading-${idx}`}
-              className="h-14 animate-pulse rounded-xl border border-glass-border bg-surface-1"
+              className="h-14 animate-pulse rounded-xl border border-border bg-surface-1"
             />
           ))}
         </div>

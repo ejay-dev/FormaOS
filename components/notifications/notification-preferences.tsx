@@ -228,7 +228,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 rounded-3xl border border-glass-border bg-white/[0.04] px-5 py-4 text-sm text-muted-foreground">
+      <div className="flex items-center gap-2 rounded-3xl border border-border bg-surface-1 px-5 py-4 text-sm text-muted-foreground">
         <Loader2 className="h-4 w-4 animate-spin" />
         Loading notification preferences
       </div>
@@ -237,7 +237,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-[2rem] border border-glass-border bg-white/[0.04] p-6 shadow-sm">
+      <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <h2 className="text-xl font-black tracking-tight text-foreground">
@@ -260,7 +260,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                   key={channel}
                   type="button"
                   onClick={() => void sendTest(channel)}
-                  className="rounded-full border border-glass-border bg-white/[0.04] px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground/90 transition hover:border-sky-400/30 hover:bg-sky-500/10"
+                  className="rounded-full border border-border bg-surface-1 px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground/90 transition hover:border-primary/30 hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <TestTube2 className="mr-2 inline h-3.5 w-3.5" />
                   Test {CHANNEL_LABELS[channel]}
@@ -275,13 +275,13 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
           <table className="min-w-full border-separate border-spacing-y-3">
             <thead>
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-black uppercase tracking-[0.22em] text-muted-foreground/60">
+                <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
                   Event
                 </th>
                 {NOTIFICATION_CHANNELS.map((channel) => (
                   <th
                     key={channel}
-                    className="px-4 py-2 text-center text-xs font-black uppercase tracking-[0.22em] text-muted-foreground/60"
+                    className="px-4 py-2 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground/60"
                   >
                     {CHANNEL_LABELS[channel]}
                   </th>
@@ -294,15 +294,15 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                   <tr key={`${category}-header`}>
                     <td
                       colSpan={NOTIFICATION_CHANNELS.length + 1}
-                      className="pt-6 text-xs font-black uppercase tracking-[0.24em] text-muted-foreground"
+                      className="pt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                     >
                       {NOTIFICATION_CATEGORY_LABELS[category]}
                     </td>
                   </tr>
 
                   {eventTypes.map((eventType) => (
-                    <tr key={eventType} className="rounded-2xl bg-white/[0.03]">
-                      <td className="rounded-l-2xl border border-glass-border px-4 py-4 text-sm font-medium text-foreground/90">
+                    <tr key={eventType} className="rounded-2xl bg-surface-1">
+                      <td className="rounded-l-2xl border border-border px-4 py-4 text-sm font-medium text-foreground/90">
                         {EVENT_LABELS[eventType]}
                       </td>
 
@@ -316,7 +316,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                         return (
                           <td
                             key={`${eventType}-${channel}`}
-                            className="border-y border-glass-border px-4 py-4 text-center last:rounded-r-2xl last:border-r"
+                            className="border-y border-border px-4 py-4 text-center last:rounded-r-2xl last:border-r"
                           >
                             <label className="inline-flex cursor-pointer items-center justify-center">
                               <input
@@ -330,7 +330,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                                   )
                                 }
                                 aria-label={`${eventType} via ${channel}`}
-                                className="h-4 w-4 rounded border-glass-border bg-slate-900 text-sky-400 focus:ring-sky-500/30"
+                                className="h-4 w-4 rounded border-border bg-surface-2 text-primary focus:ring-ring"
                               />
                             </label>
                           </td>
@@ -344,7 +344,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                       colSpan={NOTIFICATION_CHANNELS.length + 1}
                       className="pb-4 pt-2"
                     >
-                      <div className="flex flex-col gap-3 rounded-2xl border border-glass-border bg-white/[0.03] px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-1 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <div className="text-sm font-semibold text-foreground/90">
                             {NOTIFICATION_CATEGORY_LABELS[category]} email digest
@@ -368,7 +368,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                               event.target.value as NotificationDigestFrequency,
                             )
                           }
-                          className="rounded-xl border border-glass-border bg-slate-950/70 px-3 py-2 text-sm text-foreground/90"
+                          className="rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-foreground/90"
                         >
                           {DIGEST_OPTIONS.map((option) => (
                             <option key={option} value={option}>
@@ -386,9 +386,9 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
         </div>
       </section>
 
-      <section className="rounded-[2rem] border border-glass-border bg-white/[0.04] p-6 shadow-sm">
+      <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm">
         <div className="flex items-start gap-3">
-          <MoonStar className="mt-1 h-5 w-5 text-sky-300" />
+          <MoonStar className="mt-1 h-5 w-5 text-muted-foreground" />
           <div>
             <h3 className="text-lg font-black tracking-tight text-foreground">
               Quiet Hours
@@ -400,8 +400,8 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-4">
-          <label className="rounded-2xl border border-glass-border bg-white/[0.03] px-4 py-3 text-sm text-foreground/90">
-            <div className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-muted-foreground/60">
+          <label className="rounded-2xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground/90">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
               Enabled
             </div>
             <input
@@ -413,12 +413,12 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                   enabled: event.target.checked,
                 }))
               }
-              className="h-4 w-4 rounded border-glass-border bg-slate-900 text-sky-400 focus:ring-sky-500/30"
+              className="h-4 w-4 rounded border-border bg-surface-2 text-primary focus:ring-ring"
             />
           </label>
 
-          <label className="rounded-2xl border border-glass-border bg-white/[0.03] px-4 py-3 text-sm text-foreground/90">
-            <div className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-muted-foreground/60">
+          <label className="rounded-2xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground/90">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
               Start
             </div>
             <input
@@ -430,12 +430,12 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                   start: event.target.value,
                 }))
               }
-              className="w-full rounded-xl border border-glass-border bg-slate-950/70 px-3 py-2 text-sm text-foreground/90"
+              className="w-full rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-foreground/90"
             />
           </label>
 
-          <label className="rounded-2xl border border-glass-border bg-white/[0.03] px-4 py-3 text-sm text-foreground/90">
-            <div className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-muted-foreground/60">
+          <label className="rounded-2xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground/90">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
               End
             </div>
             <input
@@ -447,12 +447,12 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                   end: event.target.value,
                 }))
               }
-              className="w-full rounded-xl border border-glass-border bg-slate-950/70 px-3 py-2 text-sm text-foreground/90"
+              className="w-full rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-foreground/90"
             />
           </label>
 
-          <label className="rounded-2xl border border-glass-border bg-white/[0.03] px-4 py-3 text-sm text-foreground/90">
-            <div className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-muted-foreground/60">
+          <label className="rounded-2xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground/90">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
               Timezone
             </div>
             <input
@@ -463,7 +463,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                   timezone: event.target.value,
                 }))
               }
-              className="w-full rounded-xl border border-glass-border bg-slate-950/70 px-3 py-2 text-sm text-foreground/90"
+              className="w-full rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-foreground/90"
             />
           </label>
         </div>
@@ -475,7 +475,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
           variant="ghost"
           onClick={savePreferences}
           disabled={saving}
-          className="rounded-full border border-glass-border bg-sky-500/15 px-5 py-3 text-sm font-bold text-sky-100"
+          className="rounded-full border border-primary/30 bg-primary/10 px-5 py-3 text-sm font-bold text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {saving ? (
             <>

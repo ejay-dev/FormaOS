@@ -30,8 +30,8 @@ const INDUSTRY_CARDS: IndustryCard[] = [
     description:
       'Compliance framework for National Disability Insurance Scheme providers.',
     icon: Building2,
-    bgColor: 'bg-purple-500/10',
-    textColor: 'text-purple-300',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
   {
     id: 'mental_health',
@@ -39,16 +39,16 @@ const INDUSTRY_CARDS: IndustryCard[] = [
     description:
       'National Standards for Mental Health Services (NSMHS) for mental health providers.',
     icon: Brain,
-    bgColor: 'bg-teal-500/10',
-    textColor: 'text-teal-300',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
   {
     id: 'healthcare',
     name: 'GP / Medical',
     description: 'RACGP Standards for general practices and medical centers.',
     icon: Stethoscope,
-    bgColor: 'bg-sky-500/10',
-    textColor: 'text-sky-300',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
   {
     id: 'childcare',
@@ -56,16 +56,16 @@ const INDUSTRY_CARDS: IndustryCard[] = [
     description:
       'National Quality Framework (NQF) for early childhood education.',
     icon: Baby,
-    bgColor: 'bg-amber-500/10',
-    textColor: 'text-amber-300',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
   {
     id: 'aged_care',
     name: 'Aged Care',
     description: 'Aged Care Quality Standards for residential facilities.',
     icon: HeartHandshake,
-    bgColor: 'bg-rose-500/10',
-    textColor: 'text-rose-300',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
   {
     id: 'community_services',
@@ -73,8 +73,8 @@ const INDUSTRY_CARDS: IndustryCard[] = [
     description:
       'Compliance for community service organizations and NGOs.',
     icon: Users,
-    bgColor: 'bg-green-500/10',
-    textColor: 'text-green-300',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
   {
     id: 'financial_services',
@@ -82,8 +82,8 @@ const INDUSTRY_CARDS: IndustryCard[] = [
     description:
       'Regulatory compliance for financial services providers.',
     icon: Landmark,
-    bgColor: 'bg-blue-500/10',
-    textColor: 'text-blue-300',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
   {
     id: 'saas_technology',
@@ -91,8 +91,8 @@ const INDUSTRY_CARDS: IndustryCard[] = [
     description:
       'SOC 2, ISO 27001, and GDPR controls for tech companies.',
     icon: Laptop,
-    bgColor: 'bg-cyan-500/10',
-    textColor: 'text-cyan-300',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
   {
     id: 'enterprise',
@@ -100,16 +100,16 @@ const INDUSTRY_CARDS: IndustryCard[] = [
     description:
       'Multi-framework compliance for large enterprises.',
     icon: Briefcase,
-    bgColor: 'bg-indigo-500/10',
-    textColor: 'text-indigo-300',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
   {
     id: 'other',
     name: 'Other',
     description: 'General compliance framework for regulated services.',
     icon: HelpCircle,
-    bgColor: 'bg-slate-500/10',
-    textColor: 'text-foreground/70',
+    bgColor: 'bg-muted',
+    textColor: 'text-muted-foreground',
   },
 ];
 
@@ -124,7 +124,7 @@ export function IndustrySelector() {
         return (
           <div
             key={card.id}
-            className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-glass-border bg-glass-strong p-6 shadow-sm transition-all hover:border-glass-border hover:shadow-md"
+            className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-border hover:shadow-md"
           >
             <div>
               <div
@@ -146,7 +146,7 @@ export function IndustrySelector() {
               <button
                 type="submit"
                 data-testid={`apply-pack-${card.id}`}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass-strong py-3 text-xs font-bold text-foreground transition-colors hover:bg-glass-strong"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-surface-2 py-3 text-xs font-bold text-foreground transition-colors hover:bg-surface-3"
               >
                 <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
                 APPLY PACK

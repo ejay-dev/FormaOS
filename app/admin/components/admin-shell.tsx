@@ -150,7 +150,7 @@ export function AdminShell({
         <div className="flex items-center gap-4">
           <AdminQuickSearch />
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted text-xs font-medium">
-            <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="h-2 w-2 rounded-full bg-success" />
             <span>Healthy</span>
           </div>
           <div className="hidden sm:block text-xs text-muted-foreground truncate max-w-[200px]">

@@ -113,8 +113,8 @@ export function CreateAssetSheet() {
       <SheetContent side="right" className="sm:max-w-md">
         {success ? (
           <div className="flex flex-col items-center justify-center h-full animate-in fade-in zoom-in-95 duration-300">
-            <div className="h-20 w-20 rounded-full bg-teal-400/20 flex items-center justify-center mb-4 border-2 border-teal-400/40">
-              <CheckCircle2 className="h-10 w-10 text-teal-400" />
+            <div className="h-20 w-20 rounded-full bg-success/10 flex items-center justify-center mb-4 border-2 border-success/20">
+              <CheckCircle2 className="h-10 w-10 text-success" />
             </div>
             <h3 className="text-xl font-bold text-foreground">
               Asset Registered
@@ -127,8 +127,8 @@ export function CreateAssetSheet() {
           <form action={handleSubmit} className="flex flex-col h-full">
             <SheetHeader className="mb-6">
               <SheetTitle className="flex items-center gap-2">
-                <div className="h-6 w-6 rounded bg-teal-400/20 flex items-center justify-center">
-                  <div className="h-2 w-2 rounded-sm bg-teal-400" />
+                <div className="h-6 w-6 rounded bg-muted flex items-center justify-center">
+                  <div className="h-2 w-2 rounded-sm bg-muted-foreground" />
                 </div>
                 Register New Asset
               </SheetTitle>
@@ -140,7 +140,7 @@ export function CreateAssetSheet() {
 
             <div className="flex-1 space-y-6">
               {validationError && (
-                <div className="p-3 rounded-xl border border-red-400/30 bg-red-400/10 text-sm text-red-400">
+                <div className="p-3 rounded-xl border border-destructive/20 bg-destructive/10 text-sm text-destructive">
                   {validationError}
                 </div>
               )}
@@ -160,7 +160,7 @@ export function CreateAssetSheet() {
                     required
                     name="name"
                     placeholder="e.g. AWS Production Cluster"
-                    className="w-full rounded-xl border border-glass-border pl-10 p-3 text-sm outline-none focus:border-teal-400/50 focus:ring-2 focus:ring-teal-400/20 transition-all"
+                    className="w-full rounded-xl border border-border pl-10 p-3 text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring transition-all"
                   />
                 </div>
               </div>
@@ -176,7 +176,7 @@ export function CreateAssetSheet() {
                 <select
                   id="field-88"
                   name="type"
-                  className="w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 bg-surface-1"
+                  className="w-full rounded-xl border border-border p-3 text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring bg-surface-1"
                 >
                   <option value="hardware">Hardware (Laptops, Servers)</option>
                   <option value="software">Software (SaaS, Apps)</option>
@@ -198,7 +198,7 @@ export function CreateAssetSheet() {
                   required
                   name="owner"
                   placeholder="e.g. DevOps Team or CTO"
-                  className="w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 transition-colors"
+                  className="w-full rounded-xl border border-border p-3 text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring transition-colors"
                 />
                 <p className="text-xs text-muted-foreground">
                   The person or team responsible for this asset.
@@ -211,13 +211,13 @@ export function CreateAssetSheet() {
                   htmlFor="field-86"
                   className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-1"
                 >
-                  <ShieldAlert className="h-3 w-3 text-amber-500" />
+                  <ShieldAlert className="h-3 w-3 text-warning" />
                   Risk Level
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <select
                     name="criticality"
-                    className="col-span-2 w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 bg-surface-1"
+                    className="col-span-2 w-full rounded-xl border border-border p-3 text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring bg-surface-1"
                   >
                     <option value="low">Low - Internal Data</option>
                     <option value="medium">Medium - Operational</option>
@@ -230,7 +230,7 @@ export function CreateAssetSheet() {
               </div>
             </div>
 
-            <SheetFooter className="border-t border-glass-border pt-4 mt-auto">
+            <SheetFooter className="border-t border-border pt-4 mt-auto">
               <button
                 disabled={loading}
                 type="submit"

@@ -78,18 +78,24 @@ function resolveContextMode(pathname: string): ContextMode {
 
 type UserRole = 'viewer' | 'member' | 'admin' | 'owner' | 'staff' | 'auditor';
 
-/** RAG dot color for sidebar nav items based on compliance store status */
-function useRAGDot(ragKey: NavItem['ragKey']): string | null {
+/** RAG dot color + accessible label for sidebar nav items based on compliance store status */
+function useRAGDot(
+  ragKey: NavItem['ragKey'],
+): { className: string; label: string } | null {
   const summary = useComplianceStore((s) => s.summary);
   if (!ragKey || !summary) return null;
   switch (ragKey) {
     case 'obligations': {
-      if (summary.overdue > 0) return 'bg-red-500';
-      if (summary.dueSoon > 0) return 'bg-amber-500';
-      return 'bg-emerald-500';
+      if (summary.overdue > 0)
+        return { className: 'bg-destructive', label: 'Overdue' };
+      if (summary.dueSoon > 0)
+        return { className: 'bg-warning', label: 'Due soon' };
+      return { className: 'bg-success', label: 'On track' };
     }
     case 'incidents':
-      return summary.overdue > 0 ? 'bg-red-500' : 'bg-emerald-500';
+      return summary.overdue > 0
+        ? { className: 'bg-destructive', label: 'Overdue' }
+        : { className: 'bg-success', label: 'On track' };
     case 'evidence':
     case 'policies':
     case 'staff':
@@ -278,7 +284,7 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
             <Command className="h-3.5 w-3.5 text-foreground/50" />
             <span>Quick Search</span>
           </div>
-          <kbd className="px-1.5 py-0.5 text-[10px] font-mono glass-panel rounded text-muted-foreground">
+          <kbd className="px-1.5 py-0.5 text-[10px] font-mono border border-border bg-surface-1 rounded text-muted-foreground">
             ⌘K
           </kbd>
         </Button>
@@ -315,7 +321,7 @@ function SidebarNavItem({
   nextStepHref?: string | null;
   dimNonHighlighted?: boolean;
 }) {
-  const ragDotColor = useRAGDot(item.ragKey);
+  const ragDot = useRAGDot(item.ragKey);
   const badgeCount = useTaskBadge(item.badgeKey);
   const isOnboardingTarget = Boolean(
     nextStepHref &&
@@ -390,10 +396,11 @@ function SidebarNavItem({
             className={`h-3.5 w-3.5 transition-colors duration-200 ${isActive ? 'text-primary' : 'text-foreground/70 group-hover:text-foreground/90'}`}
           />
           {/* RAG indicator dot */}
-          {ragDotColor && (
+          {ragDot && (
             <span
-              className={`absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full ${ragDotColor} ring-1 ring-background`}
-              aria-label="Status indicator"
+              className={`absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full ${ragDot.className} ring-1 ring-background`}
+              role="img"
+              aria-label={ragDot.label}
             />
           )}
         </div>

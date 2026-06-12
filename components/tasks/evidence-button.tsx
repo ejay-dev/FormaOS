@@ -103,8 +103,8 @@ export function EvidenceButton({
   // Success state
   if (showSuccess) {
     return (
-      <div className="flex items-center gap-1.5 text-emerald-300 animate-in fade-in slide-in-from-left-1 duration-300">
-        <div className="h-6 w-6 rounded-full bg-emerald-400/20 flex items-center justify-center border border-emerald-400/40">
+      <div className="flex items-center gap-1.5 text-success animate-in fade-in slide-in-from-left-1 duration-300">
+        <div className="h-6 w-6 rounded-full bg-success/10 flex items-center justify-center border border-success/20">
           <CheckCircle2 className="h-3.5 w-3.5" />
         </div>
         <span className="text-xs font-bold">Evidence Linked!</span>
@@ -117,7 +117,7 @@ export function EvidenceButton({
     return (
       <div className="flex items-center gap-2">
         <div className="relative h-6 w-6">
-          <div className="absolute inset-0 rounded-full border-2 border-violet-400/30" />
+          <div className="absolute inset-0 rounded-full border-2 border-border" />
           <svg className="absolute inset-0 h-6 w-6 -rotate-90">
             <circle
               cx="12"
@@ -130,10 +130,10 @@ export function EvidenceButton({
               className="transition-all duration-150"
             />
           </svg>
-          <Loader2 className="absolute inset-0.5 h-5 w-5 animate-spin text-violet-300" />
+          <Loader2 className="absolute inset-0.5 h-5 w-5 animate-spin text-muted-foreground" />
         </div>
         <div className="flex flex-col">
-          <span className="text-xs font-bold text-violet-200">
+          <span className="text-xs font-bold text-foreground">
             {uploadProgress < 100 ? 'Uploading...' : 'Processing...'}
           </span>
           <span className="text-xs text-muted-foreground">
@@ -147,7 +147,7 @@ export function EvidenceButton({
   // Default state
   return (
     <div className="group/evidence flex items-center">
-      <label className="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-violet-400/30 bg-violet-400/5 text-violet-300 hover:border-violet-400/50 hover:bg-violet-400/10 transition-all motion-safe:active:scale-[0.98]">
+      <label className="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-border bg-surface-1 text-foreground hover:border-primary hover:bg-surface-2 transition-all motion-safe:active:scale-[0.98]">
         <Upload className="h-3.5 w-3.5 group-hover/evidence:animate-bounce" />
         <span className="text-xs font-bold">Link Evidence</span>
         <input

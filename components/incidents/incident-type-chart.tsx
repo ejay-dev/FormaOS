@@ -6,13 +6,13 @@ interface TypeChartProps {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  injury: 'bg-red-500',
-  medication_error: 'bg-orange-500',
-  behavioral: 'bg-yellow-500',
-  abuse: 'bg-red-700',
-  property: 'bg-blue-500',
-  complaint: 'bg-purple-500',
-  near_miss: 'bg-cyan-500',
+  injury: 'bg-destructive',
+  medication_error: 'bg-warning',
+  behavioral: 'bg-warning/60',
+  abuse: 'bg-destructive/70',
+  property: 'bg-info',
+  complaint: 'bg-muted-foreground',
+  near_miss: 'bg-info/60',
 };
 
 export function IncidentTypeChart({
@@ -36,7 +36,7 @@ export function IncidentTypeChart({
       <div className="space-y-2">
         {entries.map(([type, count]) => {
           const pct = total > 0 ? (count / total) * 100 : 0;
-          const color = TYPE_COLORS[type] ?? 'bg-gray-500';
+          const color = TYPE_COLORS[type] ?? 'bg-muted-foreground';
           return (
             <div key={type}>
               <div className="flex justify-between text-xs mb-0.5">

@@ -62,12 +62,12 @@ export class ErrorBoundary extends Component<
 
       // Default fallback
       return (
-        <div className="min-h-[200px] flex items-center justify-center p-8 bg-red-50 border border-red-200 rounded-lg dark:bg-red-950/40 dark:border-red-900/60">
+        <div className="min-h-[200px] flex items-center justify-center p-8 bg-destructive/10 border border-destructive/20 rounded-lg">
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-red-900 mb-2 dark:text-red-200">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               Something went wrong
             </h3>
-            <p className="text-red-700 mb-4 dark:text-red-300/90">
+            <p className="text-muted-foreground mb-4">
               An error occurred while rendering this component.
             </p>
             <button
@@ -78,7 +78,7 @@ export class ErrorBoundary extends Component<
                   errorInfo: undefined,
                 })
               }
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600"
+              className="px-4 py-2 bg-destructive text-white rounded hover:bg-destructive/90 outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Try again
             </button>

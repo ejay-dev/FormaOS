@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Users,
   ShieldCheck,
-  Sparkles,
   Menu,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -52,7 +51,7 @@ const ITEMS: NavItem[] = [
   {
     href: '/app/compliance',
     label: 'Compliance',
-    Icon: Sparkles,
+    Icon: ShieldCheck,
     matches: ['/app/compliance', '/app/controls', '/app/audit-trail', '/app/audit-trail'],
   },
 ];

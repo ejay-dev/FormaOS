@@ -14,19 +14,19 @@ export type TimelineTone =
   | 'violet';
 
 const dotBg: Record<TimelineTone, string> = {
-  blue: 'bg-[hsl(var(--app-primary))] text-white',
-  emerald: 'bg-emerald-500/15 text-emerald-500',
-  amber: 'bg-amber-500/15 text-amber-500',
-  rose: 'bg-rose-500/15 text-rose-500',
-  slate: 'bg-slate-500/15 text-slate-500',
-  violet: 'bg-violet-500/15 text-violet-500',
+  blue: 'bg-primary text-primary-foreground',
+  emerald: 'bg-success/15 text-success',
+  amber: 'bg-warning/15 text-warning',
+  rose: 'bg-destructive/15 text-destructive',
+  slate: 'bg-muted text-muted-foreground',
+  violet: 'bg-muted text-muted-foreground',
 };
 
 const badgeTone: Record<'info' | 'success' | 'warning' | 'danger', string> = {
-  info: 'bg-[hsl(var(--app-primary))]/10 text-[hsl(var(--app-primary))]',
-  success: 'bg-emerald-500/10 text-emerald-500',
-  warning: 'bg-amber-500/10 text-amber-500',
-  danger: 'bg-rose-500/10 text-rose-500',
+  info: 'bg-info/10 text-info',
+  success: 'bg-success/10 text-success',
+  warning: 'bg-warning/10 text-warning',
+  danger: 'bg-destructive/10 text-destructive',
 };
 
 export interface TimelineItem {

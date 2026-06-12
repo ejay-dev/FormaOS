@@ -50,8 +50,8 @@ export function CompleteStep({ state }: CompleteStepProps) {
   return (
     <div className="space-y-8 text-center">
       <div className="space-y-3">
-        <div className="mx-auto w-16 h-16 rounded-full bg-[var(--wire-success)]/20 flex items-center justify-center">
-          <Rocket className="h-8 w-8 text-[var(--wire-success)]" />
+        <div className="mx-auto w-16 h-16 rounded-full bg-success/10 flex items-center justify-center">
+          <Rocket className="h-8 w-8 text-success" />
         </div>
         <h2 className="text-2xl font-bold">You&apos;re all set!</h2>
         <p className="text-muted-foreground text-sm">
@@ -90,7 +90,7 @@ export function CompleteStep({ state }: CompleteStepProps) {
         type="button"
         onClick={handleGoDashboard}
         disabled={isCompleting}
-        className="inline-flex items-center gap-2 rounded-lg bg-[var(--wire-action)] px-8 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-lg bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {isCompleting ? 'Setting up...' : 'Go to Dashboard'}
       </button>
@@ -103,7 +103,7 @@ function SummaryItem({ done, label }: { done: boolean; label: string }) {
     <div className="flex items-center gap-3">
       <CheckCircle2
         className={`h-5 w-5 shrink-0 ${
-          done ? 'text-[var(--wire-success)]' : 'text-muted-foreground/40'
+          done ? 'text-success' : 'text-muted-foreground/40'
         }`}
       />
       <span className={`text-sm ${done ? '' : 'text-muted-foreground'}`}>

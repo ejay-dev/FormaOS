@@ -34,9 +34,9 @@ export default async function MfaChallengePage() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-12">
-      <div className="w-full max-w-md rounded-2xl border border-glass-border bg-glass-subtle backdrop-blur-sm p-8">
-        <h1 className="text-2xl font-semibold text-white mb-2">
+    <div className="min-h-screen flex items-center justify-center bg-background px-6 py-12">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8">
+        <h1 className="text-2xl font-semibold text-foreground mb-2">
           Two-step verification
         </h1>
         <p className="text-sm text-muted-foreground mb-6">

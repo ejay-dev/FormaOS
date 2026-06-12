@@ -28,14 +28,10 @@ const STATUS_LABEL: Record<MyActionStatus, string> = {
 };
 
 const STATUS_PILL: Record<MyActionStatus, string> = {
-  overdue:
-    'bg-rose-500/15 text-rose-400 ring-rose-500/30 dark:text-rose-300',
-  due_today:
-    'bg-amber-500/15 text-amber-500 ring-amber-500/30 dark:text-amber-300',
-  due_soon:
-    'bg-amber-500/10 text-amber-500 ring-amber-500/25 dark:text-amber-300',
-  in_progress:
-    'bg-[hsl(var(--app-primary))]/15 text-[hsl(var(--app-primary))] ring-[hsl(var(--app-primary))]/30',
+  overdue: 'bg-destructive/10 text-destructive ring-destructive/20',
+  due_today: 'bg-warning/10 text-warning ring-warning/20',
+  due_soon: 'bg-warning/10 text-warning ring-warning/20',
+  in_progress: 'bg-info/10 text-info ring-info/20',
   pending: 'bg-muted/50 text-muted-foreground ring-border',
 };
 
@@ -139,7 +135,7 @@ function NextActionsStripInner() {
         <button
           type="button"
           onClick={() => fetchActions({ force: true })}
-          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
+          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Retry
         </button>
@@ -198,7 +194,7 @@ function NextActionsStripInner() {
             <span
               role="status"
               aria-live="polite"
-              className="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-2 py-0.5 text-[10px] font-semibold text-rose-400 ring-1 ring-inset ring-rose-500/30 dark:text-rose-300"
+              className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive ring-1 ring-inset ring-destructive/20"
             >
               <AlertTriangle className="h-2.5 w-2.5" aria-hidden />
               {overdueCount} overdue
@@ -227,7 +223,7 @@ function NextActionsStripInner() {
                 href={href}
                 onClick={() => handleOpen(a)}
                 aria-label={`${a.title} — ${STATUS_LABEL[a.status]}, due ${dueLabel}`}
-                className="group flex h-full min-w-0 flex-col justify-between gap-2 rounded-lg border border-border bg-[hsl(var(--card))] px-3 py-2.5 transition-colors hover:border-[hsl(var(--app-primary))]/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--app-primary))]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--background))]"
+                className="group flex h-full min-w-0 flex-col justify-between gap-2 rounded-lg border border-border bg-[hsl(var(--card))] px-3 py-2.5 transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[hsl(var(--background))]"
               >
                 <div className="flex items-start justify-between gap-2">
                   <p className="min-w-0 truncate text-sm font-medium text-foreground">
@@ -270,7 +266,7 @@ function NextActionsStripInner() {
                         disabled={isPending}
                         onClick={(e) => handleComplete(e, a)}
                         aria-label={`Mark "${a.title}" as in progress`}
-                        className="inline-flex h-6 items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-1.5 text-[10px] font-semibold text-muted-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50 hover:text-foreground disabled:opacity-50"
+                        className="inline-flex h-6 items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-1.5 text-[10px] font-semibold text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
                       >
                         <Check className="h-3 w-3" aria-hidden />
                         {isPending ? '…' : 'Start'}

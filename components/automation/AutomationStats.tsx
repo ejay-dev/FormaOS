@@ -60,8 +60,8 @@ export function AutomationStats() {
       <Card>
         <CardContent className="pt-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-full"></div>
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-muted rounded w-full"></div>
+            <div className="h-4 bg-muted rounded w-3/4"></div>
           </div>
         </CardContent>
       </Card>
@@ -82,22 +82,22 @@ export function AutomationStats() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard
-          icon={<Zap className="h-5 w-5 text-purple-600" />}
+          icon={<Zap className="h-5 w-5 text-muted-foreground" />}
           label="Active Workflows"
           value={stats.activeWorkflows}
         />
         <StatCard
-          icon={<Activity className="h-5 w-5 text-blue-600" />}
+          icon={<Activity className="h-5 w-5 text-muted-foreground" />}
           label="Total Executions"
           value={stats.totalExecutions}
         />
         <StatCard
-          icon={<CheckCircle className="h-5 w-5 text-green-600" />}
+          icon={<CheckCircle className="h-5 w-5 text-muted-foreground" />}
           label="Success Rate"
           value={`${successRate}%`}
         />
         <StatCard
-          icon={<Clock className="h-5 w-5 text-gray-600" />}
+          icon={<Clock className="h-5 w-5 text-muted-foreground" />}
           label="Last Run"
           value={
             stats.lastExecutionDate
@@ -121,19 +121,19 @@ export function AutomationStats() {
                   className="flex items-center gap-3 p-3 border rounded-lg"
                 >
                   {execution.status === 'success' ? (
-                    <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                    <CheckCircle className="h-4 w-4 text-success flex-shrink-0" />
                   ) : (
-                    <XCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                    <XCircle className="h-4 w-4 text-destructive flex-shrink-0" />
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium truncate">
                       {execution.trigger}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       {new Date(execution.executedAt).toLocaleString()}
                     </div>
                   </div>
-                  <div className="text-xs text-gray-600">
+                  <div className="text-xs text-muted-foreground">
                     {execution.actionsExecuted} actions
                   </div>
                 </div>
@@ -159,9 +159,9 @@ function StatCard({
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-gray-50 rounded-lg">{icon}</div>
+          <div className="p-2 bg-muted rounded-lg">{icon}</div>
           <div className="flex-1 min-w-0">
-            <div className="text-xs text-gray-500 truncate">{label}</div>
+            <div className="text-xs text-muted-foreground truncate">{label}</div>
             <div className="text-2xl font-bold">{value}</div>
           </div>
         </div>

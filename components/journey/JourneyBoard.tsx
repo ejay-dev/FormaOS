@@ -65,30 +65,30 @@ export interface JourneyBoardProps {
 }
 
 const TONE_SURFACE: Record<JourneyStageTone, string> = {
-  neutral: 'border-glass-border bg-glass-subtle',
-  danger: 'border-red-500/25 bg-red-500/5',
-  warning: 'border-amber-500/25 bg-amber-500/5',
-  info: 'border-blue-500/25 bg-blue-500/5',
-  success: 'border-emerald-500/25 bg-emerald-500/5',
-  muted: 'border-glass-border bg-glass-subtle/50',
+  neutral: 'border-border bg-surface-1',
+  danger: 'border-destructive/25 bg-destructive/5',
+  warning: 'border-warning/25 bg-warning/5',
+  info: 'border-info/25 bg-info/5',
+  success: 'border-success/25 bg-success/5',
+  muted: 'border-border bg-surface-1/50',
 };
 
 const TONE_DOT: Record<JourneyStageTone, string> = {
   neutral: 'bg-muted-foreground/60',
-  danger: 'bg-red-500',
-  warning: 'bg-amber-500',
-  info: 'bg-blue-500',
-  success: 'bg-emerald-500',
+  danger: 'bg-destructive',
+  warning: 'bg-warning',
+  info: 'bg-info',
+  success: 'bg-success',
   muted: 'bg-muted-foreground/40',
 };
 
 const TONE_PILL: Record<JourneyStageTone, string> = {
-  neutral: 'border-glass-border bg-glass-subtle text-foreground',
-  danger: 'border-red-500/30 bg-red-500/10 text-red-400',
-  warning: 'border-amber-500/30 bg-amber-500/10 text-amber-400',
-  info: 'border-blue-500/30 bg-blue-500/10 text-blue-400',
-  success: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
-  muted: 'border-glass-border bg-glass-subtle text-muted-foreground',
+  neutral: 'border-border bg-surface-1 text-foreground',
+  danger: 'border-destructive/30 bg-destructive/10 text-destructive',
+  warning: 'border-warning/30 bg-warning/10 text-warning',
+  info: 'border-info/30 bg-info/10 text-info',
+  success: 'border-success/30 bg-success/10 text-success',
+  muted: 'border-border bg-surface-1 text-muted-foreground',
 };
 
 function initials(value: string): string {
@@ -119,7 +119,7 @@ function JourneyCard({
     'group relative flex flex-col gap-1.5 rounded-lg border p-2 transition-all',
     item.emphasise
       ? 'border-transparent bg-foreground text-background shadow-premium-lg'
-      : 'border-glass-border bg-[hsl(var(--card))] hover:border-glass-border-strong hover:shadow-premium-lg',
+      : 'border-border bg-[hsl(var(--card))] hover:border-border hover:shadow-premium-lg',
     draggable && 'cursor-grab active:cursor-grabbing',
     isDragging && 'opacity-40',
     isPending && 'pointer-events-none opacity-60',
@@ -193,7 +193,7 @@ function JourneyCard({
                 'inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium',
                 item.emphasise
                   ? 'bg-background/10 text-background/80'
-                  : 'bg-glass-subtle text-muted-foreground',
+                  : 'bg-surface-1 text-muted-foreground',
               )}
               title={m.label}
             >
@@ -204,11 +204,11 @@ function JourneyCard({
                   item.emphasise
                     ? 'text-background'
                     : m.tone === 'danger'
-                      ? 'text-red-400'
+                      ? 'text-destructive'
                       : m.tone === 'warning'
-                        ? 'text-amber-400'
+                        ? 'text-warning'
                         : m.tone === 'success'
-                          ? 'text-emerald-400'
+                          ? 'text-success'
                           : 'text-foreground',
                 )}
               >
@@ -351,7 +351,7 @@ export function JourneyBoard({
       {error && (
         <div
           role="alert"
-          className="mb-2 flex items-center justify-between gap-3 rounded-lg border border-red-500/30 bg-red-500/5 px-3 py-1.5 text-xs text-red-400"
+          className="mb-2 flex items-center justify-between gap-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-1.5 text-xs text-destructive"
         >
           <span>Could not update: {error}</span>
           <button
@@ -402,7 +402,7 @@ export function JourneyBoard({
                 )}
               >
                 <header
-                  className="flex items-center justify-between gap-2 border-b border-glass-border/60 px-2.5 py-1.5"
+                  className="flex items-center justify-between gap-2 border-b border-border/60 px-2.5 py-1.5"
                   title={stage.description}
                 >
                   <div className="flex items-center gap-1.5">
@@ -427,7 +427,7 @@ export function JourneyBoard({
 
                 <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto p-2">
                   {stageItems.length === 0 ? (
-                    <div className="rounded-lg border border-dashed border-glass-border px-2 py-2 text-center text-[11px] text-muted-foreground">
+                    <div className="rounded-lg border border-dashed border-border px-2 py-2 text-center text-[11px] text-muted-foreground">
                       {isDropTarget ? 'Drop here' : emptyLabel}
                     </div>
                   ) : (

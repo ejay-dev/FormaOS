@@ -214,17 +214,17 @@ export function AiAssistantPanel() {
 
       {/* Panel */}
       <div
-        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-[800px] flex-col bg-background border-l border-glass-border shadow-2xl transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-[800px] flex-col bg-background border-l border-border shadow-2xl transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Header */}
-        <div className="flex h-14 items-center justify-between border-b border-glass-border px-4">
+        <div className="flex h-14 items-center justify-between border-b border-border px-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowSidebar(!showSidebar)}
               aria-label={showSidebar ? 'Hide assistant conversations' : 'Show assistant conversations'}
-              className="hidden min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 items-center justify-center rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors md:inline-flex"
+              className="hidden min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 items-center justify-center rounded-lg p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:inline-flex"
             >
               {showSidebar ? (
                 <PanelLeftClose className="h-4 w-4" />
@@ -233,14 +233,14 @@ export function AiAssistantPanel() {
               )}
             </button>
             <div className="flex items-center gap-2">
-              <Bot className="h-5 w-5 text-cyan-400" />
+              <Bot className="h-5 w-5 text-muted-foreground" />
               <span className="text-sm font-semibold text-foreground/90">AI Compliance Assistant</span>
             </div>
           </div>
           <button
             onClick={close}
             aria-label="Close assistant panel"
-            className="inline-flex min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 items-center justify-center rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors"
+            className="inline-flex min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 items-center justify-center rounded-lg p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="h-5 w-5" />
           </button>

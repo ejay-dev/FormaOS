@@ -45,7 +45,7 @@ export default async function EmailHistoryPage() {
             A forensic record of all transactional communications sent to your team.
           </p>
         </div>
-        <div className="text-xs text-muted-foreground font-mono bg-glass-strong px-3 py-1 rounded border">
+        <div className="text-xs text-muted-foreground font-mono bg-surface-2 px-3 py-1 rounded border">
           Org ID: {membership.organization_id.split('-')[0]}...
         </div>
       </div>
@@ -53,7 +53,7 @@ export default async function EmailHistoryPage() {
       <div className="bg-surface-1 border border-edge-2 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto overscroll-x-contain">
         <table className="min-w-[640px] sm:min-w-[760px] w-full text-left text-sm">
-          <thead className="bg-glass-strong border-b border-edge-2 text-muted-foreground font-medium">
+          <thead className="bg-surface-2 border-b border-edge-2 text-muted-foreground font-medium">
             <tr>
               <th className="px-4 sm:px-6 py-4">Recipient</th>
               <th className="px-4 sm:px-6 py-4">Type</th>
@@ -62,7 +62,7 @@ export default async function EmailHistoryPage() {
               <th className="px-4 sm:px-6 py-4">Date</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10">
+          <tbody className="divide-y divide-border">
             {logs.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-4 sm:px-6 py-12 text-center text-muted-foreground italic">
@@ -81,7 +81,7 @@ export default async function EmailHistoryPage() {
                     </div>
                   </td>
                   <td className="px-4 sm:px-6 py-4">
-                    <span className="capitalize px-2 py-1 rounded bg-glass-strong text-muted-foreground text-xs font-semibold">
+                    <span className="capitalize px-2 py-1 rounded bg-surface-2 text-muted-foreground text-xs font-semibold">
                       {log.emailType.replace('_', ' ')}
                     </span>
                   </td>
@@ -91,17 +91,17 @@ export default async function EmailHistoryPage() {
                   <td className="px-4 sm:px-6 py-4">
                     <div className="flex flex-col gap-1">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium w-fit ${
-                        log.status === 'sent' 
-                          ? 'bg-green-50 text-green-700 border border-green-100' 
-                          : 'bg-rose-500/10 text-red-700 border border-rose-400/30'
+                        log.status === 'sent'
+                          ? 'bg-success/10 text-success border border-success/20'
+                          : 'bg-destructive/10 text-destructive border border-destructive/20'
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${log.status === 'sent' ? 'bg-green-600' : 'bg-red-600'}`} />
+                        <span className={`w-1.5 h-1.5 rounded-full ${log.status === 'sent' ? 'bg-success' : 'bg-destructive'}`} />
                         {log.status === 'sent' ? 'Delivered' : 'Failed'}
                       </span>
-                      
+
                       {/* FORENSIC ERROR MESSAGE: Only shows if the email failed */}
                       {log.status === 'failed' && log.errorMessage && (
-                        <span className="text-xs text-red-500 font-medium leading-tight max-w-[180px]">
+                        <span className="text-xs text-destructive font-medium leading-tight max-w-[180px]">
                           Reason: {log.errorMessage}
                         </span>
                       )}

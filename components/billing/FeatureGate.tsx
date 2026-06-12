@@ -48,8 +48,8 @@ export function FeatureGate({
       {/* Lock overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-700 to-slate-800 border border-glass-border shadow-xl">
-            <Lock className="h-7 w-7 text-foreground/70" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-2 border border-border shadow-xl">
+            <Lock className="h-7 w-7 text-muted-foreground" />
           </div>
 
           <h3 className="text-lg font-bold text-foreground mb-2">
@@ -109,7 +109,7 @@ export function FeatureLockBadge({
 
   return (
     <span
-      className={`inline-flex items-center gap-1 text-xs font-medium text-amber-300 bg-amber-500/15 px-1.5 py-0.5 rounded-full ${className}`}
+      className={`inline-flex items-center gap-1 text-xs font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full ${className}`}
       title="Upgrade to unlock"
     >
       <Lock className="h-2.5 w-2.5" />

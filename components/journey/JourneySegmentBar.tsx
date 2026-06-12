@@ -16,10 +16,10 @@ export interface Segment {
 }
 
 const FILL: Record<SegmentTone, string> = {
-  success: 'bg-emerald-500',
-  warning: 'bg-amber-500',
-  danger: 'bg-red-500',
-  info: 'bg-blue-500',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  danger: 'bg-destructive',
+  info: 'bg-info',
   muted: 'bg-muted-foreground/40',
   primary: 'bg-primary',
 };
@@ -42,7 +42,7 @@ export function JourneySegmentBar({
   return (
     <div className={cn('flex min-w-0 items-center gap-3', className)}>
       <div
-        className="relative flex h-1.5 w-32 shrink-0 overflow-hidden rounded-full bg-glass-subtle"
+        className="relative flex h-1.5 w-32 shrink-0 overflow-hidden rounded-full bg-surface-1"
         role="img"
         aria-label={segments
           .map((s) => `${s.label} ${s.value}`)

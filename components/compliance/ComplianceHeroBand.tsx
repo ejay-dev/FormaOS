@@ -34,18 +34,11 @@ function ReadinessRing({
         viewBox="0 0 160 160"
         aria-hidden="true"
       >
-        <defs>
-          <linearGradient id="readiness-stroke" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#00d4fb" />
-            <stop offset="50%" stopColor="#3399ff" />
-            <stop offset="100%" stopColor="#8864ff" />
-          </linearGradient>
-        </defs>
         <circle
           cx="80"
           cy="80"
           r={radius}
-          className="stroke-glass-border"
+          className="stroke-border"
           strokeWidth="10"
           fill="transparent"
         />
@@ -53,13 +46,12 @@ function ReadinessRing({
           cx="80"
           cy="80"
           r={radius}
-          stroke="url(#readiness-stroke)"
           strokeWidth="10"
           fill="transparent"
           strokeDasharray={circumference}
           strokeDashoffset={isLoading ? circumference : offset}
           strokeLinecap="round"
-          className="transition-[stroke-dashoffset] duration-1000 ease-out"
+          className="stroke-primary transition-[stroke-dashoffset] duration-1000 ease-out"
         />
       </svg>
       <div className="flex flex-col items-center">
@@ -85,27 +77,27 @@ function deriveState(percentage: number, overdue: number): ReadinessState {
   if (overdue > 0) {
     return {
       label: 'At risk',
-      chip: 'border-rose-500/30 bg-rose-500/10 text-rose-300',
+      chip: 'border-destructive/20 bg-destructive/10 text-destructive',
       description: `${overdue} item${overdue === 1 ? '' : 's'} past due — resolve to restore readiness.`,
     };
   }
   if (percentage >= 80) {
     return {
       label: "You're audit-ready",
-      chip: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
+      chip: 'border-success/20 bg-success/10 text-success',
       description: 'Evidence current, controls passing, no overdue items.',
     };
   }
   if (percentage >= 50) {
     return {
       label: 'On track',
-      chip: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
+      chip: 'border-warning/20 bg-warning/10 text-warning',
       description: 'Progress is steady — stay on top of items due this week.',
     };
   }
   return {
     label: 'Getting started',
-    chip: 'border-sky-500/30 bg-sky-500/10 text-sky-300',
+    chip: 'border-info/20 bg-info/10 text-info',
     description:
       'Build momentum by completing high-impact controls and uploading evidence.',
   };
@@ -128,20 +120,20 @@ function Tile({
 }) {
   const toneClass = {
     neutral:
-      'border-glass-border bg-glass-subtle hover:bg-glass-strong',
+      'border-border bg-surface-1 hover:bg-surface-2',
     danger:
-      'border-rose-500/30 bg-rose-500/5 hover:bg-rose-500/10',
+      'border-destructive/20 bg-destructive/10 hover:bg-destructive/20',
     warning:
-      'border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10',
+      'border-warning/20 bg-warning/10 hover:bg-warning/20',
     success:
-      'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10',
+      'border-success/20 bg-success/10 hover:bg-success/20',
   }[tone];
 
   const iconTone = {
     neutral: 'text-muted-foreground',
-    danger: 'text-rose-400',
-    warning: 'text-amber-400',
-    success: 'text-emerald-400',
+    danger: 'text-destructive',
+    warning: 'text-warning',
+    success: 'text-success',
   }[tone];
 
   return (
@@ -182,16 +174,7 @@ export function ComplianceHeroBand() {
 
   return (
     <ErrorBoundary name="ComplianceHeroBand" level="component">
-      <div className="relative overflow-hidden rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6 shadow-premium-lg">
-        <div
-          className="pointer-events-none absolute -top-20 -left-20 h-60 w-60 rounded-full bg-[radial-gradient(circle_at_center,rgba(0,212,251,0.18),transparent_70%)]"
-          aria-hidden="true"
-        />
-        <div
-          className="pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(136,100,255,0.15),transparent_70%)]"
-          aria-hidden="true"
-        />
-
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-premium-lg">
         <div className="relative grid gap-6 md:grid-cols-[auto,1fr] md:items-center">
           {/* Left — ring + state */}
           <div className="flex flex-col items-center gap-4 md:items-start">
@@ -204,10 +187,7 @@ export function ComplianceHeroBand() {
                 <span
                   className={`inline-flex w-fit items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${state.chip}`}
                 >
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-60" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
-                  </span>
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
                   {state.label}
                 </span>
                 <p className="max-w-[18ch] text-sm text-muted-foreground md:max-w-[22ch]">

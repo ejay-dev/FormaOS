@@ -278,13 +278,13 @@ export default async function PatientDetailPage({
         <div className="flex flex-wrap gap-3">
           <Link
             href="/app/progress-notes"
-            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-surface-2 px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             View Notes
           </Link>
           <Link
             href="/app/tasks"
-            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-surface-2 px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             View Tasks
           </Link>
@@ -292,7 +292,7 @@ export default async function PatientDetailPage({
       </div>
 
       {escalationNeeded && (
-        <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-6 py-4 text-sm text-rose-200">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-6 py-4 text-sm text-destructive">
           <span className="inline-flex items-center gap-2 font-semibold">
             <ShieldAlert className="h-4 w-4" />
             Escalation required. High-risk indicators detected for this patient.
@@ -301,7 +301,7 @@ export default async function PatientDetailPage({
       )}
 
       {overdueTasks.length > 0 && (
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 px-6 py-4 text-sm text-amber-200">
+        <div className="rounded-2xl border border-warning/20 bg-warning/10 px-6 py-4 text-sm text-warning">
           <span className="inline-flex items-center gap-2 font-semibold">
             <AlertTriangle className="h-4 w-4" />
             {overdueTasks.length} overdue task
@@ -313,7 +313,7 @@ export default async function PatientDetailPage({
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6 lg:col-span-2">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <HeartPulse className="h-4 w-4 text-emerald-300" />
+            <HeartPulse className="h-4 w-4 text-muted-foreground" />
             Patient Profile
           </div>
           <div className="mt-4 grid gap-4 md:grid-cols-2 text-sm text-foreground/70">
@@ -366,7 +366,7 @@ export default async function PatientDetailPage({
                 <input
                   name="fullName"
                   defaultValue={patient.full_name}
-                  className="mt-2 w-full rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+                  className="mt-2 w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
               <div>
@@ -379,7 +379,7 @@ export default async function PatientDetailPage({
                 <select
                   name="careStatus"
                   defaultValue={patient.care_status}
-                  className="mt-2 w-full rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+                  className="mt-2 w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <option value="active">Active</option>
                   <option value="paused">Paused</option>
@@ -396,7 +396,7 @@ export default async function PatientDetailPage({
                 <select
                   name="riskLevel"
                   defaultValue={patient.risk_level}
-                  className="mt-2 w-full rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+                  className="mt-2 w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -409,14 +409,14 @@ export default async function PatientDetailPage({
                   type="checkbox"
                   name="emergencyFlag"
                   defaultChecked={patient.emergency_flag}
-                  className="h-4 w-4 rounded border-glass-border-strong bg-glass-strong"
+                  className="h-4 w-4 rounded border-edge-2 bg-surface-2"
                 />
                 Emergency flag
               </label>
               <div className="md:col-span-2">
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+                  className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-surface-2 px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Update Profile
                 </button>
@@ -427,7 +427,7 @@ export default async function PatientDetailPage({
 
         <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <CalendarDays className="h-4 w-4 text-sky-300" />
+            <CalendarDays className="h-4 w-4 text-muted-foreground" />
             Shift Tracking
           </div>
           <div className="mt-4 space-y-3 text-xs text-foreground/70">
@@ -449,7 +449,7 @@ export default async function PatientDetailPage({
                   <input type="hidden" name="shiftId" value={activeShift.id} />
                   <button
                     type="submit"
-                    className="rounded-lg border border-edge-2 bg-glass-strong px-3 py-1 text-[11px] font-semibold text-foreground hover:bg-white/15"
+                    className="rounded-lg border border-edge-2 bg-surface-2 px-3 py-1 text-[11px] font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     End shift
                   </button>
@@ -465,7 +465,7 @@ export default async function PatientDetailPage({
                 <input type="hidden" name="patientId" value={patient.id} />
                 <button
                   type="submit"
-                  className="w-full rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+                  className="w-full rounded-xl border border-edge-2 bg-surface-2 px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Start shift
                 </button>
@@ -499,7 +499,7 @@ export default async function PatientDetailPage({
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <NotebookPen className="h-4 w-4 text-indigo-300" />
+            <NotebookPen className="h-4 w-4 text-muted-foreground" />
             Progress Notes
           </div>
           {canWrite && (
@@ -513,7 +513,7 @@ export default async function PatientDetailPage({
               <input type="hidden" name="patientId" value={patient.id} />
               <select
                 name="statusTag"
-                className="w-full rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+                className="w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 defaultValue="routine"
               >
                 {NOTE_TAGS.map((tag) => (
@@ -525,13 +525,13 @@ export default async function PatientDetailPage({
               <textarea
                 name="noteText"
                 rows={3}
-                className="w-full rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+                className="w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 placeholder="Document this interaction."
                 required
               />
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+                className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-surface-2 px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Add note
               </button>
@@ -557,7 +557,7 @@ export default async function PatientDetailPage({
                   </p>
                   <div className="mt-3 flex items-center gap-2 text-xs">
                     {note.signed_off_by ? (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-200">
+                      <span className="inline-flex items-center gap-1 rounded-full border border-success/20 bg-success/10 px-2 py-1 text-xs font-semibold text-success">
                         <BadgeCheck className="h-3 w-3" />
                         Signed off
                       </span>
@@ -572,7 +572,7 @@ export default async function PatientDetailPage({
                         <input type="hidden" name="noteId" value={note.id} />
                         <button
                           type="submit"
-                          className="rounded-lg border border-edge-2 bg-glass-strong px-3 py-1 text-[11px] font-semibold text-foreground hover:bg-white/15"
+                          className="rounded-lg border border-edge-2 bg-surface-2 px-3 py-1 text-[11px] font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           Sign off
                         </button>
@@ -587,7 +587,7 @@ export default async function PatientDetailPage({
 
         <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <AlertTriangle className="h-4 w-4 text-rose-300" />
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
             Incident Log
           </div>
           {canWrite && (
@@ -601,7 +601,7 @@ export default async function PatientDetailPage({
               <input type="hidden" name="patientId" value={patient.id} />
               <select
                 name="severity"
-                className="w-full rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+                className="w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 defaultValue="low"
               >
                 <option value="low">Low</option>
@@ -612,18 +612,18 @@ export default async function PatientDetailPage({
               <textarea
                 name="description"
                 rows={3}
-                className="w-full rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+                className="w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 placeholder="Describe the incident and immediate actions taken."
                 required
               />
               <input
                 type="datetime-local"
                 name="occurredAt"
-                className="w-full rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+                className="w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+                className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-surface-2 px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Report incident
               </button>
@@ -665,7 +665,7 @@ export default async function PatientDetailPage({
                       />
                       <button
                         type="submit"
-                        className="rounded-lg border border-edge-2 bg-glass-strong px-3 py-1 text-[11px] font-semibold text-foreground hover:bg-white/15"
+                        className="rounded-lg border border-edge-2 bg-surface-2 px-3 py-1 text-[11px] font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         Mark resolved
                       </button>
@@ -680,7 +680,7 @@ export default async function PatientDetailPage({
 
       <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
         <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-          <ClipboardCheck className="h-4 w-4 text-sky-300" />
+          <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
           Patient Tasks
         </div>
         {canAdmin && (
@@ -695,12 +695,12 @@ export default async function PatientDetailPage({
             <input
               name="title"
               placeholder="Task title"
-              className="rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none md:col-span-2"
+              className="rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring md:col-span-2"
               required
             />
             <select
               name="priority"
-              className="rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+              className="rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
               defaultValue="medium"
             >
               <option value="medium">Medium</option>
@@ -710,12 +710,12 @@ export default async function PatientDetailPage({
             <input
               type="date"
               name="dueDate"
-              className="rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+              className="rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
             <input type="hidden" name="recurrenceDays" value="0" />
             <button
               type="submit"
-              className="md:col-span-4 inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+              className="md:col-span-4 inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-surface-2 px-4 py-2 text-xs font-semibold text-foreground hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Add task
             </button>
@@ -756,12 +756,12 @@ export default async function PatientDetailPage({
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-            <ClipboardList className="h-4 w-4 text-emerald-300" />
+            <ClipboardList className="h-4 w-4 text-muted-foreground" />
             Care Plans
           </div>
           <Link
             href={`/app/care-plans/new?client_id=${patient.id}`}
-            className="text-xs text-primary hover:underline"
+            className="text-xs text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           >
             + New plan
           </Link>
@@ -793,7 +793,7 @@ export default async function PatientDetailPage({
                   <Link
                     key={plan.id}
                     href={`/app/care-plans/${plan.id}`}
-                    className="block rounded-xl border border-edge-2 bg-surface-1 px-4 py-3 hover:bg-white/5"
+                    className="block rounded-xl border border-edge-2 bg-surface-1 px-4 py-3 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <div className="flex items-center justify-between text-sm text-foreground">
                       <span className="font-semibold">
@@ -819,7 +819,7 @@ export default async function PatientDetailPage({
 
       <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
         <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
-          <FileText className="h-4 w-4 text-indigo-300" />
+          <FileText className="h-4 w-4 text-muted-foreground" />
           Linked Evidence
         </div>
         <div className="mt-4 space-y-3">

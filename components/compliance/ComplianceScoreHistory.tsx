@@ -63,10 +63,10 @@ export function ComplianceScoreHistory({
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-glass-border bg-glass-subtle p-6">
+      <div className="rounded-xl border border-border bg-surface-1 p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-4 bg-glass-strong rounded w-1/4" />
-          <div className="h-32 bg-glass-strong rounded" />
+          <div className="h-4 bg-surface-2 rounded w-1/4" />
+          <div className="h-32 bg-surface-2 rounded" />
         </div>
       </div>
     );
@@ -80,13 +80,13 @@ export function ComplianceScoreHistory({
     <div className="space-y-4">
       {/* Regression Alert */}
       {regression?.hasRegression && (
-        <div className="rounded-xl border border-rose-400/40 bg-rose-500/10 p-4 flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 text-rose-400 flex-shrink-0 mt-0.5" />
+        <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-4 flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
           <div>
-            <div className="text-sm font-semibold text-rose-200">
+            <div className="text-sm font-semibold text-destructive">
               Score Regression Detected
             </div>
-            <div className="text-xs text-rose-300 mt-1">
+            <div className="text-xs text-destructive/80 mt-1">
               Compliance score dropped {regression.drop}% from{' '}
               {regression.previousScore}% to {regression.currentScore}%
             </div>
@@ -95,7 +95,7 @@ export function ComplianceScoreHistory({
       )}
 
       {/* Score History Card */}
-      <div className="rounded-xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--panel-2))] p-6">
+      <div className="rounded-xl border border-border bg-card p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-foreground">
             Compliance Score History
@@ -107,8 +107,8 @@ export function ComplianceScoreHistory({
                 onClick={() => setSelectedPeriod(period as 30 | 90 | 365)}
                 className={`px-3 py-1 text-xs rounded-lg transition-colors ${
                   selectedPeriod === period
-                    ? 'bg-sky-500/20 text-sky-300 border border-sky-400/30'
-                    : 'bg-glass-subtle text-muted-foreground border border-glass-border hover:bg-glass-strong'
+                    ? 'bg-primary/10 text-primary border border-primary/30'
+                    : 'bg-surface-1 text-muted-foreground border border-border hover:bg-surface-2'
                 }`}
               >
                 {period}d
@@ -124,7 +124,7 @@ export function ComplianceScoreHistory({
           </div>
           {scoreTrend !== 0 && (
             <div
-              className={`flex items-center gap-1 text-sm ${scoreTrend > 0 ? 'text-emerald-400' : 'text-rose-400'}`}
+              className={`flex items-center gap-1 text-sm ${scoreTrend > 0 ? 'text-success' : 'text-destructive'}`}
             >
               {scoreTrend > 0 ? (
                 <TrendingUp className="h-4 w-4" />
@@ -146,7 +146,7 @@ export function ComplianceScoreHistory({
             {snapshots.length > 1 && (
               <polyline
                 fill="none"
-                stroke="rgb(56, 189, 248)"
+                stroke="hsl(var(--info))"
                 strokeWidth="2"
                 points={snapshots
                   .map((s, i) => {
@@ -169,12 +169,12 @@ export function ComplianceScoreHistory({
 
       {/* Improvement Metric */}
       {snapshots.length >= 2 && (
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+        <div className="rounded-xl border border-border bg-surface-1 p-4">
           <div className="text-sm text-muted-foreground">
             Improvement Since Last Period
           </div>
           <div
-            className={`text-2xl font-bold mt-1 ${scoreTrend >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}
+            className={`text-2xl font-bold mt-1 ${scoreTrend >= 0 ? 'text-success' : 'text-destructive'}`}
           >
             {scoreTrend >= 0 ? '+' : ''}
             {scoreTrend}%

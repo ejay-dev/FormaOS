@@ -63,13 +63,13 @@ function actionMeta(action: string): {
   color: string;
 } {
   const a = action.toUpperCase();
-  if (a === 'CREATE') return { icon: PlusCircle, color: 'text-emerald-400' };
+  if (a === 'CREATE') return { icon: PlusCircle, color: 'text-success' };
   if (a === 'UPDATE') return { icon: Pencil, color: 'text-primary' };
-  if (a === 'DELETE') return { icon: Trash2, color: 'text-rose-400' };
-  if (a === 'APPROVE') return { icon: ThumbsUp, color: 'text-emerald-400' };
-  if (a === 'REJECT') return { icon: ThumbsDown, color: 'text-rose-400' };
+  if (a === 'DELETE') return { icon: Trash2, color: 'text-destructive' };
+  if (a === 'APPROVE') return { icon: ThumbsUp, color: 'text-success' };
+  if (a === 'REJECT') return { icon: ThumbsDown, color: 'text-destructive' };
   if (a === 'VIEW') return { icon: Eye, color: 'text-muted-foreground' };
-  if (a === 'EXPORT') return { icon: FileOutput, color: 'text-amber-400' };
+  if (a === 'EXPORT') return { icon: FileOutput, color: 'text-warning' };
   if (a === 'LOGIN' || a === 'LOGOUT')
     return { icon: LogIn, color: 'text-primary' };
   return { icon: Shield, color: 'text-muted-foreground' };
@@ -102,7 +102,7 @@ function deriveInitials(email?: string): string {
 
 function ActorAvatar({ email }: { email?: string }) {
   return (
-    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-glass-border bg-glass-strong text-[10px] font-bold text-foreground/70">
+    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border bg-surface-2 text-[10px] font-bold text-foreground/70">
       {deriveInitials(email)}
     </div>
   );
@@ -196,7 +196,7 @@ export function AuditTrailViewer({
             className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${
               hasActiveFilter
                 ? 'border-primary/40 bg-primary/10 text-primary'
-                : 'border-glass-border bg-glass-subtle text-muted-foreground hover:bg-glass-strong'
+                : 'border-border bg-surface-1 text-muted-foreground hover:bg-surface-2'
             }`}
           >
             <Filter className="h-3 w-3" />
@@ -207,7 +207,7 @@ export function AuditTrailViewer({
 
       {/* Filter panel */}
       {showFilters && onFilter && (
-        <div className="rounded-xl border border-glass-border bg-glass-subtle px-4 py-3 space-y-3">
+        <div className="rounded-xl border border-border bg-surface-1 px-4 py-3 space-y-3">
           <div className="flex flex-wrap gap-3">
             <div className="flex flex-col gap-1">
               <label
@@ -220,7 +220,7 @@ export function AuditTrailViewer({
                 id="audit-filter-action"
                 value={filterAction}
                 onChange={(e) => setFilterAction(e.target.value)}
-                className="rounded-lg border border-glass-border bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50"
+                className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value="">All actions</option>
                 {ACTION_OPTIONS.map((a) => (
@@ -243,7 +243,7 @@ export function AuditTrailViewer({
                 value={filterResource}
                 onChange={(e) => setFilterResource(e.target.value)}
                 placeholder="e.g. policy, task…"
-                className="rounded-lg border border-glass-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50"
+                className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
           </div>
@@ -257,7 +257,7 @@ export function AuditTrailViewer({
             {hasActiveFilter && (
               <button
                 onClick={clearFilter}
-                className="flex items-center gap-1 rounded-lg border border-glass-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-glass-strong transition-colors"
+                className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-2 transition-colors"
               >
                 <X className="h-3 w-3" /> Clear
               </button>
@@ -267,7 +267,7 @@ export function AuditTrailViewer({
       )}
 
       {entries.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass-subtle py-12 text-center">
+        <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-border bg-surface-1 py-12 text-center">
           <Shield className="h-8 w-8 text-muted-foreground/40" />
           <p className="text-sm text-muted-foreground">
             No audit entries found
@@ -282,7 +282,7 @@ export function AuditTrailViewer({
                 <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   {group.label}
                 </span>
-                <div className="h-px flex-1 bg-glass-border" />
+                <div className="h-px flex-1 bg-border" />
                 <span className="text-[10px] text-muted-foreground/50">
                   {group.entries.length} event
                   {group.entries.length !== 1 ? 's' : ''}
@@ -293,7 +293,7 @@ export function AuditTrailViewer({
               <div className="relative space-y-0">
                 {/* Vertical rail */}
                 <div
-                  className="absolute left-[13px] top-3 bottom-3 w-px bg-glass-border"
+                  className="absolute left-[13px] top-3 bottom-3 w-px bg-border"
                   aria-hidden
                 />
 
@@ -309,7 +309,7 @@ export function AuditTrailViewer({
                       className={`relative flex gap-4 ${isLast ? '' : 'pb-3'}`}
                     >
                       {/* Timeline node */}
-                      <div className="relative z-10 mt-2 flex h-[27px] w-[27px] shrink-0 items-center justify-center rounded-full border border-glass-border bg-background">
+                      <div className="relative z-10 mt-2 flex h-[27px] w-[27px] shrink-0 items-center justify-center rounded-full border border-border bg-background">
                         <Icon className={`h-3 w-3 ${color}`} />
                       </div>
 
@@ -321,7 +321,7 @@ export function AuditTrailViewer({
                           }
                           className="group w-full text-left"
                         >
-                          <div className="flex items-start justify-between gap-3 rounded-xl border border-glass-border bg-glass-subtle px-3 py-2.5 transition-colors hover:bg-glass-strong">
+                          <div className="flex items-start justify-between gap-3 rounded-xl border border-border bg-surface-1 px-3 py-2.5 transition-colors hover:bg-surface-2">
                             <div className="flex min-w-0 items-center gap-2.5">
                               <ActorAvatar email={entry.actor_email} />
                               <div className="min-w-0">
@@ -357,7 +357,7 @@ export function AuditTrailViewer({
 
                         {/* Expanded detail drawer */}
                         {isExpanded && (
-                          <div className="mt-1 rounded-xl border border-glass-border bg-glass-subtle px-4 py-3">
+                          <div className="mt-1 rounded-xl border border-border bg-surface-1 px-4 py-3">
                             <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                               Event detail
                             </p>
@@ -413,15 +413,15 @@ export function ChainIntegrityBadge({
     <div
       className={`rounded-lg border-2 p-4 ${
         integrity.valid
-          ? 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/10'
-          : 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/10'
+          ? 'border-success/20 bg-success/10'
+          : 'border-destructive/20 bg-destructive/10'
       }`}
     >
       <div className="flex items-center gap-3">
         {integrity.valid ? (
-          <CheckCircle2 className="h-6 w-6 text-green-600" />
+          <CheckCircle2 className="h-6 w-6 text-success" />
         ) : (
-          <XCircle className="h-6 w-6 text-red-600" />
+          <XCircle className="h-6 w-6 text-destructive" />
         )}
         <div>
           <p className="text-sm font-semibold text-foreground">
@@ -533,13 +533,13 @@ export function AuditExportPanel({
               </a>
             )}
             {job.status === 'pending' && (
-              <span className="text-xs text-yellow-600">Queued</span>
+              <span className="text-xs text-warning">Queued</span>
             )}
             {job.status === 'processing' && (
-              <span className="text-xs text-blue-600">Processing…</span>
+              <span className="text-xs text-info">Processing…</span>
             )}
             {job.status === 'failed' && (
-              <span className="text-xs text-red-600">Failed</span>
+              <span className="text-xs text-destructive">Failed</span>
             )}
           </div>
         ))}

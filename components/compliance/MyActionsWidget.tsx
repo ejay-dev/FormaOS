@@ -23,13 +23,13 @@ const STATUS_CONFIG: Record<
   },
   due_today: {
     label: 'Due Today',
-    color: 'text-amber-400',
-    bgColor: 'bg-amber-500/15 border-amber-400/30',
+    color: 'text-warning',
+    bgColor: 'bg-warning/15 border-warning/30',
   },
   due_soon: {
     label: 'Due Soon',
-    color: 'text-amber-300',
-    bgColor: 'bg-amber-500/10 border-amber-400/20',
+    color: 'text-warning',
+    bgColor: 'bg-warning/10 border-warning/20',
   },
   in_progress: {
     label: 'In Progress',
@@ -39,7 +39,7 @@ const STATUS_CONFIG: Record<
   pending: {
     label: 'Pending',
     color: 'text-muted-foreground',
-    bgColor: 'bg-glass-subtle border-glass-border',
+    bgColor: 'bg-surface-1 border-border',
   },
 };
 
@@ -71,7 +71,7 @@ function StatusDropdown({
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-1 w-36 rounded-lg border border-glass-border bg-card p-1 shadow-xl"
+          className="absolute right-0 top-full z-50 mt-1 w-36 rounded-lg border border-border bg-popover p-1 shadow-xl"
         >
           {(Object.keys(STATUS_CONFIG) as MyActionStatus[]).map((s) => (
             <button
@@ -83,7 +83,7 @@ function StatusDropdown({
                 onUpdate(s);
                 setOpen(false);
               }}
-              className={`w-full text-left rounded px-2 py-1.5 text-xs font-medium transition-colors hover:bg-glass-subtle ${s === currentStatus ? 'bg-glass-subtle' : ''}`}
+              className={`w-full text-left rounded px-2 py-1.5 text-xs font-medium transition-colors hover:bg-surface-1 ${s === currentStatus ? 'bg-surface-1' : ''}`}
             >
               {STATUS_CONFIG[s].label}
             </button>
@@ -142,7 +142,7 @@ function MyActionsWidgetInner() {
         </p>
         <Link
           href="/app/tasks"
-          className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-glass-border bg-glass-subtle px-4 py-2 text-xs font-medium text-foreground hover:bg-glass-strong transition-colors"
+          className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-border bg-surface-1 px-4 py-2 text-xs font-medium text-foreground hover:bg-surface-2 transition-colors"
         >
           View All Tasks
         </Link>
@@ -156,7 +156,7 @@ function MyActionsWidgetInner() {
         <Link
           key={action.id}
           href={action.entityHref ?? '/app/tasks'}
-          className="group flex items-center gap-3 rounded-lg border border-glass-border bg-glass-subtle px-3 py-2 transition-all hover:bg-glass-strong"
+          className="group flex items-center gap-3 rounded-lg border border-border bg-surface-1 px-3 py-2 transition-all hover:bg-surface-2"
         >
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-foreground truncate">
@@ -194,7 +194,7 @@ function MyActionsWidgetInner() {
 export function MyActionsWidget() {
   return (
     <ErrorBoundary name="MyActionsWidget" level="component">
-      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+      <div className="rounded-xl border border-border bg-surface-1 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <CheckSquare className="h-4 w-4 text-foreground/70" />

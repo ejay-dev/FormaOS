@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles, ArrowRight, FileSearch, ShieldCheck, Wand2 } from 'lucide-react';
+import { ArrowRight, FileSearch, ShieldCheck, Wand2 } from 'lucide-react';
 
 type Suggestion = {
   title: string;
@@ -22,9 +22,9 @@ export function AIComplianceAssistantPanel({
   suggestions: Suggestion[];
 }) {
   return (
-    <section className="rounded-2xl border border-cyan-400/20 bg-white/[0.04] p-6">
+    <section className="rounded-2xl border border-border bg-surface-1 p-6">
       <div className="mb-4 flex items-center gap-2">
-        <Sparkles className="h-5 w-5 text-cyan-300" />
+        <Wand2 className="h-5 w-5 text-muted-foreground" />
         <h2 className="text-lg font-semibold text-foreground">
           AI Compliance Assistant
         </h2>
@@ -40,10 +40,10 @@ export function AIComplianceAssistantPanel({
             <Link
               key={suggestion.title}
               href={suggestion.href}
-              className="group rounded-xl border border-glass-border bg-slate-950/40 p-4 transition-colors hover:bg-slate-900/60"
+              className="group rounded-xl border border-border bg-card p-4 transition-colors hover:bg-surface-2"
             >
-              <div className="mb-3 inline-flex rounded-lg border border-cyan-300/20 bg-cyan-500/10 p-2">
-                <Icon className="h-4 w-4 text-cyan-200" />
+              <div className="mb-3 inline-flex rounded-lg border border-border bg-muted p-2">
+                <Icon className="h-4 w-4 text-muted-foreground" />
               </div>
               <p className="text-sm font-semibold text-foreground">
                 {suggestion.title}
@@ -51,7 +51,7 @@ export function AIComplianceAssistantPanel({
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                 {suggestion.detail}
               </p>
-              <div className="mt-3 inline-flex items-center gap-1 text-xs text-cyan-200">
+              <div className="mt-3 inline-flex items-center gap-1 text-xs text-primary">
                 Open workflow
                 <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
               </div>

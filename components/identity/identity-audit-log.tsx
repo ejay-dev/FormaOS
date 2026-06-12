@@ -39,7 +39,7 @@ export function IdentityAuditLog({ orgId }: Props) {
   }, [orgId]);
 
   return (
-    <section className="rounded-3xl border border-glass-border bg-glass-subtle p-6 space-y-4">
+    <section className="rounded-3xl border border-border bg-surface-1 p-6 space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-black text-foreground">Identity Audit Trail</h2>
@@ -50,13 +50,13 @@ export function IdentityAuditLog({ orgId }: Props) {
         <div className="flex gap-2">
           <a
             href={`/api/identity/audit?orgId=${encodeURIComponent(orgId)}&format=csv`}
-            className="rounded-xl border border-glass-border bg-glass-subtle px-3 py-2 text-sm text-foreground/90"
+            className="rounded-xl border border-border bg-surface-2 px-3 py-2 text-sm text-foreground/90"
           >
             Export CSV
           </a>
           <a
             href={`/api/identity/audit?orgId=${encodeURIComponent(orgId)}&format=pdf`}
-            className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-3 py-2 text-sm text-cyan-100"
+            className="rounded-xl border border-primary bg-primary px-3 py-2 text-sm text-primary-foreground"
           >
             Export PDF
           </a>
@@ -64,11 +64,11 @@ export function IdentityAuditLog({ orgId }: Props) {
       </div>
 
       {loading ? <div className="text-sm text-muted-foreground/60">Loading audit events…</div> : null}
-      {error ? <div className="text-sm text-rose-300">{error}</div> : null}
+      {error ? <div className="text-sm text-destructive">{error}</div> : null}
 
       <div className="space-y-3">
         {events.map((event) => (
-          <details key={event.id} className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
+          <details key={event.id} className="rounded-2xl border border-border bg-card p-4">
             <summary className="cursor-pointer list-none">
               <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
@@ -82,7 +82,7 @@ export function IdentityAuditLog({ orgId }: Props) {
                 </div>
               </div>
             </summary>
-            <pre className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-950 p-3 text-xs text-foreground/70">
+            <pre className="mt-4 whitespace-pre-wrap rounded-xl bg-surface-2 p-3 text-xs text-foreground/70">
               {JSON.stringify(event.metadata ?? {}, null, 2)}
             </pre>
           </details>

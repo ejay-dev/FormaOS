@@ -138,9 +138,9 @@ export default function CredentialReviewPage() {
             organizational compliance.
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-sky-500/10 px-4 py-2 rounded-full border border-sky-400/30 shadow-sm">
-          <Clock className="h-3.5 w-3.5 text-sky-300" />
-          <span className="text-xs font-semibold text-sky-300 uppercase tracking-wider">
+        <div className="flex items-center gap-2 bg-surface-2 px-4 py-2 rounded-full border border-edge-2 shadow-sm">
+          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             {filteredDocs.length} Items Awaiting Review
           </span>
         </div>
@@ -178,7 +178,7 @@ export default function CredentialReviewPage() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-200">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
           {error}
         </div>
       ) : null}
@@ -191,8 +191,8 @@ export default function CredentialReviewPage() {
         </div>
       ) : filteredDocs.length === 0 ? (
         <div className="bg-surface-1 border border-edge-2 rounded-[2.5rem] p-24 text-center shadow-sm">
-          <div className="h-20 w-20 bg-emerald-400/10 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-emerald-400/30 shadow-inner">
-            <CheckCircle2 className="h-10 w-10 text-emerald-400" />
+          <div className="h-20 w-20 bg-success/10 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-success/20 shadow-inner">
+            <CheckCircle2 className="h-10 w-10 text-success" />
           </div>
           <h3 className="text-xl font-black text-foreground tracking-tight">
             Vault Fully Verified
@@ -206,10 +206,10 @@ export default function CredentialReviewPage() {
           {filteredDocs.map((doc) => (
             <div
               key={doc.id}
-              className="group bg-surface-1 border border-edge-2 rounded-[2.5rem] p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-sm hover:border-glass-border-strong transition-all duration-300"
+              className="group bg-surface-1 border border-edge-2 rounded-[2.5rem] p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-sm hover:border-border transition-all duration-300"
             >
               <div className="flex items-center gap-5">
-                <div className="h-16 w-16 rounded-[1.25rem] bg-glass-strong border border-edge-2 flex items-center justify-center text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-500">
+                <div className="h-16 w-16 rounded-[1.25rem] bg-surface-2 border border-edge-2 flex items-center justify-center text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-500">
                   <FileText className="h-7 w-7" />
                 </div>
                 <div>
@@ -217,7 +217,7 @@ export default function CredentialReviewPage() {
                     <p className="text-sm font-black text-foreground tracking-tight">
                       {doc.document_type ?? 'Document'}
                     </p>
-                    <span className="px-2 py-0.5 bg-sky-500/10 text-sky-300 rounded-md text-xs font-semibold uppercase tracking-wide border border-sky-400/30">
+                    <span className="px-2 py-0.5 bg-surface-2 text-muted-foreground rounded-md text-xs font-semibold uppercase tracking-wide border border-edge-2">
                       Intake Node: USR-{doc.user_id.slice(0, 8)}
                     </span>
                   </div>
@@ -237,7 +237,7 @@ export default function CredentialReviewPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setSelectedDoc(doc)}
-                  className="flex items-center gap-2 px-8 py-4 bg-glass-strong text-foreground rounded-2xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
+                  className="flex items-center gap-2 px-8 py-4 bg-surface-2 text-foreground rounded-2xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
                 >
                   <Eye className="h-4 w-4" />
                   Inspect & Verify
@@ -249,14 +249,13 @@ export default function CredentialReviewPage() {
         </div>
       )}
 
-      <div className="bg-glass-strong rounded-[2.5rem] p-10 text-foreground flex flex-col md:flex-row md:items-center md:justify-between gap-8 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-surface-1 rounded-full blur-3xl -mr-32 -mt-32" />
+      <div className="bg-card rounded-[2.5rem] p-10 text-foreground flex flex-col md:flex-row md:items-center md:justify-between gap-8 shadow-2xl relative overflow-hidden border border-edge-2">
         <div className="flex items-start gap-6 relative z-10">
-          <div className="h-12 w-12 rounded-2xl bg-glass-strong flex items-center justify-center text-blue-400 border border-edge-2 backdrop-blur-md">
+          <div className="h-12 w-12 rounded-2xl bg-surface-2 flex items-center justify-center text-muted-foreground border border-edge-2">
             <ShieldCheck className="h-6 w-6" />
           </div>
           <div className="max-w-xl">
-            <h4 className="text-sm font-black uppercase tracking-wider text-blue-400">
+            <h4 className="text-sm font-black uppercase tracking-wider text-foreground">
               Non-Repudiation Policy
             </h4>
             <p className="text-xs text-muted-foreground mt-3 leading-relaxed font-medium uppercase tracking-wider">

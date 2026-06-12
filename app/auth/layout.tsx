@@ -33,7 +33,7 @@ export default function AuthLayout({
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-background">
       {/* v4-029: main landmark with id anchors the global
           Skip-to-main link rendered in app/layout.tsx. */}
       <main id="main-content">{children}</main>

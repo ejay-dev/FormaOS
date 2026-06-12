@@ -65,10 +65,10 @@ function UsageWarningBanner({
   const Icon = isExceeded ? XCircle : AlertTriangle;
 
   const bgClass = isExceeded
-    ? 'border-rose-400/30 bg-rose-500/10'
-    : 'border-amber-400/30 bg-amber-500/10';
-  const iconClass = isExceeded ? 'text-rose-400' : 'text-amber-400';
-  const textClass = isExceeded ? 'text-rose-300' : 'text-amber-300';
+    ? 'border-destructive/20 bg-destructive/10'
+    : 'border-warning/20 bg-warning/10';
+  const iconClass = isExceeded ? 'text-destructive' : 'text-warning';
+  const textClass = isExceeded ? 'text-destructive' : 'text-warning';
 
   const message = isExceeded
     ? `${item.label} limit reached (${item.current}/${item.limit}). Upgrade to continue adding ${item.label.toLowerCase()}.`
@@ -80,7 +80,9 @@ function UsageWarningBanner({
       role="alert"
     >
       <Icon className={`h-5 w-5 shrink-0 ${iconClass}`} />
-      <p className={`flex-1 text-sm font-medium ${textClass}`}>{message}</p>
+      <p className={`flex-1 text-sm font-medium tabular-nums ${textClass}`}>
+        {message}
+      </p>
       {canManageBilling && (
         <Link
           href="/app/billing"
@@ -127,10 +129,10 @@ export function DashboardUpgradeNudge() {
   const atRiskItems = usage.filter((u) => u.limit !== -1 && u.percentage >= 50);
 
   return (
-    <div className="rounded-2xl border border-zinc-600/20 bg-gradient-to-br from-zinc-700/10 to-zinc-900/10 p-6">
+    <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-start justify-between">
         <div className="space-y-3">
-          <h3 className="text-base font-bold text-foreground">
+          <h3 className="text-base font-bold tabular-nums text-foreground">
             {isExpired
               ? 'Your trial has ended'
               : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left`}
@@ -152,15 +154,15 @@ export function DashboardUpgradeNudge() {
                     <div
                       className={`h-full rounded-full ${
                         item.percentage >= 100
-                          ? 'bg-rose-400'
+                          ? 'bg-destructive'
                           : item.percentage >= 80
-                            ? 'bg-amber-400'
-                            : 'bg-zinc-400'
+                            ? 'bg-warning'
+                            : 'bg-muted-foreground'
                       }`}
                       style={{ width: `${Math.min(100, item.percentage)}%` }}
                     />
                   </div>
-                  <span className="text-foreground/70">
+                  <span className="text-foreground/70 tabular-nums">
                     {item.label}: {item.current}/{item.limit}
                   </span>
                 </div>
@@ -223,11 +225,11 @@ export function FeaturePreviewBlur({
       </div>
       <div className="absolute inset-0 flex items-center justify-center bg-background/40 backdrop-blur-sm rounded-xl">
         <div className="text-center max-w-sm px-6">
-          <XCircle className="mx-auto h-10 w-10 text-rose-400 mb-3" />
+          <XCircle className="mx-auto h-10 w-10 text-destructive mb-3" />
           <h4 className="text-sm font-bold text-foreground mb-1">
             {item.label} Limit Reached
           </h4>
-          <p className="text-xs text-muted-foreground mb-4">
+          <p className="text-xs text-muted-foreground mb-4 tabular-nums">
             You&apos;ve used {item.current} of {item.limit}{' '}
             {item.label.toLowerCase()}. Upgrade your plan to continue.
           </p>

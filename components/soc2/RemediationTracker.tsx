@@ -10,10 +10,10 @@ interface RemediationTrackerProps {
 }
 
 const PRIORITY_CONFIG = {
-  critical: { color: 'bg-rose-400/15 text-rose-300 border-rose-400/20', icon: AlertTriangle },
-  high: { color: 'bg-amber-400/15 text-amber-300 border-amber-400/20', icon: AlertTriangle },
-  medium: { color: 'bg-sky-400/15 text-sky-300 border-sky-400/20', icon: Circle },
-  low: { color: 'bg-slate-400/15 text-muted-foreground border-slate-400/20', icon: Circle },
+  critical: { color: 'bg-destructive/10 text-destructive border-destructive/20', icon: AlertTriangle },
+  high: { color: 'bg-warning/10 text-warning border-warning/20', icon: AlertTriangle },
+  medium: { color: 'bg-info/10 text-info border-info/20', icon: Circle },
+  low: { color: 'bg-muted text-muted-foreground border-border', icon: Circle },
 } as const;
 
 const STATUS_ICON = {
@@ -46,7 +46,7 @@ export function RemediationTracker({ actions }: RemediationTrackerProps) {
   const completed = localActions.filter((a) => a.status === 'completed' || a.status === 'skipped');
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6">
+    <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-foreground">Remediation Actions</h3>
         <div className="flex gap-3 text-xs text-muted-foreground/60">
@@ -70,7 +70,7 @@ export function RemediationTracker({ actions }: RemediationTrackerProps) {
             return (
               <div
                 key={action.id}
-                className="flex items-start gap-3 rounded-xl border border-edge-1 bg-white/[0.02] p-3"
+                className="flex items-start gap-3 rounded-xl border border-edge-1 bg-surface-1 p-3"
               >
                 <StatusIcon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60" />
                 <div className="min-w-0 flex-1">
@@ -79,7 +79,7 @@ export function RemediationTracker({ actions }: RemediationTrackerProps) {
                     <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium ${priorityCfg.color}`}>
                       {action.priority}
                     </span>
-                    <span className="rounded border border-glass-border bg-glass-subtle px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/60">
+                    <span className="rounded border border-border bg-surface-1 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/60">
                       {action.controlCode}
                     </span>
                   </div>
@@ -90,7 +90,7 @@ export function RemediationTracker({ actions }: RemediationTrackerProps) {
                 <button
                   onClick={() => handleComplete(action.id)}
                   disabled={isPending}
-                  className="shrink-0 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-xs font-medium text-emerald-300 hover:bg-emerald-400/20 transition-colors disabled:opacity-50"
+                  className="shrink-0 rounded-lg border border-success/20 bg-success/10 px-2.5 py-1 text-xs font-medium text-success hover:bg-success/20 transition-colors disabled:opacity-50"
                 >
                   Complete
                 </button>
@@ -109,11 +109,11 @@ export function RemediationTracker({ actions }: RemediationTrackerProps) {
             {completed.map((action) => (
               <div
                 key={action.id}
-                className="flex items-center gap-3 rounded-xl border border-edge-1 bg-white/[0.01] p-3 opacity-60"
+                className="flex items-center gap-3 rounded-xl border border-edge-1 bg-surface-1 p-3 opacity-60"
               >
-                <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
                 <span className="text-sm text-muted-foreground line-through">{action.title}</span>
-                <span className="rounded border border-glass-border bg-glass-subtle px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/40">
+                <span className="rounded border border-border bg-surface-1 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/40">
                   {action.controlCode}
                 </span>
               </div>

@@ -12,10 +12,10 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
   if (isLoading) {
     return (
       <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 animate-pulse">
-        <div className="h-5 w-40 rounded bg-glass-strong mb-6" />
+        <div className="h-5 w-40 rounded bg-surface-2 mb-6" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-14 rounded-lg bg-glass-strong" />
+            <div key={i} className="h-14 rounded-lg bg-surface-2" />
           ))}
         </div>
       </div>
@@ -25,7 +25,7 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
   if (deadlines.length === 0) {
     return (
       <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 text-center">
-        <CheckCircle className="h-10 w-10 text-emerald-400 mx-auto mb-3" />
+        <CheckCircle className="h-10 w-10 text-success mx-auto mb-3" />
         <p className="text-foreground/90 font-medium">No Upcoming Deadlines</p>
         <p className="text-sm text-muted-foreground mt-1">
           All compliance deadlines are clear for the next 90 days.
@@ -40,10 +40,10 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
   const upcoming = deadlines.filter((d) => d.status === 'upcoming');
 
   return (
-    <div className="rounded-2xl border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-edge-2 bg-card p-6">
       <div className="flex items-center gap-3 mb-6">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-edge-2 bg-surface-1">
-          <Calendar className="h-4 w-4 text-sky-300" />
+          <Calendar className="h-4 w-4 text-muted-foreground" />
         </div>
         <div>
           <h3 className="text-sm font-semibold text-foreground">Compliance Deadlines</h3>
@@ -53,14 +53,14 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
 
       {/* Summary Stats */}
       <div className="grid grid-cols-3 gap-2 mb-4">
-        <div className={`rounded-lg p-2 text-center ${overdue.length > 0 ? 'bg-red-500/10' : 'bg-surface-1'}`}>
-          <div className={`text-lg font-bold ${overdue.length > 0 ? 'text-red-400' : 'text-muted-foreground'}`}>
+        <div className={`rounded-lg p-2 text-center ${overdue.length > 0 ? 'bg-destructive/10' : 'bg-surface-1'}`}>
+          <div className={`text-lg font-bold ${overdue.length > 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
             {overdue.length}
           </div>
           <div className="text-xs text-muted-foreground uppercase">Overdue</div>
         </div>
-        <div className={`rounded-lg p-2 text-center ${dueSoon.length > 0 ? 'bg-amber-500/10' : 'bg-surface-1'}`}>
-          <div className={`text-lg font-bold ${dueSoon.length > 0 ? 'text-amber-400' : 'text-muted-foreground'}`}>
+        <div className={`rounded-lg p-2 text-center ${dueSoon.length > 0 ? 'bg-warning/10' : 'bg-surface-1'}`}>
+          <div className={`text-lg font-bold ${dueSoon.length > 0 ? 'text-warning' : 'text-muted-foreground'}`}>
             {dueSoon.length}
           </div>
           <div className="text-xs text-muted-foreground uppercase">Due Soon</div>
@@ -100,14 +100,14 @@ function DeadlineRow({ deadline }: { deadline: ComplianceDeadline }) {
   const statusConfig = {
     overdue: {
       icon: AlertCircle,
-      color: 'text-red-400',
-      bg: 'bg-red-500/10 border-red-500/30',
+      color: 'text-destructive',
+      bg: 'bg-destructive/10 border-destructive/30',
       label: 'OVERDUE',
     },
     due_soon: {
       icon: Clock,
-      color: 'text-amber-400',
-      bg: 'bg-amber-500/10 border-amber-500/30',
+      color: 'text-warning',
+      bg: 'bg-warning/10 border-warning/30',
       label: `${deadline.daysRemaining}d`,
     },
     upcoming: {
@@ -118,8 +118,8 @@ function DeadlineRow({ deadline }: { deadline: ComplianceDeadline }) {
     },
     completed: {
       icon: CheckCircle,
-      color: 'text-emerald-400',
-      bg: 'bg-emerald-500/10 border-emerald-500/30',
+      color: 'text-success',
+      bg: 'bg-success/10 border-success/30',
       label: 'DONE',
     },
     cancelled: {

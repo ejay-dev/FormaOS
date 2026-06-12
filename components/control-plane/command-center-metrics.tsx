@@ -1,6 +1,6 @@
 'use client';
 
-import { ShieldAlert, Sparkles, ToggleLeft, ToggleRight } from 'lucide-react';
+import { ShieldAlert, FlaskConical, ToggleLeft, ToggleRight } from 'lucide-react';
 import type { CommandCenterMetricsProps } from './command-center-types';
 import { toLocalInput } from './command-center-types';
 
@@ -19,10 +19,10 @@ export function CommandCenterMetrics({
 }: CommandCenterMetricsProps) {
   return (
     <>
-      <section className="sticky top-20 z-20 rounded-xl border border-rose-800/40 bg-rose-950/25 p-4 backdrop-blur">
+      <section className="sticky top-20 z-20 rounded-xl border border-destructive/30 bg-destructive/10 p-4 backdrop-blur">
         <div className="mb-3 flex items-center gap-2">
-          <ShieldAlert className="h-4 w-4 text-rose-300" />
-          <h2 className="text-sm font-semibold text-rose-100">
+          <ShieldAlert className="h-4 w-4 text-destructive" />
+          <h2 className="text-sm font-semibold text-foreground">
             Pinned Kill Switches
           </h2>
         </div>
@@ -35,8 +35,8 @@ export function CommandCenterMetrics({
             }
             className={`rounded border px-3 py-2 text-left text-xs ${
               maintenanceMode
-                ? 'border-amber-600/50 bg-amber-900/30 text-amber-100'
-                : 'border-slate-700 bg-slate-900/60 text-foreground/90 hover:bg-slate-800'
+                ? 'border-warning/30 bg-warning/15 text-warning'
+                : 'border-border bg-surface-1 text-foreground/90 hover:bg-surface-2'
             }`}
           >
             <div className="font-medium">Maintenance mode</div>
@@ -53,8 +53,8 @@ export function CommandCenterMetrics({
             }
             className={`rounded border px-3 py-2 text-left text-xs ${
               readOnlyMode
-                ? 'border-cyan-600/50 bg-cyan-900/30 text-cyan-100'
-                : 'border-slate-700 bg-slate-900/60 text-foreground/90 hover:bg-slate-800'
+                ? 'border-info/30 bg-info/15 text-info'
+                : 'border-border bg-surface-1 text-foreground/90 hover:bg-surface-2'
             }`}
           >
             <div className="font-medium">Read-only mode</div>
@@ -84,8 +84,8 @@ export function CommandCenterMetrics({
             }
             className={`rounded border px-3 py-2 text-left text-xs ${
               marketingRuntime.runtime.expensiveEffectsEnabled
-                ? 'border-emerald-600/50 bg-emerald-900/30 text-emerald-100'
-                : 'border-rose-600/50 bg-rose-900/30 text-rose-100'
+                ? 'border-success/30 bg-success/15 text-success'
+                : 'border-destructive/30 bg-destructive/15 text-destructive'
             }`}
           >
             <div className="font-medium">Disable heavy effects</div>
@@ -98,9 +98,9 @@ export function CommandCenterMetrics({
         </div>
       </section>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+      <section className="rounded-xl border border-border bg-card p-6">
         <div className="mb-4 flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-cyan-300" />
+          <FlaskConical className="h-4 w-4 text-muted-foreground" />
           <h2 className="text-lg font-semibold text-foreground">
             Feature Flags & Experiments
           </h2>
@@ -116,7 +116,7 @@ export function CommandCenterMetrics({
               }))
             }
             placeholder="flag key (e.g. marketing_new_hero)"
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="rounded border border-border bg-surface-1 px-3 py-2 text-sm text-foreground"
           />
           <select
             value={flagDraft.scopeType}
@@ -129,7 +129,7 @@ export function CommandCenterMetrics({
                   | 'user',
               }))
             }
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="rounded border border-border bg-surface-1 px-3 py-2 text-sm text-foreground"
           >
             <option value="global">Global</option>
             <option value="organization">Organization</option>
@@ -149,7 +149,7 @@ export function CommandCenterMetrics({
                 ? 'N/A for global'
                 : 'org/user id'
             }
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground disabled:opacity-50"
+            className="rounded border border-border bg-surface-1 px-3 py-2 text-sm text-foreground disabled:opacity-50"
           />
           <input
             value={flagDraft.description}
@@ -160,7 +160,7 @@ export function CommandCenterMetrics({
               }))
             }
             placeholder="description"
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground md:col-span-2"
+            className="rounded border border-border bg-surface-1 px-3 py-2 text-sm text-foreground md:col-span-2"
           />
           <input
             type="number"
@@ -174,7 +174,7 @@ export function CommandCenterMetrics({
               }))
             }
             placeholder="rollout %"
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="rounded border border-border bg-surface-1 px-3 py-2 text-sm text-foreground"
           />
           <textarea
             value={flagDraft.variantsText}
@@ -185,7 +185,7 @@ export function CommandCenterMetrics({
               }))
             }
             placeholder='{"control": 50, "variant": 50}'
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground md:col-span-2"
+            className="rounded border border-border bg-surface-1 px-3 py-2 text-sm text-foreground md:col-span-2"
           />
           <input
             value={flagDraft.defaultVariant}
@@ -196,7 +196,7 @@ export function CommandCenterMetrics({
               }))
             }
             placeholder="default variant"
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="rounded border border-border bg-surface-1 px-3 py-2 text-sm text-foreground"
           />
           <label className="flex items-center gap-2 text-sm text-foreground/70">
             <input
@@ -246,7 +246,7 @@ export function CommandCenterMetrics({
                 startAt: event.target.value,
               }))
             }
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="rounded border border-border bg-surface-1 px-3 py-2 text-sm text-foreground"
           />
           <input
             type="datetime-local"
@@ -254,13 +254,13 @@ export function CommandCenterMetrics({
             onChange={(event) =>
               onSetFlagDraft((prev) => ({ ...prev, endAt: event.target.value }))
             }
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="rounded border border-border bg-surface-1 px-3 py-2 text-sm text-foreground"
           />
           <button
             type="button"
             disabled={pendingAction !== null}
             onClick={() => void onSubmitFeatureFlag()}
-            className="rounded bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-500 disabled:opacity-60"
+            className="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
           >
             Save Flag
           </button>
@@ -272,10 +272,10 @@ export function CommandCenterMetrics({
             return (
               <div
                 key={flag.id}
-                className="rounded-lg border border-slate-800 bg-slate-950/40 p-3"
+                className="rounded-lg border border-border bg-surface-1 p-3"
               >
                 <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  <span className="rounded border border-slate-700 px-2 py-0.5 text-foreground/90">
+                  <span className="rounded border border-border px-2 py-0.5 text-foreground/90">
                     {flag.flag_key}
                   </span>
                   <span>{flag.scope_type}</span>
@@ -332,12 +332,12 @@ export function CommandCenterMetrics({
                         },
                       );
                     }}
-                    className="inline-flex items-center gap-1 rounded border border-slate-700 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
+                    className="inline-flex items-center gap-1 rounded border border-border px-2 py-1 text-xs text-foreground/90 hover:bg-surface-2"
                   >
                     {flag.enabled ? (
-                      <ToggleRight className="h-4 w-4 text-emerald-400" />
+                      <ToggleRight className="h-4 w-4 text-success" />
                     ) : (
-                      <ToggleLeft className="h-4 w-4 text-muted-foreground/60" />
+                      <ToggleLeft className="h-4 w-4 text-muted-foreground" />
                     )}
                     {flag.enabled ? 'Enabled' : 'Disabled'}
                   </button>
@@ -392,8 +392,8 @@ export function CommandCenterMetrics({
                     }}
                     className={`inline-flex items-center gap-1 rounded border px-2 py-1 text-xs ${
                       flag.kill_switch
-                        ? 'border-rose-700/50 bg-rose-900/20 text-rose-200'
-                        : 'border-slate-700 text-foreground/70 hover:bg-slate-800'
+                        ? 'border-destructive/30 bg-destructive/15 text-destructive'
+                        : 'border-border text-foreground/70 hover:bg-surface-2'
                     }`}
                   >
                     <ShieldAlert className="h-3.5 w-3.5" />

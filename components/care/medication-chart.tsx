@@ -30,11 +30,10 @@ interface Administration {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  active: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-  completed: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-  discontinued: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
-  on_hold:
-    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
+  active: 'bg-success/10 text-success border border-success/20',
+  completed: 'bg-info/10 text-info border border-info/20',
+  discontinued: 'bg-destructive/10 text-destructive border border-destructive/20',
+  on_hold: 'bg-warning/10 text-warning border border-warning/20',
 };
 
 const ADMIN_STATUS_ICONS: Record<string, typeof Check> = {
@@ -308,7 +307,7 @@ export function MedicationChart({
                   <div className="flex items-center gap-2">
                     <h4 className="font-medium text-sm">{med.name}</h4>
                     {med.is_prn && (
-                      <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+                      <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                         PRN
                       </span>
                     )}
@@ -332,7 +331,7 @@ export function MedicationChart({
                     </p>
                   )}
                   {med.precautions && (
-                    <p className="mt-1 text-xs text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
+                    <p className="mt-1 text-xs text-warning flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3" /> {med.precautions}
                     </p>
                   )}
@@ -391,7 +390,7 @@ export function MedicationChart({
                     />
                   </div>
                   {adminError && (
-                    <p role="alert" className="text-xs text-red-600">
+                    <p role="alert" className="text-xs text-destructive">
                       {adminError}
                     </p>
                   )}
@@ -431,8 +430,8 @@ export function MedicationChart({
                           className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] ${
                             a.status === 'given' ||
                             a.status === 'self_administered'
-                              ? 'bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400'
-                              : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400'
+                              ? 'bg-success/10 text-success'
+                              : 'bg-destructive/10 text-destructive'
                           }`}
                         >
                           <Icon className="h-2.5 w-2.5" />

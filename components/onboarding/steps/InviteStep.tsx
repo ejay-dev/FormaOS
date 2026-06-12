@@ -138,7 +138,7 @@ export function InviteStep({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="colleague@company.com"
                 onKeyDown={(e) => e.key === 'Enter' && addInvite()}
-                className="w-full rounded-lg border border-border bg-background pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--wire-action)]/50"
+                className="w-full rounded-lg border border-border bg-background pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
             <select
@@ -156,7 +156,7 @@ export function InviteStep({
               type="button"
               onClick={addInvite}
               disabled={!email.trim() || invites.length >= 3}
-              className="rounded-lg border border-border px-3 py-2 hover:bg-muted transition-colors disabled:opacity-50"
+              className="rounded-lg border border-border px-3 py-2 hover:bg-muted transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <UserPlus className="h-4 w-4" />
             </button>
@@ -188,7 +188,7 @@ export function InviteStep({
             </div>
           )}
 
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="text-xs text-muted-foreground text-center tabular-nums">
             {3 - invites.length} invite{3 - invites.length !== 1 ? 's' : ''}{' '}
             remaining
           </p>
@@ -196,7 +196,7 @@ export function InviteStep({
       )}
 
       {sent && (
-        <div className="rounded-lg border border-[var(--wire-success)]/30 bg-[var(--wire-success)]/10 p-3 text-sm text-[var(--wire-success)]">
+        <div className="rounded-lg border border-success/20 bg-success/10 p-3 text-sm text-success tabular-nums">
           {sentCount > 0
             ? `${sentCount} invitation${sentCount > 1 ? 's' : ''} sent${failedCount > 0 ? ` • ${failedCount} failed` : ''}!`
             : 'Step skipped'}
@@ -204,7 +204,7 @@ export function InviteStep({
       )}
 
       {sendError && (
-        <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-300">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-xs text-destructive">
           {sendError}
         </div>
       )}
@@ -224,7 +224,7 @@ export function InviteStep({
             <button
               type="button"
               onClick={handleSkip}
-              className="inline-flex items-center rounded-lg border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
+              className="inline-flex items-center rounded-lg border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Skip for now
             </button>
@@ -233,7 +233,7 @@ export function InviteStep({
             type="button"
             onClick={sent ? onNext : handleSend}
             disabled={isSending}
-            className="inline-flex items-center gap-2 rounded-lg bg-[var(--wire-action)] px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {isSending
               ? 'Sending...'

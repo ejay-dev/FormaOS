@@ -12,7 +12,7 @@ import {
   History,
   Database,
   Users,
-  Sparkles,
+  CheckCircle2,
 } from 'lucide-react';
 import { useSystemState } from '@/lib/system-state';
 import { PlanTier, PLAN_FEATURES } from '@/lib/system-state/types';
@@ -57,21 +57,21 @@ function PlanCard({
         }
       }}
       className={cn(
-        'relative rounded-3xl border-2 p-6 transition-all duration-300',
+        'relative rounded-3xl border-2 p-6 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         recommended
-          ? 'border-cyan-400/50 bg-gradient-to-br from-cyan-500/10 to-teal-500/10 shadow-lg'
-          : 'border-glass-border bg-surface-1',
+          ? 'border-primary/50 bg-surface-2 shadow-lg'
+          : 'border-border bg-surface-1',
         current &&
-          'border-emerald-400/50 bg-gradient-to-br from-emerald-500/10 to-teal-500/10',
+          'border-success/50 bg-success/10',
         !current &&
           !isUpgrading &&
-          'hover:border-glass-border-strong hover:bg-glass-strong cursor-pointer',
+          'hover:border-edge-3 hover:bg-surface-2 cursor-pointer',
       )}
       onClick={() => !current && !isUpgrading && onSelect()}
     >
       {recommended && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <div className="px-3 py-1 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full text-xs font-black uppercase tracking-wider text-white">
+          <div className="px-3 py-1 bg-primary rounded-full text-xs font-semibold uppercase tracking-wider text-primary-foreground">
             Recommended
           </div>
         </div>
@@ -79,7 +79,7 @@ function PlanCard({
 
       {current && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <div className="px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full text-xs font-black uppercase tracking-wider text-white flex items-center gap-1">
+          <div className="px-3 py-1 bg-success rounded-full text-xs font-semibold uppercase tracking-wider text-success-foreground flex items-center gap-1">
             <Check className="h-3 w-3" />
             Current Plan
           </div>
@@ -88,7 +88,7 @@ function PlanCard({
 
       <div className="text-center mb-6">
         <h3 className="text-xl font-black text-foreground">{name}</h3>
-        <p className="text-3xl font-black text-white mt-2">{price}</p>
+        <p className="text-3xl font-black text-foreground mt-2 tabular-nums">{price}</p>
         <p className="text-xs text-muted-foreground mt-1">per month</p>
       </div>
 
@@ -98,7 +98,7 @@ function PlanCard({
             key={i}
             className="flex items-center gap-2 text-sm text-foreground/70"
           >
-            <Check className="h-4 w-4 text-emerald-400 shrink-0" />
+            <Check className="h-4 w-4 text-success shrink-0" />
             {feature}
           </li>
         ))}
@@ -109,11 +109,12 @@ function PlanCard({
         className={cn(
           'w-full py-3 rounded-xl font-bold text-sm transition-all',
           'flex items-center justify-center gap-2',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
           current
-            ? 'bg-emerald-500/20 text-emerald-300 cursor-default'
+            ? 'bg-success/10 text-success cursor-default'
             : recommended
               ? 'bg-foreground text-background hover:opacity-90 motion-safe:active:scale-95'
-              : 'bg-glass-strong text-white hover:bg-surface-3 motion-safe:active:scale-95',
+              : 'bg-surface-2 text-foreground hover:bg-surface-3 motion-safe:active:scale-95',
           isUpgrading && 'opacity-50 cursor-not-allowed',
         )}
       >
@@ -154,10 +155,10 @@ function ModuleActivationDisplay({
           className={cn(
             'h-12 w-12 rounded-xl border-2 flex items-center justify-center transition-all duration-500',
             isActive
-              ? 'border-emerald-400/50 bg-emerald-500/20 text-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.3)]'
+              ? 'border-success/50 bg-success/20 text-success'
               : isActivating
-                ? 'border-cyan-400/50 bg-cyan-500/20 text-cyan-400 animate-pulse'
-                : 'border-glass-border bg-glass-subtle text-muted-foreground/60',
+                ? 'border-info/50 bg-info/10 text-info animate-pulse'
+                : 'border-border bg-surface-1 text-muted-foreground/60',
           )}
           style={{
             transitionDelay: `${i * 100}ms`,
@@ -269,12 +270,12 @@ export function PlanActivationFlow() {
     <div className="space-y-8">
       {/* Success Animation Overlay */}
       {showSuccess && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="text-center animate-in zoom-in-95 duration-500">
-            <div className="h-24 w-24 rounded-3xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border-2 border-emerald-400/50 flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(52,211,153,0.4)]">
-              <Sparkles className="h-12 w-12 text-emerald-400" />
+            <div className="h-24 w-24 rounded-3xl bg-success/10 border-2 border-success/50 flex items-center justify-center mx-auto mb-6">
+              <CheckCircle2 className="h-12 w-12 text-success" />
             </div>
-            <h2 className="text-3xl font-black text-white">
+            <h2 className="text-3xl font-black text-foreground">
               Compliance Engine Activated
             </h2>
             <p className="text-muted-foreground mt-2">All modules are now online</p>

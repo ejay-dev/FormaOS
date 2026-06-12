@@ -17,7 +17,7 @@ interface KpiSparklineProps {
 
 const ACCENTS = {
   cyan: { stroke: '#71717a', fill: 'rgba(113,113,122,0.15)' },
-  violet: { stroke: '#8864ff', fill: 'rgba(136,100,255,0.15)' },
+  violet: { stroke: '#71717a', fill: 'rgba(113,113,122,0.15)' },
   emerald: { stroke: '#10b981', fill: 'rgba(16,185,129,0.15)' },
   amber: { stroke: '#f59e0b', fill: 'rgba(245,158,11,0.15)' },
 };
@@ -91,7 +91,7 @@ export function KpiSparkline({
   return (
     <div
       className={clsx(
-        'relative overflow-hidden rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-5 shadow-premium-lg',
+        'relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-premium-lg',
         className,
       )}
     >
@@ -106,7 +106,7 @@ export function KpiSparkline({
           <div
             className={clsx(
               'flex items-center gap-0.5 text-[11px] font-bold',
-              trend.isPositive ? 'text-emerald-400' : 'text-rose-400',
+              trend.isPositive ? 'text-success' : 'text-destructive',
             )}
           >
             {trend.isPositive ? (
@@ -146,25 +146,25 @@ interface RiskCellProps {
 }
 
 const GRADE_TONE: Record<RiskCellProps['grade'], string> = {
-  A: 'text-emerald-300 bg-emerald-500/10 border-emerald-500/30',
-  B: 'text-sky-300 bg-sky-500/10 border-sky-500/30',
-  C: 'text-amber-300 bg-amber-500/10 border-amber-500/30',
-  D: 'text-rose-300 bg-rose-500/10 border-rose-500/30',
+  A: 'text-success bg-success/10 border-success/20',
+  B: 'text-info bg-info/10 border-info/20',
+  C: 'text-warning bg-warning/10 border-warning/20',
+  D: 'text-destructive bg-destructive/10 border-destructive/20',
 };
 
 export function RiskHeatmapCell({ label, pressure, grade }: RiskCellProps) {
   const pct = Math.max(0, Math.min(100, pressure));
   const barTone =
     grade === 'A'
-      ? 'from-emerald-500/40 to-emerald-500/10'
+      ? 'from-success/40 to-success/10'
       : grade === 'B'
-        ? 'from-sky-500/40 to-sky-500/10'
+        ? 'from-info/40 to-info/10'
         : grade === 'C'
-          ? 'from-amber-500/40 to-amber-500/10'
-          : 'from-rose-500/50 to-rose-500/10';
+          ? 'from-warning/40 to-warning/10'
+          : 'from-destructive/50 to-destructive/10';
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-glass-border bg-glass-subtle p-4">
+    <div className="relative overflow-hidden rounded-xl border border-border bg-surface-1 p-4">
       <div className="flex items-start justify-between">
         <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
           {label}
@@ -182,7 +182,7 @@ export function RiskHeatmapCell({ label, pressure, grade }: RiskCellProps) {
         </span>
         <span className="text-xs text-muted-foreground">/ 100</span>
       </div>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/30">
+      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${barTone}`}
           style={{ width: `${pct}%` }}

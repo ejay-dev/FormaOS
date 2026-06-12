@@ -58,25 +58,25 @@ function getReviewStatus(reviewDate: string | null): {
   if (daysUntil < 0) {
     return {
       label: 'Overdue',
-      color: 'text-red-600 bg-red-500/10',
+      color: 'text-destructive bg-destructive/10',
       urgent: true,
     };
   } else if (daysUntil <= 14) {
     return {
       label: `${daysUntil}d`,
-      color: 'text-orange-600 bg-orange-500/10',
+      color: 'text-warning bg-warning/10',
       urgent: true,
     };
   } else if (daysUntil <= 30) {
     return {
       label: `${daysUntil}d`,
-      color: 'text-amber-600 bg-amber-500/10',
+      color: 'text-warning bg-warning/10',
       urgent: false,
     };
   }
   return {
     label: 'On Track',
-    color: 'text-green-600 bg-green-500/10',
+    color: 'text-success bg-success/10',
     urgent: false,
   };
 }
@@ -108,13 +108,13 @@ function getClientLabel(industry: string | null): string {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  draft: { label: 'Draft', color: 'text-muted-foreground/40 bg-muted/10' },
-  active: { label: 'Active', color: 'text-green-600 bg-green-500/10' },
+  draft: { label: 'Draft', color: 'text-muted-foreground bg-muted/40' },
+  active: { label: 'Active', color: 'text-success bg-success/10' },
   under_review: {
     label: 'Under Review',
-    color: 'text-blue-600 bg-blue-500/10',
+    color: 'text-info bg-info/10',
   },
-  expired: { label: 'Expired', color: 'text-red-600 bg-red-500/10' },
+  expired: { label: 'Expired', color: 'text-destructive bg-destructive/10' },
   archived: { label: 'Archived', color: 'text-muted-foreground bg-muted/50' },
 };
 
@@ -224,34 +224,34 @@ export default async function CarePlansPage() {
             <FileText className="h-4 w-4 text-muted-foreground" />
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
           </div>
-          <p className="text-2xl font-bold">{stats.total}</p>
+          <p className="text-2xl font-bold tabular-nums">{stats.total}</p>
         </div>
         <div className="metric-card metric-card-success">
           <div className="flex items-center gap-2">
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Active</p>
           </div>
-          <p className="text-2xl font-bold">{stats.active}</p>
+          <p className="text-2xl font-bold tabular-nums">{stats.active}</p>
         </div>
         <div className="metric-card metric-card-neutral">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-muted-foreground" />
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Drafts</p>
           </div>
-          <p className="text-2xl font-bold">{stats.drafts}</p>
+          <p className="text-2xl font-bold tabular-nums">{stats.drafts}</p>
         </div>
         <div className={`metric-card ${stats.reviewDue > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
           <div className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Review Due</p>
           </div>
-          <p className="text-2xl font-bold">{stats.reviewDue}</p>
+          <p className="text-2xl font-bold tabular-nums">{stats.reviewDue}</p>
         </div>
       </div>
 
       {/* Review alert */}
       {stats.reviewDue > 0 && (
-        <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-sm text-amber-600">
+        <div className="flex items-center gap-2 rounded-lg bg-warning/10 border border-warning/20 px-3 py-2 text-sm text-warning">
           <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
           <span>{stats.reviewDue} plan(s) need review within the next 14 days.</span>
         </div>
@@ -295,7 +295,7 @@ export default async function CarePlansPage() {
                         <span
                           className={
                             reviewStatus.urgent
-                              ? 'text-amber-500 font-semibold'
+                              ? 'text-warning font-semibold'
                               : ''
                           }
                         >
@@ -355,7 +355,7 @@ export default async function CarePlansPage() {
                 <tr
                   key={plan.id}
                   className={`hover:bg-muted/30 transition-colors ${
-                    reviewStatus.urgent ? 'bg-orange-500/5' : ''
+                    reviewStatus.urgent ? 'bg-warning/5' : ''
                   }`}
                 >
                   <td className="px-4 py-3">

@@ -86,14 +86,14 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
     return (
       <Card className="p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+          <div className="h-6 bg-muted rounded w-1/3"></div>
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex gap-4">
-                <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                <div className="w-10 h-10 bg-muted rounded-full"></div>
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 bg-muted rounded w-3/4"></div>
+                  <div className="h-3 bg-muted rounded w-1/2"></div>
                 </div>
               </div>
             ))}
@@ -106,13 +106,13 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
   if (events.length === 0) {
     return (
       <Card className="p-8 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4">
-          <Zap className="w-8 h-8 text-purple-600" />
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-muted rounded-full mb-4">
+          <Zap className="w-8 h-8 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg font-semibold text-foreground mb-2">
           Automation is Monitoring
         </h3>
-        <p className="text-sm text-gray-600 max-w-sm mx-auto">
+        <p className="text-sm text-muted-foreground max-w-sm mx-auto">
           FormaOS is actively monitoring your compliance. Automation events will
           appear here as they occur.
         </p>
@@ -124,22 +124,22 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-foreground">
             Automation Activity
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             FormaOS working automatically for you
           </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 rounded-full border border-green-200">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="text-xs font-medium text-green-700">Active</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-success/10 rounded-full border border-success/20">
+          <div className="w-2 h-2 bg-success rounded-full"></div>
+          <span className="text-xs font-medium text-success">Active</span>
         </div>
       </div>
 
       <div className="relative space-y-6">
         {/* Timeline line */}
-        <div className="absolute left-5 top-8 bottom-8 w-0.5 bg-gradient-to-b from-purple-200 via-blue-200 to-transparent"></div>
+        <div className="absolute left-5 top-8 bottom-8 w-0.5 bg-border"></div>
 
         {events.map((event, _index) => {
           const Icon = TRIGGER_ICONS[event.trigger] || CheckCircle2;
@@ -151,34 +151,34 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
               <div
                 className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center border-2 z-10 ${
                   isSuccess
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-red-50 border-red-200'
+                    ? 'bg-success/10 border-success/20'
+                    : 'bg-destructive/10 border-destructive/20'
                 }`}
               >
                 <Icon
-                  className={`w-5 h-5 ${isSuccess ? 'text-green-600' : 'text-red-600'}`}
+                  className={`w-5 h-5 ${isSuccess ? 'text-success' : 'text-destructive'}`}
                 />
               </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0 pb-6">
-                <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-surface-1 rounded-lg border border-border p-4 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-gray-900 mb-1">
+                      <h4 className="text-sm font-semibold text-foreground mb-1">
                         {TRIGGER_LABELS[event.trigger] || event.trigger}
                       </h4>
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-muted-foreground">
                         {TRIGGER_DESCRIPTIONS[event.trigger] ||
                           'Automation workflow executed'}
                       </p>
                     </div>
                     {isSuccess && (
-                      <CheckCircle2 className="w-4 h-4 text-green-500 ml-2 flex-shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-success ml-2 flex-shrink-0" />
                     )}
                   </div>
 
-                  <div className="flex items-center gap-4 text-xs text-gray-500 mt-3">
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground mt-3">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {formatRelativeTime(event.executedAt)}
@@ -190,8 +190,8 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
                   </div>
 
                   {event.errorMessage && (
-                    <div className="mt-2 p-2 bg-red-50 rounded border border-red-100">
-                      <p className="text-xs text-red-700">
+                    <div className="mt-2 p-2 bg-destructive/10 rounded border border-destructive/20">
+                      <p className="text-xs text-destructive">
                         {event.errorMessage}
                       </p>
                     </div>
@@ -205,7 +205,7 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
 
       {events.length >= limit && (
         <div className="mt-4 text-center">
-          <button className="text-sm text-purple-600 hover:text-purple-700 font-medium">
+          <button className="text-sm text-primary hover:text-primary/80 font-medium">
             View All Activity →
           </button>
         </div>

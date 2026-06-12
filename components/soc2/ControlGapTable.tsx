@@ -17,10 +17,10 @@ interface ControlGapTableProps {
 }
 
 const STATUS_CONFIG = {
-  satisfied: { label: 'Satisfied', color: 'bg-emerald-400/15 text-emerald-300 border-emerald-400/20', icon: ShieldCheck },
-  partial: { label: 'Partial', color: 'bg-amber-400/15 text-amber-300 border-amber-400/20', icon: ShieldAlert },
-  missing: { label: 'Missing', color: 'bg-rose-400/15 text-rose-300 border-rose-400/20', icon: ShieldX },
-  not_applicable: { label: 'N/A', color: 'bg-slate-400/15 text-muted-foreground border-slate-400/20', icon: ShieldCheck },
+  satisfied: { label: 'Satisfied', color: 'bg-success/10 text-success border-success/20', icon: ShieldCheck },
+  partial: { label: 'Partial', color: 'bg-warning/10 text-warning border-warning/20', icon: ShieldAlert },
+  missing: { label: 'Missing', color: 'bg-destructive/10 text-destructive border-destructive/20', icon: ShieldX },
+  not_applicable: { label: 'N/A', color: 'bg-muted text-muted-foreground border-border', icon: ShieldCheck },
 } as const;
 
 const DOMAINS = ['Security', 'Availability', 'Confidentiality', 'Processing Integrity', 'Privacy'];
@@ -38,14 +38,14 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
   });
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6">
+    <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h3 className="text-lg font-semibold text-foreground">Control Status</h3>
         <div className="flex gap-2">
           <select
             value={domainFilter}
             onChange={(e) => setDomainFilter(e.target.value)}
-            className="rounded-lg border border-glass-border bg-glass-subtle px-3 py-1.5 text-xs text-foreground/70 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs text-foreground/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <option value="all">All Domains</option>
             {DOMAINS.map((d) => (
@@ -55,7 +55,7 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-glass-border bg-glass-subtle px-3 py-1.5 text-xs text-foreground/70 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs text-foreground/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {STATUSES.map((s) => (
               <option key={s} value={s}>{s === 'all' ? 'All Statuses' : STATUS_CONFIG[s as keyof typeof STATUS_CONFIG].label}</option>
@@ -66,7 +66,7 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
 
       <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[700px] text-sm">
-          <thead className="border-b border-glass-border text-muted-foreground">
+          <thead className="border-b border-border text-muted-foreground">
             <tr>
               <th className="px-3 py-2 text-left w-8" />
               <th className="px-3 py-2 text-left">Control</th>
@@ -78,7 +78,7 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
               <th className="px-3 py-2 text-center">Gaps</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-border">
             {filtered.map((control) => {
               const cfg = STATUS_CONFIG[control.status];
               const Icon = cfg.icon;
@@ -123,7 +123,7 @@ function ControlRow({
   return (
     <>
       <tr
-        className="cursor-pointer hover:bg-glass-subtle transition-colors"
+        className="cursor-pointer hover:bg-muted transition-colors"
         onClick={onToggle}
       >
         <td className="px-3 py-3">
@@ -160,7 +160,7 @@ function ControlRow({
           </span>
         </td>
         <td className="px-3 py-3 text-center">
-          <span className={`text-xs font-semibold tabular-nums ${control.gaps.length > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+          <span className={`text-xs font-semibold tabular-nums ${control.gaps.length > 0 ? 'text-destructive' : 'text-success'}`}>
             {control.gaps.length}
           </span>
         </td>
@@ -168,15 +168,15 @@ function ControlRow({
 
       {isExpanded && (
         <tr>
-          <td colSpan={8} className="px-6 py-4 bg-white/[0.02]">
+          <td colSpan={8} className="px-6 py-4 bg-surface-1">
             <div className="grid gap-4 md:grid-cols-2">
               {control.gaps.length > 0 && (
                 <div>
-                  <div className="text-xs font-semibold text-rose-300 uppercase tracking-wider mb-2">Gaps</div>
+                  <div className="text-xs font-semibold text-destructive uppercase tracking-wider mb-2">Gaps</div>
                   <ul className="space-y-1">
                     {control.gaps.map((gap, i) => (
                       <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                        <span className="mt-1 h-1.5 w-1.5 rounded-full bg-rose-400 shrink-0" />
+                        <span className="mt-1 h-1.5 w-1.5 rounded-full bg-destructive shrink-0" />
                         {gap}
                       </li>
                     ))}
@@ -184,7 +184,7 @@ function ControlRow({
                 </div>
               )}
               <div>
-                <div className="text-xs font-semibold text-cyan-300 uppercase tracking-wider mb-2">Implementation Guidance</div>
+                <div className="text-xs font-semibold text-foreground/70 uppercase tracking-wider mb-2">Implementation Guidance</div>
                 <p className="text-xs text-muted-foreground leading-relaxed">{control.implementationGuidance}</p>
               </div>
               {control.suggestedEvidenceTypes.length > 0 && (
@@ -192,7 +192,7 @@ function ControlRow({
                   <div className="text-xs font-semibold text-foreground/70 uppercase tracking-wider mb-2">Suggested Evidence</div>
                   <div className="flex flex-wrap gap-2">
                     {control.suggestedEvidenceTypes.map((et) => (
-                      <span key={et} className="rounded-full border border-glass-border bg-glass-subtle px-2.5 py-1 text-xs text-foreground/70">{et}</span>
+                      <span key={et} className="rounded-full border border-border bg-surface-1 px-2.5 py-1 text-xs text-foreground/70">{et}</span>
                     ))}
                   </div>
                 </div>

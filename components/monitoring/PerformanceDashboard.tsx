@@ -55,7 +55,7 @@ export function PerformanceDashboard() {
       {/* Toggle Button */}
       <button
         onClick={() => setIsVisible(!isVisible)}
-        className="fixed bottom-4 right-4 z-50 bg-purple-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-purple-700 transition-colors"
+        className="fixed bottom-4 right-4 z-50 bg-primary text-primary-foreground px-4 py-2 rounded-lg shadow-lg hover:opacity-90 transition-colors"
         title="Performance Monitor"
       >
         📊 Perf
@@ -63,12 +63,12 @@ export function PerformanceDashboard() {
 
       {/* Performance Panel */}
       {isVisible && (
-        <div className="fixed bottom-16 right-4 z-50 bg-slate-900 text-white p-4 rounded-lg shadow-2xl border border-slate-700 w-80 max-h-96 overflow-y-auto">
+        <div className="fixed bottom-16 right-4 z-50 bg-popover text-popover-foreground p-4 rounded-lg shadow-2xl border border-border w-80 max-h-96 overflow-y-auto">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-bold text-lg">Performance Monitor</h3>
             <button
               onClick={() => setIsVisible(false)}
-              className="text-muted-foreground hover:text-white"
+              className="text-muted-foreground hover:text-foreground"
             >
               ✕
             </button>
@@ -76,7 +76,7 @@ export function PerformanceDashboard() {
 
           {/* Web Vitals */}
           <div className="space-y-2 mb-4">
-            <h4 className="text-sm font-semibold text-purple-400">
+            <h4 className="text-sm font-semibold text-muted-foreground">
               Web Vitals
             </h4>
 
@@ -128,7 +128,7 @@ export function PerformanceDashboard() {
 
           {/* Custom Metrics */}
           <div className="space-y-2 mb-4">
-            <h4 className="text-sm font-semibold text-cyan-400">
+            <h4 className="text-sm font-semibold text-muted-foreground">
               Custom Metrics
             </h4>
 
@@ -154,7 +154,7 @@ export function PerformanceDashboard() {
           {/* Budget Status */}
           {budgetStatus.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-sm font-semibold text-orange-400">
+              <h4 className="text-sm font-semibold text-warning">
                 Warnings
               </h4>
               {budgetStatus.map((item, index) => (
@@ -162,8 +162,8 @@ export function PerformanceDashboard() {
                   key={index}
                   className={`text-xs p-2 rounded ${
                     item.status === 'critical'
-                      ? 'bg-red-900/30 text-red-300'
-                      : 'bg-orange-900/30 text-orange-300'
+                      ? 'bg-destructive/10 text-destructive'
+                      : 'bg-warning/10 text-warning'
                   }`}
                 >
                   <span className="font-semibold">{item.metric}:</span>{' '}
@@ -194,16 +194,16 @@ interface MetricRowProps {
 
 function MetricRow({ label, value, unit, threshold }: MetricRowProps) {
   const getColor = () => {
-    if (value <= threshold.good) return 'text-green-400';
-    if (value <= threshold.poor) return 'text-orange-400';
-    return 'text-red-400';
+    if (value <= threshold.good) return 'text-success';
+    if (value <= threshold.poor) return 'text-warning';
+    return 'text-destructive';
   };
 
   const displayValue = unit === 'ms' ? Math.round(value) : value.toFixed(2);
 
   return (
     <div className="flex justify-between items-center text-sm">
-      <span className="text-foreground/70">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <span className={`font-mono font-semibold ${getColor()}`}>
         {displayValue}
         {unit}

@@ -172,7 +172,7 @@ export function EntityEvidencePanel({
         className={`flex w-full flex-col items-center gap-2 rounded-lg border-2 border-dashed p-4 text-center text-xs transition-colors disabled:opacity-60 ${
           isDragOver
             ? 'border-primary bg-primary/5'
-            : 'border-glass-border hover:border-glass-border-strong'
+            : 'border-border hover:border-edge-2'
         }`}
       >
         <Upload className="h-4 w-4 text-muted-foreground" />
@@ -183,7 +183,7 @@ export function EntityEvidencePanel({
         <div
           role="alert"
           data-testid="entity-evidence-error"
-          className="mt-3 flex items-start gap-2 rounded-md border border-red-400/40 bg-red-400/10 px-3 py-2 text-xs text-red-500"
+          className="mt-3 flex items-start gap-2 rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs text-destructive"
         >
           <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
           <span>{error}</span>
@@ -202,7 +202,7 @@ export function EntityEvidencePanel({
             <div
               key={item.id}
               data-testid="entity-evidence-item"
-              className="flex items-start gap-3 rounded-md border border-glass-border bg-glass-subtle p-2.5"
+              className="flex items-start gap-3 rounded-md border border-border bg-surface-1 p-2.5"
             >
               <FileText className="mt-0.5 h-4 w-4 text-muted-foreground shrink-0" />
               <div className="min-w-0 flex-1">
@@ -216,7 +216,7 @@ export function EntityEvidencePanel({
                     {new Date(item.submittedAt).toLocaleString()}
                   </span>
                   {item.locked && (
-                    <span className="inline-flex items-center gap-0.5 rounded border border-amber-400/30 bg-amber-400/10 px-1 py-0 text-amber-500">
+                    <span className="inline-flex items-center gap-0.5 rounded border border-warning/20 bg-warning/10 px-1 py-0 text-warning">
                       <Lock className="h-2 w-2" /> Sealed
                     </span>
                   )}

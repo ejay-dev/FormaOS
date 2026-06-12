@@ -16,24 +16,19 @@ interface Visit {
 }
 
 const VISIT_TYPE_COLORS: Record<string, string> = {
-  personal_care:
-    'bg-blue-100 border-blue-300 text-blue-800 dark:bg-blue-900/40 dark:border-blue-700 dark:text-blue-300',
-  community_access:
-    'bg-green-100 border-green-300 text-green-800 dark:bg-green-900/40 dark:border-green-700 dark:text-green-300',
-  therapy:
-    'bg-purple-100 border-purple-300 text-purple-800 dark:bg-purple-900/40 dark:border-purple-700 dark:text-purple-300',
-  group_activity:
-    'bg-orange-100 border-orange-300 text-orange-800 dark:bg-orange-900/40 dark:border-orange-700 dark:text-orange-300',
-  default:
-    'bg-gray-100 border-gray-300 text-gray-800 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300',
+  personal_care: 'bg-info/10 border-info/20 text-info',
+  community_access: 'bg-success/10 border-success/20 text-success',
+  therapy: 'bg-muted border-border text-muted-foreground',
+  group_activity: 'bg-warning/10 border-warning/20 text-warning',
+  default: 'bg-muted border-border text-muted-foreground',
 };
 
 const STATUS_DOTS: Record<string, string> = {
-  scheduled: 'bg-blue-500',
-  in_progress: 'bg-yellow-500',
-  completed: 'bg-green-500',
-  cancelled: 'bg-red-500',
-  no_show: 'bg-gray-500',
+  scheduled: 'bg-info',
+  in_progress: 'bg-warning',
+  completed: 'bg-success',
+  cancelled: 'bg-destructive',
+  no_show: 'bg-muted-foreground',
 };
 
 type ViewMode = 'month' | 'week' | 'day';
@@ -281,10 +276,10 @@ export function VisitCalendar({ visits }: { visits: Visit[] }) {
                   <span
                     className={`mt-1 rounded-full px-2 py-0.5 text-xs capitalize ${
                       v.status === 'completed'
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                        ? 'bg-success/10 text-success'
                         : v.status === 'cancelled'
-                          ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                          : 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                          ? 'bg-destructive/10 text-destructive'
+                          : 'bg-info/10 text-info'
                     }`}
                   >
                     {v.status.replace(/_/g, ' ')}

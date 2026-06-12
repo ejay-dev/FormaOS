@@ -82,9 +82,9 @@ function CountdownInner({
 
   if (submitted) {
     return (
-      <div className="flex items-center gap-2 rounded-lg border border-[var(--wire-success)]/20 bg-[var(--wire-success)]/5 px-3 py-2">
-        <div className="h-2 w-2 rounded-full bg-[var(--wire-success)]" />
-        <span className="text-xs font-medium text-[var(--wire-success)]">
+      <div className="flex items-center gap-2 rounded-lg border border-success/20 bg-success/10 px-3 py-2">
+        <div className="h-2 w-2 rounded-full bg-success" />
+        <span className="text-xs font-medium text-success">
           Notification submitted
         </span>
       </div>
@@ -92,19 +92,19 @@ function CountdownInner({
   }
 
   const bgColor = isOverdue
-    ? 'border-[var(--wire-alert)]/30 bg-[var(--wire-alert)]/5'
+    ? 'border-destructive/30 bg-destructive/10'
     : isCritical
-      ? 'border-[var(--wire-alert)]/20 bg-[var(--wire-alert)]/5 animate-pulse'
-      : 'border-amber-400/20 bg-amber-500/5';
+      ? 'border-destructive/20 bg-destructive/10'
+      : 'border-warning/20 bg-warning/10';
 
   const textColor =
-    isOverdue || isCritical ? 'text-[var(--wire-alert)]' : 'text-amber-400';
+    isOverdue || isCritical ? 'text-destructive' : 'text-warning';
 
   const barColor = isOverdue
-    ? 'bg-[var(--wire-alert)]'
+    ? 'bg-destructive'
     : isCritical
-      ? 'bg-[var(--wire-alert)]'
-      : 'bg-amber-400';
+      ? 'bg-destructive'
+      : 'bg-warning';
 
   return (
     <div className={`rounded-lg border px-3 py-2 ${bgColor}`}>
@@ -129,7 +129,7 @@ function CountdownInner({
       </div>
 
       {/* Progress bar showing time elapsed */}
-      <div className="mt-2 h-1.5 w-full rounded-full bg-glass-strong">
+      <div className="mt-2 h-1.5 w-full rounded-full bg-surface-2">
         <div
           className={`h-1.5 rounded-full transition-all duration-1000 ${barColor}`}
           style={{ width: `${Math.min(100, percentage)}%` }}
@@ -139,7 +139,7 @@ function CountdownInner({
       <div className="mt-1 flex items-center justify-between text-[10px] text-muted-foreground">
         <span>Deadline: {deadlineHours}h from incident</span>
         {isCritical && !isOverdue && (
-          <span className="text-[var(--wire-alert)] font-semibold">
+          <span className="text-destructive font-semibold">
             ⚠ Under 2 hours remaining
           </span>
         )}

@@ -24,14 +24,14 @@ export function RiskMatrix({ risks }: { risks: Risk[] }) {
 
   const getCellColor = (l: number, i: number) => {
     const score = (l + 1) * (i + 1);
-    if (score >= 15) return "bg-red-500 text-white";
-    if (score >= 8) return "bg-orange-400 text-white";
-    if (score >= 4) return "bg-yellow-300 text-yellow-900";
-    return "bg-green-200 text-green-800";
+    if (score >= 15) return "bg-destructive text-destructive-foreground";
+    if (score >= 8) return "bg-warning text-warning-foreground";
+    if (score >= 4) return "bg-warning/40 text-warning-foreground";
+    return "bg-success/30 text-success-foreground";
   };
 
   return (
-    <div className="p-6 bg-glass-strong rounded-2xl border shadow-sm">
+    <div className="p-6 bg-surface-2 rounded-2xl border shadow-sm">
       <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground mb-6">Risk Heatmap</h3>
 
       <div className="grid grid-cols-5 gap-1">

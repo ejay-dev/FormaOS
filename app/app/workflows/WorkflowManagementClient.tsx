@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   CheckCircle2,
+  LayoutTemplate,
   Play,
   Plus,
   Power,
-  Sparkles,
   Workflow,
 } from 'lucide-react';
 
@@ -146,7 +146,7 @@ export function WorkflowManagementClient({
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-foreground hover:bg-white/[0.08]"
+            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-surface-1 px-4 py-2 text-sm font-semibold text-foreground hover:bg-surface-2"
             onClick={() =>
               startTransition(async () => {
                 setOperationError(null);
@@ -176,10 +176,10 @@ export function WorkflowManagementClient({
           </button>
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+            className="inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/20"
             onClick={() => setShowTemplates((current) => !current)}
           >
-            <Sparkles className="h-4 w-4" />
+            <LayoutTemplate className="h-4 w-4" />
             From Template
           </button>
         </div>
@@ -248,7 +248,7 @@ export function WorkflowManagementClient({
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] ${
                         workflow.enabled
-                          ? 'bg-emerald-500/15 text-emerald-200'
+                          ? 'bg-success/10 text-success'
                           : 'bg-muted/15 text-foreground/70'
                       }`}
                     >
@@ -265,7 +265,7 @@ export function WorkflowManagementClient({
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
-                    className="rounded-xl border border-edge-2 p-2 text-foreground/90 hover:bg-glass-strong"
+                    className="rounded-xl border border-edge-2 p-2 text-foreground/90 hover:bg-surface-2"
                     onClick={() => toggleWorkflow(workflow)}
                     disabled={isPending}
                   >
@@ -273,7 +273,7 @@ export function WorkflowManagementClient({
                   </button>
                   <button
                     type="button"
-                    className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 p-2 text-cyan-100 hover:bg-cyan-500/20"
+                    className="rounded-xl border border-primary/30 bg-primary/10 p-2 text-primary hover:bg-primary/20"
                     onClick={() => runWorkflow(workflow)}
                     disabled={isPending}
                   >
@@ -281,7 +281,7 @@ export function WorkflowManagementClient({
                   </button>
                   <Link
                     href={`/app/workflows/${workflow.id}`}
-                    className="inline-flex items-center gap-2 rounded-xl border border-edge-2 px-4 py-2 text-sm font-semibold text-foreground hover:bg-glass-strong"
+                    className="inline-flex items-center gap-2 rounded-xl border border-edge-2 px-4 py-2 text-sm font-semibold text-foreground hover:bg-surface-2"
                   >
                     <Workflow className="h-4 w-4" />
                     Open Builder
@@ -307,7 +307,7 @@ export function WorkflowManagementClient({
 
       {workflows.length === 0 ? (
         <div className="rounded-[28px] border border-dashed border-edge-2 bg-background/50 p-8 text-center">
-          <CheckCircle2 className="mx-auto h-10 w-10 text-cyan-300" />
+          <CheckCircle2 className="mx-auto h-10 w-10 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-semibold text-foreground">No workflows configured</h3>
           <p className="mt-2 text-sm text-muted-foreground">
             Start with a blank automation or install one of the compliance templates.

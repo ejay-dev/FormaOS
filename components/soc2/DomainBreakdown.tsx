@@ -7,15 +7,15 @@ interface DomainBreakdownProps {
 }
 
 function getScoreColor(score: number) {
-  if (score >= 80) return 'bg-emerald-400';
-  if (score >= 50) return 'bg-amber-400';
-  return 'bg-rose-400';
+  if (score >= 80) return 'bg-success';
+  if (score >= 50) return 'bg-warning';
+  return 'bg-destructive';
 }
 
 function getScoreTextColor(score: number) {
-  if (score >= 80) return 'text-emerald-400';
-  if (score >= 50) return 'text-amber-400';
-  return 'text-rose-400';
+  if (score >= 80) return 'text-success';
+  if (score >= 50) return 'text-warning';
+  return 'text-destructive';
 }
 
 export function DomainBreakdown({ domains }: DomainBreakdownProps) {
@@ -24,7 +24,7 @@ export function DomainBreakdown({ domains }: DomainBreakdownProps) {
       {domains.map((domain) => (
         <div
           key={domain.key}
-          className="rounded-2xl border border-glass-border bg-glass-subtle p-5"
+          className="rounded-2xl border border-border bg-card p-5"
         >
           <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
             {domain.domain}
@@ -34,7 +34,7 @@ export function DomainBreakdown({ domains }: DomainBreakdownProps) {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-3 h-1.5 w-full rounded-full bg-glass-strong">
+          <div className="mt-3 h-1.5 w-full rounded-full bg-surface-2">
             <div
               className={`h-1.5 rounded-full transition-all duration-700 ${getScoreColor(domain.score)}`}
               style={{ width: `${Math.min(100, domain.score)}%` }}
@@ -44,15 +44,15 @@ export function DomainBreakdown({ domains }: DomainBreakdownProps) {
           {/* Status counts */}
           <div className="mt-4 flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="h-2 w-2 rounded-full bg-success" />
               <span className="text-muted-foreground">{domain.satisfiedControls}</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-amber-400" />
+              <span className="h-2 w-2 rounded-full bg-warning" />
               <span className="text-muted-foreground">{domain.partialControls}</span>
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-rose-400" />
+              <span className="h-2 w-2 rounded-full bg-destructive" />
               <span className="text-muted-foreground">{domain.missingControls}</span>
             </span>
           </div>

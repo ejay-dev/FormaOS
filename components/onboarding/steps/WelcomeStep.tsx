@@ -84,9 +84,9 @@ export function WelcomeStep({
               key={opt.id}
               type="button"
               onClick={() => setSelected(opt.id)}
-              className={`flex items-center gap-2 rounded-lg border p-3 text-left text-sm transition-all ${
+              className={`flex items-center gap-2 rounded-lg border p-3 text-left text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 selected === opt.id
-                  ? 'border-[var(--wire-action)] bg-[var(--wire-action)]/10'
+                  ? 'border-primary bg-primary/10'
                   : 'border-border hover:border-muted-foreground/40'
               }`}
             >
@@ -105,7 +105,7 @@ export function WelcomeStep({
           <ul className="space-y-1">
             {match.frameworks.map((fw) => (
               <li key={fw} className="flex items-center gap-2 text-sm">
-                <CheckCircle2 className="h-3.5 w-3.5 text-[var(--wire-success)]" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                 {fw}
               </li>
             ))}
@@ -117,7 +117,7 @@ export function WelcomeStep({
         <button
           type="button"
           onClick={handleContinue}
-          className="inline-flex items-center gap-2 rounded-lg bg-[var(--wire-action)] px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Continue
         </button>

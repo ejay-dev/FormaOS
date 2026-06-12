@@ -78,12 +78,12 @@ export function CareOperationsScorecard() {
   const { scorecard, alerts, recommendations } = data;
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-border bg-card p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-glass-border bg-gradient-to-br from-pink-500/20 to-purple-500/20">
-            <Heart className="h-5 w-5 text-pink-400" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface-2">
+            <Heart className="h-5 w-5 text-muted-foreground" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-foreground">Care Operations</h3>
@@ -227,12 +227,12 @@ export function CareOperationsScorecard() {
 
       {/* Recommendations */}
       {recommendations.length > 0 && (
-        <div className="mt-6 border-t border-glass-border pt-4">
+        <div className="mt-6 border-t border-border pt-4">
           <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">Recommendations</h4>
           <ul className="space-y-2">
             {recommendations.map((rec, index) => (
               <li key={index} className="text-sm text-foreground/70 flex items-start gap-2">
-                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-pink-400 shrink-0" />
+                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                 {rec}
               </li>
             ))}
@@ -246,17 +246,17 @@ export function CareOperationsScorecard() {
 // Sub-components
 function ScorecardSkeleton() {
   return (
-    <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6 animate-pulse">
+    <div className="rounded-2xl border border-border bg-surface-1 p-6 animate-pulse">
       <div className="flex items-center gap-3 mb-6">
-        <div className="h-10 w-10 rounded-xl bg-glass-strong" />
+        <div className="h-10 w-10 rounded-xl bg-surface-2" />
         <div>
-          <div className="h-5 w-32 rounded bg-glass-strong mb-1" />
-          <div className="h-3 w-24 rounded bg-glass-strong" />
+          <div className="h-5 w-32 rounded bg-surface-2 mb-1" />
+          <div className="h-3 w-24 rounded bg-surface-2" />
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="h-24 rounded-xl bg-glass-strong" />
+          <div key={i} className="h-24 rounded-xl bg-surface-2" />
         ))}
       </div>
     </div>
@@ -265,15 +265,15 @@ function ScorecardSkeleton() {
 
 function AlertBanner({ alert }: { alert: CareScorecardAlert }) {
   const colors = {
-    critical: 'bg-red-500/10 border-red-500/30 text-red-400',
-    warning: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
-    info: 'bg-sky-500/10 border-sky-500/30 text-sky-400',
+    critical: 'bg-destructive/10 border-destructive/20 text-destructive',
+    warning: 'bg-warning/10 border-warning/20 text-warning',
+    info: 'bg-info/10 border-info/20 text-info',
   };
 
   return (
     <a
       href={alert.actionUrl}
-      className={`flex items-center gap-3 p-3 rounded-lg border ${colors[alert.type]} hover:bg-glass-subtle transition-colors`}
+      className={`flex items-center gap-3 p-3 rounded-lg border ${colors[alert.type]} hover:bg-surface-1 transition-colors`}
     >
       <AlertTriangle className="h-4 w-4 shrink-0" />
       <span className="text-sm flex-1">{alert.message}</span>
@@ -302,13 +302,13 @@ function MetricCard({
   details: string;
 }) {
   const statusColors = {
-    success: 'border-emerald-500/30 bg-emerald-500/5',
-    warning: 'border-amber-500/30 bg-amber-500/5',
-    danger: 'border-red-500/30 bg-red-500/5',
+    success: 'border-success/20 bg-success/10',
+    warning: 'border-warning/20 bg-warning/10',
+    danger: 'border-destructive/20 bg-destructive/10',
   };
 
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : null;
-  const trendColor = trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-red-400' : '';
+  const trendColor = trend === 'up' ? 'text-success' : trend === 'down' ? 'text-destructive' : '';
 
   return (
     <div className={`rounded-xl border p-4 ${statusColors[status]}`}>
@@ -338,13 +338,13 @@ function CredentialList({
   credentials: Credential[];
 }) {
   return (
-    <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+    <div className="rounded-xl border border-border bg-surface-1 p-4">
       <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">{title}</h4>
       <div className="space-y-2">
         {credentials.map((cred) => (
           <div
             key={cred.id}
-            className="flex items-center justify-between p-2 rounded-lg bg-surface-1"
+            className="flex items-center justify-between p-2 rounded-lg bg-surface-2"
           >
             <div>
               <div className="text-sm text-foreground/90">{cred.staffName}</div>
@@ -353,7 +353,7 @@ function CredentialList({
             <div className="text-right">
               <div
                 className={`text-xs font-bold ${
-                  cred.daysUntilExpiry <= 7 ? 'text-red-400' : 'text-amber-400'
+                  cred.daysUntilExpiry <= 7 ? 'text-destructive' : 'text-warning'
                 }`}
               >
                 {cred.daysUntilExpiry}d
@@ -378,13 +378,13 @@ function ReviewList({
   reviews: CarePlanReview[];
 }) {
   return (
-    <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+    <div className="rounded-xl border border-border bg-surface-1 p-4">
       <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">{title}</h4>
       <div className="space-y-2">
         {reviews.map((review) => (
           <div
             key={review.id}
-            className="flex items-center justify-between p-2 rounded-lg bg-surface-1"
+            className="flex items-center justify-between p-2 rounded-lg bg-surface-2"
           >
             <div>
               <div className="text-sm text-foreground/90">{review.clientName}</div>
@@ -393,7 +393,7 @@ function ReviewList({
             <div className="text-right">
               <div
                 className={`text-xs font-bold ${
-                  review.daysUntilReview <= 3 ? 'text-red-400' : 'text-amber-400'
+                  review.daysUntilReview <= 3 ? 'text-destructive' : 'text-warning'
                 }`}
               >
                 {review.daysUntilReview}d

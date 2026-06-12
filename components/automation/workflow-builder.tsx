@@ -216,7 +216,7 @@ export function WorkflowBuilder({
 
   return (
     <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)_360px]">
-      <aside className="space-y-4 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
+      <aside className="space-y-4 rounded-[28px] border border-border bg-card p-5">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Palette</p>
           <h3 className="mt-2 text-lg font-semibold text-foreground">Drag Step Types</h3>
@@ -230,20 +230,20 @@ export function WorkflowBuilder({
               onDragStart={() => setDraggingType(type)}
               onDragEnd={() => setDraggingType(null)}
               onClick={() => !readOnly && addStep(type)}
-              className="flex w-full items-center justify-between rounded-2xl border border-glass-border bg-white/[0.03] px-4 py-3 text-left text-sm text-foreground/90 transition hover:border-glass-border-strong hover:bg-white/[0.06]"
+              className="flex w-full items-center justify-between rounded-2xl border border-border bg-surface-1 px-4 py-3 text-left text-sm text-foreground/90 transition hover:border-edge-3 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span>{STEP_TYPE_LABELS[type]}</span>
               <Plus className="h-4 w-4 text-muted-foreground" />
             </button>
           ))}
         </div>
-        <div className="rounded-2xl border border-glass-border bg-white/[0.03] p-4 text-sm text-muted-foreground">
+        <div className="rounded-2xl border border-border bg-surface-1 p-4 text-sm text-muted-foreground">
           <p className="font-semibold text-foreground/90">Validation</p>
-          <p className="mt-2">{Object.keys(validationErrors).length} issues detected</p>
+          <p className="mt-2 tabular-nums">{Object.keys(validationErrors).length} issues detected</p>
         </div>
       </aside>
 
-      <section className="space-y-4 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
+      <section className="space-y-4 rounded-[28px] border border-border bg-card p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Canvas</p>
@@ -252,7 +252,7 @@ export function WorkflowBuilder({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="rounded-xl border border-glass-border p-2 text-foreground/90 hover:bg-glass-strong disabled:opacity-40"
+              className="rounded-xl border border-border p-2 text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40"
               onClick={() =>
                 setHistory((currentHistory) => {
                   const previous = currentHistory[currentHistory.length - 1];
@@ -269,7 +269,7 @@ export function WorkflowBuilder({
             </button>
             <button
               type="button"
-              className="rounded-xl border border-glass-border p-2 text-foreground/90 hover:bg-glass-strong disabled:opacity-40"
+              className="rounded-xl border border-border p-2 text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40"
               onClick={() =>
                 setFuture((currentFuture) => {
                   const next = currentFuture[0];
@@ -286,14 +286,14 @@ export function WorkflowBuilder({
             </button>
             <button
               type="button"
-              className="rounded-xl border border-glass-border p-2 text-foreground/90 hover:bg-glass-strong"
+              className="rounded-xl border border-border p-2 text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => setZoom((current) => Math.max(0.7, current - 0.1))}
             >
               <Minus className="h-4 w-4" />
             </button>
             <button
               type="button"
-              className="rounded-xl border border-glass-border p-2 text-foreground/90 hover:bg-glass-strong"
+              className="rounded-xl border border-border p-2 text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => setZoom((current) => Math.min(1.6, current + 0.1))}
             >
               <Plus className="h-4 w-4" />
@@ -301,7 +301,7 @@ export function WorkflowBuilder({
             {!readOnly ? (
               <button
                 type="button"
-                className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+                className="inline-flex items-center gap-2 rounded-xl border border-primary bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => onSave?.(draft)}
               >
                 <Save className="h-4 w-4" />
@@ -311,7 +311,7 @@ export function WorkflowBuilder({
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-dashed border-glass-border bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.14),transparent_30%)] p-5">
+        <div className="rounded-[24px] border border-dashed border-border bg-surface-1 p-5">
           <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-muted-foreground">
             <MousePointer2 className="h-3.5 w-3.5" />
             Drag a step here or click a palette item to add one
@@ -319,8 +319,8 @@ export function WorkflowBuilder({
           <div
             role="list"
             className={cn(
-              'min-h-[640px] rounded-[24px] border border-glass-border bg-slate-950/70 p-4 transition',
-              draggingType ? 'border-cyan-400/50 bg-cyan-500/5' : '',
+              'min-h-[640px] rounded-[24px] border border-border bg-card p-4 transition',
+              draggingType ? 'border-primary bg-surface-2' : '',
             )}
             onDragOver={(event) => {
               if (!readOnly) event.preventDefault();
@@ -340,7 +340,7 @@ export function WorkflowBuilder({
               }}
             >
               {flattened.length === 0 ? (
-                <div className="flex min-h-[480px] items-center justify-center rounded-[20px] border border-glass-border bg-white/[0.02] text-sm text-muted-foreground">
+                <div className="flex min-h-[480px] items-center justify-center rounded-[20px] border border-border bg-surface-1 text-sm text-muted-foreground">
                   No steps yet.
                 </div>
               ) : (
@@ -382,7 +382,7 @@ export function WorkflowBuilder({
                         className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-muted-foreground/60"
                         style={{ marginLeft: depth * 28 + 16 }}
                       >
-                        <div className="h-6 w-px bg-glass-strong" />
+                        <div className="h-6 w-px bg-surface-3" />
                         <ArrowDown className="h-3.5 w-3.5" />
                         <span>Flow</span>
                       </div>
@@ -402,7 +402,7 @@ export function WorkflowBuilder({
               <button
                 type="button"
                 key={label}
-                className="rounded-xl border border-glass-border px-3 py-2 text-sm text-foreground/70 hover:bg-glass-strong"
+                className="rounded-xl border border-border px-3 py-2 text-sm text-foreground/70 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() =>
                   setPan((current) => ({
                     x: current.x + Number(x),
@@ -428,7 +428,7 @@ export function WorkflowBuilder({
           }
         />
         {!readOnly && selectedStep ? (
-          <div className="space-y-3 rounded-[28px] border border-glass-border bg-slate-950/70 p-5">
+          <div className="space-y-3 rounded-[28px] border border-border bg-card p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Structure
             </p>
@@ -437,14 +437,14 @@ export function WorkflowBuilder({
                 <>
                   <button
                     type="button"
-                    className="w-full rounded-xl border border-glass-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-glass-strong"
+                    className="w-full rounded-xl border border-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => addNestedStep(selectedStep, 'then')}
                   >
                     Add step to THEN branch
                   </button>
                   <button
                     type="button"
-                    className="w-full rounded-xl border border-glass-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-glass-strong"
+                    className="w-full rounded-xl border border-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => addNestedStep(selectedStep, 'else')}
                   >
                     Add step to ELSE branch
@@ -454,7 +454,7 @@ export function WorkflowBuilder({
               {selectedStep.type === 'loop' ? (
                 <button
                   type="button"
-                  className="w-full rounded-xl border border-glass-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-glass-strong"
+                  className="w-full rounded-xl border border-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   onClick={() => addNestedStep(selectedStep, 'loop')}
                 >
                   Add loop child step
@@ -463,7 +463,7 @@ export function WorkflowBuilder({
               {selectedStep.type === 'parallel' ? (
                 <button
                   type="button"
-                  className="w-full rounded-xl border border-glass-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-glass-strong"
+                  className="w-full rounded-xl border border-border px-3 py-2 text-left text-sm text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   onClick={() => addNestedStep(selectedStep, 'parallel')}
                 >
                   Add to first branch

@@ -37,13 +37,13 @@ function formatDate(date: string | null) {
 function getSeverityColor(severity: string) {
   switch (severity) {
     case 'critical':
-      return 'bg-red-500/10 text-red-600 border-red-500/20';
+      return 'bg-destructive/10 text-destructive border-destructive/20';
     case 'high':
-      return 'bg-orange-500/10 text-orange-600 border-orange-500/20';
+      return 'bg-warning/10 text-warning border-warning/20';
     case 'medium':
-      return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
+      return 'bg-warning/10 text-warning border-warning/20';
     default:
-      return 'bg-green-500/10 text-green-600 border-green-500/20';
+      return 'bg-success/10 text-success border-success/20';
   }
 }
 
@@ -198,7 +198,7 @@ export default async function IncidentsPage({
 
       <div className="page-content space-y-4">
         {fetchErrorMessage ? (
-          <div className="rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-500">
+          <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
             Incident data could not be loaded. {fetchErrorMessage}
           </div>
         ) : null}
@@ -296,8 +296,8 @@ export default async function IncidentsPage({
                           <span
                             className={`inline-flex items-center gap-1 ${
                               incident.status === 'resolved'
-                                ? 'text-green-500'
-                                : 'text-amber-500'
+                                ? 'text-success'
+                                : 'text-warning'
                             }`}
                           >
                             {incident.status === 'resolved' ? (
@@ -321,7 +321,7 @@ export default async function IncidentsPage({
                             {
                               label: 'Follow-up',
                               value: (
-                                <span className="text-orange-500">
+                                <span className="text-warning">
                                   {incident.follow_up_due_date || 'TBD'}
                                 </span>
                               ),
@@ -405,8 +405,8 @@ export default async function IncidentsPage({
                         <span
                           className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
                             incident.status === 'resolved'
-                              ? 'bg-green-500/10 text-green-600'
-                              : 'bg-amber-500/10 text-amber-600'
+                              ? 'bg-success/10 text-success'
+                              : 'bg-warning/10 text-warning'
                           }`}
                         >
                           {incident.status === 'resolved' ? (
@@ -419,7 +419,7 @@ export default async function IncidentsPage({
                       </td>
                       <td className="px-4 py-3 hidden xl:table-cell">
                         {incident.follow_up_required ? (
-                          <span className="text-sm text-orange-600">
+                          <span className="text-sm text-warning">
                             Due: {incident.follow_up_due_date || 'TBD'}
                           </span>
                         ) : (

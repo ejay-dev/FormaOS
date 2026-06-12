@@ -238,21 +238,50 @@
  * like Linear/Stripe. Marketing pages are untouched.
  * ======================================================== */
 .app-theme {
-  --primary: 213 94% 68%; /* accessible blue accent on dark app surfaces */
-  --primary-foreground: 228 65% 10%;
-  --ring: 213 94% 68%;
+  /* MONOCHROME ENTERPRISE ACCENT (2026-06-07)
+   * The authenticated app uses a single high-contrast NEUTRAL as its
+   * primary / interactive affordance — charcoal on light surfaces,
+   * near-white on dark — matching the marketing rebrand (no blue / cyan /
+   * violet brand accent). FUNCTIONAL status colour (success / warning /
+   * destructive / info) is preserved separately so colour still carries
+   * meaning. Every override here is scoped to .app-theme, so marketing
+   * (:root and the [data-theme] blocks) is untouched. */
+
+  /* Interactive / brand primary → foreground neutral (theme-aware) */
+  --primary: var(--foreground);
+  --primary-foreground: var(--background);
+  --ring: var(--foreground);
+
+  /* Retire the per-theme violet / magenta / teal that leaked through
+   * --accent and --secondary (.app-theme previously remapped only
+   * --primary/--ring). Remap both to neutral surfaces. */
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+
+  /* Collapse the duplicate "app blue" onto the neutral primary. */
+  --app-primary: var(--foreground);
+
+  /* ONE pinned semantic info-blue — stops --info drifting to cyan (aurora)
+   * / violet (midnight-blue) / indigo (light). This is functional status
+   * colour, intentionally distinct from the neutral interactive primary. */
+  --info: 213 90% 58%;
+  --info-foreground: 0 0% 100%;
+
+  /* Compliance graph wire/node colour → theme status tokens (were
+   * hardcoded hexes that didn't match --destructive / --success). */
+  --wire-action: hsl(var(--muted-foreground));
+  --wire-alert: hsl(var(--destructive));
+  --wire-success: hsl(var(--success));
+  --node-evidence: var(--muted-foreground);
+
+  /* Calm neutral ambient wash — no coloured glow inside the app. */
   --gradient-glow: radial-gradient(
     ellipse at top,
-    hsl(213 94% 68% / 0.08) 0%,
-    hsl(213 94% 68% / 0.02) 50%,
-    transparent 75%
+    hsl(var(--foreground) / 0.04) 0%,
+    transparent 70%
   );
-}
-
-[data-theme='light'] .app-theme {
-  --primary: 217 91% 55%;
-  --primary-foreground: 0 0% 100%;
-  --ring: 217 91% 55%;
 }
 
 /* =========================================================
@@ -1276,9 +1305,6 @@
   }
 
   /* Motion utilities */
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
   /* Audit 2026-05-27: .animate-pulse-glow + .signal-pulse:hover::before
      deleted. Cyan-glow pulsing contradicts the durable enterprise-
      aesthetic preference (no AI-feel / neon Live badges in /app). */
@@ -1293,9 +1319,6 @@
   }
   .animate-scale-in {
     animation: scale-in 0.4s ease-out;
-  }
-  .animate-border-flow {
-    animation: border-flow 3s ease-in-out infinite;
   }
 
   /* Depth layers */
@@ -1334,20 +1357,8 @@
      aesthetic prefers static borders and shadow over neon pulse
      animations. */
 
-  /* Holographic border */
-  .holo-border {
-    border: 1px solid transparent;
-    background:
-      linear-gradient(var(--background), var(--background)) padding-box,
-      linear-gradient(
-          135deg,
-          rgba(0, 212, 251, 0.3),
-          rgba(51, 153, 255, 0.3),
-          rgba(160, 131, 255, 0.3)
-        )
-        border-box;
-    animation: border-flow 3s ease-in-out infinite;
-  }
+  /* Audit 2026-06-07: .holo-border removed — cyan→blue→violet animated
+   * rainbow border, 0 consumers in /app. The AI-SaaS signal to retire. */
 
   /* Glass morphism enhancements */
   .glass-intense {
@@ -1403,10 +1414,10 @@
     @apply border-l-4 border-l-destructive;
   }
   .metric-card-warning {
-    @apply border-l-4 border-l-amber-500;
+    @apply border-l-4 border-l-warning;
   }
   .metric-card-success {
-    @apply border-l-4 border-l-emerald-500;
+    @apply border-l-4 border-l-success;
   }
   .metric-card-neutral {
     @apply border-l-4 border-l-primary;
@@ -1426,7 +1437,7 @@
     @apply bg-emerald-500/10 text-emerald-600 dark:text-emerald-400;
   }
   .status-pill-blue {
-    @apply bg-primary/10 text-primary;
+    @apply bg-info/10 text-info;
   }
 
   /* Page layout */
@@ -1506,16 +1517,7 @@
  * Performant, subtle, purposeful animations
  * ======================================================== */
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
+/* @keyframes float removed (2026-06-07) — only consumer was .animate-float. */
 /* @keyframes pulse-glow removed — see comment above on .animate-pulse-glow. */
 
 @keyframes shimmer {
@@ -1690,72 +1692,18 @@
   }
 }
 
-@keyframes border-flow {
-  0%,
-  100% {
-    border-color: rgba(0, 212, 251, 0.3);
-  }
-  50% {
-    border-color: rgba(51, 153, 255, 0.5);
-  }
-}
+/* @keyframes border-flow removed (2026-06-07) — only consumers were the
+ * deleted .holo-border / .animate-border-flow. */
 
 /* =========================================================
  * NODE / WIRE ANIMATION SYSTEM
  * Compliance graph visual feedback
  * ======================================================== */
 
-@keyframes node-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 212, 251, 0.4);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 20px 4px rgba(0, 212, 251, 0.2);
-    transform: scale(1.02);
-  }
-}
-
-@keyframes node-verified {
-  0% {
-    background-position: 200% center;
-  }
-  100% {
-    background-position: -200% center;
-  }
-}
-
-@keyframes wire-flow {
-  0% {
-    stroke-dashoffset: 0;
-  }
-  100% {
-    stroke-dashoffset: -20;
-  }
-}
-
-@keyframes wire-pulse {
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes node-at-risk {
-  0%,
-  100% {
-    border-color: rgba(244, 63, 94, 0.4);
-    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
-  }
-  50% {
-    border-color: rgba(244, 63, 94, 0.8);
-    box-shadow: 0 0 16px 2px rgba(244, 63, 94, 0.3);
-  }
-}
+/* Audit 2026-06-07: node-pulse / node-verified / node-at-risk / wire-flow /
+ * wire-pulse keyframes removed — cyan/rose neon-pulse graph animations with
+ * zero consumers repo-wide. Contradicts the enterprise aesthetic (no neon
+ * pulsing in /app). The static node/wire COLOUR tokens remain. */
 
 @keyframes shrink {
   from {
@@ -1766,34 +1714,8 @@
   }
 }
 
-/* Node state classes */
-.node-active {
-  animation: node-pulse 2s ease-in-out infinite;
-}
-
-.node-verified {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(16, 185, 129, 0.15),
-    transparent
-  );
-  background-size: 200% 100%;
-  animation: node-verified 2s ease-in-out infinite;
-}
-
-.node-at-risk {
-  animation: node-at-risk 1.5s ease-in-out infinite;
-}
-
-/* Wire animation classes */
-.wire-flowing {
-  animation: wire-flow 1s linear infinite;
-}
-
-.wire-pulsing {
-  animation: wire-pulse 1.5s ease-in-out infinite;
-}
+/* Audit 2026-06-07: .node-active / .node-verified / .node-at-risk /
+ * .wire-flowing / .wire-pulsing removed (neon graph animations, 0 consumers). */
 
 /* Compliance impact indicators */
 .impact-positive {
@@ -2093,9 +2015,9 @@
 /* ── Sidebar ── */
 /* Active link: indigo tint + left accent */
 [data-theme='light'] .sidebar-link-active {
-  background: hsl(243 75% 51% / 0.1) !important;
-  color: hsl(243 75% 42%) !important;
-  border-left-color: hsl(243 75% 51%) !important;
+  background: hsl(var(--primary) / 0.08) !important;
+  color: hsl(var(--primary)) !important;
+  border-left-color: hsl(var(--primary)) !important;
 }
 
 /* Sidebar nav items — subtle hover */
@@ -2215,19 +2137,6 @@
   opacity: 0.3;
 }
 
-/* ── Holo border — brand-tinted on light ── */
-[data-theme='light'] .holo-border {
-  background:
-    linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%)) padding-box,
-    linear-gradient(
-        135deg,
-        rgba(67, 56, 202, 0.25),
-        rgba(109, 40, 217, 0.25),
-        rgba(124, 58, 237, 0.25)
-      )
-      border-box;
-}
-
 /* ── Security grid — brand-tinted for light ── */
 [data-theme='light'] .security-grid {
   background-image:
@@ -2267,13 +2176,3 @@
   }
 }
 
-/* ── Node/Wire system colors for light ── */
-[data-theme='light'] .node-verified {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(16, 185, 129, 0.1),
-    transparent
-  );
-  background-size: 200% 100%;
-}

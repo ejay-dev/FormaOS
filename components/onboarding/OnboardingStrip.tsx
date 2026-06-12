@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 import { useOnboarding } from '@/lib/onboarding/onboarding-context';
 
@@ -21,9 +21,9 @@ export function OnboardingStrip() {
     >
       <div className="mx-auto flex w-full max-w-[1600px] flex-wrap items-center gap-3 px-4 py-2 sm:px-6">
         <div className="flex items-center gap-2 text-xs font-medium text-foreground/80">
-          <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
           <span className="text-muted-foreground">
-            Onboarding · Step {stepIndex} of {total}
+            Onboarding · Step <span className="tabular-nums">{stepIndex}</span> of{' '}
+            <span className="tabular-nums">{total}</span>
           </span>
         </div>
         <span

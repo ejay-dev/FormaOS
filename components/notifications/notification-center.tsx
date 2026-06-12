@@ -290,7 +290,7 @@ export function NotificationCenter({
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
-            <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-black text-white">
+            <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-bold tabular-nums text-destructive-foreground">
               {unreadCount > 9 ? '10+' : unreadCount}
             </span>
           )}
@@ -299,9 +299,9 @@ export function NotificationCenter({
 
       <SheetContent
         side="right"
-        className="w-[96vw] max-w-[440px] bg-slate-950/95"
+        className="w-[96vw] max-w-[440px] bg-popover"
       >
-        <SheetHeader className="border-b border-glass-border pb-4 pr-10">
+        <SheetHeader className="border-b border-border pb-4 pr-10">
           <div className="flex items-start justify-between gap-3">
             <div>
               <SheetTitle className="text-lg font-black tracking-tight">
@@ -313,9 +313,9 @@ export function NotificationCenter({
             </div>
             <Badge
               variant="outline"
-              className="border-glass-border bg-glass-strong text-foreground/90"
+              className="border-border bg-surface-2 text-foreground/90"
             >
-              {unreadCount} unread
+              <span className="tabular-nums">{unreadCount}</span> unread
             </Badge>
           </div>
 
@@ -325,10 +325,10 @@ export function NotificationCenter({
                 key={option}
                 type="button"
                 onClick={() => setFilter(option)}
-                className={`rounded-full border px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
+                className={`rounded-full border px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   filter === option
-                    ? 'border-sky-400/30 bg-sky-500/15 text-sky-100'
-                    : 'border-glass-border bg-glass-subtle/50 text-muted-foreground hover:text-foreground/90'
+                    ? 'border-primary/30 bg-primary/10 text-primary'
+                    : 'border-border bg-surface-1 text-muted-foreground hover:text-foreground/90'
                 }`}
               >
                 {option === 'all'
@@ -342,7 +342,7 @@ export function NotificationCenter({
             <Button
               variant="ghost"
               onClick={handleMarkAllRead}
-              className="rounded-full border border-glass-border bg-glass-subtle/50 px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground/90"
+              className="rounded-full border border-border bg-surface-1 px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground/90"
             >
               <CheckCheck className="mr-2 h-4 w-4" />
               Mark all read
@@ -351,7 +351,7 @@ export function NotificationCenter({
             <Button
               variant="ghost"
               onClick={() => router.push('/app/settings/notifications')}
-              className="rounded-full border border-glass-border bg-glass-subtle/50 px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground/90"
+              className="rounded-full border border-border bg-surface-1 px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground/90"
             >
               <Filter className="mr-2 h-4 w-4" />
               Preferences
@@ -366,7 +366,7 @@ export function NotificationCenter({
               Loading notifications
             </div>
           ) : items.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-glass-border bg-glass-subtle/50 px-6 py-14 text-center">
+            <div className="rounded-3xl border border-dashed border-border bg-surface-1 px-6 py-14 text-center">
               <Inbox className="mx-auto h-10 w-10 text-muted-foreground/60" />
               <p className="mt-4 text-sm font-semibold text-foreground/90">
                 No notifications yet
@@ -381,11 +381,11 @@ export function NotificationCenter({
               {Object.entries(groupedItems).map(([group, groupItems]) => (
                 <section key={group}>
                   <div className="mb-3 flex items-center gap-2">
-                    <div className="h-px flex-1 bg-glass-strong" />
-                    <span className="text-[11px] font-black uppercase tracking-[0.22em] text-muted-foreground/60">
+                    <div className="h-px flex-1 bg-border" />
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
                       {group}
                     </span>
-                    <div className="h-px flex-1 bg-glass-strong" />
+                    <div className="h-px flex-1 bg-border" />
                   </div>
 
                   <div className="space-y-3">

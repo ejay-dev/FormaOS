@@ -35,7 +35,7 @@ function CompletionRing({ percentage }: { percentage: number }) {
           stroke="currentColor"
           strokeWidth="4"
           fill="transparent"
-          className="text-glass-border"
+          className="text-border"
         />
         <circle
           cx="22"

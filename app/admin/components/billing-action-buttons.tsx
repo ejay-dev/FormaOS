@@ -149,7 +149,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
 
   const btnBase = cn(
     "rounded-lg border border-edge-2 px-3 py-1.5 text-xs font-bold",
-    "text-slate-200 hover:bg-surface-1 transition-all",
+    "text-foreground hover:bg-surface-1 transition-all",
     "flex items-center gap-2",
     "disabled:opacity-50 disabled:cursor-not-allowed",
     "active:scale-95 disabled:active:scale-100"
@@ -167,7 +167,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
           max={90}
           disabled={loading !== null}
           className={cn(
-            "w-16 rounded-lg border border-edge-2 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200",
+            "w-16 rounded-lg border border-edge-2 bg-[hsl(var(--card))] px-2 py-1 text-xs text-foreground",
             "disabled:opacity-50 disabled:cursor-not-allowed"
           )}
         />
@@ -182,8 +182,8 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
         onClick={handleResetTrial}
         disabled={loading !== null}
         className={cn(
-          "rounded-lg border border-amber-400/30 px-3 py-1.5 text-xs font-bold",
-          "text-amber-300 hover:bg-amber-500/20 transition-all",
+          "rounded-lg border border-warning/30 px-3 py-1.5 text-xs font-bold",
+          "text-warning hover:bg-warning/10 transition-all",
           "flex items-center gap-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "active:scale-95 disabled:active:scale-100"
@@ -204,8 +204,8 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
         onClick={handleRetryInvoice}
         disabled={loading !== null}
         className={cn(
-          "rounded-lg border border-sky-400/30 px-3 py-1.5 text-xs font-bold",
-          "text-sky-300 hover:bg-sky-500/20 transition-all",
+          "rounded-lg border border-primary/30 px-3 py-1.5 text-xs font-bold",
+          "text-primary hover:bg-primary/10 transition-all",
           "flex items-center gap-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "active:scale-95 disabled:active:scale-100"
@@ -220,8 +220,8 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
         onClick={handleRefund}
         disabled={loading !== null}
         className={cn(
-          "rounded-lg border border-rose-400/30 px-3 py-1.5 text-xs font-bold",
-          "text-rose-300 hover:bg-rose-500/20 transition-all",
+          "rounded-lg border border-destructive/30 px-3 py-1.5 text-xs font-bold",
+          "text-destructive hover:bg-destructive/10 transition-all",
           "flex items-center gap-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "active:scale-95 disabled:active:scale-100"

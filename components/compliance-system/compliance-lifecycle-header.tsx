@@ -93,40 +93,40 @@ const WIRE_LABELS = [
 
 const COLOR_CLASSES: Record<string, { bg: string; border: string; text: string; glow: string }> = {
   cyan: {
-    bg: "bg-cyan-500/10",
-    border: "border-cyan-400/40",
-    text: "text-cyan-300",
+    bg: "bg-surface-1",
+    border: "border-border",
+    text: "text-muted-foreground",
     glow: "shadow-lg",
   },
   teal: {
-    bg: "bg-teal-500/10",
-    border: "border-teal-400/40",
-    text: "text-teal-300",
+    bg: "bg-surface-1",
+    border: "border-border",
+    text: "text-muted-foreground",
     glow: "shadow-lg",
   },
   violet: {
-    bg: "bg-violet-500/10",
-    border: "border-violet-400/40",
-    text: "text-violet-300",
-    glow: "shadow-[0_0_20px_rgba(167,139,250,0.3)]",
+    bg: "bg-surface-1",
+    border: "border-border",
+    text: "text-muted-foreground",
+    glow: "shadow-lg",
   },
   amber: {
-    bg: "bg-amber-500/10",
-    border: "border-amber-400/40",
-    text: "text-amber-300",
-    glow: "shadow-[0_0_20px_rgba(245,158,11,0.3)]",
+    bg: "bg-warning/10",
+    border: "border-warning/20",
+    text: "text-warning",
+    glow: "shadow-lg",
   },
   rose: {
-    bg: "bg-rose-500/10",
-    border: "border-rose-400/40",
-    text: "text-rose-300",
-    glow: "shadow-[0_0_20px_rgba(244,63,94,0.3)]",
+    bg: "bg-destructive/10",
+    border: "border-destructive/20",
+    text: "text-destructive",
+    glow: "shadow-lg",
   },
   emerald: {
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-400/40",
-    text: "text-emerald-300",
-    glow: "shadow-[0_0_20px_rgba(16,185,129,0.3)]",
+    bg: "bg-success/10",
+    border: "border-success/20",
+    text: "text-success",
+    glow: "shadow-lg",
   },
 };
 
@@ -184,13 +184,11 @@ export function ComplianceLifecycleHeader({
   return (
     <div className={cn(
       "relative overflow-hidden rounded-2xl border border-edge-2",
-      "bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))]",
+      "bg-card",
       "shadow-[0_20px_60px_rgba(0,0,0,0.35)]",
       className
     )}>
-      {/* Header glow */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-white/[0.04] blur-2xl" />
-      
+
       {/* Header content */}
       <div className="relative px-6 py-5 border-b border-edge-2">
         <div className="flex items-center justify-between">
@@ -204,12 +202,12 @@ export function ComplianceLifecycleHeader({
           </div>
           <div className="flex items-center gap-2">
             {hasRisks && (
-              <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-rose-500/20 text-rose-300 border border-rose-400/30 animate-pulse">
+              <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-destructive/10 text-destructive border border-destructive/20">
                 {stats.risks.high} Critical Risks
               </span>
             )}
             {hasOverdue && (
-              <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-400/30">
+              <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-warning/10 text-warning border border-warning/20">
                 {stats.tasks.overdue} Overdue
               </span>
             )}
@@ -240,12 +238,12 @@ export function ComplianceLifecycleHeader({
                     }
                   }}
                   className={cn(
-                    "group relative flex flex-col items-center gap-2 p-3 rounded-xl border backdrop-blur-sm",
+                    "group relative flex flex-col items-center gap-2 p-3 rounded-xl border",
                     "transition-all duration-300 motion-safe:hover:scale-105 cursor-pointer",
                     colors.bg,
                     colors.border,
-                    isRiskNode && "ring-2 ring-rose-500/50 animate-pulse",
-                    isTaskNode && "ring-2 ring-amber-500/50"
+                    isRiskNode && "ring-2 ring-destructive/50",
+                    isTaskNode && "ring-2 ring-warning/50"
                   )}
                 >
                   {/* Icon */}
@@ -284,10 +282,10 @@ export function ComplianceLifecycleHeader({
                   <div className="flex-1 flex items-center justify-center min-w-[40px] max-w-[80px]">
                     <div className="relative w-full">
                       {/* Wire line */}
-                      <div className="h-px bg-gradient-to-r from-white/20 via-white/40 to-white/20" />
-                      
+                      <div className="h-px bg-gradient-to-r from-border via-edge-3 to-border" />
+
                       {/* Arrow */}
-                      <ArrowRight className="absolute top-1/2 right-0 -translate-y-1/2 h-3 w-3 text-white/40" />
+                      <ArrowRight className="absolute top-1/2 right-0 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                       
                       {/* Label */}
                       <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[8px] text-muted-foreground/60 font-medium whitespace-nowrap">
@@ -313,7 +311,7 @@ export function ComplianceLifecycleHeader({
                 key={node.type}
                 href={node.href}
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl border backdrop-blur-sm",
+                  "flex items-center gap-3 p-3 rounded-xl border",
                   "transition-all duration-300 motion-safe:active:scale-95",
                   colors.bg,
                   colors.border
@@ -342,9 +340,9 @@ export function ComplianceLifecycleHeader({
         {/* Loop-back indicator (Task → Control) */}
         <div className="hidden lg:block absolute right-4 top-1/2 -translate-y-1/2">
           <div className="relative h-20 w-12">
-            <div className="absolute right-0 top-0 w-8 h-10 border-r-2 border-t-2 border-emerald-400/40 rounded-tr-xl" />
-            <div className="absolute right-0 bottom-0 w-8 h-10 border-r-2 border-b-2 border-emerald-400/40 rounded-br-xl" />
-            <div className="absolute top-1/2 -left-4 text-[8px] text-emerald-400/60 font-medium -rotate-90 origin-center whitespace-nowrap">
+            <div className="absolute right-0 top-0 w-8 h-10 border-r-2 border-t-2 border-success/40 rounded-tr-xl" />
+            <div className="absolute right-0 bottom-0 w-8 h-10 border-r-2 border-b-2 border-success/40 rounded-br-xl" />
+            <div className="absolute top-1/2 -left-4 text-[8px] text-success/60 font-medium -rotate-90 origin-center whitespace-nowrap">
               updates
             </div>
           </div>

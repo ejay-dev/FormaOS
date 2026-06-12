@@ -23,68 +23,68 @@ const TYPE_META: Record<
 > = {
   'task.assigned': {
     icon: CheckCircle2,
-    tone: 'text-sky-200',
-    badge: 'bg-sky-500/15 border-sky-400/30',
+    tone: 'text-info',
+    badge: 'bg-info/10 border-info/20',
   },
   'task.due_soon': {
     icon: BellRing,
-    tone: 'text-amber-200',
-    badge: 'bg-amber-500/15 border-amber-400/30',
+    tone: 'text-warning',
+    badge: 'bg-warning/10 border-warning/20',
   },
   'task.overdue': {
     icon: FileWarning,
-    tone: 'text-rose-200',
-    badge: 'bg-rose-500/15 border-rose-400/30',
+    tone: 'text-destructive',
+    badge: 'bg-destructive/10 border-destructive/20',
   },
   'evidence.review_requested': {
     icon: FileWarning,
-    tone: 'text-cyan-200',
-    badge: 'bg-cyan-500/15 border-cyan-400/30',
+    tone: 'text-info',
+    badge: 'bg-info/10 border-info/20',
   },
   'evidence.approved': {
     icon: FileCheck2,
-    tone: 'text-emerald-200',
-    badge: 'bg-emerald-500/15 border-emerald-400/30',
+    tone: 'text-success',
+    badge: 'bg-success/10 border-success/20',
   },
   'evidence.rejected': {
     icon: FileWarning,
-    tone: 'text-rose-200',
-    badge: 'bg-rose-500/15 border-rose-400/30',
+    tone: 'text-destructive',
+    badge: 'bg-destructive/10 border-destructive/20',
   },
   'member.joined': {
     icon: Users,
-    tone: 'text-violet-200',
-    badge: 'bg-violet-500/15 border-violet-400/30',
+    tone: 'text-muted-foreground',
+    badge: 'bg-muted border-border',
   },
   'member.removed': {
     icon: Users,
-    tone: 'text-rose-200',
-    badge: 'bg-rose-500/15 border-rose-400/30',
+    tone: 'text-destructive',
+    badge: 'bg-destructive/10 border-destructive/20',
   },
   'member.role_changed': {
     icon: Users,
-    tone: 'text-fuchsia-200',
-    badge: 'bg-fuchsia-500/15 border-fuchsia-400/30',
+    tone: 'text-muted-foreground',
+    badge: 'bg-muted border-border',
   },
   'workflow.approval_requested': {
     icon: Workflow,
-    tone: 'text-orange-200',
-    badge: 'bg-orange-500/15 border-orange-400/30',
+    tone: 'text-warning',
+    badge: 'bg-warning/10 border-warning/20',
   },
   'workflow.completed': {
     icon: Workflow,
-    tone: 'text-emerald-200',
-    badge: 'bg-emerald-500/15 border-emerald-400/30',
+    tone: 'text-success',
+    badge: 'bg-success/10 border-success/20',
   },
   'workflow.failed': {
     icon: Workflow,
-    tone: 'text-rose-200',
-    badge: 'bg-rose-500/15 border-rose-400/30',
+    tone: 'text-destructive',
+    badge: 'bg-destructive/10 border-destructive/20',
   },
   'system.security_alert': {
     icon: Siren,
-    tone: 'text-rose-100',
-    badge: 'bg-rose-500/20 border-rose-300/40',
+    tone: 'text-destructive',
+    badge: 'bg-destructive/10 border-destructive/20',
   },
 };
 
@@ -119,8 +119,8 @@ export function NotificationItem({
   const touchStartX = useRef<number | null>(null);
   const meta = TYPE_META[notification.type] ?? {
     icon: BellRing,
-    tone: 'text-foreground/90',
-    badge: 'bg-glass-strong border-edge-2',
+    tone: 'text-foreground',
+    badge: 'bg-surface-2 border-edge-2',
   };
   const Icon = meta.icon;
 
@@ -147,10 +147,10 @@ export function NotificationItem({
         touchStartX.current = null;
       }}
       className={cn(
-        'group rounded-2xl border px-4 py-3 transition-all focus:outline-none focus:ring-2 focus:ring-sky-400/40',
+        'group rounded-2xl border px-4 py-3 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         notification.read_at
-          ? 'border-glass-border bg-white/[0.04]'
-          : 'border-sky-400/25 bg-sky-500/10 shadow-[0_0_0_1px_rgba(56,189,248,0.08)]',
+          ? 'border-border bg-surface-1'
+          : 'border-primary/30 bg-surface-2 shadow-[0_0_0_1px_hsl(var(--primary)/0.08)]',
       )}
     >
       <div className="flex items-start gap-3">
@@ -171,7 +171,7 @@ export function NotificationItem({
                   {notification.title}
                 </h3>
                 {!notification.read_at && (
-                  <span className="h-2 w-2 shrink-0 rounded-full bg-sky-300" />
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-primary" />
                 )}
               </div>
               <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted-foreground">
@@ -195,7 +195,7 @@ export function NotificationItem({
                     event.stopPropagation();
                     onMarkRead(notification.id);
                   }}
-                  className="rounded-full border border-glass-border p-2 text-foreground/70 transition hover:border-sky-400/30 hover:bg-sky-500/10 hover:text-sky-100"
+                  className="rounded-full border border-border p-2 text-muted-foreground transition hover:border-primary/30 hover:bg-muted hover:text-foreground"
                   aria-label="Mark notification as read"
                 >
                   <Check className="h-3.5 w-3.5" />
@@ -208,7 +208,7 @@ export function NotificationItem({
                   event.stopPropagation();
                   onArchive(notification.id);
                 }}
-                className="rounded-full border border-glass-border p-2 text-foreground/70 transition hover:border-rose-400/30 hover:bg-rose-500/10 hover:text-rose-100"
+                className="rounded-full border border-border p-2 text-muted-foreground transition hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
                 aria-label="Archive notification"
               >
                 <X className="h-3.5 w-3.5" />
