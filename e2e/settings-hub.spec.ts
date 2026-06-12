@@ -138,10 +138,17 @@ test.describe('Settings hub', () => {
     await expect(
       page.getByRole('heading', { name: 'Configuration areas' }).first(),
     ).toBeVisible();
-    await expect(page.getByText('Security snapshot').first()).toBeVisible();
-    await expect(page.getByText('Notification routing').first()).toBeVisible();
-    await expect(page.getByText('Workspace operations').first()).toBeVisible();
-    await expect(page.getByText('Communication defaults').first()).toBeVisible();
+    // Live state renders once, badged on the configuration-area cards (the
+    // former snapshot rail and Communication defaults card echoed the same
+    // values a second time and were removed).
+    await expect(page.getByText('Security & identity').first()).toBeVisible();
+    await expect(
+      page.getByText('Email & executive digests').first(),
+    ).toBeVisible();
+    await expect(
+      page.getByText('Retention & governance').first(),
+    ).toBeVisible();
+    await expect(page.getByText('Account & data').first()).toBeVisible();
     await expect(
       page.getByText('Language & Accessibility').first(),
     ).toBeVisible();

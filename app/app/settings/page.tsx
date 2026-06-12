@@ -267,9 +267,6 @@ export default async function SettingsPage() {
   const verifiedChannelCount = notificationChannels.filter(
     (channel) => channel.verified,
   ).length;
-  const enabledNotificationRules = notificationPreferences.filter(
-    (preference) => preference.enabled,
-  ).length;
   const quietHoursRecord = notificationPreferences.find(
     (preference) =>
       preference.quiet_hours &&
@@ -618,380 +615,145 @@ export default async function SettingsPage() {
         </section>
       )}
 
-      <div className="grid gap-8 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.9fr)]">
-        <div className="space-y-8">
-          <form
-            action={saveWorkspaceProfileAction}
-            className="rounded-[2rem] border border-border bg-card p-6 shadow-sm sm:p-8"
-          >
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <Building2 className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold tracking-tight text-foreground">
-                      Workspace profile
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      Keep your legal identity, routing domain, and core workspace
-                      metadata current.
-                    </p>
-                  </div>
-                </div>
+      {/* One column, no echo: the previous right rail (Security snapshot,
+          Notification routing, Workspace operations) and the Communication
+          defaults card repeated the exact live state already badged on the
+          configuration-area cards, so the page rendered every value twice. */}
+      <form
+        action={saveWorkspaceProfileAction}
+        className="rounded-[2rem] border border-border bg-card p-6 shadow-sm sm:p-8"
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <Building2 className="h-5 w-5" />
               </div>
-
-              <div className="flex flex-wrap gap-2">
-                <StatusBadge tone={brandingCustomized ? 'positive' : 'default'}>
-                  {brandingCustomized ? 'Branding customized' : 'Default branding'}
-                </StatusBadge>
-                <StatusBadge tone="default">
-                  {organization.onboarding_completed
-                    ? 'Onboarding complete'
-                    : 'Onboarding incomplete'}
-                </StatusBadge>
+              <div>
+                <h2 className="text-xl font-bold tracking-tight text-foreground">
+                  Workspace profile
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Keep your legal identity, routing domain, and core workspace
+                  metadata current.
+                </p>
               </div>
             </div>
+          </div>
 
-            <div className="mt-8 grid gap-5 md:grid-cols-2">
-              <Field
-                label="Legal entity name"
-                name="name"
-                defaultValue={organization.name}
-                disabled={!canManageWorkspace}
-                placeholder="FormaOS Pty Ltd"
-              />
-              <Field
-                label="Industry"
-                name="industry"
-                defaultValue={organization.industry ?? ''}
-                disabled={!canManageWorkspace}
-                placeholder="healthcare"
-              />
-              <Field
-                label="Team size"
-                name="teamSize"
-                defaultValue={organization.team_size ?? ''}
-                disabled={!canManageWorkspace}
-                placeholder="1-10"
-              />
-              <ReadOnlyField
-                label="Workspace ID"
-                value={organization.id}
-                mono
-              />
-            </div>
-
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
-              <ReadOnlyField
-                label="Account email domain"
-                value={accountEmailDomain}
-                icon={Globe}
-              />
-              <ReadOnlyField
-                label="Current access"
-                value={titleCase(systemState.role)}
-              />
-              <ReadOnlyField
-                label="Plan key"
-                value={organization.plan_key ?? systemState.organization.plan}
-              />
-              <ReadOnlyField
-                label="Portal domain"
-                value={branding?.custom_domain ?? 'Default FormaOS domain'}
-              />
-              <ReadOnlyField
-                label="Frameworks"
-                value={
-                  frameworkLabels.length > 0
-                    ? frameworkLabels.join(', ')
-                    : 'No frameworks selected'
-                }
-              />
-            </div>
-
-            <div className="mt-6 rounded-[1.5rem] border border-border bg-background/40 p-4 text-sm text-muted-foreground">
-              Organization profile changes are recorded to the audit trail and
-              scoped to <span className="font-medium text-foreground">{organization.name}</span>.
-            </div>
-
-            <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <p className="text-sm text-muted-foreground">
-                {canManageWorkspace
-                  ? 'Owners and admins can update these fields.'
-                  : 'You have read-only access to organization-wide settings.'}
-              </p>
-              {canManageWorkspace ? (
-                <div className="w-full lg:w-64">
-                  <SaveButton />
-                </div>
-              ) : null}
-            </div>
-          </form>
-
-          <section className="space-y-4">
-            <div>
-              <h2 className="text-xl font-bold tracking-tight text-foreground">
-                Configuration areas
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Every settings surface with the most important live state called
-                out up front.
-              </p>
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-2">
-              {settingsAreas.map((area) => (
-                <SettingsAreaCard key={area.title} area={area} />
-              ))}
-            </div>
-          </section>
-
-          <section className="grid gap-6 xl:grid-cols-2">
-            <PlainEnglishToggle />
-            <div className="rounded-[2.5rem] border border-border bg-card p-8 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Mail className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-foreground">
-                    Communication defaults
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    See your personal email routing and digest configuration.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 space-y-3">
-                <InlineMetaRow
-                  label="Alert emails"
-                  value={
-                    emailPreferences?.enabled === false
-                      ? 'Unsubscribed from all'
-                      : enabledEmailEvents.includes('compliance_alert')
-                        ? 'Enabled'
-                        : 'Default'
-                  }
-                />
-                <InlineMetaRow
-                  label="Weekly digest"
-                  value={
-                    emailPreferences?.frequency === 'weekly_digest'
-                      ? 'Enabled'
-                      : 'Off'
-                  }
-                />
-                <InlineMetaRow
-                  label="Executive digest"
-                  value={
-                    executiveDigestEnabled
-                      ? `${titleCase(executiveDigestFrequency)} cadence`
-                      : 'Disabled'
-                  }
-                />
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/app/settings/email-preferences"
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/40"
-                >
-                  Email preferences
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/app/settings/email-history"
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/40"
-                >
-                  Delivery history
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-          </section>
-
-          <AppearanceSettings />
+          <div className="flex flex-wrap gap-2">
+            <StatusBadge tone={brandingCustomized ? 'positive' : 'default'}>
+              {brandingCustomized ? 'Branding customized' : 'Default branding'}
+            </StatusBadge>
+            <StatusBadge tone="default">
+              {organization.onboarding_completed
+                ? 'Onboarding complete'
+                : 'Onboarding incomplete'}
+            </StatusBadge>
+          </div>
         </div>
 
-        <aside className="space-y-6">
-          <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <ShieldCheck className="h-5 w-5" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-foreground">
-                  Security snapshot
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Personal access hardening and org-wide identity posture.
-                </p>
-              </div>
+        <div className="mt-8 grid gap-5 md:grid-cols-2">
+          <Field
+            label="Legal entity name"
+            name="name"
+            defaultValue={organization.name}
+            disabled={!canManageWorkspace}
+            placeholder="FormaOS Pty Ltd"
+          />
+          <Field
+            label="Industry"
+            name="industry"
+            defaultValue={organization.industry ?? ''}
+            disabled={!canManageWorkspace}
+            placeholder="healthcare"
+          />
+          <Field
+            label="Team size"
+            name="teamSize"
+            defaultValue={organization.team_size ?? ''}
+            disabled={!canManageWorkspace}
+            placeholder="1-10"
+          />
+          <ReadOnlyField
+            label="Workspace ID"
+            value={organization.id}
+            mono
+          />
+        </div>
+
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <ReadOnlyField
+            label="Account email domain"
+            value={accountEmailDomain}
+            icon={Globe}
+          />
+          <ReadOnlyField
+            label="Current access"
+            value={titleCase(systemState.role)}
+          />
+          <ReadOnlyField
+            label="Plan key"
+            value={organization.plan_key ?? systemState.organization.plan}
+          />
+          <ReadOnlyField
+            label="Portal domain"
+            value={branding?.custom_domain ?? 'Default FormaOS domain'}
+          />
+          <ReadOnlyField
+            label="Frameworks"
+            value={
+              frameworkLabels.length > 0
+                ? frameworkLabels.join(', ')
+                : 'No frameworks selected'
+            }
+          />
+        </div>
+
+        <div className="mt-6 rounded-[1.5rem] border border-border bg-background/40 p-4 text-sm text-muted-foreground">
+          Organization profile changes are recorded to the audit trail and
+          scoped to <span className="font-medium text-foreground">{organization.name}</span>.
+        </div>
+
+        <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <p className="text-sm text-muted-foreground">
+            {canManageWorkspace
+              ? 'Owners and admins can update these fields.'
+              : 'You have read-only access to organization-wide settings.'}
+          </p>
+          {canManageWorkspace ? (
+            <div className="w-full lg:w-64">
+              <SaveButton />
             </div>
+          ) : null}
+        </div>
+      </form>
 
-            <div className="mt-6 space-y-3">
-              <InlineMetaRow
-                label="MFA status"
-                value={
-                  mfaEnabled ? 'Enabled' : mfaRequired ? 'Required but off' : 'Optional'
-                }
-                tone={mfaEnabled ? 'positive' : mfaRequired ? 'warning' : 'default'}
-              />
-              <InlineMetaRow
-                label="SSO enforcement"
-                value={
-                  orgSso?.enabled
-                    ? orgSso.enforceSso
-                      ? 'Enforced'
-                      : 'Enabled'
-                    : 'Not configured'
-                }
-                tone={orgSso?.enabled ? 'positive' : 'default'}
-              />
-              <InlineMetaRow
-                label="Directory providers"
-                value={
-                  directoryProviderCount > 0
-                    ? `${directoryProviderCount} configured`
-                    : 'None configured'
-                }
-              />
-              <InlineMetaRow
-                label="Last sync runs"
-                value={
-                  directoryStatus.runs.length > 0
-                    ? `${directoryStatus.runs.length} recent`
-                    : 'No runs yet'
-                }
-              />
-            </div>
+      <section className="space-y-4">
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-foreground">
+            Configuration areas
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Every settings surface with the most important live state called
+            out up front.
+          </p>
+        </div>
 
-            <Link
-              href="/app/settings/security"
-              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80"
-            >
-              Open security settings
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </section>
+        <div className="grid gap-4 lg:grid-cols-2">
+          {settingsAreas.map((area) => (
+            <SettingsAreaCard key={area.title} area={area} />
+          ))}
+        </div>
+      </section>
 
-          <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <BellRing className="h-5 w-5" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-foreground">
-                  Notification routing
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Personal delivery rules across in-app and external channels.
-                </p>
-              </div>
-            </div>
+      {/* Personal scope in one asymmetric zone: appearance previews dominate,
+          language + account/data sit in the slim rail beside them. */}
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)]">
+        <AppearanceSettings />
 
-            <div className="mt-6 space-y-3">
-              <InlineMetaRow
-                label="Connected channels"
-                value={
-                  notificationChannels.length > 0
-                    ? `${notificationChannels.length} connected`
-                    : 'None connected'
-                }
-              />
-              <InlineMetaRow
-                label="Verified channels"
-                value={`${verifiedChannelCount}`}
-                tone={verifiedChannelCount > 0 ? 'positive' : 'default'}
-              />
-              <InlineMetaRow
-                label="Active rules"
-                value={`${enabledNotificationRules}`}
-              />
-              <InlineMetaRow
-                label="Quiet hours"
-                value={quietHoursEnabled ? 'Enabled' : 'Disabled'}
-              />
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/app/settings/notifications"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80"
-              >
-                Open delivery matrix
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </section>
-
-          <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <PlugZap className="h-5 w-5" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-foreground">
-                  Workspace operations
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Governance, integrations, and AI indexing health.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 space-y-3">
-              <InlineMetaRow
-                label="Retention policies"
-                value={`${activePoliciesCount} active`}
-              />
-              <InlineMetaRow
-                label="Legal holds"
-                value={
-                  activeHoldsCount > 0 ? `${activeHoldsCount} active` : 'None active'
-                }
-                tone={activeHoldsCount > 0 ? 'warning' : 'default'}
-              />
-              <InlineMetaRow
-                label="Connected integrations"
-                value={`${integratedCount}`}
-              />
-              <InlineMetaRow
-                label="Indexed AI docs"
-                value={`${aiIndexedCount}`}
-                tone={aiIndexedCount > 0 ? 'positive' : 'default'}
-              />
-              <InlineMetaRow
-                label="Auditor grants"
-                value={
-                  activeAuditorGrantCount > 0
-                    ? `${activeAuditorGrantCount} active`
-                    : 'None active'
-                }
-              />
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href="/app/settings/integrations"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80"
-              >
-                Integrations
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/app/settings/retention"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80"
-              >
-                Retention
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </section>
-
+        <div className="space-y-6">
+          <PlainEnglishToggle />
           {/* Audit 2026-05-25 (GDPR): cross-link to /app/privacy so the
               compliance suite finds [data-testid="delete-account"] at the
               URL it probes. The actual delete + export flow lives on
@@ -1030,7 +792,7 @@ export default async function SettingsPage() {
               </Link>
             </div>
           </section>
-        </aside>
+        </div>
       </div>
     </div>
   );
@@ -1149,35 +911,6 @@ function ReadOnlyField({
         {Icon ? <Icon className="h-4 w-4 flex-none text-muted-foreground" /> : null}
         {value}
       </div>
-    </div>
-  );
-}
-
-function InlineMetaRow({
-  label,
-  value,
-  tone = 'default',
-}: {
-  label: string;
-  value: string;
-  tone?: 'default' | 'positive' | 'warning' | 'danger';
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-background/40 px-4 py-3">
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <span
-        className={`text-sm font-medium ${
-          tone === 'positive'
-            ? 'text-success'
-            : tone === 'warning'
-              ? 'text-warning'
-              : tone === 'danger'
-                ? 'text-destructive'
-                : 'text-foreground'
-        }`}
-      >
-        {value}
-      </span>
     </div>
   );
 }
