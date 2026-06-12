@@ -22,6 +22,12 @@ import {
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 
 export const runtime = 'nodejs';
+// First-login bootstrap runs full workspace provisioning/recovery
+// (recoverUserWorkspace) against the production DB. The platform default
+// function timeout (~15s) 504s real new-user signups under load — observed
+// in prod 2026-06-13 ("Vercel Runtime Timeout Error"). Cron routes already
+// raise theirs in vercel.json; this route needs headroom too.
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
