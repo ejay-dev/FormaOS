@@ -183,13 +183,16 @@ export function GettingStartedChecklist({
           aria-expanded={!isCollapsed}
         >
           <div>
+            {/* Deliberately "milestones", not "getting started" — the first-5
+                guided actions are StartHereCard's job; this list owns the
+                longer activation arc. */}
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              {industry ? 'Industry Onboarding' : 'Getting Started'}
+              {industry ? 'Industry Onboarding' : 'Activation'}
             </p>
             <h3 className="text-lg font-semibold text-foreground">
               {industry
                 ? `${industry.toUpperCase().replace('_', ' ')} Activation Roadmap`
-                : 'Your first wins in FormaOS'}
+                : 'Activation milestones'}
             </h3>
             <p className="text-sm text-muted-foreground">
               {industry

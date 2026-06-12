@@ -37,6 +37,13 @@ interface EmployeeDashboardProps {
   nextAuditDate?: string;
   tasksAssigned?: number;
   tasksPending?: number;
+  /**
+   * True while DashboardWrapper renders StartHereCard above this dashboard.
+   * The activation checklist is suppressed for that window so a new user
+   * never sees two onboarding lists on one screen — first-5 actions belong
+   * to StartHereCard, the checklist takes over once it retires.
+   */
+  firstSessionActive?: boolean;
 }
 
 /**
@@ -609,6 +616,7 @@ export function EmployeeDashboard({
   nextAuditDate = '',
   tasksAssigned = 0,
   tasksPending = 0,
+  firstSessionActive = false,
 }: EmployeeDashboardProps) {
   const aiSuggestions = [
     {
@@ -653,7 +661,7 @@ export function EmployeeDashboard({
         <UpcomingDeadlinesWidget />
       </div>
 
-      <GettingStartedChecklist industry={industry} />
+      {!firstSessionActive && <GettingStartedChecklist industry={industry} />}
       <AIComplianceAssistantPanel suggestions={aiSuggestions} />
       <RoleWorkflowBoard
         role={userRole}

@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowRight,
   Briefcase,
   CheckCircle2,
   CheckSquare,
@@ -11,13 +10,10 @@ import {
   Home,
   LineChart,
   Table2,
-  TrendingUp,
   Users,
   type LucideIcon,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
-import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
 import { SystemStatusPanel } from '@/components/trust/SystemStatusPanel';
 import { ComplianceIntelligenceSummary } from '@/components/intelligence/ComplianceIntelligenceSummary';
@@ -636,13 +632,6 @@ export function CommandCenter({
             <>
               <KpiBar items={readinessKpis} />
 
-              <ActivationMilestones
-                milestones={activationMilestones}
-                loading={isLoadingCounts}
-                completedCount={milestonesDone}
-                progressPct={milestonesPct}
-              />
-
               <GettingStartedChecklist industry={industry} />
 
               {industry && industry !== 'other' && (
@@ -902,90 +891,6 @@ function renderIndustryWidgets(industry: string | null | undefined) {
     );
   }
   return null;
-}
-
-interface ActivationMilestonesProps {
-  milestones: ActivationMilestone[];
-  loading: boolean;
-  completedCount: number;
-  progressPct: number;
-}
-
-function ActivationMilestones({
-  milestones,
-  loading,
-  completedCount,
-  progressPct,
-}: ActivationMilestonesProps) {
-  return (
-    <DashboardSectionCard
-      title="Activation Progress"
-      description="Milestone-driven path from setup to first defensible proof"
-      icon={TrendingUp}
-    >
-      {loading ? (
-        <div className="space-y-3">
-          {Array.from({ length: 4 }).map((_, idx) => (
-            <div
-              key={`loading-${idx}`}
-              className="h-14 animate-pulse rounded-xl border border-border bg-surface-1"
-            />
-          ))}
-        </div>
-      ) : (
-        <>
-          <div className="mb-3 rounded-lg border border-border bg-surface-1 px-3 py-2.5">
-            <div className="flex items-center justify-between">
-              <p className="text-[12px] font-semibold text-foreground">
-                Time to first proof
-              </p>
-              <p className="text-[12px] text-muted-foreground tabular-nums">
-                {completedCount} / {milestones.length}
-              </p>
-            </div>
-            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
-              <div
-                className="h-full rounded-full bg-primary"
-                style={{ width: `${progressPct}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            {milestones.map((m) => (
-              <Link
-                key={m.id}
-                href={m.href}
-                className="group flex items-start justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2.5 transition-colors hover:border-edge-3 hover:bg-surface-1"
-              >
-                <div className="flex items-start gap-2.5">
-                  <span
-                    className={cn(
-                      'mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full',
-                      m.done
-                        ? 'bg-success/15 text-success'
-                        : 'bg-surface-2 text-muted-foreground',
-                    )}
-                  >
-                    <CheckCircle2 className="h-3 w-3" />
-                  </span>
-                  <div>
-                    <p className="text-[13px] font-semibold text-foreground">
-                      {m.title}
-                    </p>
-                    <p className="text-[12px] text-muted-foreground">
-                      {m.detail}
-                    </p>
-                  </div>
-                </div>
-                <ArrowRight className="mt-1 h-3.5 w-3.5 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            ))}
-          </div>
-        </>
-      )}
-    </DashboardSectionCard>
-  );
 }
 
 export default CommandCenter;
