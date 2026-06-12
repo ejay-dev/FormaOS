@@ -140,6 +140,11 @@ const TENANT_TABLE_SCOPES = {
   // flow finally reached /app under PR #192. Registered in audit
   // 2026-05-27 follow-up.
   org_progress_notes: { column: 'organization_id' },
+  // Same failure mode as org_progress_notes above: fetchSeenSteps in
+  // lib/onboarding/first-session.ts read this table via the org client
+  // while unregistered, so the wrapper threw, the catch returned [],
+  // and first-session completion toasts re-appeared on every page load.
+  org_first_session_progress: { column: 'organization_id' },
   // R10 Phase 3 (audit 2026-05-27): BSP CRUD + weekly health snapshot.
   org_behaviour_support_plans: { column: 'organization_id' },
   org_compliance_health_snapshots: { column: 'organization_id' },
