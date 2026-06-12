@@ -91,6 +91,7 @@ export function DashboardWrapper({
         industry={industry}
         tasksAssigned={tasksAssigned}
         tasksPending={tasksPending}
+        firstSessionActive={showStartHere}
       />
     </UnifiedDashboardLayout>
   );
