@@ -51,9 +51,12 @@ describe('listControlsNeedingAttestation', () => {
           framework_id: 'fw-1',
           control_key: 'A.5.6',
           details: {
-            gaps: [
-              { code: MANUAL_GAP_CODE, message: 'Needs SIG attestation.' },
-            ],
+            code: 'A.5.6',
+            title: 'Threat intelligence',
+            evaluator: {
+              reason: 'Needs SIG attestation.',
+              gap_codes: [MANUAL_GAP_CODE],
+            },
           },
         },
         {
@@ -61,7 +64,12 @@ describe('listControlsNeedingAttestation', () => {
           control_key: 'A.8.1',
           // not_evaluated for a different reason — must be filtered out
           details: {
-            gaps: [{ code: 'org_policies_unavailable', message: 'DB read failed.' }],
+            code: 'A.8.1',
+            title: 'User endpoint devices',
+            evaluator: {
+              reason: 'DB read failed.',
+              gap_codes: ['org_policies_unavailable'],
+            },
           },
         },
       ],
@@ -93,7 +101,11 @@ describe('listControlsNeedingAttestation', () => {
         {
           framework_id: 'fw-1',
           control_key: 'A.5.6',
-          details: { gaps: [{ code: MANUAL_GAP_CODE, message: 'x' }] },
+          details: {
+            code: 'A.5.6',
+            title: 'Threat intelligence',
+            evaluator: { reason: 'x', gap_codes: [MANUAL_GAP_CODE] },
+          },
         },
       ],
       error: null,

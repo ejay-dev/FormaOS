@@ -547,31 +547,55 @@ describe('logActivity', () => {
 // ---- sendNotification ------------------------------------------------
 
 describe('sendNotification', () => {
-  it('inserts notification with defaults', async () => {
-    await sendNotification('u1', 'Hello', 'World');
-    expect(mockFrom).toHaveBeenCalledWith('notifications');
+  // Audit 2026-08-02: these tests previously asserted
+  // `expect(mockFrom).toHaveBeenCalledWith('notifications')`. public.notifications
+  // does not exist — the live table is org_notifications — so they passed while
+  // the production write silently failed on every @mention. They now assert the
+  // real table and the real column shape, and that the error is surfaced rather
+  // than swallowed.
+  function clientWith(result: { error: unknown }) {
+    const insert = jest.fn(() => Promise.resolve(result));
+    const from = jest.fn(() => ({ insert }));
+    return { client: { from } as never, from, insert };
+  }
+
+  it('writes to org_notifications with the live column shape', async () => {
+    const { client, from, insert } = clientWith({ error: null });
+
+    const result = await sendNotification(client, 'org-1', 'u1', 'Hello', 'World');
+
+    expect(from).toHaveBeenCalledWith('org_notifications');
+    expect(insert).toHaveBeenCalledWith({
+      org_id: 'org-1',
+      user_id: 'u1',
+      type: 'info',
+      title: 'Hello',
+      body: 'World',
+      data: { severity: 'info' },
+    });
+    expect(result).toEqual({ ok: true });
   });
 
-  it('inserts notification with custom type and action_url', async () => {
-    await sendNotification('u1', 'Alert', 'Oops', 'error', '/fix');
-    expect(mockFrom).toHaveBeenCalledWith('notifications');
-  });
+  it('carries type and action url through the data jsonb', async () => {
+    const { client, insert } = clientWith({ error: null });
 
-  it('logs error on failure', async () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-    mockFrom.mockReturnValueOnce({
-      insert: jest.fn(() => {
-        const c: any = {};
-        c.then = (res: Function, rej: Function) =>
-          Promise.resolve({ data: null, error: { message: 'fail' } }).then(
-            res as any,
-            rej as any,
-          );
-        return c;
+    await sendNotification(client, 'org-1', 'u1', 'Alert', 'Oops', 'error', '/fix');
+
+    expect(insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'error',
+        data: { severity: 'error', href: '/fix' },
       }),
-    } as any);
+    );
+  });
 
-    await sendNotification('u1', 'Hello', 'World');
+  it('returns a typed failure instead of swallowing the error', async () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    const { client } = clientWith({ error: { message: 'fail' } });
+
+    const result = await sendNotification(client, 'org-1', 'u1', 'Hello', 'World');
+
+    expect(result).toEqual({ ok: false, error: 'fail' });
     expect(consoleSpy).toHaveBeenCalledWith(
       'Failed to send notification:',
       expect.any(Object),

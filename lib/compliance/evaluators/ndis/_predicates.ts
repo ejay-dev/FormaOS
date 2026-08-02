@@ -60,6 +60,18 @@ function daysSince(iso: string | null): number {
   return ms / DAY_MS;
 }
 
+/**
+ * Days between a restrictive-practice use and the behaviour support plan being
+ * drafted. Infinity when either timestamp is missing or unparseable, so a
+ * caller comparing against a statutory window treats it as a breach.
+ */
+function draftLagDays(draftedAt: string | null, useStartMs: number): number {
+  if (!draftedAt || Number.isNaN(useStartMs)) return Number.POSITIVE_INFINITY;
+  const ms = new Date(draftedAt).getTime() - useStartMs;
+  if (Number.isNaN(ms)) return Number.POSITIVE_INFINITY;
+  return ms / DAY_MS;
+}
+
 function round2(value: number): number {
   return Math.round(value * 100) / 100;
 }
@@ -563,6 +575,7 @@ export async function evaluateComplaintsManagement(
   const { data, error } = await ctx.db
     .from('org_registers')
     .select('id, type, category, status, created_at, updated_at, risk_level')
+    .eq('org_id', ctx.orgId)
     .or('type.eq.complaint,category.eq.complaint')
     .gte('created_at', new Date(Date.now() - 365 * DAY_MS).toISOString());
   if (error) return na(evaluatedAt, 'NDIS-2.5', 'registers_unavailable', error.message);
@@ -1203,8 +1216,11 @@ export async function evaluateRestrictivePracticesOversight(
     );
     const interim = relatedBsps.find((b: { plan_type: string }) => b.plan_type === 'interim');
     const comprehensive = relatedBsps.find((b: { plan_type: string }) => b.plan_type === 'comprehensive');
-    if (!interim || daysSince(interim.drafted_at as string) > 30) lateInterim += 1;
-    if (!comprehensive || daysSince(comprehensive.drafted_at as string) > 180) lateComprehensive += 1;
+    // The statutory windows run from the first restrictive-practice use to the
+    // plan being drafted (F2018L00632: interim within 1 month, comprehensive
+    // within 6), not from the draft date to today.
+    if (!interim || draftLagDays(interim.drafted_at as string | null, useStart) > 30) lateInterim += 1;
+    if (!comprehensive || draftLagDays(comprehensive.drafted_at as string | null, useStart) > 180) lateComprehensive += 1;
   }
 
   for (const bsp of bsps ?? []) {

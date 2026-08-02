@@ -17,6 +17,17 @@ const VALID_ROLES = new Set(['owner', 'admin', 'member', 'viewer']);
 
 export const runtime = 'nodejs';
 
+// Only a signed-in owner may grant, change or remove the owner role.
+// API-key access carries no role, so it never qualifies.
+function isOwnerActor(context: { accessType: string; role: string | null }) {
+  return context.accessType === 'session' && context.role === 'owner';
+}
+
+function readRecordRole(record: unknown): string | null {
+  const role = (record as Record<string, unknown> | null)?.role;
+  return typeof role === 'string' ? role.toLowerCase() : null;
+}
+
 async function findMemberRecord(
   orgId: string,
   memberId: string,
@@ -120,11 +131,29 @@ export async function PATCH(request: Request, context: RouteContext) {
     return response;
   }
 
+  if (
+    !isOwnerActor(auth.context) &&
+    (role === 'owner' || readRecordRole(target.record) === 'owner')
+  ) {
+    const response = jsonWithContext(
+      auth.context,
+      { error: 'Forbidden - only owners can grant or change the owner role' },
+      { status: 403 },
+    );
+    await logV1Access(auth.context, 403, 'members:write');
+    return response;
+  }
+
   const actorId = getActorId(auth.context);
   const table = target.kind === 'member' ? 'org_members' : 'team_invitations';
+  // org_members has no updated_at column; team_invitations does.
+  const updates =
+    target.kind === 'member'
+      ? { role }
+      : { role, updated_at: new Date().toISOString() };
   const { data, error } = await auth.context.db
     .from(table)
-    .update({ role, updated_at: new Date().toISOString() })
+    .update(updates)
     .eq('id', memberId)
     .eq('organization_id', auth.context.orgId)
     .select('*')
@@ -196,6 +225,16 @@ export async function DELETE(request: Request, context: RouteContext) {
       { status: 404 },
     );
     await logV1Access(auth.context, 404, 'members:write');
+    return response;
+  }
+
+  if (!isOwnerActor(auth.context) && readRecordRole(target.record) === 'owner') {
+    const response = jsonWithContext(
+      auth.context,
+      { error: 'Forbidden - only owners can remove an owner' },
+      { status: 403 },
+    );
+    await logV1Access(auth.context, 403, 'members:write');
     return response;
   }
 

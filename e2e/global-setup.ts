@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { config } from 'dotenv';
 import {
@@ -8,9 +9,15 @@ import {
 } from './helpers/test-auth';
 import type { Session } from '@supabase/supabase-js';
 
+// The cached session carries a live access_token and refresh_token for
+// the E2E user, which owns a real organization. It must never live under
+// `test-results/` — CI uploads that directory wholesale as a downloadable
+// build artifact, so anyone who can fetch the artifact could replay the
+// refresh token. Keep it in the runner's temp dir instead: outside the
+// repo, outside every artifact upload glob.
 const SESSION_CACHE_PATH = path.join(
-  process.cwd(),
-  'test-results',
+  os.tmpdir(),
+  'formaos-e2e',
   'e2e-session-cache.json',
 );
 
@@ -109,8 +116,13 @@ async function prewarmSession(): Promise<void> {
   }
 
   if (session) {
-    fs.mkdirSync(path.dirname(SESSION_CACHE_PATH), { recursive: true });
-    fs.writeFileSync(SESSION_CACHE_PATH, JSON.stringify(session, null, 2));
+    fs.mkdirSync(path.dirname(SESSION_CACHE_PATH), {
+      recursive: true,
+      mode: 0o700,
+    });
+    fs.writeFileSync(SESSION_CACHE_PATH, JSON.stringify(session, null, 2), {
+      mode: 0o600,
+    });
     console.log(
       `[e2e/global-setup] Session pre-warmed, expires at ${new Date((session.expires_at ?? 0) * 1000).toISOString()}`,
     );

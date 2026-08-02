@@ -38,6 +38,10 @@ export type ExportManifest = {
   };
 };
 
+// org_control_evaluations.status spells a passing control as `compliant`
+// (evaluation engine) or `satisfied` / `met` (legacy + cross-map rows).
+const SATISFIED_CONTROL_STATUSES = new Set(['satisfied', 'compliant', 'met']);
+
 /**
  * Create an export job
  */
@@ -224,8 +228,8 @@ export async function processExportJob(
       statistics: {
         totalControls: controls.controls?.length || 0,
         satisfiedControls:
-          controls.controls?.filter(
-            (c: { status?: string }) => c.status === 'satisfied',
+          controls.controls?.filter((c: { status?: string }) =>
+            SATISFIED_CONTROL_STATUSES.has(c.status ?? ''),
           ).length || 0,
         totalEvidence: evidence.evidence?.length || 0,
         totalTasks: tasks.tasks?.length || 0,
@@ -359,32 +363,91 @@ async function getControlsData(orgId: string, frameworkSlug: string) {
 
   const { data: controls } = await admin
     .from('framework_controls')
-    .select('control_code, title, summary_description, default_risk_level')
+    .select('id, control_code, title, summary_description, default_risk_level')
     .eq('framework_id', framework.id);
 
-  // Get control status from evaluations
-  const { data: evaluations } = await admin
-    .from('org_control_evaluations')
-    .select('control_key, status, details')
-    .eq('organization_id', orgId);
+  const frameworkControls = (controls || []) as Array<{
+    id: string;
+    control_code: string;
+    title: string;
+    summary_description?: string;
+    default_risk_level?: string;
+  }>;
 
-  const controlsWithStatus = (controls || []).map(
-    (c: {
-      control_code: string;
-      title: string;
-      summary_description?: string;
-      default_risk_level?: string;
-    }) => {
-      const evaluation = evaluations?.find((e: { control_key?: string }) =>
-        e.control_key?.includes(c.control_code),
-      );
-      return {
-        ...c,
-        status: evaluation?.status || 'unknown',
-        details: evaluation?.details || {},
-      };
-    },
+  // org_control_evaluations.control_key is written as `control:<compliance_controls.id>`
+  // by the evaluation engine, and compliance_controls points back at the pack
+  // control through framework_control_id. Older rows carry the bare control_code.
+  // Both are matched exactly — a substring match crosses codes (PCI-1/PCI-10).
+  const { data: complianceControls } = frameworkControls.length
+    ? await admin
+        .from('compliance_controls')
+        .select('id, framework_control_id')
+        .in(
+          'framework_control_id',
+          frameworkControls.map((c) => c.id),
+        )
+    : { data: [] };
+
+  const keysByControlId = new Map<string, string[]>(
+    frameworkControls.map((c) => [c.id, [c.control_code]]),
   );
+
+  for (const link of (complianceControls || []) as Array<{
+    id: string;
+    framework_control_id?: string;
+  }>) {
+    const keys = link.framework_control_id
+      ? keysByControlId.get(link.framework_control_id)
+      : undefined;
+    // Evaluation-engine keys take precedence over the legacy bare code.
+    if (keys) keys.unshift(`control:${link.id}`);
+  }
+
+  const candidateKeys = [...new Set([...keysByControlId.values()].flat())];
+
+  const { data: evaluations } = candidateKeys.length
+    ? await admin
+        .from('org_control_evaluations')
+        .select('control_key, status, details, last_evaluated_at')
+        .eq('organization_id', orgId)
+        .eq('control_type', 'framework_control')
+        .in('control_key', candidateKeys)
+    : { data: [] };
+
+  const evaluationByKey = new Map<
+    string,
+    { status?: string; details?: unknown; last_evaluated_at?: string }
+  >();
+
+  for (const evaluation of (evaluations || []) as Array<{
+    control_key?: string;
+    status?: string;
+    details?: unknown;
+    last_evaluated_at?: string;
+  }>) {
+    if (!evaluation.control_key) continue;
+    const existing = evaluationByKey.get(evaluation.control_key);
+    if (
+      !existing ||
+      (evaluation.last_evaluated_at ?? '') > (existing.last_evaluated_at ?? '')
+    ) {
+      evaluationByKey.set(evaluation.control_key, evaluation);
+    }
+  }
+
+  const controlsWithStatus = frameworkControls.map((c) => {
+    const evaluation = (keysByControlId.get(c.id) ?? [])
+      .map((key) => evaluationByKey.get(key))
+      .find(Boolean);
+    return {
+      control_code: c.control_code,
+      title: c.title,
+      summary_description: c.summary_description,
+      default_risk_level: c.default_risk_level,
+      status: evaluation?.status || 'unknown',
+      details: evaluation?.details || {},
+    };
+  });
 
   return {
     frameworkName: framework.name,

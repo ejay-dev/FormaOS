@@ -22,21 +22,42 @@ export function UserActionButtons({ userId, initialLocked: _initialLocked = fals
   const [loading, setLoading] = useState<UserAction | null>(null)
   const { reportSuccess, reportError } = useComplianceAction()
 
+  // Admin change control rejects reasons shorter than 8 characters.
+  function promptReason(message: string) {
+    const reason = window.prompt(`${message} (at least 8 characters)`)
+    const trimmed = reason?.trim() || null
+    if (!trimmed) return null
+    if (trimmed.length < 8) {
+      reportError({ title: "Reason too short", message: "Provide a reason of at least 8 characters" })
+      return null
+    }
+    return trimmed
+  }
+
   async function handleAction(action: UserAction) {
+    const needsReason = action !== "resend-confirmation"
+    const reason = needsReason
+      ? promptReason(action === "lock" ? "Reason for locking this user" : "Reason for unlocking this user")
+      : null
+    if (needsReason && !reason) return
+
     setLoading(action)
 
     try {
-      const endpoint = action === "resend-confirmation" 
+      const endpoint = action === "resend-confirmation"
         ? `/api/admin/users/${userId}/resend-confirmation`
         : `/api/admin/users/${userId}/lock`
 
-      const body = action === "resend-confirmation" 
+      const body = action === "resend-confirmation"
         ? {}
-        : { locked: action === "lock" }
+        : { locked: action === "lock", reason }
 
       const res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(reason ? { "x-admin-reason": reason } : {}),
+        },
         body: JSON.stringify(body),
       })
 

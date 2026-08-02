@@ -34,31 +34,35 @@ type IntegrationDialogProps = {
   initialConfig?: Record<string, unknown> | null;
 };
 
+// `secret: true` marks a credential-bearing field. Those are never
+// seeded from `initialConfig`, never rendered in clear text, and never
+// submitted blank — the stored value stays server-side and has to be
+// re-entered to be changed.
 const FIELD_MAP: Record<
   IntegrationId,
-  Array<{ key: string; label: string; placeholder: string }>
+  Array<{ key: string; label: string; placeholder: string; secret?: boolean }>
 > = {
   slack: [
-    { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://hooks.slack.com/services/...' },
+    { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://hooks.slack.com/services/...', secret: true },
     { key: 'channel', label: 'Channel', placeholder: '#compliance-alerts' },
   ],
   teams: [
-    { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://outlook.office.com/webhook/...' },
+    { key: 'webhook_url', label: 'Webhook URL', placeholder: 'https://outlook.office.com/webhook/...', secret: true },
     { key: 'channel_name', label: 'Channel Name', placeholder: 'Governance' },
   ],
   jira: [
     { key: 'cloud_id', label: 'Cloud ID', placeholder: 'Atlassian cloud id' },
-    { key: 'access_token', label: 'Access Token', placeholder: 'OAuth access token' },
+    { key: 'access_token', label: 'Access Token', placeholder: 'OAuth access token', secret: true },
     { key: 'project_key', label: 'Project Key', placeholder: 'COMP' },
     { key: 'issue_type_id', label: 'Issue Type ID', placeholder: '10001' },
   ],
   linear: [
-    { key: 'api_key', label: 'API Key', placeholder: 'lin_api_...' },
+    { key: 'api_key', label: 'API Key', placeholder: 'lin_api_...', secret: true },
     { key: 'team_id', label: 'Team ID', placeholder: 'Linear team id' },
   ],
   google_drive: [
-    { key: 'access_token', label: 'Access Token', placeholder: 'OAuth access token' },
-    { key: 'refresh_token', label: 'Refresh Token', placeholder: 'OAuth refresh token' },
+    { key: 'access_token', label: 'Access Token', placeholder: 'OAuth access token', secret: true },
+    { key: 'refresh_token', label: 'Refresh Token', placeholder: 'OAuth refresh token', secret: true },
     { key: 'folder_id', label: 'Folder ID', placeholder: 'Optional shared folder id' },
   ],
   webhook_relay: [
@@ -79,12 +83,18 @@ export function IntegrationConfigDialog({
   const [formState, setFormState] = useState<Record<string, string>>(() => {
     const entries = FIELD_MAP[integrationId].map((field) => [
       field.key,
-      String(initialConfig?.[field.key] ?? ''),
+      field.secret ? '' : String(initialConfig?.[field.key] ?? ''),
     ]);
     return Object.fromEntries(entries);
   });
 
   const fields = FIELD_MAP[integrationId];
+  const savedSecretKeys = new Set(
+    fields
+      .filter((field) => field.secret && Boolean(initialConfig?.[field.key]))
+      .map((field) => field.key),
+  );
+  const hasSecretFields = fields.some((field) => field.secret);
 
   async function runRequest(method: 'POST' | 'DELETE', body?: Record<string, unknown>) {
     const response = await fetch(`/api/v1/integrations/${integrationId}`, {
@@ -104,13 +114,25 @@ export function IntegrationConfigDialog({
     return payload;
   }
 
+  function buildConfigPayload() {
+    const payload: Record<string, string> = {};
+    for (const field of fields) {
+      const value = formState[field.key] ?? '';
+      // Never submit a blank credential — it would overwrite the stored
+      // secret with an empty string.
+      if (field.secret && !value.trim()) continue;
+      payload[field.key] = value;
+    }
+    return payload;
+  }
+
   function onConnect() {
     startTransition(async () => {
       try {
         setMessage(null);
         await runRequest('POST', {
           action: 'connect',
-          config: formState,
+          config: buildConfigPayload(),
         });
         setMessage('Integration saved. Refreshing state…');
         window.location.reload();
@@ -177,6 +199,8 @@ export function IntegrationConfigDialog({
                     {field.label}
                   </span>
                   <Input
+                    type={field.secret ? 'password' : 'text'}
+                    autoComplete={field.secret ? 'new-password' : undefined}
                     value={formState[field.key] ?? ''}
                     onChange={(event) =>
                       setFormState((current) => ({
@@ -184,11 +208,23 @@ export function IntegrationConfigDialog({
                         [field.key]: event.target.value,
                       }))
                     }
-                    placeholder={field.placeholder}
+                    placeholder={
+                      savedSecretKeys.has(field.key)
+                        ? 'Saved — re-enter to save changes'
+                        : field.placeholder
+                    }
                   />
                 </label>
               ))}
             </div>
+
+            {hasSecretFields ? (
+              <p className="text-sm text-muted-foreground">
+                Stored credentials are never sent back to the browser, so they
+                cannot be shown here. Re-enter them whenever you save this
+                integration.
+              </p>
+            ) : null}
 
             <div className="rounded-lg border border-border bg-surface-1 p-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2 font-semibold text-foreground/90">

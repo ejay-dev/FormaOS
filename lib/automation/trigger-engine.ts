@@ -42,6 +42,34 @@ export interface AutomationResult {
 }
 
 /**
+ * org_notifications is (id, org_id, user_id, type, title, body, data, read_at,
+ * created_at). The org column is stamped by the org-scoped client; there is no
+ * `organization_id`, `message` or `metadata` column on the table.
+ */
+async function insertNotification(
+  supabase: ReturnType<typeof createSupabaseOrgClient>,
+  result: AutomationResult,
+  payload: {
+    user_id: string;
+    type: string;
+    title: string;
+    body: string;
+    data: Record<string, unknown>;
+  },
+): Promise<void> {
+  const { error } = await supabase.from('org_notifications').insert(payload);
+
+  if (error) {
+    result.errors.push(
+      `Failed to create ${payload.type} notification: ${error.message}`,
+    );
+    return;
+  }
+
+  result.notificationsSent++;
+}
+
+/**
  * Process trigger events and execute appropriate automations
  * @param event - The trigger event to process
  * @param depth - Current recursion depth (internal use)
@@ -186,15 +214,13 @@ async function handleEvidenceExpiry(
   // Create notifications
   if (members) {
     for (const member of members) {
-      await supabase.from('org_notifications').insert({
-        organization_id: event.organizationId,
+      await insertNotification(supabase, result, {
         user_id: member.user_id,
         type: 'EVIDENCE_EXPIRED',
         title: 'Evidence Renewal Required',
-        message: `Evidence "${evidence.file_name}" has expired. A renewal task has been created.`,
-        metadata: { evidenceId, taskId: task.id },
+        body: `Evidence "${evidence.file_name}" has expired. A renewal task has been created.`,
+        data: { evidenceId, taskId: task.id },
       });
-      result.notificationsSent++;
     }
   }
 }
@@ -265,15 +291,13 @@ async function handlePolicyReviewDue(
 
   if (members) {
     for (const member of members) {
-      await supabase.from('org_notifications').insert({
-        organization_id: event.organizationId,
+      await insertNotification(supabase, result, {
         user_id: member.user_id,
         type: 'POLICY_REVIEW_DUE',
         title: 'Policy Review Required',
-        message: `Policy "${policy.title}" is due for review. A review task has been created.`,
-        metadata: { policyId, taskId: task.id },
+        body: `Policy "${policy.title}" is due for review. A review task has been created.`,
+        data: { policyId, taskId: task.id },
       });
-      result.notificationsSent++;
     }
   }
 }
@@ -346,15 +370,13 @@ async function handleControlIssue(
 
   if (members) {
     for (const member of members) {
-      await supabase.from('org_notifications').insert({
-        organization_id: event.organizationId,
+      await insertNotification(supabase, result, {
         user_id: member.user_id,
         type: isCritical ? 'CONTROL_FAILED' : 'CONTROL_INCOMPLETE',
         title: isCritical ? 'Critical Control Failure' : 'Control Incomplete',
-        message: `Control "${control.title}" ${isCritical ? 'has failed' : 'is incomplete'}. A remediation task has been created.`,
-        metadata: { controlId, taskId: task.id, status },
+        body: `Control "${control.title}" ${isCritical ? 'has failed' : 'is incomplete'}. A remediation task has been created.`,
+        data: { controlId, taskId: task.id, status },
       });
-      result.notificationsSent++;
     }
   }
 }
@@ -439,15 +461,13 @@ async function handleOrgOnboarding(
     .maybeSingle();
 
   if (owner) {
-    await supabase.from('org_notifications').insert({
-      organization_id: event.organizationId,
+    await insertNotification(supabase, result, {
       user_id: owner.user_id,
       type: 'ONBOARDING_STARTED',
       title: 'Welcome to FormaOS!',
-      message: `Your onboarding tasks are ready. Complete them to get started with compliance automation.`,
-      metadata: { tasksCreated: result.tasksCreated, industry },
+      body: `Your onboarding tasks are ready. Complete them to get started with compliance automation.`,
+      data: { tasksCreated: result.tasksCreated, industry },
     });
-    result.notificationsSent++;
   }
 
   automationLogger.info('onboarding_automation_completed', {
@@ -556,15 +576,13 @@ async function handleFrameworksProvisioned(
     .maybeSingle();
 
   if (owner) {
-    await supabase.from('org_notifications').insert({
-      organization_id: event.organizationId,
+    await insertNotification(supabase, result, {
       user_id: owner.user_id,
       type: 'FRAMEWORKS_ACTIVATED',
       title: 'Compliance Frameworks Activated',
-      message: `${frameworks.length} framework(s) have been provisioned and are ready for control completion.`,
-      metadata: { frameworks },
+      body: `${frameworks.length} framework(s) have been provisioned and are ready for control completion.`,
+      data: { frameworks },
     });
-    result.notificationsSent++;
   }
 }
 
@@ -598,15 +616,13 @@ async function handleIndustryPackApplied(
     .maybeSingle();
 
   if (owner) {
-    await supabase.from('org_notifications').insert({
-      organization_id: event.organizationId,
+    await insertNotification(supabase, result, {
       user_id: owner.user_id,
       type: 'INDUSTRY_PACK_APPLIED',
       title: 'Industry Pack Activated',
-      message: `${packName || 'Industry-specific'} resources have been added to your organization.`,
-      metadata: { industry, packName },
+      body: `${packName || 'Industry-specific'} resources have been added to your organization.`,
+      data: { industry, packName },
     });
-    result.notificationsSent++;
   }
 }
 
@@ -662,15 +678,13 @@ async function handleRiskScoreChange(
 
   if (members) {
     for (const member of members) {
-      await supabase.from('org_notifications').insert({
-        organization_id: event.organizationId,
+      await insertNotification(supabase, result, {
         user_id: member.user_id,
         type: 'RISK_SCORE_CHANGE',
         title: `Compliance Risk Elevated to ${newRisk.toUpperCase()}`,
-        message: `Your organization's compliance risk level has increased from ${previousRisk} to ${newRisk}. Score: ${score}`,
-        metadata: { previousRisk, newRisk, score },
+        body: `Your organization's compliance risk level has increased from ${previousRisk} to ${newRisk}. Score: ${score}`,
+        data: { previousRisk, newRisk, score },
       });
-      result.notificationsSent++;
     }
   }
 }
@@ -717,15 +731,13 @@ async function handleTaskOverdue(
 
   // Notify assigned user
   if (task.assigned_to) {
-    await supabase.from('org_notifications').insert({
-      organization_id: event.organizationId,
+    await insertNotification(supabase, result, {
       user_id: task.assigned_to,
       type: 'TASK_OVERDUE',
       title: 'Task Overdue',
-      message: `Task "${task.title}" is ${daysOverdue} day(s) overdue.`,
-      metadata: { taskId, daysOverdue },
+      body: `Task "${task.title}" is ${daysOverdue} day(s) overdue.`,
+      data: { taskId, daysOverdue },
     });
-    result.notificationsSent++;
   }
 
   // Escalate if needed
@@ -737,15 +749,13 @@ async function handleTaskOverdue(
 
     if (members) {
       for (const member of members) {
-        await supabase.from('org_notifications').insert({
-          organization_id: event.organizationId,
+        await insertNotification(supabase, result, {
           user_id: member.user_id,
           type: 'TASK_OVERDUE_ESCALATED',
           title: 'Overdue Task Escalation',
-          message: `Critical task "${task.title}" is ${daysOverdue} day(s) overdue and requires immediate attention.`,
-          metadata: { taskId, daysOverdue, priority: task.priority },
+          body: `Critical task "${task.title}" is ${daysOverdue} day(s) overdue and requires immediate attention.`,
+          data: { taskId, daysOverdue, priority: task.priority },
         });
-        result.notificationsSent++;
       }
     }
   }
@@ -810,15 +820,13 @@ async function handleCertificationExpiring(
 
   if (members) {
     for (const member of members) {
-      await supabase.from('org_notifications').insert({
-        organization_id: event.organizationId,
+      await insertNotification(supabase, result, {
         user_id: member.user_id,
         type: 'CERTIFICATION_EXPIRING',
         title: 'Certification Renewal Required',
-        message: `A certification expires in ${daysUntilExpiry} days. Renewal task has been created.`,
-        metadata: { certificationId, taskId: task.id, daysUntilExpiry },
+        body: `A certification expires in ${daysUntilExpiry} days. Renewal task has been created.`,
+        data: { certificationId, taskId: task.id, daysUntilExpiry },
       });
-      result.notificationsSent++;
     }
   }
 }

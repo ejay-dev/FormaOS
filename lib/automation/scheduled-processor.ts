@@ -87,6 +87,51 @@ export async function runScheduledAutomation(): Promise<{
 }
 
 /**
+ * De-duplication marker for the nightly checks below.
+ *
+ * The checks used to gate on `renewal_task_created` / `review_task_created` /
+ * `escalation_sent` marker columns, which exist on none of these tables in
+ * production. Each trigger handler in trigger-engine.ts instead writes an
+ * org_notifications row carrying the source record id in `data`, so that row is
+ * what tells us a record has already been processed.
+ */
+async function alreadyNotifiedIds(
+  supabase: ReturnType<typeof createSupabaseAdminClient>,
+  types: string[],
+  dataKey: string,
+  orgIds: string[],
+): Promise<Set<string>> {
+  const seen = new Set<string>();
+
+  if (orgIds.length === 0) {
+    return seen;
+  }
+
+  const { data, error } = await supabase
+    .from('org_notifications')
+    .select('data')
+    .in('type', types)
+    .in('org_id', Array.from(new Set(orgIds)));
+
+  if (error) {
+    throw new Error(
+      `Error fetching ${types.join('/')} notifications: ${error.message}`,
+    );
+  }
+
+  for (const row of (data ?? []) as Array<{
+    data: Record<string, unknown> | null;
+  }>) {
+    const value = row.data?.[dataKey];
+    if (typeof value === 'string') {
+      seen.add(value);
+    }
+  }
+
+  return seen;
+}
+
+/**
  * Check for expiring evidence and trigger renewal tasks
  */
 async function checkExpiringEvidence(): Promise<{
@@ -105,8 +150,7 @@ async function checkExpiringEvidence(): Promise<{
     .from('org_evidence')
     .select('id, organization_id, file_name, created_at')
     .lt('created_at', expiryThreshold.toISOString())
-    .eq('verification_status', 'verified')
-    .is('renewal_task_created', null); // Only if we haven't already created a renewal task
+    .eq('verification_status', 'verified');
 
   if (error) {
     results.errors.push(`Error fetching expiring evidence: ${error.message}`);
@@ -117,12 +161,38 @@ async function checkExpiringEvidence(): Promise<{
     return results;
   }
 
+  // Only evidence we haven't already raised a renewal for.
+  let notified: Set<string>;
+  try {
+    notified = await alreadyNotifiedIds(
+      supabase,
+      ['EVIDENCE_EXPIRED'],
+      'evidenceId',
+      expiringEvidence.map(
+        (evidence: { organization_id: string }) => evidence.organization_id,
+      ),
+    );
+  } catch (err) {
+    results.errors.push(
+      err instanceof Error ? err.message : 'Unknown error fetching notifications',
+    );
+    return results;
+  }
+
+  const pendingEvidence = expiringEvidence.filter(
+    (evidence: { id: string }) => !notified.has(evidence.id),
+  );
+
+  if (pendingEvidence.length === 0) {
+    return results;
+  }
+
   automationLogger.info('expiring_evidence_found', {
-    count: expiringEvidence.length,
+    count: pendingEvidence.length,
   });
 
   // Trigger renewal for each
-  for (const evidence of expiringEvidence) {
+  for (const evidence of pendingEvidence) {
     try {
       const triggerEvent: TriggerEvent = {
         type: 'evidence_expiry',
@@ -139,12 +209,6 @@ async function checkExpiringEvidence(): Promise<{
 
       await processTrigger(triggerEvent);
       results.triggersExecuted++;
-
-      // Mark evidence as having a renewal task created
-      await supabase
-        .from('org_evidence')
-        .update({ renewal_task_created: true })
-        .eq('id', evidence.id);
     } catch (err) {
       results.errors.push(
         `Failed to process evidence ${evidence.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
@@ -171,12 +235,9 @@ async function checkPolicyReviews(): Promise<{
 
   const { data: policiesDueReview, error } = await supabase
     .from('org_policies')
-    .select('id, organization_id, title, last_updated_at')
-    .or(
-      `last_updated_at.lt.${reviewThreshold.toISOString()},last_updated_at.is.null`,
-    )
-    .in('status', ['published', 'approved'])
-    .is('review_task_created', null);
+    .select('id, organization_id, title, updated_at')
+    .or(`updated_at.lt.${reviewThreshold.toISOString()},updated_at.is.null`)
+    .in('status', ['published', 'approved']);
 
   if (error) {
     results.errors.push(`Error fetching policies for review: ${error.message}`);
@@ -187,11 +248,37 @@ async function checkPolicyReviews(): Promise<{
     return results;
   }
 
+  // Only policies we haven't already raised a review for.
+  let notified: Set<string>;
+  try {
+    notified = await alreadyNotifiedIds(
+      supabase,
+      ['POLICY_REVIEW_DUE'],
+      'policyId',
+      policiesDueReview.map(
+        (policy: { organization_id: string }) => policy.organization_id,
+      ),
+    );
+  } catch (err) {
+    results.errors.push(
+      err instanceof Error ? err.message : 'Unknown error fetching notifications',
+    );
+    return results;
+  }
+
+  const pendingPolicies = policiesDueReview.filter(
+    (policy: { id: string }) => !notified.has(policy.id),
+  );
+
+  if (pendingPolicies.length === 0) {
+    return results;
+  }
+
   automationLogger.info('policies_due_review_found', {
-    count: policiesDueReview.length,
+    count: pendingPolicies.length,
   });
 
-  for (const policy of policiesDueReview) {
+  for (const policy of pendingPolicies) {
     try {
       const triggerEvent: TriggerEvent = {
         type: 'policy_review_due',
@@ -201,19 +288,13 @@ async function checkPolicyReviews(): Promise<{
         metadata: {
           policyId: policy.id,
           title: policy.title,
-          lastUpdated: policy.last_updated_at,
+          lastUpdated: policy.updated_at,
         },
         triggeredAt: new Date(),
       };
 
       await processTrigger(triggerEvent);
       results.triggersExecuted++;
-
-      // Mark policy as having review task created
-      await supabase
-        .from('org_policies')
-        .update({ review_task_created: true })
-        .eq('id', policy.id);
     } catch (err) {
       results.errors.push(
         `Failed to process policy ${policy.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
@@ -241,8 +322,7 @@ async function checkOverdueTasks(): Promise<{
     .from('org_tasks')
     .select('id, organization_id, title, due_date, priority, assigned_to')
     .eq('status', 'pending')
-    .lt('due_date', now.toISOString())
-    .is('escalation_sent', null);
+    .lt('due_date', now.toISOString());
 
   if (error) {
     results.errors.push(`Error fetching overdue tasks: ${error.message}`);
@@ -253,9 +333,35 @@ async function checkOverdueTasks(): Promise<{
     return results;
   }
 
-  automationLogger.info('overdue_tasks_found', { count: overdueTasks.length });
+  // Only tasks we haven't already escalated.
+  let notified: Set<string>;
+  try {
+    notified = await alreadyNotifiedIds(
+      supabase,
+      ['TASK_OVERDUE', 'TASK_OVERDUE_ESCALATED'],
+      'taskId',
+      overdueTasks.map(
+        (task: { organization_id: string }) => task.organization_id,
+      ),
+    );
+  } catch (err) {
+    results.errors.push(
+      err instanceof Error ? err.message : 'Unknown error fetching notifications',
+    );
+    return results;
+  }
 
-  for (const task of overdueTasks) {
+  const pendingTasks = overdueTasks.filter(
+    (task: { id: string }) => !notified.has(task.id),
+  );
+
+  if (pendingTasks.length === 0) {
+    return results;
+  }
+
+  automationLogger.info('overdue_tasks_found', { count: pendingTasks.length });
+
+  for (const task of pendingTasks) {
     try {
       const daysOverdue = Math.floor(
         (now.getTime() - new Date(task.due_date).getTime()) /
@@ -279,12 +385,6 @@ async function checkOverdueTasks(): Promise<{
 
       await processTrigger(triggerEvent);
       results.triggersExecuted++;
-
-      // Mark task as having escalation sent
-      await supabase
-        .from('org_tasks')
-        .update({ escalation_sent: true })
-        .eq('id', task.id);
     } catch (err) {
       results.errors.push(
         `Failed to process task ${task.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
@@ -312,8 +412,7 @@ async function checkExpiringCertifications(): Promise<{
   const { data: expiringCerts, error } = await supabase
     .from('org_certifications')
     .select('id, organization_id, framework_id, issued_at')
-    .eq('status', 'issued')
-    .is('renewal_task_created', null);
+    .eq('status', 'issued');
 
   if (error) {
     results.errors.push(`Error fetching certifications: ${error.message}`);
@@ -339,11 +438,33 @@ async function checkExpiringCertifications(): Promise<{
     },
   );
 
+  // Only certifications we haven't already raised a renewal for.
+  let notified: Set<string>;
+  try {
+    notified = await alreadyNotifiedIds(
+      supabase,
+      ['CERTIFICATION_EXPIRING'],
+      'certificationId',
+      expiringWithinThreshold.map(
+        (cert: { organization_id: string }) => cert.organization_id,
+      ),
+    );
+  } catch (err) {
+    results.errors.push(
+      err instanceof Error ? err.message : 'Unknown error fetching notifications',
+    );
+    return results;
+  }
+
+  const pendingCerts = expiringWithinThreshold.filter(
+    (cert: { id: string }) => !notified.has(cert.id),
+  );
+
   automationLogger.info('expiring_certifications_found', {
-    count: expiringWithinThreshold.length,
+    count: pendingCerts.length,
   });
 
-  for (const cert of expiringWithinThreshold) {
+  for (const cert of pendingCerts) {
     try {
       const issuedDate = new Date(cert.issued_at);
       const expiryDate = new Date(issuedDate);
@@ -368,12 +489,6 @@ async function checkExpiringCertifications(): Promise<{
 
       await processTrigger(triggerEvent);
       results.triggersExecuted++;
-
-      // Mark certification as having renewal task created
-      await supabase
-        .from('org_certifications')
-        .update({ renewal_task_created: true })
-        .eq('id', cert.id);
     } catch (err) {
       results.errors.push(
         `Failed to process certification ${cert.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,

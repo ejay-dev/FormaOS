@@ -2,7 +2,7 @@
  * New Staff Credential Form Page
  */
 
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -28,15 +28,55 @@ export default async function NewCredentialPage() {
   if (!systemState) redirect('/auth/signin');
 
   const { organization } = systemState;
-  const supabase = await createSupabaseServerClient();
+  const db = createSupabaseAdminClient();
 
-  // Fetch staff members for dropdown
-  const { data: staffMembers } = await supabase
+  // Fetch staff members for dropdown. `users:user_id(...)` cannot be embedded —
+  // org_members.user_id points at auth.users and the production schema declares
+  // no FK to a public table — so profiles are resolved in a second query.
+  const { data: members, error: membersError } = await db
     .from('org_members')
-    .select('user_id, users:user_id(email)')
+    .select('user_id')
     .eq('organization_id', organization.id);
 
-  type StaffMember = NonNullable<typeof staffMembers>[number];
+  if (membersError) {
+    throw new Error(`Failed to load staff members: ${membersError.message}`);
+  }
+
+  const memberIds = Array.from(
+    new Set(
+      (members ?? [])
+        .map((member) => member.user_id as string)
+        .filter(Boolean),
+    ),
+  );
+
+  const { data: profiles } =
+    memberIds.length > 0
+      ? await db
+          .from('user_profiles')
+          .select('user_id, full_name, email')
+          .in('user_id', memberIds)
+      : {
+          data: [] as {
+            user_id?: string;
+            full_name?: string | null;
+            email?: string | null;
+          }[],
+        };
+
+  const profileLabelById = new Map(
+    (profiles ?? []).map((profile) => [
+      profile.user_id as string,
+      (profile.full_name as string | null)?.trim() ||
+        (profile.email as string | null)?.trim() ||
+        (profile.user_id as string),
+    ]),
+  );
+
+  const staffMembers = memberIds.map((userId) => ({
+    user_id: userId,
+    label: profileLabelById.get(userId) ?? userId,
+  }));
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -83,16 +123,9 @@ export default async function NewCredentialPage() {
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 defaultValue={systemState.user.id}
               >
-                {staffMembers?.map((member: StaffMember) => (
+                {staffMembers.map((member) => (
                   <option key={member.user_id} value={member.user_id}>
-                    {(() => {
-                      const u = member.users;
-                      const profile = Array.isArray(u) ? u[0] : u;
-                      return (
-                        (profile as { email?: string } | null)?.email ||
-                        member.user_id
-                      );
-                    })()}
+                    {member.label}
                   </option>
                 ))}
               </select>

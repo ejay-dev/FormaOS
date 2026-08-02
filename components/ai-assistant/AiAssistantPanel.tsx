@@ -31,6 +31,12 @@ export function AiAssistantPanel() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  // Conversation id adopted mid-stream from the X-Conversation-Id
+  // response header. Its messages are already in local state and the
+  // assistant reply is not persisted until the stream finishes, so
+  // refetching would replace the streaming placeholder with the user
+  // message alone and the reply would vanish.
+  const streamedConversationIdRef = useRef<string | null>(null);
 
   // Listen for sidebar nav action to open the AI panel
   useEffect(() => {
@@ -45,10 +51,15 @@ export function AiAssistantPanel() {
 
   // Load conversation messages when switching conversations
   useEffect(() => {
+    const streamedId = streamedConversationIdRef.current;
+    streamedConversationIdRef.current = null;
+
     if (!activeConversationId) {
       setMessages([]);
       return;
     }
+
+    if (streamedId === activeConversationId) return;
 
     let cancelled = false;
 
@@ -141,6 +152,7 @@ export function AiAssistantPanel() {
       // Capture conversation ID from response
       const convId = res.headers.get('X-Conversation-Id');
       if (convId && convId !== activeConversationId) {
+        streamedConversationIdRef.current = convId;
         setConversation(convId);
       }
 

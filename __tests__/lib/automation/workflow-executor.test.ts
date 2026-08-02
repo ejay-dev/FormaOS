@@ -235,7 +235,7 @@ describe('workflow-executor', () => {
           type: 'action',
           action: 'update_field',
           config: {
-            table: 'controls',
+            table: 'org_tasks',
             recordId: 'r1',
             field: 'status',
             value: 'done',
@@ -250,6 +250,69 @@ describe('workflow-executor', () => {
       );
 
       expect(result.execution.status).toBe('completed');
+    });
+
+    // Audit 2026-08-02: update_status/update_field used to pass config.table
+    // and config.field straight into the service-role client with no allow-list
+    // and no tenant filter. A workflow is authored by an ordinary org
+    // owner/admin/compliance_officer, so a step targeting org_members.role was
+    // a self-service privilege escalation, and a recordId pointing at another
+    // tenant's row mutated that tenant's data.
+    it('refuses update_field against a table that is not automatable', async () => {
+      getClient().from.mockImplementation(() =>
+        createBuilder({ data: null, error: null }),
+      );
+
+      const workflow = makeWorkflow([
+        {
+          id: 's1',
+          type: 'action',
+          action: 'update_field',
+          config: {
+            table: 'org_members',
+            recordId: 'r1',
+            field: 'role',
+            value: 'owner',
+          },
+        },
+      ]);
+
+      const result = await executeWorkflow(
+        workflow,
+        { trigger: { type: 'manual', data: {} } },
+        { persist: false },
+      );
+
+      expect(result.execution.status).toBe('failed');
+      expect(getClient().from).not.toHaveBeenCalledWith('org_members');
+    });
+
+    it('refuses update_field against a column that is not automatable', async () => {
+      getClient().from.mockImplementation(() =>
+        createBuilder({ data: null, error: null }),
+      );
+
+      const workflow = makeWorkflow([
+        {
+          id: 's1',
+          type: 'action',
+          action: 'update_field',
+          config: {
+            table: 'org_tasks',
+            recordId: 'r1',
+            field: 'organization_id',
+            value: 'another-tenant',
+          },
+        },
+      ]);
+
+      const result = await executeWorkflow(
+        workflow,
+        { trigger: { type: 'manual', data: {} } },
+        { persist: false },
+      );
+
+      expect(result.execution.status).toBe('failed');
     });
 
     it('skips update_status when missing table/recordId', async () => {

@@ -84,15 +84,35 @@ function mapGroupToRole(groups: string[], fallbackRole: JitRole): JitRole {
   return fallbackRole;
 }
 
+// auth.admin.listUsers() defaults to page 1 / perPage 50, so an
+// unpaginated call only ever searches the first 50 auth users. Walk
+// every page until a short page is returned, otherwise an existing
+// user sorting past page 1 is treated as new and createUser() fails
+// on the duplicate email — a permanent SSO outage for that user.
+const AUTH_USER_PAGE_SIZE = 200;
+const AUTH_USER_MAX_PAGES = 100;
+
 async function findUserByEmail(email: string) {
   const admin = createSupabaseAdminClient();
-  const { data } = await admin.auth.admin.listUsers();
-  return (
-    data?.users?.find(
-      (user: { email?: string }) =>
-        user.email?.toLowerCase() === email.toLowerCase(),
-    ) ?? null
-  );
+  const target = email.toLowerCase();
+
+  for (let page = 1; page <= AUTH_USER_MAX_PAGES; page += 1) {
+    const { data, error } = await admin.auth.admin.listUsers({
+      page,
+      perPage: AUTH_USER_PAGE_SIZE,
+    });
+
+    if (error) {
+      throw new Error(`Failed to look up SSO user: ${error.message}`);
+    }
+
+    const users = data?.users ?? [];
+    const match = users.find((user) => user.email?.toLowerCase() === target);
+    if (match) return match;
+    if (users.length < AUTH_USER_PAGE_SIZE) break;
+  }
+
+  return null;
 }
 
 export async function provisionJitUser(args: {

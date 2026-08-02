@@ -218,11 +218,16 @@ describe('notify', () => {
     expect(result.results).toHaveLength(2);
   });
 
-  it('handles in_app delivery failure gracefully', async () => {
+  // Audit 2026-08-02: email/Slack/Teams delivery used to be nested inside the
+  // in-app preference branch, so an in-app failure silently suppressed every
+  // other channel. This test asserted that bug. The channels are now
+  // independent — an in-app failure must NOT stop the email going out, which is
+  // the whole point of a notification having a fallback channel.
+  it('still delivers email when in_app delivery fails', async () => {
     getMockInApp().mockRejectedValueOnce(new Error('in_app error'));
     const result = await notify(ORG, [USER], baseEvent);
-    expect(result.results[0].channels).toEqual([]);
-    expect(result.results[0].reason).toMatch(/fail|disabled/);
+    expect(result.results[0].channels).not.toContain('in_app');
+    expect(result.results[0].channels).toContain('email');
   });
 
   it('handles email delivery failure as partial', async () => {

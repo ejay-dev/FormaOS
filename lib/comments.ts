@@ -124,6 +124,8 @@ export async function createComment(
   await Promise.all(
     mentionedUserIds.map((mentionedUserId) =>
       sendNotification(
+        supabase,
+        organizationId,
         mentionedUserId,
         'You were mentioned in a comment',
         data.content.substring(0, 100),

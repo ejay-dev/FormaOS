@@ -549,11 +549,16 @@ export async function getUser(
   return resources.find((resource) => resource.id === userId) ?? null;
 }
 
-function mapScimRole(input: Record<string, unknown>): OrgMemberRole {
+function extractScimRole(input: Record<string, unknown>): string | null {
   const requestedRole =
     (input.role as string | undefined) ??
-    (input.roles as Array<{ value?: string }> | undefined)?.[0]?.value ??
-    'member';
+    (input.roles as Array<{ value?: string }> | undefined)?.[0]?.value;
+  return typeof requestedRole === 'string' && requestedRole.trim()
+    ? requestedRole
+    : null;
+}
+
+function normalizeOrgMemberRole(requestedRole: string): OrgMemberRole {
   const normalized = requestedRole.toLowerCase();
   if (
     normalized === 'owner' ||
@@ -564,6 +569,10 @@ function mapScimRole(input: Record<string, unknown>): OrgMemberRole {
     return normalized;
   }
   return 'member';
+}
+
+function mapScimRole(input: Record<string, unknown>): OrgMemberRole {
+  return normalizeOrgMemberRole(extractScimRole(input) ?? 'member');
 }
 
 function getPrimaryEmail(input: Record<string, unknown>) {
@@ -693,6 +702,63 @@ export async function createUser(
   return { status: 201, data: user };
 }
 
+// Entra ID sends `active` as the strings "True"/"False" rather than a JSON
+// boolean; downstream comparisons are strict (`payload.active === false`).
+function normalizeScimActive(value: unknown): unknown {
+  if (typeof value !== 'string') return value;
+  const normalized = value.trim().toLowerCase();
+  if (normalized === 'true') return true;
+  if (normalized === 'false') return false;
+  return value;
+}
+
+function applyUserPatchAttribute(
+  next: Record<string, unknown>,
+  attributePath: string,
+  value: unknown,
+) {
+  switch (attributePath) {
+    case 'displayName':
+      next.displayName = value;
+      return;
+    case 'userName':
+      next.userName = value;
+      return;
+    case 'active':
+      next.active = normalizeScimActive(value);
+      return;
+    case 'name':
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        next.name = { ...(next.name as object), ...(value as object) };
+      }
+      return;
+    case 'name.givenName':
+      next.name = { ...(next.name as object), givenName: value };
+      return;
+    case 'name.familyName':
+      next.name = { ...(next.name as object), familyName: value };
+      return;
+    case 'emails':
+      next.emails = value;
+      return;
+    case `${SCIM_ENTERPRISE_USER_EXTENSION}:department`:
+      next[SCIM_ENTERPRISE_USER_EXTENSION] = {
+        ...(next[SCIM_ENTERPRISE_USER_EXTENSION] as object),
+        department: value,
+      };
+      return;
+    case SCIM_ENTERPRISE_USER_EXTENSION:
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        next[SCIM_ENTERPRISE_USER_EXTENSION] = {
+          ...(next[SCIM_ENTERPRISE_USER_EXTENSION] as object),
+          ...(value as object),
+        };
+      }
+      return;
+    default:
+  }
+}
+
 function applyUserPatchDocument(
   current: ScimUser,
   body: Record<string, unknown>,
@@ -714,25 +780,21 @@ function applyUserPatchDocument(
   for (const operation of body.Operations as ScimPatchOperation[]) {
     const op = String(operation.op ?? '').toLowerCase();
     const path = String(operation.path ?? '');
-    if (op === 'replace' || op === 'add') {
-      if (!path || path === 'displayName') next.displayName = operation.value;
-      if (!path || path === 'userName') next.userName = operation.value;
-      if (!path || path === 'active') next.active = operation.value;
-      if (path === 'name.givenName') {
-        next.name = { ...(next.name as object), givenName: operation.value };
-      }
-      if (path === 'name.familyName') {
-        next.name = { ...(next.name as object), familyName: operation.value };
-      }
-      if (path === 'emails') {
-        next.emails = operation.value;
-      }
-      if (path === `${SCIM_ENTERPRISE_USER_EXTENSION}:department`) {
-        next[SCIM_ENTERPRISE_USER_EXTENSION] = {
-          ...(next[SCIM_ENTERPRISE_USER_EXTENSION] as object),
-          department: operation.value,
-        };
-      }
+    if (op !== 'replace' && op !== 'add') continue;
+
+    if (path) {
+      applyUserPatchAttribute(next, path, operation.value);
+      continue;
+    }
+
+    // RFC 7644 §3.5.2: a path-less operation's value is an object whose keys
+    // are attribute paths, not a scalar applied to every attribute.
+    const { value } = operation;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
+    for (const [attributePath, attributeValue] of Object.entries(
+      value as Record<string, unknown>,
+    )) {
+      applyUserPatchAttribute(next, attributePath, attributeValue);
     }
   }
 
@@ -775,6 +837,17 @@ export async function updateUser(
 
   const membershipStatus = payload.active === false ? 'inactive' : 'active';
 
+  // Only touch org_members.role when the request actually carries one — a
+  // display-name or activation update must not demote an owner/admin.
+  const requestedRole = extractScimRole(payload);
+  const memberUpdate: Record<string, unknown> = {
+    department,
+    compliance_status: membershipStatus,
+  };
+  if (requestedRole) {
+    memberUpdate.role = normalizeOrgMemberRole(requestedRole);
+  }
+
   const [profileResult, memberResult, authResult] = await Promise.all([
     admin.from('user_profiles').upsert(
       {
@@ -786,11 +859,7 @@ export async function updateUser(
     ),
     admin
       .from('org_members')
-      .update({
-        role: mapScimRole(payload),
-        department,
-        compliance_status: membershipStatus,
-      })
+      .update(memberUpdate)
       .eq('organization_id', orgId)
       .eq('user_id', userId),
     admin.auth.admin.updateUserById(userId, {

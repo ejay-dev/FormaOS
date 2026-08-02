@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import type { User } from '@supabase/supabase-js';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { revokeAllSessions } from '@/lib/auth/session-revocation';
 import { consoleShim } from '@/lib/monitoring/console-shim';
@@ -240,15 +241,38 @@ async function loadDirectorySnapshot(
   }
 }
 
-async function findUserByEmail(email: string) {
+// auth.admin.listUsers() defaults to page 1 / perPage 50, so an
+// unpaginated call only ever sees the first 50 auth users. Load the
+// whole table once, paginated, and resolve every directory user and
+// group member against that map — the previous per-email call issued
+// one admin round-trip per directory entry and reported anyone past
+// page 1 as new, which made createUser() fail on a duplicate email
+// and abort the entire sync run.
+const AUTH_USER_PAGE_SIZE = 200;
+const AUTH_USER_MAX_PAGES = 100;
+
+async function loadAuthUsersByEmail(): Promise<Map<string, User>> {
   const admin = createSupabaseAdminClient();
-  const { data } = await admin.auth.admin.listUsers();
-  return (
-    data?.users?.find(
-      (user: { email?: string }) =>
-        user.email?.toLowerCase() === email.toLowerCase(),
-    ) ?? null
-  );
+  const byEmail = new Map<string, User>();
+
+  for (let page = 1; page <= AUTH_USER_MAX_PAGES; page += 1) {
+    const { data, error } = await admin.auth.admin.listUsers({
+      page,
+      perPage: AUTH_USER_PAGE_SIZE,
+    });
+
+    if (error) {
+      throw new Error(`Failed to list auth users: ${error.message}`);
+    }
+
+    const users = data?.users ?? [];
+    for (const user of users) {
+      if (user.email) byEmail.set(user.email.toLowerCase(), user);
+    }
+    if (users.length < AUTH_USER_PAGE_SIZE) break;
+  }
+
+  return byEmail;
 }
 
 export async function upsertDirectorySyncConfig(args: {
@@ -360,6 +384,7 @@ export async function syncDirectory(
 
   try {
     const snapshot = await loadDirectorySnapshot(provider, config);
+    const authUsersByEmail = await loadAuthUsersByEmail();
 
     let createdUsers = 0;
     let updatedUsers = 0;
@@ -368,7 +393,8 @@ export async function syncDirectory(
     for (const directoryUser of snapshot.users) {
       if (!directoryUser.email) continue;
 
-      let user = await findUserByEmail(directoryUser.email);
+      const emailKey = directoryUser.email.toLowerCase();
+      let user = authUsersByEmail.get(emailKey) ?? null;
       if (!user) {
         const created = await admin.auth.admin.createUser({
           email: directoryUser.email,
@@ -386,6 +412,7 @@ export async function syncDirectory(
           );
         }
         user = created.data.user;
+        authUsersByEmail.set(emailKey, user);
         createdUsers += 1;
       } else {
         await admin.auth.admin.updateUserById(user.id, {
@@ -440,7 +467,7 @@ export async function syncDirectory(
 
       const memberIds: string[] = [];
       for (const email of group.members) {
-        const user = await findUserByEmail(email);
+        const user = authUsersByEmail.get(email.toLowerCase());
         if (user) {
           memberIds.push(user.id);
         }

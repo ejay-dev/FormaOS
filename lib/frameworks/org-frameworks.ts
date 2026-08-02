@@ -361,13 +361,36 @@ export async function getCurrentOrgId() {
 
   if (!user) throw new Error('Unauthorized');
 
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('organization_id')
+  // A multi-org user matches more than one org_members row, and an unfiltered
+  // .maybeSingle() then fails with PGRST116 instead of returning a row. Resolve
+  // the active org from user_preferences first (same rule as requireOrgContext
+  // in lib/identity/org-access.ts) and cap the membership lookup at one row.
+  const { data: preference } = await supabase
+    .from('user_preferences')
+    .select('current_organization_id')
     .eq('user_id', user.id)
     .maybeSingle();
 
-  if (!membership?.organization_id) throw new Error('Organization not found');
+  const preferredOrgId =
+    (preference as { current_organization_id?: string } | null)
+      ?.current_organization_id ?? null;
+
+  let membershipQuery = supabase
+    .from('org_members')
+    .select('organization_id')
+    .eq('user_id', user.id)
+    .limit(1);
+
+  if (preferredOrgId) {
+    membershipQuery = membershipQuery.eq('organization_id', preferredOrgId);
+  }
+
+  const { data: membership, error: membershipError } =
+    await membershipQuery.maybeSingle();
+
+  if (membershipError || !membership?.organization_id) {
+    throw new Error('Organization not found');
+  }
 
   return membership.organization_id as string;
 }

@@ -9,6 +9,47 @@ const CONSENT_MAX_AGE_DAYS = 365;
 
 type ConsentValue = 'accepted' | 'rejected' | null;
 
+type PostHogConsentApi = {
+  opt_in_capturing?: () => void;
+  opt_out_capturing?: () => void;
+};
+
+// PostHog may still be loading when the visitor makes a choice, so retry
+// briefly instead of dropping the decision.
+const POSTHOG_WAIT_ATTEMPTS = 10;
+const POSTHOG_WAIT_MS = 500;
+
+/**
+ * Apply the consent decision to the running analytics client. posthog-js
+ * persists opt-in/opt-out, so this also suppresses capture and session
+ * recording on later page loads, not just this one.
+ */
+function applyAnalyticsConsent(value: ConsentValue) {
+  if (typeof window === 'undefined') return;
+
+  let attempts = 0;
+  const apply = () => {
+    const posthog = (window as Window & { posthog?: PostHogConsentApi })
+      .posthog;
+
+    if (!posthog) {
+      attempts += 1;
+      if (attempts < POSTHOG_WAIT_ATTEMPTS) {
+        window.setTimeout(apply, POSTHOG_WAIT_MS);
+      }
+      return;
+    }
+
+    if (value === 'accepted') {
+      posthog.opt_in_capturing?.();
+    } else {
+      posthog.opt_out_capturing?.();
+    }
+  };
+
+  apply();
+}
+
 function readConsent(): ConsentValue {
   if (typeof document === 'undefined') return null;
   const match = document.cookie
@@ -25,6 +66,7 @@ function writeConsent(value: 'accepted' | 'rejected') {
   const maxAge = CONSENT_MAX_AGE_DAYS * 24 * 60 * 60;
   const secure = window.location.protocol === 'https:' ? '; Secure' : '';
   document.cookie = `${CONSENT_COOKIE}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+  applyAnalyticsConsent(value);
   window.dispatchEvent(
     new CustomEvent('formaos:cookie-consent', { detail: { value } }),
   );
@@ -33,6 +75,9 @@ function writeConsent(value: 'accepted' | 'rejected') {
 function clearConsent() {
   if (typeof document === 'undefined') return;
   document.cookie = `${CONSENT_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
+  // No stored preference means no consent, so capture stays off until the
+  // visitor accepts again.
+  applyAnalyticsConsent(null);
   window.dispatchEvent(
     new CustomEvent('formaos:cookie-consent', { detail: { value: null } }),
   );
@@ -44,8 +89,10 @@ export default function PrivacySettingsContent() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setConsent(readConsent());
+    const current = readConsent();
+    setConsent(current);
     setMounted(true);
+    applyAnalyticsConsent(current);
   }, []);
 
   const accept = () => {

@@ -45,7 +45,11 @@ export function resolveSubscriptionStatusForRestore(
   if (trialActive) {
     return 'trialing';
   }
-  return 'pending';
+  // org_subscriptions.status is the subscription_status enum
+  // (trialing|active|past_due|canceled|pending_checkout|incomplete) — there is
+  // no 'pending' member. pending_checkout is the pre-payment state, and with no
+  // live trial deadline requireActiveSubscription still denies it.
+  return 'pending_checkout';
 }
 
 export function getEffectiveOrganizationStatus(args: {
@@ -79,19 +83,32 @@ export function getEffectiveOrganizationStatus(args: {
   };
 }
 
-export async function lockOrganizationAccess(admin: AdminClient, orgId: string) {
-  await admin.from('org_subscriptions').upsert({
-    organization_id: orgId,
-    status: 'blocked',
-    updated_at: new Date().toISOString(),
-  });
+export async function lockOrganizationAccess(
+  admin: AdminClient,
+  orgId: string,
+) {
+  // 'canceled' is the deny state requireActiveSubscription rejects; the
+  // subscription_status enum has no 'blocked' member. An UPDATE rather than an
+  // upsert because org_id/plan_code/plan_key are NOT NULL with no defaults —
+  // and an org with no subscription row is already denied access.
+  const { error } = await admin
+    .from('org_subscriptions')
+    .update({
+      status: 'canceled',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('organization_id', orgId);
+
+  if (error) {
+    throw new Error(`Failed to lock organization access: ${error.message}`);
+  }
 }
 
 export async function unlockOrganizationAccess(
   admin: AdminClient,
   orgId: string,
 ) {
-  const { data: subscription } = await admin
+  const { data: subscription, error: readError } = await admin
     .from('org_subscriptions')
     .select(
       'stripe_subscription_id, trial_expires_at, current_period_end, payment_failures',
@@ -99,15 +116,25 @@ export async function unlockOrganizationAccess(
     .eq('organization_id', orgId)
     .maybeSingle();
 
+  if (readError) {
+    throw new Error(
+      `Failed to read organization subscription: ${readError.message}`,
+    );
+  }
+
   const status = resolveSubscriptionStatusForRestore(subscription);
 
-  await admin
+  const { error } = await admin
     .from('org_subscriptions')
     .update({
       status,
       updated_at: new Date().toISOString(),
     })
     .eq('organization_id', orgId);
+
+  if (error) {
+    throw new Error(`Failed to unlock organization access: ${error.message}`);
+  }
 }
 
 export async function suspendOrganizationLifecycle(args: {
