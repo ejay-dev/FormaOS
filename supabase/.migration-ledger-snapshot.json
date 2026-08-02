@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-06-02T02:44:00.803Z",
+  "takenAt": "2026-08-02T17:20:26.606Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -727,6 +727,14 @@
       "name": "fix_missing_rls"
     },
     {
+      "version": "20260602031250",
+      "name": "create_org_settings_table"
+    },
+    {
+      "version": "20260602101452",
+      "name": "revive_workflow_engine_v2"
+    },
+    {
       "version": "20260610",
       "name": "update_theme_preference_values"
     },
@@ -1073,6 +1081,26 @@
     {
       "version": "20260624073",
       "name": "investigation_analysis_data"
+    },
+    {
+      "version": "20260802153645",
+      "name": "audit_2026_08_02_harden_security_definer_functions"
+    },
+    {
+      "version": "20260802154806",
+      "name": "audit_2026_08_02_tenant_isolation_probe"
+    },
+    {
+      "version": "20260802163736",
+      "name": "audit_2026_08_02_org_lifecycle_columns"
+    },
+    {
+      "version": "20260802172016",
+      "name": "audit_2026_05_26_tighten_attestation_update_rls"
+    },
+    {
+      "version": "20260803001",
+      "name": "audit_2026_08_02_fix_cross_tenant_rls"
     }
   ]
 }
