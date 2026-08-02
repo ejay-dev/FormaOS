@@ -78,6 +78,75 @@ export async function POST(
     }
 
     const admin = createSupabaseAdminClient();
+
+    // Audit 2026-08-02 — bind the asserted identity to THIS organisation.
+    //
+    // Everything validateSamlResponse() checks is supplied by the org's own
+    // admin: the signing certificate and idpEntityId are parsed from the
+    // idp_metadata_xml they upload via PUT /api/sso/config, and
+    // isAllowedDomain() returns true when their allowedDomains list is empty.
+    // Nothing verifies that they control the domain they are asserting. So
+    // without the check below, an admin of any tenant holding the sso_saml
+    // entitlement could sign an assertion naming victim@another-tenant.com and
+    // receive a magic link that logs them in as that user — a full cross-tenant
+    // account takeover.
+    //
+    // The session is minted by GoTrue before any application code runs, so the
+    // membership check in /auth/callback is not a sufficient backstop: an
+    // admin-generated magic link carries no PKCE state, so the tokens are
+    // readable straight off the redirect. The binding therefore has to happen
+    // here, BEFORE generateLink.
+    //
+    // Deliberately resolved against org_members rather than an invitation: a
+    // pending invitation is also attacker-creatable (any org admin may invite
+    // an arbitrary address), so accepting one here would leave the takeover
+    // path open.
+    // Resolved in two explicit steps rather than one embedded join: user_profiles
+    // carries an organization_id, so a user who belongs to several orgs has
+    // several rows and .maybeSingle() would throw on a legitimate multi-org
+    // account.
+    const { data: profileRows, error: profileError } = await admin
+      .from('user_profiles')
+      .select('user_id')
+      .ilike('email', validated.email);
+
+    if (profileError) {
+      throw new Error(
+        `Unable to verify SSO account binding: ${profileError.message}`,
+      );
+    }
+
+    const candidateUserIds = Array.from(
+      new Set(
+        (profileRows ?? [])
+          .map((row) => row.user_id as string | null)
+          .filter((id): id is string => Boolean(id)),
+      ),
+    );
+
+    if (candidateUserIds.length === 0) {
+      throw new Error(
+        'This account is not a member of the organization for this SSO connection',
+      );
+    }
+
+    const { data: memberships, error: membershipError } = await admin
+      .from('org_members')
+      .select('user_id')
+      .eq('organization_id', orgId)
+      .in('user_id', candidateUserIds);
+
+    if (membershipError) {
+      throw new Error(
+        `Unable to verify SSO membership: ${membershipError.message}`,
+      );
+    }
+
+    if (!memberships || memberships.length === 0) {
+      throw new Error(
+        'This account is not a member of the organization for this SSO connection',
+      );
+    }
     const next = safeNext(typeof relayState === 'string' ? relayState : null);
     const redirectTo = `${appBase}/auth/callback?sso_org=${encodeURIComponent(orgId)}&next=${encodeURIComponent(next)}`;
     const { data: link, error } = await admin.auth.admin.generateLink({

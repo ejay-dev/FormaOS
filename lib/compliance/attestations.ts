@@ -203,6 +203,16 @@ export async function insertAttestationClaim(
 
 export interface ReviewAttestationInput {
   attestationId: string;
+  /**
+   * Audit 2026-08-02 — required. The lookup below runs on the service-role
+   * client, which bypasses RLS, and previously filtered on the attestation id
+   * alone. The caller (reviewAttestation in app/app/actions/
+   * compliance-attestations.ts) already held the reviewer's org id and simply
+   * did not pass it, so any authenticated user who knew or guessed an
+   * attestation UUID could approve or reject another tenant's compliance
+   * attestation. Made non-optional so every call site has to supply it.
+   */
+  organizationId: string;
   reviewerUserId: string;
   decision: 'approve' | 'reject';
   rejectedReason?: string;
@@ -229,6 +239,7 @@ export async function updateAttestationReview(
     .from('org_control_attestations')
     .select('id, claimed_by, status')
     .eq('id', input.attestationId)
+    .eq('organization_id', input.organizationId)
     .maybeSingle();
 
   if (readError) {
@@ -267,6 +278,11 @@ export async function updateAttestationReview(
     .from('org_control_attestations')
     .update(patch)
     .eq('id', input.attestationId)
+    // Repeated on the write even though the read above already established the
+    // row belongs to this org: the two statements are not in one transaction,
+    // so the filter here is what actually guarantees the UPDATE cannot land on
+    // another tenant's row.
+    .eq('organization_id', input.organizationId)
     .select()
     .single();
 
