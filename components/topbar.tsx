@@ -7,7 +7,6 @@ import { createSupabaseClient } from '@/lib/supabase/client';
 import { TopbarSearch } from './topbar-search';
 import {
   Search,
-  ChevronRight,
   Settings,
   LogOut,
   ChevronDown,
@@ -15,7 +14,6 @@ import {
   CreditCard,
   ShieldCheck,
   LifeBuoy,
-  Building2,
 } from 'lucide-react';
 import { MobileSidebar } from '@/components/mobile-sidebar';
 import { useHelpAssistant } from '@/components/help/help-assistant-context';
@@ -84,14 +82,16 @@ export function TopBar({
 
   const avatarName = displayName || userEmail || 'User';
 
+  // Three of these used to point at /app/settings, including a "Switch
+  // Organization" item that could not switch anything because no org
+  // switcher exists.
   const menuItems: MenuItem[] = [
     { label: 'Profile', icon: UserCircle, href: '/app/profile' },
-    { label: 'Account Settings', icon: Settings, href: '/app/settings' },
-    { label: 'Billing & Subscription', icon: CreditCard, href: '/app/billing' },
-    { label: 'Security', icon: ShieldCheck, href: '/app/settings' },
-    { label: 'Switch Organization', icon: Building2, href: '/app/settings' },
+    { label: 'Settings', icon: Settings, href: '/app/settings' },
+    { label: 'Security', icon: ShieldCheck, href: '/app/settings/security' },
+    { label: 'Billing', icon: CreditCard, href: '/app/billing' },
     {
-      label: 'Help Center',
+      label: 'Help',
       icon: LifeBuoy,
       action: () => openHelp('home'),
     },
@@ -101,15 +101,15 @@ export function TopBar({
     <div className="flex h-full w-full items-center justify-between gap-2 sm:gap-3 min-w-0">
       {/* Left: Breadcrumbs + Role badge */}
       <div className="flex items-center gap-1.5 sm:gap-2 text-sm text-sidebar-foreground min-w-0">
+        {/* The word "Organization" used to sit here in uppercase at 0.2em
+            tracking, permanently, in the slot a user scans to find out where
+            they are. The organisation name and role are the only parts that
+            carry information. */}
         <MobileSidebar role={role} />
-        <span className="hidden sm:inline font-semibold text-sidebar-primary-foreground uppercase text-[11px] tracking-[0.2em]">
-          Organization
-        </span>
-        <ChevronRight className="hidden sm:block h-4 w-4 text-muted-foreground" />
-        <span className="max-w-[110px] sm:max-w-[200px] truncate px-2 sm:px-3 py-1 rounded-md bg-card/70 text-card-foreground text-[11px] sm:text-sm font-semibold border border-card-foreground/8">
+        <span className="max-w-[140px] sm:max-w-[220px] truncate text-sm font-semibold text-sidebar-primary-foreground">
           {orgName}
         </span>
-        <Badge variant="outline" className="hidden md:inline-flex uppercase tracking-wider font-bold">
+        <Badge variant="outline" className="hidden md:inline-flex">
           {role}
         </Badge>
       </div>

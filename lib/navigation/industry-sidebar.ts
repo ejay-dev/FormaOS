@@ -31,6 +31,7 @@ import {
   ShieldCheck,
   Bot,
   FormInput,
+  Receipt,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -135,6 +136,20 @@ export const NDIS_NAV: NavItem[] = [
     testId: 'nav-visits',
   },
   {
+    name: 'Care Plans',
+    href: '/app/care-plans',
+    icon: ClipboardList,
+    category: 'Care Operations',
+    testId: 'nav-care-plans',
+  },
+  {
+    name: 'NDIS Claiming',
+    href: '/app/ndis-claiming',
+    icon: Receipt,
+    category: 'Care Operations',
+    testId: 'nav-ndis-claiming',
+  },
+  {
     name: 'Progress Notes',
     href: '/app/progress-notes',
     icon: NotebookPen,
@@ -147,6 +162,14 @@ export const NDIS_NAV: NavItem[] = [
     icon: FileText,
     category: 'Care Operations',
     testId: 'nav-behaviour-support-plans',
+  },
+  {
+    name: 'Tasks',
+    href: '/app/tasks',
+    icon: CheckSquare,
+    category: 'Care Operations',
+    testId: 'nav-tasks',
+    badgeKey: 'tasks',
   },
   {
     name: 'Incidents',
@@ -303,6 +326,14 @@ export const MENTAL_HEALTH_NAV: NavItem[] = [
     testId: 'nav-behaviour-support-plans',
   },
   {
+    name: 'Tasks',
+    href: '/app/tasks',
+    icon: CheckSquare,
+    category: 'Care Operations',
+    testId: 'nav-tasks',
+    badgeKey: 'tasks',
+  },
+  {
     name: 'Incidents',
     href: '/app/incidents',
     icon: AlertTriangle,
@@ -436,6 +467,14 @@ export const HEALTHCARE_NAV: NavItem[] = [
     icon: Stethoscope,
     category: 'Clinical',
     testId: 'nav-clinical-notes',
+  },
+  {
+    name: 'Tasks',
+    href: '/app/tasks',
+    icon: CheckSquare,
+    category: 'Clinical',
+    testId: 'nav-tasks',
+    badgeKey: 'tasks',
   },
   {
     name: 'Incidents',
@@ -580,6 +619,14 @@ export const AGED_CARE_NAV: NavItem[] = [
     testId: 'nav-progress-notes',
   },
   {
+    name: 'Tasks',
+    href: '/app/tasks',
+    icon: CheckSquare,
+    category: 'Resident Care',
+    testId: 'nav-tasks',
+    badgeKey: 'tasks',
+  },
+  {
     name: 'Incidents',
     href: '/app/incidents',
     icon: AlertTriangle,
@@ -706,6 +753,14 @@ export const CHILDCARE_NAV: NavItem[] = [
     icon: Shield,
     category: 'Child Safety',
     testId: 'nav-safety-checks',
+  },
+  {
+    name: 'Tasks',
+    href: '/app/tasks',
+    icon: CheckSquare,
+    category: 'Child Safety',
+    testId: 'nav-tasks',
+    badgeKey: 'tasks',
   },
   {
     name: 'Incidents',
@@ -841,6 +896,14 @@ export const COMMUNITY_SERVICES_NAV: NavItem[] = [
     icon: NotebookPen,
     category: 'Service Delivery',
     testId: 'nav-progress-notes',
+  },
+  {
+    name: 'Tasks',
+    href: '/app/tasks',
+    icon: CheckSquare,
+    category: 'Service Delivery',
+    testId: 'nav-tasks',
+    badgeKey: 'tasks',
   },
   {
     name: 'Incidents',
@@ -1551,6 +1614,15 @@ const ORPHAN_ROUTE_CHILDREN: Record<string, NavSubItem[]> = {
   '/app/controls': [{ name: 'Journey View', href: '/app/controls/journey' }],
   '/app/incidents': [
     { name: 'Analytics', href: '/app/incidents/analytics' },
+    // CAPA is a full module (list, detail, entitlement gate) whose only
+    // desktop entry point was a link from an individual incident.
+    { name: 'CAPA', href: '/app/capa' },
+  ],
+  // The board and calendar views linked only to each other, so neither was
+  // reachable from anywhere a user starts.
+  '/app/tasks': [
+    { name: 'Board', href: '/app/tasks/board' },
+    { name: 'Calendar', href: '/app/tasks/calendar' },
   ],
   '/app/reports': [
     { name: 'Trends', href: '/app/reports/trends' },
