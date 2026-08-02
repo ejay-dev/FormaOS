@@ -183,7 +183,29 @@ jest.mock('next/cache', () => ({
 
 import { POST } from '@/app/api/billing/webhook/route';
 
+// Audit 2026-08-02: every test used to save `const original =
+// process.env.STRIPE_WEBHOOK_SECRET` and restore with a plain assignment.
+// When the variable started out unset, `original` is undefined and Node
+// coerces the assignment to the literal string 'undefined' — truthy. Because
+// process.env is shared across every suite in a Jest worker, a later suite
+// asserting the "no webhook secret configured" 400 would silently take the
+// configured path. Restore through delete, from an afterEach so a throwing
+// test cannot skip the cleanup.
+const ORIGINAL_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+
+function setWebhookSecret(value: string | undefined) {
+  if (value === undefined) {
+    delete process.env.STRIPE_WEBHOOK_SECRET;
+  } else {
+    process.env.STRIPE_WEBHOOK_SECRET = value;
+  }
+}
+
 describe('Stripe Webhook Handler', () => {
+  afterEach(() => {
+    setWebhookSecret(ORIGINAL_WEBHOOK_SECRET);
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     // Default: idempotency insert succeeds
@@ -224,6 +246,10 @@ describe('Stripe Webhook Handler', () => {
 
   describe('Signature verification', () => {
     it('returns 400 when stripe-signature header is missing', async () => {
+      // The secret IS configured here, so the 400 is attributable to the
+      // missing signature and not to an unset env var.
+      setWebhookSecret('whsec_test');
+
       const request = new Request('http://localhost/api/billing/webhook', {
         method: 'POST',
         body: '{}',
@@ -234,6 +260,25 @@ describe('Stripe Webhook Handler', () => {
       expect(response.status).toBe(400);
       const body = await response.json();
       expect(body.error).toContain('Missing webhook configuration');
+      expect(mockStripe.webhooks.constructEvent).not.toHaveBeenCalled();
+    });
+
+    it('returns 400 when STRIPE_WEBHOOK_SECRET is not configured', async () => {
+      setWebhookSecret(undefined);
+
+      const request = new Request('http://localhost/api/billing/webhook', {
+        method: 'POST',
+        body: '{}',
+        headers: { 'stripe-signature': 'sig' },
+      });
+
+      const response = await POST(request);
+      expect(response.status).toBe(400);
+      const body = await response.json();
+      expect(body.error).toContain('Missing webhook configuration');
+      // An unverified payload must never reach the event handlers.
+      expect(mockStripe.webhooks.constructEvent).not.toHaveBeenCalled();
+      expect(mockAdminFrom).not.toHaveBeenCalled();
     });
 
     it('returns 400 for invalid signature', async () => {
@@ -247,14 +292,12 @@ describe('Stripe Webhook Handler', () => {
         headers: { 'stripe-signature': 'invalid-sig' },
       });
 
-      // Need STRIPE_WEBHOOK_SECRET env var
-      const original = process.env.STRIPE_WEBHOOK_SECRET;
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
+      setWebhookSecret('whsec_test');
 
       const response = await POST(request);
       expect(response.status).toBe(400);
-
-      process.env.STRIPE_WEBHOOK_SECRET = original;
+      // Rejected before any billing state was touched.
+      expect(mockAdminFrom).not.toHaveBeenCalled();
     });
 
     it('processes valid signature successfully', async () => {
@@ -274,8 +317,7 @@ describe('Stripe Webhook Handler', () => {
         },
       });
 
-      const original = process.env.STRIPE_WEBHOOK_SECRET;
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
+      setWebhookSecret('whsec_test');
 
       const request = new Request('http://localhost/api/billing/webhook', {
         method: 'POST',
@@ -285,15 +327,21 @@ describe('Stripe Webhook Handler', () => {
 
       const response = await POST(request);
       expect(response.status).toBe(200);
-
-      process.env.STRIPE_WEBHOOK_SECRET = original;
+      // The raw body, the header signature and the configured secret are what
+      // get verified — not a re-serialized or partially trusted payload.
+      expect(mockStripe.webhooks.constructEvent).toHaveBeenCalledWith(
+        'valid-body',
+        'valid-sig',
+        'whsec_test',
+      );
+      // The event was claimed for idempotency before being handled.
+      expect(mockAdminFrom).toHaveBeenCalledWith('billing_events');
     });
   });
 
   describe('Idempotency', () => {
     it('skips duplicate events (returns 200)', async () => {
-      const original = process.env.STRIPE_WEBHOOK_SECRET;
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
+      setWebhookSecret('whsec_test');
 
       mockStripe.webhooks.constructEvent.mockReturnValue({
         id: 'evt_duplicate',
@@ -334,15 +382,16 @@ describe('Stripe Webhook Handler', () => {
       expect(response.status).toBe(200);
       const body = await response.json();
       expect(body.received).toBe(true);
-
-      process.env.STRIPE_WEBHOOK_SECRET = original;
+      expect(body.idempotent).toBe(true);
     });
   });
 
   describe('Event handlers', () => {
+    // Restoration is handled by the suite-level afterEach (see the note on
+    // ORIGINAL_WEBHOOK_SECRET) so a throwing assertion cannot leak the secret
+    // into the rest of the worker.
     const setupEvent = (type: string, data: Record<string, unknown>) => {
-      const original = process.env.STRIPE_WEBHOOK_SECRET;
-      process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
+      setWebhookSecret('whsec_test');
 
       mockStripe.webhooks.constructEvent.mockReturnValue({
         id: `evt_${type}_${Date.now()}`,
@@ -351,7 +400,7 @@ describe('Stripe Webhook Handler', () => {
       });
 
       const cleanup = () => {
-        process.env.STRIPE_WEBHOOK_SECRET = original;
+        setWebhookSecret(ORIGINAL_WEBHOOK_SECRET);
       };
 
       return { cleanup };

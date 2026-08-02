@@ -38,12 +38,26 @@ const SERVICE_ROLE = (
 // in CI/dev should not pay the cost of round-tripping to Supabase
 // admin APIs unless the runner has set RUN_INTEGRATION_TESTS=1.
 const RUN_LIVE = process.env.RUN_INTEGRATION_TESTS === '1';
-const HAS_ENV =
-  RUN_LIVE && Boolean(SUPABASE_URL && ANON_KEY && SERVICE_ROLE);
+const HAS_ENV = RUN_LIVE && Boolean(SUPABASE_URL && ANON_KEY && SERVICE_ROLE);
+
+type SeedContext = {
+  admin: SupabaseClient;
+  orgId: string;
+  userId: string;
+  /** Registers a prerequisite row for teardown (deleted in reverse order). */
+  track: (table: string, id: string) => void;
+};
 
 const TABLES_WITH_SIMPLE_SCHEMA: ReadonlyArray<{
   table: string;
   insert: (orgId: string) => Record<string, unknown>;
+  /**
+   * Creates FK parents this table requires and returns the extra columns
+   * to merge into the insert. Verified against the production schema —
+   * org_care_goals needs a care plan (which needs a patient) and
+   * auditor_activity_log needs an auditor token.
+   */
+  dependencies?: (ctx: SeedContext) => Promise<Record<string, unknown>>;
 }> = [
   // The 14 affected tables have varying schemas; we cover one
   // representative per source migration. Each shape uses minimum
@@ -68,12 +82,41 @@ const TABLES_WITH_SIMPLE_SCHEMA: ReadonlyArray<{
   },
   {
     table: 'org_care_goals',
-    // org_care_goals likely has additional NOT-NULL columns; if the
-    // insert fails, the test logs a warning and skips that row.
+    // Was {org_id, title}: org_care_goals has no `title` column and
+    // requires care_plan_id + goal_text, so the insert always failed and
+    // this table's isolation checks silently never ran.
     insert: (orgId) => ({
       org_id: orgId,
-      title: 'rls-isolation-probe',
+      goal_text: 'rls-isolation-probe',
     }),
+    dependencies: async ({ admin, orgId, track }) => {
+      const { data: patient, error: patientErr } = await admin
+        .from('org_patients')
+        .insert({ organization_id: orgId, full_name: 'RLS Probe Patient' })
+        .select('id')
+        .single();
+      if (patientErr || !patient?.id) {
+        throw new Error(`org_patients seed failed: ${patientErr?.message}`);
+      }
+      track('org_patients', patient.id as string);
+
+      const { data: plan, error: planErr } = await admin
+        .from('org_care_plans')
+        .insert({
+          organization_id: orgId,
+          client_id: patient.id,
+          title: 'RLS Probe Plan',
+          start_date: '2026-05-09',
+        })
+        .select('id')
+        .single();
+      if (planErr || !plan?.id) {
+        throw new Error(`org_care_plans seed failed: ${planErr?.message}`);
+      }
+      track('org_care_plans', plan.id as string);
+
+      return { care_plan_id: plan.id, participant_id: patient.id };
+    },
   },
   {
     table: 'auditor_activity_log',
@@ -81,6 +124,29 @@ const TABLES_WITH_SIMPLE_SCHEMA: ReadonlyArray<{
       org_id: orgId,
       action: 'rls-probe',
     }),
+    dependencies: async ({ admin, orgId, userId, track }) => {
+      // token_id is NOT NULL and references auditor_access_tokens.
+      const { data: token, error: tokenErr } = await admin
+        .from('auditor_access_tokens')
+        .insert({
+          org_id: orgId,
+          auditor_name: 'RLS Probe Auditor',
+          auditor_email: `rls-probe-${orgId}@test.formaos.local`,
+          token_hash: `rls-probe-${orgId}-${Date.now()}`,
+          expires_at: new Date(Date.now() + 86_400_000).toISOString(),
+          created_by: userId,
+        })
+        .select('id')
+        .single();
+      if (tokenErr || !token?.id) {
+        throw new Error(
+          `auditor_access_tokens seed failed: ${tokenErr?.message}`,
+        );
+      }
+      track('auditor_access_tokens', token.id as string);
+
+      return { token_id: token.id };
+    },
   },
 ];
 
@@ -92,8 +158,14 @@ maybeDescribe('Blocker 3: org_members-based RLS isolates rows by org', () => {
   let admin: SupabaseClient;
   const createdUserIds: string[] = [];
   const createdOrgIds: string[] = [];
-  const seededRows: Array<{ table: string; column: string; value: unknown }> =
-    [];
+  const seededRows: Array<{
+    table: string;
+    column: string;
+    value: string;
+    orgId: string;
+  }> = [];
+  // FK parents created for the tables that need them, deleted in reverse.
+  const dependencyRows: Array<{ table: string; id: string }> = [];
 
   const PASSWORD = 'RlsTest!Secure-2026';
 
@@ -165,23 +237,33 @@ maybeDescribe('Blocker 3: org_members-based RLS isolates rows by org', () => {
     // Seed one row per table per org with service-role.
     for (const spec of TABLES_WITH_SIMPLE_SCHEMA) {
       for (const seed of [seedA, seedB]) {
-        const payload = spec.insert(seed.orgId);
+        const extraColumns = spec.dependencies
+          ? await spec.dependencies({
+              admin,
+              orgId: seed.orgId,
+              userId: seed.userId,
+              track: (table, id) => dependencyRows.push({ table, id }),
+            })
+          : {};
+        const payload = { ...spec.insert(seed.orgId), ...extraColumns };
         const { error: insertErr, data } = await admin
           .from(spec.table)
           .insert(payload)
           .select('id, org_id')
           .single();
         if (insertErr) {
-          // Schema mismatch on optional tables — skip but record.
-          console.warn(
-            `[B3 test] skipping ${spec.table}: ${insertErr.message}`,
+          // Fail the suite instead of warning. A skipped seed used to mean
+          // the per-table isolation checks below ran zero assertions while
+          // CI stayed green — the failure mode this gate exists to prevent.
+          throw new Error(
+            `[B3 test] seed insert failed for ${spec.table}: ${insertErr.message}`,
           );
-          continue;
         }
         seededRows.push({
           table: spec.table,
           column: 'id',
           value: (data as { id: string }).id,
+          orgId: seed.orgId,
         });
       }
     }
@@ -193,6 +275,9 @@ maybeDescribe('Blocker 3: org_members-based RLS isolates rows by org', () => {
         .from(row.table)
         .delete()
         .eq(row.column as string, row.value);
+    }
+    for (const dep of [...dependencyRows].reverse()) {
+      await admin.from(dep.table).delete().eq('id', dep.id);
     }
     for (const orgId of createdOrgIds) {
       await admin.from('org_members').delete().eq('organization_id', orgId);
@@ -214,26 +299,36 @@ maybeDescribe('Blocker 3: org_members-based RLS isolates rows by org', () => {
 
   for (const spec of TABLES_WITH_SIMPLE_SCHEMA) {
     describe(`${spec.table}`, () => {
+      // Both directions assert the positive case (the caller's own row is
+      // visible) as well as the negative one. Without the positive half a
+      // policy that returns nothing to anybody — the pre-fix GUC bug —
+      // would still pass.
+      function rowIdFor(orgId: string): string {
+        const row = seededRows.find(
+          (r) => r.table === spec.table && r.orgId === orgId,
+        );
+        expect(row).toBeTruthy();
+        return (row as { value: string }).value;
+      }
+
       it('user A sees only org A rows', async () => {
         if (!seedA || !seedB) {
           throw new Error('seeds not initialized');
         }
-        const seededOrgsForTable = seededRows.filter(
-          (r) => r.table === spec.table,
-        );
-        if (seededOrgsForTable.length === 0) {
-          // The table's NOT-NULL contract didn't accept our minimal
-          // insert — skip rather than false-positive.
-          return;
-        }
+        const orgARowId = rowIdFor(seedA.orgId);
+        const orgBRowId = rowIdFor(seedB.orgId);
 
         const client = jwtClient(seedA);
         const { data, error } = await client
           .from(spec.table)
-          .select('org_id');
+          .select('id, org_id');
 
         expect(error).toBeNull();
-        expect(data).toBeDefined();
+        const ids = (data ?? []).map(
+          (row: Record<string, unknown>) => row.id as string,
+        );
+        expect(ids).toContain(orgARowId);
+        expect(ids).not.toContain(orgBRowId);
         for (const row of data ?? []) {
           expect((row as { org_id: string }).org_id).toBe(seedA.orgId);
         }
@@ -243,21 +338,22 @@ maybeDescribe('Blocker 3: org_members-based RLS isolates rows by org', () => {
         if (!seedA || !seedB) {
           throw new Error('seeds not initialized');
         }
-        const seededOrgsForTable = seededRows.filter(
-          (r) => r.table === spec.table,
-        );
-        if (seededOrgsForTable.length === 0) return;
+        const orgARowId = rowIdFor(seedA.orgId);
+        const orgBRowId = rowIdFor(seedB.orgId);
 
         const client = jwtClient(seedB);
         const { data, error } = await client
           .from(spec.table)
-          .select('org_id');
+          .select('id, org_id');
 
         expect(error).toBeNull();
-        expect(data).toBeDefined();
+        const ids = (data ?? []).map(
+          (row: Record<string, unknown>) => row.id as string,
+        );
+        expect(ids).toContain(orgBRowId);
+        expect(ids).not.toContain(orgARowId);
         for (const row of data ?? []) {
           expect((row as { org_id: string }).org_id).toBe(seedB.orgId);
-          expect((row as { org_id: string }).org_id).not.toBe(seedA.orgId);
         }
       });
 
@@ -265,9 +361,7 @@ maybeDescribe('Blocker 3: org_members-based RLS isolates rows by org', () => {
         const anon = createClient(SUPABASE_URL, ANON_KEY, {
           auth: { persistSession: false },
         });
-        const { data, error } = await anon
-          .from(spec.table)
-          .select('org_id');
+        const { data, error } = await anon.from(spec.table).select('org_id');
 
         // RLS for an unauthenticated request returns zero rows;
         // we accept either a clean empty array or a permission-denied

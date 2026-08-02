@@ -511,9 +511,32 @@ describe('report-builder', () => {
     });
 
     const csv = await exportReport('t1', 'org-1', 'csv');
-    // The first widget data is an object (compliance_metrics), not an array
-    // so CSV falls through to empty Buffer
-    expect(csv).toBeDefined();
+    // compliance_metrics resolves to an object ({tasks, certificates,
+    // evidence}), not an array, so the CSV branch falls through to an empty
+    // Buffer. `toBeDefined()` used to pass even if it serialized garbage.
+    expect(Buffer.isBuffer(csv)).toBe(true);
+    expect(csv.length).toBe(0);
+    expect(csv.toString()).toBe('');
+  });
+
+  it('exports CSV as headers-only when the widget data is an empty array', async () => {
+    supabase.setResolver((operation) => {
+      if (operation.table === 'report_templates') {
+        return {
+          data: {
+            id: 't1',
+            name: 'Report',
+            widgets: [widget],
+            layout: { rows: 1, columns: 1 },
+          },
+          error: null,
+        };
+      }
+      return { data: [], error: null };
+    });
+
+    const csv = await exportReport('t1', 'org-1', 'csv');
+    expect(csv.toString()).toBe('');
   });
 
   it('exports PDF format', async () => {

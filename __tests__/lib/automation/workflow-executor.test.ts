@@ -553,21 +553,38 @@ describe('workflow-executor', () => {
       expect(result.execution.status).toBe('completed');
     });
 
+    // Audit 2026-08-02: this used to pass duration '100ms'. durationToMs
+    // only matches /^(\d+)([smhdw])$/, so '100ms' resolved to 0 and the run
+    // took the same "non-positive duration" skip branch as the '0s' test
+    // below — the inline `await wait(delayMs)` path was never executed by
+    // any test. '1s' is the smallest duration the parser accepts and sits
+    // under INLINE_DELAY_THRESHOLD_MS (30_000), so it exercises the real
+    // inline branch.
     it('executes delay step with short duration inline', async () => {
       const workflow = makeWorkflow([
         {
           id: 'd1',
           type: 'delay',
-          duration: '100ms',
+          duration: '1s',
         },
       ]);
 
+      const startedAt = Date.now();
       const result = await executeWorkflow(
         workflow,
         { trigger: { type: 'manual', data: {} } },
         { persist: false },
       );
 
+      const delayStep = result.trace.steps.find((s: any) => s.stepId === 'd1');
+      expect(delayStep?.status).toBe('success');
+      expect(delayStep?.output).toEqual({
+        delayed: true,
+        mode: 'inline',
+        durationMs: 1000,
+      });
+      // The inline branch actually blocks — the skip branch returns instantly.
+      expect(Date.now() - startedAt).toBeGreaterThanOrEqual(900);
       expect(result.execution.status).toBe('completed');
     });
 
@@ -586,7 +603,40 @@ describe('workflow-executor', () => {
         { persist: false },
       );
 
+      const delayStep = result.trace.steps.find((s: any) => s.stepId === 'd1');
+      expect(delayStep?.status).toBe('skipped');
+      expect(delayStep?.output).toEqual({
+        delayed: false,
+        reason: 'non-positive duration',
+      });
       expect(result.execution.status).toBe('completed');
+    });
+
+    // Trap worth locking down: the duration grammar has no millisecond unit,
+    // so an authored '100ms' silently becomes a no-op delay rather than a
+    // 100ms wait. If a `ms` unit is ever added to durationToMs this test
+    // fails and forces the delay semantics to be revisited.
+    it('treats a millisecond duration as unparseable and skips the delay', async () => {
+      const workflow = makeWorkflow([
+        {
+          id: 'd1',
+          type: 'delay',
+          duration: '100ms',
+        },
+      ]);
+
+      const result = await executeWorkflow(
+        workflow,
+        { trigger: { type: 'manual', data: {} } },
+        { persist: false },
+      );
+
+      const delayStep = result.trace.steps.find((s: any) => s.stepId === 'd1');
+      expect(delayStep?.status).toBe('skipped');
+      expect(delayStep?.output).toEqual({
+        delayed: false,
+        reason: 'non-positive duration',
+      });
     });
 
     it('executes loop step', async () => {

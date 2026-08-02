@@ -367,11 +367,14 @@ function addIso27001Sections(doc: jsPDF, report: Iso27001ReportPayload): void {
     entry.applicable ? 'Yes' : 'No',
     entry.implementationStatus.replace('_', ' ').toUpperCase(),
     entry.evidenceCount.toString(),
+    entry.justification,
   ]);
 
   autoTable(doc, {
     startY: y,
-    head: [['Clause', 'Control', 'Applicable', 'Status', 'Evidence']],
+    head: [
+      ['Clause', 'Control', 'Applicable', 'Status', 'Evidence', 'Justification'],
+    ],
     body: soaData,
     theme: 'grid',
     headStyles: {
@@ -382,6 +385,14 @@ function addIso27001Sections(doc: jsPDF, report: Iso27001ReportPayload): void {
     styles: {
       fontSize: 8,
       cellPadding: 3,
+    },
+    columnStyles: {
+      0: { cellWidth: 22 },
+      1: { cellWidth: 43 },
+      2: { cellWidth: 18, halign: 'center' },
+      3: { cellWidth: 27 },
+      4: { cellWidth: 18, halign: 'center' },
+      5: { cellWidth: 42 },
     },
   });
 }

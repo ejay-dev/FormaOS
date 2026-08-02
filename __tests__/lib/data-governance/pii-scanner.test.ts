@@ -75,12 +75,35 @@ describe('scanRecord', () => {
     expect(result.length).toBeGreaterThan(0);
   });
 
+  // Audit 2026-08-02: the truncation assertion used to sit inside
+  // `if (result.length > 0)`. If email detection regressed and scanRecord
+  // returned nothing, the test passed with zero assertions executed — hiding
+  // both the detection break and any truncation bug. Truncation matters here
+  // because samples are written into scan reports and logs.
   it('truncates samples to 64 chars', () => {
     const longEmail = 'a'.repeat(100) + '@test.com';
     const result = scanRecord({ email: longEmail });
-    if (result.length > 0) {
-      expect(result[0].sample.length).toBeLessThanOrEqual(64);
-    }
+    expect(result).toHaveLength(1);
+    expect(result[0].indicators).toContain('email');
+    expect(result[0].sample).toBe(longEmail.slice(0, 64));
+    expect(result[0].sample).toHaveLength(64);
+    // The untruncated value must not survive into the finding.
+    expect(result[0].sample).not.toContain('@test.com');
+  });
+
+  it('truncates non-string samples through their JSON form', () => {
+    const {
+      inferClassificationForField,
+    } = require('@/lib/data-governance/classification');
+    inferClassificationForField.mockReturnValue({
+      level: 'confidential',
+      reason: 'Address',
+    });
+    const longValue = { note: 'b'.repeat(200) };
+    const result = scanRecord({ home_address: longValue });
+    expect(result).toHaveLength(1);
+    expect(result[0].sample).toHaveLength(64);
+    expect(result[0].sample).toBe(JSON.stringify(longValue).slice(0, 64));
   });
 
   it('handles null and undefined values', () => {

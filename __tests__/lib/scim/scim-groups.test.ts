@@ -30,6 +30,33 @@ function createBuilder(result: any = { data: null, error: null }) {
 
 const { createSupabaseAdminClient } = require('@/lib/supabase/admin');
 
+/**
+ * Records every `from(<table>)` builder handed to the code under test so the
+ * write sequence (deletes, upserts, role update) can be asserted instead of
+ * merely asserting that the admin client was constructed. `responses` queues
+ * per-table results in call order.
+ */
+function mockAdmin(responses: Record<string, any[]> = {}) {
+  const calls: Array<{ table: string; builder: Record<string, any> }> = [];
+  const counters: Record<string, number> = {};
+  const from = jest.fn((table: string) => {
+    const index = counters[table] ?? 0;
+    counters[table] = index + 1;
+    const builder = createBuilder(
+      responses[table]?.[index] ?? { data: null, error: null },
+    );
+    calls.push({ table, builder });
+    return builder;
+  });
+  createSupabaseAdminClient.mockReturnValue({ from });
+  return {
+    from,
+    calls,
+    for: (table: string) =>
+      calls.filter((call) => call.table === table).map((call) => call.builder),
+  };
+}
+
 import {
   inferRoleMapping,
   getGroupById,
@@ -136,23 +163,24 @@ describe('getGroupMembers', () => {
 
 describe('syncGroupMembership', () => {
   it('syncs users and nested groups', async () => {
-    // After sync, getGroupById is called for role assignment
-    let callCount = 0;
-    createSupabaseAdminClient.mockReturnValue({
-      from: jest.fn(() => {
-        callCount++;
-        // 1,2: delete old members  3: upsert users  4: upsert groups
-        // 5: getGroupById  6,7: listResolvedUserIds  8: update roles
-        if (callCount === 5)
-          return createBuilder({
-            data: { id: 'g1', role_mapping: 'admin' },
-            error: null,
-          });
-        if (callCount === 6)
-          return createBuilder({ data: [{ user_id: 'u1' }], error: null });
-        if (callCount === 7) return createBuilder({ data: [], error: null });
-        return createBuilder({ data: null, error: null });
-      }),
+    // Per-table call order:
+    //   scim_group_members: 0 delete, 1 upsert, 2 select(g1), 3 select(g2)
+    //   scim_group_links:   0 delete, 1 upsert, 2 select(g1), 3 select(g2)
+    //   scim_groups:        0 getGroupById   org_members: 0 role update
+    const admin = mockAdmin({
+      scim_groups: [{ data: { id: 'g1', role_mapping: 'admin' }, error: null }],
+      scim_group_members: [
+        { data: null, error: null },
+        { data: null, error: null },
+        { data: [{ user_id: 'u1' }], error: null },
+        { data: [{ user_id: 'u2' }], error: null },
+      ],
+      scim_group_links: [
+        { data: null, error: null },
+        { data: null, error: null },
+        { data: [{ child_group_id: 'g2' }], error: null },
+        { data: [], error: null },
+      ],
     });
 
     await syncGroupMembership({
@@ -163,37 +191,141 @@ describe('syncGroupMembership', () => {
         { value: 'g2', type: 'Group' },
       ],
     });
-    expect(createSupabaseAdminClient).toHaveBeenCalled();
+
+    // Stale membership is cleared before the new set is written.
+    const memberBuilders = admin.for('scim_group_members');
+    expect(memberBuilders[0].delete).toHaveBeenCalled();
+    expect(memberBuilders[0].eq).toHaveBeenCalledWith('group_id', 'g1');
+    const linkBuilders = admin.for('scim_group_links');
+    expect(linkBuilders[0].delete).toHaveBeenCalled();
+    expect(linkBuilders[0].eq).toHaveBeenCalledWith('parent_group_id', 'g1');
+
+    // Direct users and nested groups are both persisted.
+    expect(memberBuilders[1].upsert).toHaveBeenCalledWith(
+      [{ group_id: 'g1', user_id: 'u1' }],
+      { onConflict: 'group_id,user_id' },
+    );
+    expect(linkBuilders[1].upsert).toHaveBeenCalledWith(
+      [{ parent_group_id: 'g1', child_group_id: 'g2' }],
+      { onConflict: 'parent_group_id,child_group_id' },
+    );
+
+    // Authz-critical: the group's role_mapping is granted to every resolved
+    // member, including users reached through the nested group.
+    const orgMemberBuilders = admin.for('org_members');
+    expect(orgMemberBuilders).toHaveLength(1);
+    expect(orgMemberBuilders[0].update).toHaveBeenCalledWith({ role: 'admin' });
+    expect(orgMemberBuilders[0].eq).toHaveBeenCalledWith(
+      'organization_id',
+      'org-1',
+    );
+    expect(orgMemberBuilders[0].in).toHaveBeenCalledWith('user_id', [
+      'u1',
+      'u2',
+    ]);
   });
 
   it('handles empty members', async () => {
-    let callCount = 0;
-    createSupabaseAdminClient.mockReturnValue({
-      from: jest.fn(() => {
-        callCount++;
-        if (callCount === 3) return createBuilder({ data: null, error: null }); // getGroupById returns null -> no role_mapping
-        return createBuilder({ data: null, error: null });
-      }),
-    });
+    // scim_groups returns null -> group has no role_mapping.
+    const admin = mockAdmin();
 
     await syncGroupMembership({
       orgId: 'org-1',
       groupId: 'g1',
       members: [],
     });
-    expect(createSupabaseAdminClient).toHaveBeenCalled();
+
+    // Deletes still run, but nothing is upserted for an empty member list.
+    const memberBuilders = admin.for('scim_group_members');
+    const linkBuilders = admin.for('scim_group_links');
+    expect(memberBuilders[0].delete).toHaveBeenCalled();
+    expect(linkBuilders[0].delete).toHaveBeenCalled();
+    expect(
+      memberBuilders.every((b) => b.upsert.mock.calls.length === 0),
+    ).toBe(true);
+    expect(linkBuilders.every((b) => b.upsert.mock.calls.length === 0)).toBe(
+      true,
+    );
+
+    // No role_mapping -> org roles must not be touched.
+    expect(admin.from).not.toHaveBeenCalledWith('org_members');
+  });
+
+  it('does not grant roles when the group has no role_mapping', async () => {
+    const admin = mockAdmin({
+      scim_groups: [
+        { data: { id: 'g1', role_mapping: null }, error: null },
+      ],
+      scim_group_members: [
+        { data: null, error: null },
+        { data: null, error: null },
+      ],
+    });
+
+    await syncGroupMembership({
+      orgId: 'org-1',
+      groupId: 'g1',
+      members: [{ value: 'u1', type: 'User' }],
+    });
+
+    expect(admin.from).toHaveBeenCalledWith('scim_group_members');
+    expect(admin.from).not.toHaveBeenCalledWith('org_members');
+  });
+
+  it('propagates a role-assignment failure', async () => {
+    mockAdmin({
+      scim_groups: [{ data: { id: 'g1', role_mapping: 'admin' }, error: null }],
+      scim_group_members: [
+        { data: null, error: null },
+        { data: null, error: null },
+        { data: [{ user_id: 'u1' }], error: null },
+      ],
+      org_members: [{ data: null, error: { message: 'role update failed' } }],
+    });
+
+    await expect(
+      syncGroupMembership({
+        orgId: 'org-1',
+        groupId: 'g1',
+        members: [{ value: 'u1', type: 'User' }],
+      }),
+    ).rejects.toThrow('role update failed');
   });
 });
 
 describe('upsertScimGroup', () => {
   it('creates group with inferred role', async () => {
-    createSupabaseAdminClient.mockReturnValue({
-      from: jest.fn(() => createBuilder({ data: { id: 'g1' }, error: null })),
+    const admin = mockAdmin({
+      scim_groups: [{ data: { id: 'g1' }, error: null }],
     });
     const result = await upsertScimGroup({
       orgId: 'org-1',
-      displayName: 'Admin Team',
+      displayName: 'Admins',
     });
-    expect(result).toBeDefined();
+
+    expect(admin.from).toHaveBeenCalledWith('scim_groups');
+    expect(admin.for('scim_groups')[0].upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        organization_id: 'org-1',
+        display_name: 'Admins',
+        role_mapping: 'admin',
+        external_id: null,
+        team_slug: null,
+      }),
+      { onConflict: 'organization_id,display_name' },
+    );
+    expect(result).toEqual({ id: 'g1' });
+  });
+
+  it('persists a null role for a name that only contains a role keyword', async () => {
+    const admin = mockAdmin({
+      scim_groups: [{ data: { id: 'g1' }, error: null }],
+    });
+    await upsertScimGroup({ orgId: 'org-1', displayName: 'Admin Team' });
+
+    expect(admin.for('scim_groups')[0].upsert).toHaveBeenCalledWith(
+      expect.objectContaining({ role_mapping: null }),
+      expect.anything(),
+    );
   });
 });

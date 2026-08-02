@@ -55,9 +55,14 @@ let taskCount = 10;
 let evidenceCount = 20;
 let policyCount = 3;
 
+// Tables the hook actually queried, so "does not fetch" can be asserted
+// rather than inferred from a loading flag.
+const mockQueriedTables: string[] = [];
+
 jest.mock('@/lib/supabase/client', () => ({
   createSupabaseClient: jest.fn(() => ({
     from: jest.fn((table: string) => {
+      mockQueriedTables.push(table);
       const counts: Record<string, number> = {
         org_members: memberCount,
         tasks: taskCount,
@@ -82,6 +87,7 @@ beforeEach(() => {
   taskCount = 10;
   evidenceCount = 20;
   policyCount = 3;
+  mockQueriedTables.length = 0;
   localStorage.clear();
 });
 
@@ -104,12 +110,47 @@ describe('useFeatureUsage – fetch', () => {
     });
   });
 
-  it('does not fetch when orgId is null', async () => {
+  it('issues no usage queries when orgId is null', async () => {
     mockOrgId = null;
     const { result } = renderHook(() => useFeatureUsage());
-    // isLoading stays true because fetchUsage bails early
-    expect(result.current.isLoading).toBe(true);
+
+    // The named behaviour: nothing is read from the DB without an org.
+    expect(mockQueriedTables).toEqual([]);
     expect(result.current.usage).toEqual([]);
+    expect(result.current.error).toBeNull();
+    expect(result.current.hasHighUsage).toBe(false);
+  });
+
+  it('starts fetching once an orgId becomes available', async () => {
+    mockOrgId = null;
+    const { result, rerender } = renderHook(() => useFeatureUsage());
+    expect(mockQueriedTables).toEqual([]);
+
+    mockOrgId = 'org-123';
+    rerender();
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(mockQueriedTables).toEqual(
+      expect.arrayContaining([
+        'org_members',
+        'tasks',
+        'org_evidence',
+        'policies',
+      ]),
+    );
+    expect(result.current.usage).toHaveLength(4);
+  });
+
+  // KNOWN DEFECT (lib/trial/use-feature-usage.ts:44-45): fetchUsage returns
+  // before the try/finally when orgId is null, so setIsLoading(false) never
+  // runs and any consumer rendering a spinner off isLoading shows it forever
+  // for a membership-less session. This test pins the current behaviour so
+  // the fix is a deliberate, visible change — it is NOT the desired contract.
+  it('leaves isLoading stuck true without an org (known defect)', () => {
+    mockOrgId = null;
+    const { result } = renderHook(() => useFeatureUsage());
+
+    expect(result.current.isLoading).toBe(true);
   });
 
   it('sets error on fetch failure', async () => {

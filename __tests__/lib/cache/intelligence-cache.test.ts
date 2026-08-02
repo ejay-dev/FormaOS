@@ -27,11 +27,21 @@ describe('lib/cache/intelligence-cache', () => {
       expect(getCachedIntelligence('org1')).toEqual({ score: 85 });
     });
 
+    // Audit 2026-08-02: this test was named "returns null for expired data"
+    // but asserted the fresh value came back, so the 60s TTL branch was
+    // never executed — cached intelligence could stop expiring entirely and
+    // the suite stayed green. Fake timers make the real expiry testable.
     it('returns null for expired data', () => {
-      setCachedIntelligence('org1', { old: true });
-      // Manually expire by modifying internal state (60s TTL)
-      // We can't easily do this without mocking Date.now, so test fresh data
-      expect(getCachedIntelligence('org1')).toEqual({ old: true });
+      jest.useFakeTimers();
+      try {
+        setCachedIntelligence('org1', { old: true });
+        jest.advanceTimersByTime(59_000);
+        expect(getCachedIntelligence('org1')).toEqual({ old: true });
+        jest.advanceTimersByTime(2_000);
+        expect(getCachedIntelligence('org1')).toBeNull();
+      } finally {
+        jest.useRealTimers();
+      }
     });
 
     it('handles different orgs independently', () => {
@@ -49,6 +59,26 @@ describe('lib/cache/intelligence-cache', () => {
 
     it('stores and retrieves framework data', () => {
       setCachedFrameworkIntelligence('org1', { frameworks: ['SOC2'] });
+      expect(getCachedFrameworkIntelligence('org1')).toEqual({
+        frameworks: ['SOC2'],
+      });
+    });
+
+    it('returns null once the framework entry passes its TTL', () => {
+      jest.useFakeTimers();
+      try {
+        setCachedFrameworkIntelligence('org1', { frameworks: ['SOC2'] });
+        jest.advanceTimersByTime(61_000);
+        expect(getCachedFrameworkIntelligence('org1')).toBeNull();
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('keys framework intelligence separately from org intelligence', () => {
+      setCachedIntelligence('org1', { score: 1 });
+      setCachedFrameworkIntelligence('org1', { frameworks: ['SOC2'] });
+      expect(getCachedIntelligence('org1')).toEqual({ score: 1 });
       expect(getCachedFrameworkIntelligence('org1')).toEqual({
         frameworks: ['SOC2'],
       });

@@ -24,13 +24,21 @@ function createBuilder(result: any = { data: null, error: null }) {
   return b;
 }
 
+/**
+ * Keeps every builder handed out by `.from()` so tests can assert the exact
+ * filters/limits the store applied, not merely that a query happened.
+ */
 function mockDb(result?: any) {
+  const builders: Record<string, any>[] = [];
   return {
-    from: jest.fn(() =>
-      createBuilder(
+    builders,
+    from: jest.fn(() => {
+      const builder = createBuilder(
         result ?? { data: { id: 'f1', slug: 'test', version: 1 }, error: null },
-      ),
-    ),
+      );
+      builders.push(builder);
+      return builder;
+    }),
   };
 }
 
@@ -63,6 +71,33 @@ describe('createForm', () => {
       slug: '',
     });
     expect(db.from).toHaveBeenCalledWith('org_forms');
+    expect(db.builders[0].insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        org_id: 'org-1',
+        title: 'My Form Title',
+        slug: 'my-form-title',
+        created_by: 'user-1',
+      }),
+    );
+  });
+
+  it('stamps the default settings when none are supplied', async () => {
+    const db = mockDb();
+    await createForm(db as any, 'org-1', 'user-1', {
+      title: 'Defaults',
+      slug: 'defaults',
+    });
+    expect(db.builders[0].insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        fields: [],
+        settings: expect.objectContaining({
+          // Forms are authenticated-only by default; flipping this to false
+          // would silently open every new form to the public.
+          requireAuthentication: true,
+          allowMultipleSubmissions: false,
+        }),
+      }),
+    );
   });
 
   it('throws on insert error', async () => {
@@ -77,10 +112,20 @@ describe('createForm', () => {
 });
 
 describe('updateForm', () => {
-  it('updates title', async () => {
+  it('updates title and scopes the update to the form and org', async () => {
     const db = mockDb();
     await updateForm(db as any, 'f1', 'org-1', { title: 'New Title' });
-    expect(db.from).toHaveBeenCalled();
+    expect(db.builders[0].update).toHaveBeenCalledWith({ title: 'New Title' });
+    expect(db.builders[0].eq).toHaveBeenCalledWith('id', 'f1');
+    // Dropping this org filter is a cross-tenant write.
+    expect(db.builders[0].eq).toHaveBeenCalledWith('org_id', 'org-1');
+  });
+
+  it('leaves untouched columns out of the update payload', async () => {
+    const db = mockDb();
+    await updateForm(db as any, 'f1', 'org-1', { title: 'Only Title' });
+    const payload = db.builders[0].update.mock.calls[0][0];
+    expect(Object.keys(payload)).toEqual(['title']);
   });
 
   it('bumps version when fields change', async () => {
@@ -96,30 +141,51 @@ describe('updateForm', () => {
         return callCount === 1 ? selectBuilder : updateBuilder;
       }),
     };
-    await updateForm(db as any, 'f1', 'org-1', {
-      fields: [{ type: 'text', label: 'Name' }],
-    });
+    const fields = [{ type: 'text', label: 'Name' }];
+    await updateForm(db as any, 'f1', 'org-1', { fields });
     expect(db.from).toHaveBeenCalledTimes(2);
+    expect(selectBuilder.select).toHaveBeenCalledWith('version');
+    expect(updateBuilder.update).toHaveBeenCalledWith({ fields, version: 3 });
+  });
+
+  it('starts version at 1 when the stored row has no version', async () => {
+    const selectBuilder = createBuilder({ data: { version: null }, error: null });
+    const updateBuilder = createBuilder({ data: { id: 'f1' }, error: null });
+    let callCount = 0;
+    const db = {
+      from: jest.fn(() => (++callCount === 1 ? selectBuilder : updateBuilder)),
+    };
+    await updateForm(db as any, 'f1', 'org-1', { fields: [] });
+    expect(updateBuilder.update).toHaveBeenCalledWith({
+      fields: [],
+      version: 1,
+    });
   });
 
   it('updates description', async () => {
     const db = mockDb();
     await updateForm(db as any, 'f1', 'org-1', { description: 'Updated' });
-    expect(db.from).toHaveBeenCalled();
+    expect(db.builders[0].update).toHaveBeenCalledWith({
+      description: 'Updated',
+    });
   });
 
   it('updates slug', async () => {
     const db = mockDb();
     await updateForm(db as any, 'f1', 'org-1', { slug: 'new-slug' });
-    expect(db.from).toHaveBeenCalled();
+    expect(db.builders[0].update).toHaveBeenCalledWith({ slug: 'new-slug' });
   });
 
-  it('updates settings', async () => {
+  it('updates settings without bumping version', async () => {
     const db = mockDb();
     await updateForm(db as any, 'f1', 'org-1', {
       settings: { requireAuthentication: false },
     });
-    expect(db.from).toHaveBeenCalled();
+    expect(db.builders[0].update).toHaveBeenCalledWith({
+      settings: { requireAuthentication: false },
+    });
+    // Only the update round-trip — no version read.
+    expect(db.from).toHaveBeenCalledTimes(1);
   });
 
   it('throws on update error', async () => {
@@ -135,6 +201,16 @@ describe('publishForm', () => {
     const db = mockDb();
     await publishForm(db as any, 'f1', 'org-1');
     expect(db.from).toHaveBeenCalledWith('org_forms');
+    expect(db.builders[0].update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'published',
+        published_at: expect.any(String),
+      }),
+    );
+    // Only a draft may be published — losing this guard lets an archived
+    // form be silently resurrected.
+    expect(db.builders[0].eq).toHaveBeenCalledWith('status', 'draft');
+    expect(db.builders[0].eq).toHaveBeenCalledWith('org_id', 'org-1');
   });
 
   it('throws on error', async () => {
@@ -147,7 +223,9 @@ describe('archiveForm', () => {
   it('archives a form', async () => {
     const db = mockDb();
     await archiveForm(db as any, 'f1', 'org-1');
-    expect(db.from).toHaveBeenCalled();
+    expect(db.builders[0].update).toHaveBeenCalledWith({ status: 'archived' });
+    expect(db.builders[0].eq).toHaveBeenCalledWith('id', 'f1');
+    expect(db.builders[0].eq).toHaveBeenCalledWith('org_id', 'org-1');
   });
 });
 
@@ -219,22 +297,57 @@ describe('listForms', () => {
     expect(result.total).toBe(1);
   });
 
+  it('always scopes the list to the caller org', async () => {
+    const db = mockDb({ data: [], count: 0, error: null });
+    await listForms(db as any, 'org-1');
+    expect(db.builders[0].eq).toHaveBeenCalledWith('org_id', 'org-1');
+  });
+
   it('respects status filter', async () => {
     const db = mockDb({ data: [], count: 0, error: null });
     await listForms(db as any, 'org-1', { status: 'published' });
-    expect(db.from).toHaveBeenCalled();
+    expect(db.builders[0].eq).toHaveBeenCalledWith('status', 'published');
+  });
+
+  it('omits the status filter when none is requested', async () => {
+    const db = mockDb({ data: [], count: 0, error: null });
+    await listForms(db as any, 'org-1');
+    const statusFilters = db.builders[0].eq.mock.calls.filter(
+      (call: unknown[]) => call[0] === 'status',
+    );
+    expect(statusFilters).toHaveLength(0);
   });
 
   it('respects search filter', async () => {
     const db = mockDb({ data: [], count: 0, error: null });
     await listForms(db as any, 'org-1', { search: 'intake' });
-    expect(db.from).toHaveBeenCalled();
+    expect(db.builders[0].or).toHaveBeenCalledWith(
+      'title.ilike.%intake%,description.ilike.%intake%',
+    );
+  });
+
+  it('drops a search term that sanitizes to nothing instead of issuing a bare or()', async () => {
+    const db = mockDb({ data: [], count: 0, error: null });
+    await listForms(db as any, 'org-1', { search: '%,*' });
+    expect(db.builders[0].or).not.toHaveBeenCalled();
   });
 
   it('limits to max 100', async () => {
     const db = mockDb({ data: [], count: 0, error: null });
     await listForms(db as any, 'org-1', { limit: 500 });
-    expect(db.from).toHaveBeenCalled();
+    // Math.min(500, 100) -> range(offset, offset + limit - 1). Losing the
+    // clamp turns this hot list endpoint into an unbounded query.
+    expect(db.builders[0].range).toHaveBeenCalledWith(0, 99);
+  });
+
+  it('defaults to a page of 25 and honours the cursor', async () => {
+    const db = mockDb({ data: [], count: 0, error: null });
+    await listForms(db as any, 'org-1');
+    expect(db.builders[0].range).toHaveBeenCalledWith(0, 24);
+
+    const paged = mockDb({ data: [], count: 0, error: null });
+    await listForms(paged as any, 'org-1', { cursor: 50, limit: 10 });
+    expect(paged.builders[0].range).toHaveBeenCalledWith(50, 59);
   });
 
   it('computes hasMore', async () => {
@@ -248,7 +361,11 @@ describe('deleteForm', () => {
   it('deletes form', async () => {
     const db = mockDb({ error: null });
     await deleteForm(db as any, 'f1', 'org-1');
-    expect(db.from).toHaveBeenCalled();
+    expect(db.builders[0].delete).toHaveBeenCalled();
+    expect(db.builders[0].eq).toHaveBeenCalledWith('id', 'f1');
+    // A delete without the org filter can wipe another tenant's row on an
+    // id collision.
+    expect(db.builders[0].eq).toHaveBeenCalledWith('org_id', 'org-1');
   });
 
   it('throws on error', async () => {

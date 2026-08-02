@@ -35,9 +35,21 @@ function createBuilder(result: any = { data: null, error: null }) {
   return b;
 }
 
+// Keep the builder handed to the module so the insert payload can be
+// inspected — `from` being called says nothing about what was written.
+let __lastBuilder: Record<string, any> = createBuilder();
+
 const __admin: Record<string, any> = {
-  from: jest.fn(() => createBuilder()),
+  from: jest.fn(() => {
+    __lastBuilder = createBuilder();
+    return __lastBuilder;
+  }),
 };
+
+function lastInsertPayload(): Record<string, any> {
+  expect(__lastBuilder.insert).toHaveBeenCalledTimes(1);
+  return __lastBuilder.insert.mock.calls[0][0];
+}
 
 jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: jest.fn(() => __admin),
@@ -70,15 +82,36 @@ import { logSecurityEvent } from '@/lib/security/session-security';
 
 describe('logRateLimitEvent', () => {
   it('inserts log to database', () => {
+    const windowStart = Date.parse('2026-01-01T00:00:00.000Z');
+    logRateLimitEvent({
+      identifier: 'user-1',
+      endpoint: '/api/test',
+      requestCount: 100,
+      windowStart,
+      blocked: false,
+    });
+
+    expect(__admin.from).toHaveBeenCalledWith('rate_limit_log');
+    expect(lastInsertPayload()).toMatchObject({
+      identifier: 'user-1',
+      endpoint: '/api/test',
+      request_count: 100,
+      window_start: '2026-01-01T00:00:00.000Z',
+      // Not blocked -> no block timestamp.
+      blocked_at: null,
+    });
+  });
+
+  it('stamps blocked_at when the request was blocked', () => {
     logRateLimitEvent({
       identifier: 'user-1',
       endpoint: '/api/test',
       requestCount: 100,
       windowStart: Date.now(),
-      blocked: false,
+      blocked: true,
     });
 
-    expect(__admin.from).toHaveBeenCalledWith('rate_limit_log');
+    expect(lastInsertPayload().blocked_at).toEqual(expect.any(String));
   });
 
   it('logs security event when blocked', () => {
@@ -217,6 +250,11 @@ describe('logRateLimitFailOpenWarning', () => {
     });
 
     expect(__admin.from).toHaveBeenCalledWith('rate_limit_log');
+    expect(lastInsertPayload()).toMatchObject({
+      endpoint: '[in_memory:redis_unavailable] api:test',
+      request_count: 0,
+      blocked_at: null,
+    });
     jest.restoreAllMocks();
   });
 
@@ -227,10 +265,42 @@ describe('logRateLimitFailOpenWarning', () => {
       reason: 'redis_unavailable',
       keyPrefix: 'api:test',
       userId: 'user-1',
+      identifier: 'id-1',
       fallbackMode: 'in_memory',
     });
 
-    expect(__admin.from).toHaveBeenCalled();
+    // userId wins over the raw identifier so degraded rows stay attributable.
+    expect(lastInsertPayload().identifier).toBe('user-1');
+    jest.restoreAllMocks();
+  });
+
+  it('falls back to identifier when there is no userId', () => {
+    jest.spyOn(console, 'warn').mockImplementation();
+
+    logRateLimitFailOpenWarning({
+      reason: 'redis_error',
+      keyPrefix: 'api:test',
+      identifier: 'id-1',
+      fallbackMode: 'fail_closed',
+    });
+
+    expect(lastInsertPayload()).toMatchObject({
+      identifier: 'id-1',
+      endpoint: '[fail_closed:redis_error] api:test',
+    });
+    jest.restoreAllMocks();
+  });
+
+  it('falls back to a degraded key prefix when nothing identifies the caller', () => {
+    jest.spyOn(console, 'warn').mockImplementation();
+
+    logRateLimitFailOpenWarning({
+      reason: 'redis_unavailable',
+      keyPrefix: 'api:rate_limit',
+      fallbackMode: 'in_memory',
+    });
+
+    expect(lastInsertPayload().identifier).toBe('degraded:api_rate_limit');
     jest.restoreAllMocks();
   });
 

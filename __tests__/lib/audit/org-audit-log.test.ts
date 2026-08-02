@@ -15,9 +15,14 @@ const mockExtract = extractMissingSupabaseColumn as jest.Mock;
 
 function createMockClient(insertResults: Array<{ error: any }>) {
   let callCount = 0;
+  // Record every row handed to insert() so tests can assert on the payload
+  // the audit writer actually builds, not just that it was called.
+  const insertedRows: Array<Array<Record<string, unknown>>> = [];
   return {
+    insertedRows,
     from: jest.fn(() => ({
-      insert: jest.fn(() => {
+      insert: jest.fn((rows: Array<Record<string, unknown>>) => {
+        insertedRows.push(rows);
         const result = insertResults[callCount] ?? { error: null };
         callCount++;
         return Promise.resolve(result);
@@ -62,7 +67,15 @@ describe('org-audit-log', () => {
         target: '',
         target_resource: 'Document A',
       });
-      expect((result) => result).toBeDefined();
+      // An empty `target` must fall through to target_resource — not to the
+      // action name, and not to the empty string.
+      expect(client.insertedRows[0]).toEqual([
+        expect.objectContaining({
+          organization_id: 'org-1',
+          action: 'doc.create',
+          target: 'Document A',
+        }),
+      ]);
     });
 
     it('defaults target to action when both target and target_resource are empty', async () => {
@@ -73,7 +86,8 @@ describe('org-audit-log', () => {
         target: '',
         target_resource: '',
       });
-      expect(client.from).toHaveBeenCalled();
+      expect(client.from).toHaveBeenCalledWith('org_audit_logs');
+      expect(client.insertedRows[0][0].target).toBe('system.check');
     });
 
     it('defaults actor_email to system@formaos.com when empty', async () => {
@@ -83,7 +97,7 @@ describe('org-audit-log', () => {
         action: 'cron.run',
         actor_email: '',
       });
-      expect(client.from).toHaveBeenCalled();
+      expect(client.insertedRows[0][0].actor_email).toBe('system@formaos.com');
     });
 
     it('handles metadata with details and diff', async () => {
@@ -95,7 +109,13 @@ describe('org-audit-log', () => {
         details: { changed: true },
         diff: { before: 'a', after: 'b' },
       });
-      expect((result) => result).toBeDefined();
+      // details/diff must be nested alongside the caller's metadata rather
+      // than overwriting it — dropping the diff is the regression this pins.
+      expect(client.insertedRows[0][0].metadata).toEqual({
+        metadata: { key: 'value' },
+        details: { changed: true },
+        diff: { before: 'a', after: 'b' },
+      });
     });
 
     it('handles metadata without details/diff', async () => {

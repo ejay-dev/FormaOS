@@ -821,10 +821,11 @@ describe('SystemStateProvider – reducer edge cases', () => {
     expect(result.current.getModuleState('doesnotexist' as any)).toBe('locked');
   });
 
-  it('ACTIVATE_MODULE sets module to active', async () => {
-    // We test via initialize first to have modules, then we need to use upgradePlan path
-    // Since ACTIVATE_MODULE / DEACTIVATE_MODULE aren't directly exposed,
-    // we test them through the upgrade flow which dispatches SET_MODULE_STATE
+  // Note: the ACTIVATE_MODULE / DEACTIVATE_MODULE reducer branches are not
+  // reachable — nothing in the app dispatches them and the context exposes no
+  // dispatch. The reachable equivalent is setModuleState, which is what the
+  // activation/lock transition actually runs through.
+  it('setModuleState activates a module and locks it again', async () => {
     const wrapper = makeWrapper({
       user: testUser,
       organization: testOrg,
@@ -834,13 +835,40 @@ describe('SystemStateProvider – reducer edge cases', () => {
     const { result } = renderHook(() => useSystemState(), { wrapper });
     await waitFor(() => expect(result.current.isHydrated).toBe(true));
 
-    // Initialize the modules to locked/active state via initialize
+    act(() => {
+      result.current.setModuleState('controls', 'active');
+    });
+
+    expect(result.current.getModuleState('controls')).toBe('active');
+    expect(result.current.isModuleAccessible('controls')).toBe(true);
+
+    act(() => {
+      result.current.setModuleState('controls', 'locked');
+    });
+
+    expect(result.current.getModuleState('controls')).toBe('locked');
+    expect(result.current.isModuleAccessible('controls')).toBe(false);
+    // Other modules are untouched by a single-module transition.
+    expect(result.current.getModuleState('evidence')).not.toBe('locked');
+  });
+
+  it('initialize() marks the provider initialized and keeps modules populated', async () => {
+    const wrapper = makeWrapper({
+      user: testUser,
+      organization: testOrg,
+      entitlements: testEntitlements,
+      isFounder: false,
+    });
+    const { result } = renderHook(() => useSystemState(), { wrapper });
+    await waitFor(() => expect(result.current.isHydrated).toBe(true));
+
     act(() => {
       result.current.initialize(testUser, testOrg, 'owner');
     });
 
-    // Modules should be calculated
     expect(result.current.state.initialized).toBe(true);
+    expect(result.current.state.modules.size).toBeGreaterThan(0);
+    expect(result.current.state.entitlements.role).toBe('owner');
   });
 
   it('updateFlow with state updates the flow state', async () => {

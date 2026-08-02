@@ -2,471 +2,330 @@
 /**
  * Multi-Tenancy Data Isolation Tests
  *
- * Verifies that org-scoped data cannot leak across organisations.
- * Uses mocked Supabase clients to simulate RLS enforcement.
+ * These exercise the REAL tenant-scoping code paths — the org-scoped
+ * Supabase wrapper (lib/supabase/org-scoped.ts) and a query-layer reader
+ * (lib/data/audit-logs.ts) — against an in-memory database that does NOT
+ * filter by itself. Postgres RLS cannot be exercised from Jest, and the
+ * service-role client bypasses it anyway, so the filters this code emits
+ * are the control under test: remove one and a cross-org read succeeds,
+ * which fails these tests.
+ *
+ * The previous version of this file simulated RLS with a test-local
+ * `rlsFilter()` and then asserted that filter's output, so no production
+ * code was involved at all. It also seeded tables (`obligations`,
+ * `incidents`, `participants`) that do not exist in the database.
  */
 
-const mockGetUser = jest.fn();
-const _mockFrom = jest.fn();
-const mockRateLimitApi = jest.fn();
-const mockRequirePermission = jest.fn();
-const mockGetDashboardMetrics = jest.fn();
+jest.mock('server-only', () => ({}));
 
-// Track the "current org" for simulated RLS filtering
-let currentOrgId = 'org-a';
-let _currentUserId = 'user-a';
-let isAdmin = false;
+type Row = Record<string, unknown>;
 
-// Simulated database tables with org-scoped data
-const mockObligations = [
-  { id: 'obl-1', org_id: 'org-a', title: 'SOC 2 Audit', status: 'active' },
-  { id: 'obl-2', org_id: 'org-a', title: 'ISO 27001 Gap', status: 'active' },
-  { id: 'obl-3', org_id: 'org-b', title: 'GDPR Compliance', status: 'active' },
-  { id: 'obl-4', org_id: 'org-b', title: 'PCI DSS Review', status: 'active' },
-];
+// Seeded to mirror real schema: these tables key tenancy off
+// organization_id (verified against the production schema).
+let tables: Record<string, Row[]> = {};
 
-const mockIncidents = [
-  {
-    id: 'inc-1',
-    org_id: 'org-a',
-    title: 'Data breach attempt',
-    severity: 'high',
-  },
-  { id: 'inc-2', org_id: 'org-b', title: 'Access anomaly', severity: 'medium' },
-];
-
-const mockParticipants = [
-  {
-    id: 'part-1',
-    org_id: 'org-a',
-    name: 'Alice Smith',
-    role: 'compliance_officer',
-  },
-  { id: 'part-2', org_id: 'org-a', name: 'Bob Jones', role: 'auditor' },
-  { id: 'part-3', org_id: 'org-b', name: 'Charlie Brown', role: 'manager' },
-];
-
-const mockEvidence = [
-  {
-    id: 'ev-1',
-    org_id: 'org-a',
-    filename: 'policy.pdf',
-    uploaded_by: 'user-a',
-  },
-  {
-    id: 'ev-2',
-    org_id: 'org-b',
-    filename: 'audit-report.pdf',
-    uploaded_by: 'user-b',
-  },
-];
-
-const mockMembers = [
-  { id: 'mem-1', organization_id: 'org-a', user_id: 'user-a', role: 'owner' },
-  { id: 'mem-2', organization_id: 'org-a', user_id: 'user-a2', role: 'member' },
-  { id: 'mem-3', organization_id: 'org-b', user_id: 'user-b', role: 'owner' },
-];
+function seed() {
+  tables = {
+    org_evidence: [
+      {
+        id: 'ev-a1',
+        organization_id: 'org-a',
+        file_name: 'policy.pdf',
+        title: 'Policy',
+      },
+      {
+        id: 'ev-a2',
+        organization_id: 'org-a',
+        file_name: 'training.pdf',
+        title: 'Training',
+      },
+      {
+        id: 'ev-b1',
+        organization_id: 'org-b',
+        file_name: 'audit-report.pdf',
+        title: 'Audit',
+      },
+    ],
+    org_members: [
+      { id: 'mem-a1', organization_id: 'org-a', user_id: 'user-a', role: 'owner' },
+      { id: 'mem-a2', organization_id: 'org-a', user_id: 'user-a2', role: 'member' },
+      { id: 'mem-b1', organization_id: 'org-b', user_id: 'user-b', role: 'owner' },
+    ],
+    org_tasks: [
+      { id: 'task-a1', organization_id: 'org-a', title: 'SOC 2 Audit' },
+      { id: 'task-b1', organization_id: 'org-b', title: 'GDPR Compliance' },
+    ],
+    org_audit_logs: [
+      {
+        id: 'log-a1',
+        organization_id: 'org-a',
+        action: 'evidence.upload',
+        created_at: '2026-01-02T00:00:00Z',
+      },
+      {
+        id: 'log-a2',
+        organization_id: 'org-a',
+        action: 'member.invite',
+        created_at: '2026-01-01T00:00:00Z',
+      },
+      {
+        id: 'log-b1',
+        organization_id: 'org-b',
+        action: 'policy.publish',
+        created_at: '2026-01-03T00:00:00Z',
+      },
+    ],
+  };
+}
 
 /**
- * Simulates RLS filtering — returns only data for the current org,
- * unless the caller is an admin (which bypasses RLS via service role).
+ * In-memory stand-in for PostgREST + a service-role connection: it applies
+ * exactly the filters it is given and nothing more. An unfiltered select
+ * therefore returns every tenant's rows — the same as a service-role query
+ * that forgot its org filter.
  */
-function rlsFilter<T extends { org_id?: string; organization_id?: string }>(
-  data: T[],
-  orgField: 'org_id' | 'organization_id' = 'org_id',
-): T[] {
-  if (isAdmin) return data;
-  return data.filter((row) => row[orgField] === currentOrgId);
-}
+function createFakeDb() {
+  function makeQuery(table: string) {
+    const filters: Array<[string, unknown]> = [];
+    let mode: 'select' | 'insert' | 'update' | 'upsert' | 'delete' = 'select';
+    let payload: Row | Row[] | null = null;
 
-// Build a chainable mock for Supabase query builder
-function createQueryBuilder(tableName: string) {
-  const tableDataMap: Record<
-    string,
-    { data: unknown[]; orgField: 'org_id' | 'organization_id' }
-  > = {
-    obligations: { data: mockObligations, orgField: 'org_id' },
-    compliance_tasks: { data: mockObligations, orgField: 'org_id' },
-    org_tasks: { data: mockObligations, orgField: 'org_id' },
-    incidents: { data: mockIncidents, orgField: 'org_id' },
-    org_incidents: { data: mockIncidents, orgField: 'org_id' },
-    participants: { data: mockParticipants, orgField: 'org_id' },
-    org_members: { data: mockMembers, orgField: 'organization_id' },
-    evidence: { data: mockEvidence, orgField: 'org_id' },
-    org_evidence: { data: mockEvidence, orgField: 'org_id' },
-    evidence_vault: { data: mockEvidence, orgField: 'org_id' },
-  };
+    const rows = () => (tables[table] ??= []);
+    const matches = (row: Row) =>
+      filters.every(([column, value]) => row[column] === value);
 
-  const tableConfig = tableDataMap[tableName] || {
-    data: [],
-    orgField: 'org_id' as const,
-  };
-  let filteredData = rlsFilter(
-    tableConfig.data as Array<{ org_id?: string; organization_id?: string }>,
-    tableConfig.orgField,
-  );
-
-  const builder: Record<string, jest.Mock> = {};
-
-  // Chainable methods
-  const chainable = [
-    'select',
-    'eq',
-    'neq',
-    'gt',
-    'gte',
-    'lt',
-    'lte',
-    'like',
-    'ilike',
-    'in',
-    'order',
-    'limit',
-    'range',
-    'single',
-    'maybeSingle',
-  ];
-  for (const method of chainable) {
-    builder[method] = jest.fn().mockImplementation((...args: unknown[]) => {
-      if (method === 'eq' && args.length === 2) {
-        const [field, value] = args as [string, unknown];
-        filteredData = filteredData.filter(
-          (row) => (row as Record<string, unknown>)[field] === value,
-        );
+    const run = () => {
+      if (mode === 'insert' || mode === 'upsert') {
+        const list = Array.isArray(payload) ? payload : [payload as Row];
+        rows().push(...list.map((r) => ({ ...r })));
+        return { data: list, error: null };
       }
-      if (method === 'single' || method === 'maybeSingle') {
-        return Promise.resolve({ data: filteredData[0] || null, error: null });
+      if (mode === 'update') {
+        const hit = rows().filter(matches);
+        for (const row of hit) Object.assign(row, payload);
+        return { data: hit, error: null };
       }
-      return builder;
-    });
+      if (mode === 'delete') {
+        const removed = rows().filter(matches);
+        tables[table] = rows().filter((r) => !matches(r));
+        return { data: removed, error: null };
+      }
+      return { data: rows().filter(matches), error: null };
+    };
+
+    const builder: Record<string, any> = {
+      select: () => builder,
+      insert: (values: Row | Row[]) => {
+        mode = 'insert';
+        payload = values;
+        return builder;
+      },
+      update: (values: Row) => {
+        mode = 'update';
+        payload = values;
+        return builder;
+      },
+      upsert: (values: Row | Row[]) => {
+        mode = 'upsert';
+        payload = values;
+        return builder;
+      },
+      delete: () => {
+        mode = 'delete';
+        return builder;
+      },
+      eq: (column: string, value: unknown) => {
+        filters.push([column, value]);
+        return builder;
+      },
+      in: (column: string, values: unknown[]) => {
+        filters.push([column, values[0]]);
+        return builder;
+      },
+      order: () => builder,
+      limit: () => builder,
+      single: () => Promise.resolve({ data: run().data?.[0] ?? null, error: null }),
+      maybeSingle: () =>
+        Promise.resolve({ data: run().data?.[0] ?? null, error: null }),
+      then: (resolve: (v: unknown) => void) => resolve(run()),
+    };
+
+    return builder;
   }
 
-  // Terminal method
-  builder.then = jest
-    .fn()
-    .mockImplementation((resolve: (value: unknown) => void) => {
-      resolve({ data: filteredData, error: null });
-    });
-
-  // Make it thenable
-  const proxy = new Proxy(builder, {
-    get(target, prop) {
-      if (prop === 'then') {
-        return (resolve: (value: unknown) => void) => {
-          resolve({ data: filteredData, error: null });
-        };
-      }
-      return target[prop as string];
-    },
-  });
-
-  return proxy;
+  return { from: (table: string) => makeQuery(table) };
 }
+
+const fakeDb = createFakeDb();
+
+jest.mock('@/lib/supabase/admin', () => ({
+  createSupabaseAdminClient: () => fakeDb,
+}));
 
 jest.mock('@/lib/supabase/server', () => ({
   __esModule: true,
-  createSupabaseServerClient: jest.fn(() =>
-    Promise.resolve({
-      auth: {
-        getUser: () => mockGetUser(),
-      },
-      from: (table: string) => createQueryBuilder(table),
-    }),
-  ),
+  createSupabaseServerClient: jest.fn(() => Promise.resolve(fakeDb)),
 }));
 
-jest.mock('@/app/app/actions/rbac', () => ({
-  requirePermission: (...a: unknown[]) => mockRequirePermission(...a),
-}));
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
+import { getAuditLogs } from '@/lib/data/audit-logs';
 
-jest.mock('@/lib/security/rate-limiter', () => ({
-  rateLimitApi: (...a: unknown[]) => mockRateLimitApi(...a),
-}));
-
-jest.mock('@/lib/data/analytics', () => ({
-  getDashboardMetrics: (...a: unknown[]) => mockGetDashboardMetrics(...a),
-}));
-
-jest.mock('@/lib/monitoring/server-logger', () => ({
-  routeLog: () => jest.fn(),
-}));
-
-// ============================================================
-// Tests
-// ============================================================
+beforeEach(() => {
+  seed();
+  jest.clearAllMocks();
+});
 
 describe('Multi-Tenancy Data Isolation', () => {
-  beforeEach(() => {
-    currentOrgId = 'org-a';
-    _currentUserId = 'user-a';
-    isAdmin = false;
-    jest.clearAllMocks();
+  // ---------------------------------------------------------------
+  // Harness guard: the fake DB filters only when asked to, so every
+  // assertion below depends on production code emitting the filter.
+  // ---------------------------------------------------------------
+  it('an unfiltered read really does return every tenant (harness guard)', async () => {
+    const { data } = (await fakeDb.from('org_evidence').select('*')) as {
+      data: Row[];
+    };
 
-    mockRateLimitApi.mockResolvedValue({ success: true });
-    mockGetDashboardMetrics.mockResolvedValue({
-      complianceScore: 75,
-      riskLevel: 'medium',
-      complianceTrend: 'stable',
-      totalPolicies: 10,
-      activePolicies: 8,
-      policyCoverageRate: 0.8,
-      totalTasks: 30,
-      completedTasks: 20,
-      pendingTasks: 8,
-      overdueTasks: 2,
-      taskCompletionRate: 0.67,
-      evidenceCollected: 50,
-      evidenceRequired: 60,
-      evidenceCompletionRate: 0.83,
-      anomalies: [],
+    expect(data).toHaveLength(3);
+    expect(new Set(data.map((r) => r.organization_id))).toEqual(
+      new Set(['org-a', 'org-b']),
+    );
+  });
+
+  describe('org-scoped reads', () => {
+    it('Org A reads only its own evidence', async () => {
+      const supabase = createSupabaseOrgClient('org-a');
+      const { data } = (await supabase.from('org_evidence').select('*')) as {
+        data: Row[];
+      };
+
+      expect(data).toHaveLength(2);
+      expect(data.every((r) => r.organization_id === 'org-a')).toBe(true);
+      expect(data.find((r) => r.id === 'ev-b1')).toBeUndefined();
+    });
+
+    it('Org B reads only its own evidence', async () => {
+      const supabase = createSupabaseOrgClient('org-b');
+      const { data } = (await supabase.from('org_evidence').select('*')) as {
+        data: Row[];
+      };
+
+      expect(data).toEqual([expect.objectContaining({ id: 'ev-b1' })]);
+    });
+
+    it('an org with no rows reads nothing rather than everything', async () => {
+      const supabase = createSupabaseOrgClient('org-c');
+      const { data } = (await supabase.from('org_evidence').select('*')) as {
+        data: Row[];
+      };
+
+      expect(data).toEqual([]);
+    });
+
+    it('membership rows do not cross tenants', async () => {
+      const orgA = createSupabaseOrgClient('org-a');
+      const orgB = createSupabaseOrgClient('org-b');
+
+      const { data: aMembers } = (await orgA
+        .from('org_members')
+        .select('*')) as { data: Row[] };
+      const { data: bMembers } = (await orgB
+        .from('org_members')
+        .select('*')) as { data: Row[] };
+
+      expect(aMembers.map((r) => r.id)).toEqual(['mem-a1', 'mem-a2']);
+      expect(bMembers.map((r) => r.id)).toEqual(['mem-b1']);
+    });
+
+    it('an extra caller filter narrows within the tenant, it does not widen it', async () => {
+      const supabase = createSupabaseOrgClient('org-a');
+      // Ask for a row that belongs to org-b by primary key.
+      const { data } = (await supabase
+        .from('org_evidence')
+        .select('*')
+        .eq('id', 'ev-b1')) as { data: Row[] };
+
+      expect(data).toEqual([]);
     });
   });
 
-  // Helper to set up auth context for a specific org
-  function setAuthContext(orgId: string, userId: string, admin = false) {
-    currentOrgId = orgId;
-    _currentUserId = userId;
-    isAdmin = admin;
-    mockGetUser.mockResolvedValue({
-      data: { user: { id: userId, email: `${userId}@test.com` } },
-      error: null,
-    });
-    mockRequirePermission.mockResolvedValue({ orgId, userId });
-  }
+  describe('org-scoped writes', () => {
+    it('inserts are stamped with the caller org', async () => {
+      const supabase = createSupabaseOrgClient('org-a');
+      await supabase.from('org_tasks').insert({ id: 'task-new', title: 'New' });
 
-  // -----------------------------------------------------------
-  // Test 1: Org A cannot read Org B's obligations
-  // -----------------------------------------------------------
-  describe('Obligation isolation', () => {
-    it('Org A can only read its own obligations', async () => {
-      setAuthContext('org-a', 'user-a');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
-
-      const result = await supabase.from('obligations').select('*');
-      expect(result.data).toHaveLength(2);
-      expect(
-        result.data.every((r: { org_id: string }) => r.org_id === 'org-a'),
-      ).toBe(true);
-      expect(
-        result.data.find((r: { org_id: string }) => r.org_id === 'org-b'),
-      ).toBeUndefined();
+      expect(tables.org_tasks).toContainEqual({
+        id: 'task-new',
+        title: 'New',
+        organization_id: 'org-a',
+      });
     });
 
-    it('Org B can only read its own obligations', async () => {
-      setAuthContext('org-b', 'user-b');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
+    it('an update cannot reach another tenant row', async () => {
+      const supabase = createSupabaseOrgClient('org-a');
+      await supabase
+        .from('org_tasks')
+        .update({ title: 'Hijacked' })
+        .eq('id', 'task-b1');
 
-      const result = await supabase.from('obligations').select('*');
-      expect(result.data).toHaveLength(2);
       expect(
-        result.data.every((r: { org_id: string }) => r.org_id === 'org-b'),
-      ).toBe(true);
-      expect(
-        result.data.find((r: { org_id: string }) => r.org_id === 'org-a'),
-      ).toBeUndefined();
+        tables.org_tasks.find((r) => r.id === 'task-b1')!.title,
+      ).toBe('GDPR Compliance');
+    });
+
+    it('an update cannot move a row into another tenant', async () => {
+      const supabase = createSupabaseOrgClient('org-a');
+      await supabase
+        .from('org_tasks')
+        .update({ title: 'Renamed', organization_id: 'org-b' })
+        .eq('id', 'task-a1');
+
+      const row = tables.org_tasks.find((r) => r.id === 'task-a1')!;
+      expect(row.title).toBe('Renamed');
+      expect(row.organization_id).toBe('org-a');
+    });
+
+    it('a delete cannot remove another tenant row', async () => {
+      const supabase = createSupabaseOrgClient('org-a');
+      await supabase.from('org_tasks').delete().eq('id', 'task-b1');
+
+      expect(tables.org_tasks.map((r) => r.id)).toContain('task-b1');
+    });
+
+    it('a delete removes the caller own row', async () => {
+      const supabase = createSupabaseOrgClient('org-a');
+      await supabase.from('org_tasks').delete().eq('id', 'task-a1');
+
+      expect(tables.org_tasks.map((r) => r.id)).toEqual(['task-b1']);
     });
   });
 
-  // -----------------------------------------------------------
-  // Test 2: Org A cannot read Org B's incidents
-  // -----------------------------------------------------------
-  describe('Incident isolation', () => {
-    it('Org A can only see its own incidents', async () => {
-      setAuthContext('org-a', 'user-a');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
+  describe('fail-closed registry', () => {
+    it('refuses an unregistered table instead of reading it unscoped', () => {
+      const supabase = createSupabaseOrgClient('org-a');
 
-      const result = await supabase.from('incidents').select('*');
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0].org_id).toBe('org-a');
+      expect(() => supabase.from('security_events')).toThrow(
+        /not registered as a tenant table/,
+      );
     });
 
-    it('Org B can only see its own incidents', async () => {
-      setAuthContext('org-b', 'user-b');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
-
-      const result = await supabase.from('incidents').select('*');
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0].org_id).toBe('org-b');
+    it('refuses to build a client without an org id', () => {
+      expect(() => createSupabaseOrgClient('')).toThrow(/orgId is required/);
     });
   });
 
-  // -----------------------------------------------------------
-  // Test 3: Org A cannot read Org B's participants
-  // -----------------------------------------------------------
-  describe('Participant isolation', () => {
-    it('Org A can only see its own participants', async () => {
-      setAuthContext('org-a', 'user-a');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
+  describe('query layer — getAuditLogs', () => {
+    it('returns only the requested org audit logs', async () => {
+      const logs = (await getAuditLogs('org-a')) as Row[];
 
-      const result = await supabase.from('participants').select('*');
-      expect(result.data).toHaveLength(2);
-      expect(
-        result.data.every((r: { org_id: string }) => r.org_id === 'org-a'),
-      ).toBe(true);
+      expect(logs).toHaveLength(2);
+      expect(logs.every((r) => r.organization_id === 'org-a')).toBe(true);
+      expect(logs.find((r) => r.id === 'log-b1')).toBeUndefined();
     });
 
-    it('Org B cannot see Org A participants', async () => {
-      setAuthContext('org-b', 'user-b');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
+    it('returns nothing for an org with no logs', async () => {
+      const logs = (await getAuditLogs('org-c')) as Row[];
 
-      const result = await supabase.from('participants').select('*');
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0].org_id).toBe('org-b');
-    });
-  });
-
-  // -----------------------------------------------------------
-  // Test 4: Org A cannot read Org B's evidence
-  // -----------------------------------------------------------
-  describe('Evidence isolation', () => {
-    it('Org A can only see its own evidence', async () => {
-      setAuthContext('org-a', 'user-a');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
-
-      const result = await supabase.from('evidence').select('*');
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0].org_id).toBe('org-a');
-    });
-
-    it('Org B can only see its own evidence', async () => {
-      setAuthContext('org-b', 'user-b');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
-
-      const result = await supabase.from('evidence').select('*');
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0].org_id).toBe('org-b');
-    });
-  });
-
-  // -----------------------------------------------------------
-  // Test 5: Admin can read all orgs
-  // -----------------------------------------------------------
-  describe('Admin cross-org access', () => {
-    it('Admin user can see obligations from all orgs', async () => {
-      setAuthContext('org-a', 'admin-user', true);
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
-
-      const result = await supabase.from('obligations').select('*');
-      expect(result.data).toHaveLength(4);
-
-      const orgIds = [
-        ...new Set(result.data.map((r: { org_id: string }) => r.org_id)),
-      ];
-      expect(orgIds).toContain('org-a');
-      expect(orgIds).toContain('org-b');
-    });
-
-    it('Admin user can see evidence from all orgs', async () => {
-      setAuthContext('org-a', 'admin-user', true);
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
-
-      const result = await supabase.from('evidence').select('*');
-      expect(result.data).toHaveLength(2);
-    });
-
-    it('Admin user can see incidents from all orgs', async () => {
-      setAuthContext('org-a', 'admin-user', true);
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
-
-      const result = await supabase.from('incidents').select('*');
-      expect(result.data).toHaveLength(2);
-    });
-  });
-
-  // -----------------------------------------------------------
-  // Test 6: API routes respect org context
-  // -----------------------------------------------------------
-  describe('API route org context enforcement', () => {
-    it('API returns only Org A data for Org A request', async () => {
-      setAuthContext('org-a', 'user-a');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
-
-      // Simulate what an API route does — queries with the authenticated context
-      const obligations = await supabase.from('obligations').select('*');
-      const evidence = await supabase.from('evidence').select('*');
-      const members = await supabase.from('org_members').select('*');
-
-      // All data must belong to org-a only
-      expect(
-        obligations.data.every((r: { org_id: string }) => r.org_id === 'org-a'),
-      ).toBe(true);
-      expect(
-        evidence.data.every((r: { org_id: string }) => r.org_id === 'org-a'),
-      ).toBe(true);
-      expect(
-        members.data.every(
-          (r: { organization_id: string }) => r.organization_id === 'org-a',
-        ),
-      ).toBe(true);
-    });
-
-    it('API returns only Org B data for Org B request', async () => {
-      setAuthContext('org-b', 'user-b');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      const supabase = await (createSupabaseServerClient as jest.Mock)();
-
-      const obligations = await supabase.from('obligations').select('*');
-      const evidence = await supabase.from('evidence').select('*');
-      const members = await supabase.from('org_members').select('*');
-
-      expect(
-        obligations.data.every((r: { org_id: string }) => r.org_id === 'org-b'),
-      ).toBe(true);
-      expect(
-        evidence.data.every((r: { org_id: string }) => r.org_id === 'org-b'),
-      ).toBe(true);
-      expect(
-        members.data.every(
-          (r: { organization_id: string }) => r.organization_id === 'org-b',
-        ),
-      ).toBe(true);
-    });
-
-    it('Switching contexts does not leak data from previous org', async () => {
-      // First request as Org A
-      setAuthContext('org-a', 'user-a');
-      const { createSupabaseServerClient } =
-        await import('@/lib/supabase/server');
-      let supabase = await (createSupabaseServerClient as jest.Mock)();
-      const orgAResult = await supabase.from('obligations').select('*');
-      expect(orgAResult.data).toHaveLength(2);
-
-      // Switch to Org B — must NOT see Org A data
-      setAuthContext('org-b', 'user-b');
-      supabase = await (createSupabaseServerClient as jest.Mock)();
-      const orgBResult = await supabase.from('obligations').select('*');
-      expect(orgBResult.data).toHaveLength(2);
-      expect(
-        orgBResult.data.every((r: { org_id: string }) => r.org_id === 'org-b'),
-      ).toBe(true);
-      expect(
-        orgBResult.data.find((r: { org_id: string }) => r.org_id === 'org-a'),
-      ).toBeUndefined();
+      expect(logs).toEqual([]);
     });
   });
 });

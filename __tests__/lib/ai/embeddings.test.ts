@@ -5,9 +5,26 @@
 
 // v4-031: embeddings now short-circuit to zero-vector when
 // !process.env.OPENAI_API_KEY OR AI_KILL_SWITCH=true. Set a placeholder
-// key here so the mocked openai client is exercised; the kill switch
-// stays unset so embeddings runs.
-process.env.OPENAI_API_KEY = 'sk-test-placeholder';
+// key so the mocked openai client is exercised; the kill switch stays
+// unset so embeddings runs.
+//
+// process.env is shared by every test file in the same Jest worker, so the
+// key is saved and restored around this suite. Leaking it made any later
+// suite that exercises the "no key → zero vector" short-circuit take the
+// wrong branch depending on file execution order.
+const ORIGINAL_OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+beforeAll(() => {
+  process.env.OPENAI_API_KEY = 'sk-test-placeholder';
+});
+
+afterAll(() => {
+  if (ORIGINAL_OPENAI_API_KEY === undefined) {
+    delete process.env.OPENAI_API_KEY;
+  } else {
+    process.env.OPENAI_API_KEY = ORIGINAL_OPENAI_API_KEY;
+  }
+});
 
 const mockEmbedCreate = jest.fn();
 jest.mock('openai', () => {
@@ -57,6 +74,19 @@ describe('embeddings', () => {
         model: 'text-embedding-3-small',
         input: 'Hello world',
       });
+    });
+
+    it('short-circuits to a zero vector when OPENAI_API_KEY is unset', async () => {
+      delete process.env.OPENAI_API_KEY;
+      try {
+        const result = await generateEmbedding('Hello world');
+        expect(result).toHaveLength(1536);
+        expect(result.every((v: number) => v === 0)).toBe(true);
+        // The v4-031 contract: no key means no API call at all.
+        expect(mockEmbedCreate).not.toHaveBeenCalled();
+      } finally {
+        process.env.OPENAI_API_KEY = 'sk-test-placeholder';
+      }
     });
 
     it('cleans excessive newlines', async () => {

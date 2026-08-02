@@ -57,7 +57,10 @@ describe('provisionFrameworkControls', () => {
 
   it('creates tasks, links, and evaluations only for controls not already linked', async () => {
     getServerSideFeatureFlags.mockReturnValue({ enableFrameworkEngine: true });
-    detectComplianceControlsSchema.mockResolvedValue('current');
+    // detectComplianceControlsSchema only ever resolves 'modern' | 'legacy'
+    // (lib/frameworks/compliance-controls-schema.ts). Anything else silently
+    // lands in the non-legacy branch and pins a path that cannot occur.
+    detectComplianceControlsSchema.mockResolvedValue('modern');
     getEvidenceSuggestions.mockReturnValue({
       evidenceTypes: ['policy'],
       automationTriggers: ['task.created'],
@@ -154,6 +157,17 @@ describe('provisionFrameworkControls', () => {
     expect(ensureFrameworkPacksInstalled).toHaveBeenCalled();
     expect(syncComplianceFramework).toHaveBeenCalledWith('iso27001', mockAdmin);
 
+    // The 'modern' schema reads risk_level directly; the 'legacy' branch
+    // reads risk_weight and derives the level. Asserting the projection
+    // proves which branch actually ran.
+    const controlsSelect = supabase.operations.find(
+      (operation) =>
+        operation.table === 'compliance_controls' && operation.action === 'select',
+    );
+    expect(controlsSelect?.columns).toBe(
+      'id, code, title, description, risk_level, framework_control_id',
+    );
+
     const orgTaskInserts = supabase.operations.filter(
       (operation) => operation.table === 'org_tasks' && operation.action === 'insert',
     );
@@ -168,6 +182,74 @@ describe('provisionFrameworkControls', () => {
         expect.objectContaining({
           organization_id: 'org-1',
           control_key: 'control:control-new',
+        }),
+      ]),
+    );
+  });
+
+  it("reads risk_weight instead of risk_level on the 'legacy' controls schema", async () => {
+    getServerSideFeatureFlags.mockReturnValue({ enableFrameworkEngine: true });
+    detectComplianceControlsSchema.mockResolvedValue('legacy');
+    getEvidenceSuggestions.mockReturnValue({
+      evidenceTypes: [],
+      automationTriggers: [],
+      reviewCadenceDays: 30,
+      taskTemplates: [],
+    });
+
+    const supabase = mockSupabase({
+      resolver: (operation) => {
+        if (operation.table === 'compliance_frameworks') {
+          return { data: { id: 'framework-1', code: 'ISO27001' }, error: null };
+        }
+
+        if (operation.table === 'compliance_controls') {
+          return {
+            data: [
+              {
+                id: 'control-legacy',
+                code: 'A.1',
+                title: 'Legacy control',
+                description: 'From the legacy schema',
+                risk_weight: 8,
+                framework_control_id: 'fc-1',
+              },
+            ],
+            error: null,
+          };
+        }
+
+        if (operation.table === 'org_tasks' && operation.action === 'insert') {
+          return { data: { id: 'task-legacy' }, error: null };
+        }
+
+        return { data: null, error: null };
+      },
+    });
+
+    mockAdmin = { from: supabase.client.from };
+
+    await provisionFrameworkControls('org-1', 'iso27001', { force: true });
+
+    const controlsSelect = supabase.operations.find(
+      (operation) =>
+        operation.table === 'compliance_controls' && operation.action === 'select',
+    );
+    expect(controlsSelect?.columns).toBe(
+      'id, code, title, description, risk_weight, framework_control_id',
+    );
+
+    // riskLevelFromWeight is mocked to 'high'; the legacy branch must derive
+    // the level rather than pass through the (absent) risk_level column.
+    const evaluationUpsert = supabase.operations.find(
+      (operation) =>
+        operation.table === 'org_control_evaluations' && operation.action === 'upsert',
+    );
+    expect(evaluationUpsert?.values).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          organization_id: 'org-1',
+          control_key: 'control:control-legacy',
         }),
       ]),
     );

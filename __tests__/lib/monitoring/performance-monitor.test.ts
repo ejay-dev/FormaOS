@@ -43,6 +43,7 @@ import {
   CUSTOM_METRICS,
 } from '@/lib/monitoring/performance-monitor';
 import { onCLS, onLCP } from 'web-vitals';
+import { healthLogger } from '@/lib/observability/structured-logger';
 
 describe('monitoring/performance-monitor', () => {
   const _originalWindow = global.window;
@@ -191,7 +192,9 @@ describe('monitoring/performance-monitor', () => {
         return [];
       });
       const result = getPerformanceBudgetStatus();
-      expect(result.find((r: any) => r.metric === 'TTFB')).toBeTruthy();
+      const ttfb = result.find((r: any) => r.metric === 'TTFB');
+      expect(ttfb).toBeDefined();
+      expect(ttfb!.status).toBe('critical');
     });
 
     it('returns TTFB warning status', () => {
@@ -202,9 +205,9 @@ describe('monitoring/performance-monitor', () => {
       });
       const result = getPerformanceBudgetStatus();
       const ttfb = result.find((r: any) => r.metric === 'TTFB');
-      if (ttfb) {
-        expect(ttfb.status).toBe('warning');
-      }
+      // A missing entry is a regression, not a pass — assert it exists first.
+      expect(ttfb).toBeDefined();
+      expect(ttfb!.status).toBe('warning');
     });
 
     it('returns FCP critical when startTime > 3000', () => {
@@ -215,9 +218,8 @@ describe('monitoring/performance-monitor', () => {
       });
       const result = getPerformanceBudgetStatus();
       const fcp = result.find((r: any) => r.metric === 'FCP');
-      if (fcp) {
-        expect(fcp.status).toBe('critical');
-      }
+      expect(fcp).toBeDefined();
+      expect(fcp!.status).toBe('critical');
     });
 
     it('returns FCP warning when 2000 < startTime <= 3000', () => {
@@ -228,9 +230,8 @@ describe('monitoring/performance-monitor', () => {
       });
       const result = getPerformanceBudgetStatus();
       const fcp = result.find((r: any) => r.metric === 'FCP');
-      if (fcp) {
-        expect(fcp.status).toBe('warning');
-      }
+      expect(fcp).toBeDefined();
+      expect(fcp!.status).toBe('warning');
     });
 
     it('returns no FCP when startTime <= 2000', () => {
@@ -264,37 +265,115 @@ describe('monitoring/performance-monitor', () => {
   // ─── sendToAnalytics internal branches ───────────────────────
   describe('sendToAnalytics branches (via trackCustomMetric)', () => {
     it('sends to gtag when available', () => {
-      const savedWindow = global.window;
-      try {
-        const mockGtag = jest.fn();
-        // @ts-ignore
-        global.window = { gtag: mockGtag, location: { href: '' } };
+      const mockGtag = jest.fn();
+      (window as any).gtag = mockGtag;
 
-        trackCustomMetric('test', 100, { x: 1 });
-      } finally {
-        // @ts-ignore
-        global.window = savedWindow;
-      }
+      trackCustomMetric('test', 100.4, { x: 1 });
+
+      expect(mockGtag).toHaveBeenCalledTimes(1);
+      const [command, eventName, payload] = mockGtag.mock.calls[0];
+      expect(command).toBe('event');
+      expect(eventName).toBe('test');
+      expect(payload).toMatchObject({
+        // Custom metrics take the non-web-vital branch: rounded value,
+        // 'Custom Metrics' category, metadata spread on top.
+        event_category: 'Custom Metrics',
+        value: 100,
+        x: 1,
+      });
+      expect(typeof payload.timestamp).toBe('number');
+    });
+
+    it('does not call gtag when it is not installed', () => {
+      // afterEach removes window.gtag; assert the guard actually guards.
+      expect((window as any).gtag).toBeUndefined();
+      expect(() => trackCustomMetric('test', 100)).not.toThrow();
     });
 
     it('sends to Vercel Analytics (va) when available', () => {
-      const savedWindow = global.window;
-      try {
-        const mockVa = jest.fn();
-        // @ts-ignore
-        global.window = { va: mockVa, location: { href: '' } };
+      const mockVa = jest.fn();
+      (window as any).va = mockVa;
 
-        trackCustomMetric('test', 200);
-      } finally {
-        // @ts-ignore
-        global.window = savedWindow;
-      }
+      trackCustomMetric('test', 200, { route: '/app' });
+
+      expect(mockVa).toHaveBeenCalledWith('track', 'test', {
+        value: 200,
+        route: '/app',
+      });
+    });
+
+    it('forwards to both gtag and va when both are installed', () => {
+      const mockGtag = jest.fn();
+      const mockVa = jest.fn();
+      (window as any).gtag = mockGtag;
+      (window as any).va = mockVa;
+
+      trackCustomMetric('dual', 5);
+
+      expect(mockGtag).toHaveBeenCalledTimes(1);
+      expect(mockVa).toHaveBeenCalledTimes(1);
     });
 
     it('logs in development mode', () => {
       (process.env as any).NODE_ENV = 'development';
-      trackCustomMetric('dev_metric', 50);
-      // healthLogger.info may or may not be called depending on window
+      trackCustomMetric('dev_metric', 50, { source: 'unit-test' });
+      expect(healthLogger.info).toHaveBeenCalledWith(
+        'performance_metric_observed',
+        expect.objectContaining({
+          name: 'dev_metric',
+          value: 50,
+          metadata: { source: 'unit-test' },
+        }),
+      );
+    });
+
+    it('does not log outside development', () => {
+      (process.env as any).NODE_ENV = 'production';
+      trackCustomMetric('prod_metric', 50);
+      expect(healthLogger.info).not.toHaveBeenCalled();
+    });
+  });
+
+  // ─── trackCustomMetric / trackAsyncOperation payloads ────────
+  describe('metric payloads reach analytics', () => {
+    it('trackAsyncOperation reports a success status and a duration', async () => {
+      const mockVa = jest.fn();
+      (window as any).va = mockVa;
+
+      await trackAsyncOperation('meta_op', async () => 42, { route: '/test' });
+
+      expect(mockVa).toHaveBeenCalledWith(
+        'track',
+        'meta_op',
+        expect.objectContaining({ route: '/test', status: 'success' }),
+      );
+      expect(mockVa.mock.calls[0][2].value).toBeGreaterThanOrEqual(0);
+    });
+
+    it('trackComponentMount reports under the component_mount metric name', () => {
+      const mockVa = jest.fn();
+      (window as any).va = mockVa;
+
+      trackComponentMount('MyComponent', performance.now());
+
+      expect(mockVa).toHaveBeenCalledWith(
+        'track',
+        CUSTOM_METRICS.COMPONENT_MOUNT,
+        expect.objectContaining({ component: 'MyComponent' }),
+      );
+    });
+
+    it('trackCacheEvent distinguishes hit from miss', () => {
+      const mockVa = jest.fn();
+      (window as any).va = mockVa;
+
+      trackCacheEvent(true, 'my-cache');
+      trackCacheEvent(false, 'my-cache');
+
+      expect(mockVa.mock.calls.map((call) => call[1])).toEqual([
+        CUSTOM_METRICS.CACHE_HIT,
+        CUSTOM_METRICS.CACHE_MISS,
+      ]);
     });
   });
 });

@@ -63,7 +63,15 @@ export interface SoaEntry {
   controlName: string;
   applicable: boolean;
   justification: string;
-  implementationStatus: 'implemented' | 'partial' | 'not_implemented' | 'not_applicable';
+  // 'not_assessed' distinguishes a control that has never been evaluated from
+  // one evaluated as failing. Reporting the former as 'not_implemented' put a
+  // fabricated verdict in front of an auditor.
+  implementationStatus:
+    | 'implemented'
+    | 'partial'
+    | 'not_implemented'
+    | 'not_applicable'
+    | 'not_assessed';
   evidenceCount: number;
 }
 
@@ -87,7 +95,7 @@ export interface NdisPracticeStandard {
   standardCode: string;
   standardName: string;
   category: string;
-  complianceStatus: 'compliant' | 'partial' | 'non_compliant';
+  complianceStatus: 'compliant' | 'partial' | 'non_compliant' | 'not_assessed';
   evidenceCount: number;
   lastReviewDate: string | null;
 }

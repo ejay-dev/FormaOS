@@ -250,6 +250,24 @@ function captureMemberUpdates(): Array<Record<string, unknown>> {
   return payloads;
 }
 
+// Same reassignment problem as captureMemberUpdates(), for upsert payloads.
+// createUser() writes the mapped role to org_members and the resolved name to
+// user_profiles, so these are the payloads the SCIM mapping tests must inspect.
+function captureUpserts(table: string): Array<Record<string, unknown>> {
+  const payloads: Array<Record<string, unknown>> = [];
+  const upsertSpy = jest.fn((payload: Record<string, unknown>) => {
+    payloads.push(payload);
+    return makeMutationChain();
+  });
+  mockFromChains[table] = mockFromChains[table] ?? makeChain();
+  Object.defineProperty(mockFromChains[table], 'upsert', {
+    get: () => upsertSpy,
+    set: () => {},
+    configurable: true,
+  });
+  return payloads;
+}
+
 function setupGroup(ov: Record<string, unknown> = {}) {
   mockFromChains.scim_groups = makeChain({ data: [groupRow(ov)], error: null });
   mockGetGroupMembers.mockResolvedValue([]);
@@ -894,45 +912,81 @@ describe('createUser', () => {
     expect(r.error?.detail).toContain('could not be loaded');
   });
 
-  // mapScimRole branches
+  // mapScimRole branches — the IdP-supplied role lands directly on the
+  // org_members row, so every branch asserts the persisted role.
   it.each(['owner', 'admin', 'viewer', 'auditor'] as const)(
     'maps role=%s',
     async (role) => {
       setupUser();
       mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
-      await createUser(ORG, { userName: 'alice@example.com', role }, BASE);
+      const memberships = captureUpserts('org_members');
+      const r = await createUser(
+        ORG,
+        { userName: 'alice@example.com', role },
+        BASE,
+      );
+      expect(r.status).toBe(201);
+      expect(memberships).toHaveLength(1);
+      expect(memberships[0]).toMatchObject({
+        organization_id: ORG,
+        user_id: UID,
+        role,
+      });
     },
   );
 
   it('defaults unknown role to member', async () => {
     setupUser();
     mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const memberships = captureUpserts('org_members');
     await createUser(
       ORG,
       { userName: 'alice@example.com', role: 'superuser' },
       BASE,
     );
+    expect(memberships[0].role).toBe('member');
   });
 
   it('extracts role from roles array', async () => {
     setupUser();
     mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const memberships = captureUpserts('org_members');
     await createUser(
       ORG,
       { userName: 'alice@example.com', roles: [{ value: 'admin' }] },
       BASE,
     );
+    expect(memberships[0].role).toBe('admin');
+  });
+
+  it('prefers the role attribute over the roles array', async () => {
+    setupUser();
+    mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const memberships = captureUpserts('org_members');
+    await createUser(
+      ORG,
+      {
+        userName: 'alice@example.com',
+        role: 'viewer',
+        roles: [{ value: 'owner' }],
+      },
+      BASE,
+    );
+    expect(memberships[0].role).toBe('viewer');
   });
 
   it('defaults role when no role or roles given', async () => {
     setupUser();
     mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const memberships = captureUpserts('org_members');
     await createUser(ORG, { userName: 'alice@example.com' }, BASE);
+    expect(memberships[0].role).toBe('member');
   });
 
   it('enterprise ext department', async () => {
     setupUser();
     mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const memberships = captureUpserts('org_members');
     await createUser(
       ORG,
       {
@@ -941,56 +995,119 @@ describe('createUser', () => {
       },
       BASE,
     );
+    expect(memberships[0].department).toBe('Eng');
+  });
+
+  it('department is null without the enterprise extension', async () => {
+    setupUser();
+    mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const memberships = captureUpserts('org_members');
+    await createUser(ORG, { userName: 'alice@example.com' }, BASE);
+    expect(memberships[0].department).toBeNull();
   });
 
   it('inactive compliance when active=false', async () => {
     setupUser();
     mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const memberships = captureUpserts('org_members');
     await createUser(
       ORG,
       { userName: 'alice@example.com', active: false },
       BASE,
     );
+    expect(memberships[0].compliance_status).toBe('inactive');
   });
 
-  // getFullName branches
+  it('active compliance when active is omitted', async () => {
+    setupUser();
+    mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const memberships = captureUpserts('org_members');
+    await createUser(ORG, { userName: 'alice@example.com' }, BASE);
+    expect(memberships[0].compliance_status).toBe('active');
+  });
+
+  // getFullName branches — the resolved name is written to user_profiles.
   it('name.formatted preferred', async () => {
     setupUser();
     mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const profiles = captureUpserts('user_profiles');
     await createUser(
       ORG,
-      { userName: 'alice@example.com', name: { formatted: 'Full Name' } },
+      {
+        userName: 'alice@example.com',
+        name: { formatted: 'Full Name', givenName: 'A', familyName: 'B' },
+        displayName: 'DN',
+      },
       BASE,
     );
+    expect(profiles[0]).toMatchObject({
+      user_id: UID,
+      organization_id: ORG,
+      full_name: 'Full Name',
+    });
   });
 
   it('given+family combined', async () => {
     setupUser();
     mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const profiles = captureUpserts('user_profiles');
     await createUser(
       ORG,
       {
         userName: 'alice@example.com',
         name: { givenName: 'A', familyName: 'B' },
+        displayName: 'DN',
       },
       BASE,
     );
+    expect(profiles[0].full_name).toBe('A B');
   });
 
   it('displayName fallback', async () => {
     setupUser();
     mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const profiles = captureUpserts('user_profiles');
     await createUser(
       ORG,
       { userName: 'alice@example.com', displayName: 'DN' },
       BASE,
     );
+    expect(profiles[0].full_name).toBe('DN');
   });
 
   it('no name sources returns empty', async () => {
     setupUser();
     mockListAuthUsers.mockResolvedValue({ data: { users: [authUser()] } });
+    const profiles = captureUpserts('user_profiles');
     await createUser(ORG, { userName: 'alice@example.com' }, BASE);
+    expect(profiles[0].full_name).toBeNull();
+  });
+
+  it('sends the resolved name when provisioning a new auth user', async () => {
+    setupUser();
+    mockListAuthUsers.mockResolvedValue({ data: { users: [] } });
+    mockCreateAuthUser.mockResolvedValue({
+      data: { user: authUser() },
+      error: null,
+    });
+    await createUser(
+      ORG,
+      {
+        userName: 'alice@example.com',
+        name: { givenName: 'Alice', familyName: 'Smith' },
+      },
+      BASE,
+    );
+    expect(mockCreateAuthUser).toHaveBeenCalledWith(
+      expect.objectContaining({
+        email: 'alice@example.com',
+        email_confirm: true,
+        user_metadata: expect.objectContaining({
+          full_name: 'Alice Smith',
+          scim_provisioned: true,
+        }),
+      }),
+    );
   });
 });
 
@@ -1994,12 +2111,10 @@ describe('executeBulkOperations', () => {
         },
       ],
     });
-    if (
-      r.body.Operations[0]?.response &&
-      !(r.body.Operations[0].response as any).detail
-    ) {
-      expect(r.status).toBe(200);
-    }
+    expect(r.status).toBe(200);
+    expect(r.body.Operations).toHaveLength(1);
+    expect(r.body.Operations[0].status).toBe('201');
+    expect(r.body.Operations[0].response).not.toHaveProperty('detail');
   });
 
   it('uses version as ifMatch for bulk DELETE', async () => {
@@ -2026,9 +2141,10 @@ describe('executeBulkOperations', () => {
       Operations: [{ method: 'DELETE', path: `Users/${UID}` }],
     });
     const op = r.body.Operations[0];
-    if (op.status === '204') {
-      expect(op.location).toContain('Users');
-    }
+    expect(op.status).toBe('204');
+    expect(op.response).toBeNull();
+    // deleteUser returns no resource, so location is rebuilt from the path.
+    expect(op.location).toBe(`${BASE}/api/scim/v2/Users/${UID}`);
   });
 
   it('location from non-Users path is undefined', async () => {
@@ -2036,9 +2152,9 @@ describe('executeBulkOperations', () => {
       Operations: [{ method: 'DELETE', path: `Groups/${GID}` }],
     });
     const op = r.body.Operations[0];
-    if (op.status === '204' && !op.response) {
-      expect(op.location).toBeUndefined();
-    }
+    expect(op.status).toBe('204');
+    expect(op.response).toBeNull();
+    expect(op.location).toBeUndefined();
   });
 });
 

@@ -317,7 +317,10 @@ describe('discoverOrgSsoByEmail', () => {
     expect(result.enforceSso).toBe(false);
   });
 
-  it('does not enforce SSO for trialing enterprise', async () => {
+  // Policy (lib/sso/org-sso.ts:192): a trialing subscription counts as
+  // active, so a trialing enterprise org CAN enforce SSO. The test name
+  // previously claimed the opposite of its own assertion.
+  it('enforces SSO for a trialing enterprise subscription', async () => {
     const ssoData = {
       organization_id: 'org-3',
       enabled: true,
@@ -339,6 +342,60 @@ describe('discoverOrgSsoByEmail', () => {
 
     const result = await discoverOrgSsoByEmail('user@trial.com');
     expect(result.ok).toBe(true);
-    expect(result.enforceSso).toBe(true); // trialing counts as active
+    expect(result.orgId).toBe('org-3');
+    expect(result.enforceSso).toBe(true);
+  });
+
+  it('does not enforce SSO for a lapsed enterprise subscription', async () => {
+    const ssoData = {
+      organization_id: 'org-4',
+      enabled: true,
+      enforce_sso: true,
+      allowed_domains: ['lapsed.com'],
+    };
+    const subData = { plan_key: 'enterprise', status: 'past_due' };
+
+    let callCount = 0;
+    const client = {
+      from: jest.fn(() => {
+        callCount++;
+        if (callCount === 1)
+          return createBuilder({ data: ssoData, error: null });
+        return createBuilder({ data: subData, error: null });
+      }),
+    };
+    createSupabaseAdminClient.mockReturnValue(client);
+
+    const result = await discoverOrgSsoByEmail('user@lapsed.com');
+    expect(result.ok).toBe(true);
+    // Config is still returned, but enforcement is off without an
+    // active/trialing subscription — otherwise a lapsed org could lock
+    // every member out of password login.
+    expect(result.enabled).toBe(true);
+    expect(result.enforceSso).toBe(false);
+  });
+
+  it('does not enforce SSO when the org has no subscription row', async () => {
+    const ssoData = {
+      organization_id: 'org-5',
+      enabled: true,
+      enforce_sso: true,
+      allowed_domains: ['nosub.com'],
+    };
+
+    let callCount = 0;
+    const client = {
+      from: jest.fn(() => {
+        callCount++;
+        if (callCount === 1)
+          return createBuilder({ data: ssoData, error: null });
+        return createBuilder({ data: null, error: null });
+      }),
+    };
+    createSupabaseAdminClient.mockReturnValue(client);
+
+    const result = await discoverOrgSsoByEmail('user@nosub.com');
+    expect(result.ok).toBe(true);
+    expect(result.enforceSso).toBe(false);
   });
 });

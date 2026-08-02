@@ -20,15 +20,21 @@ function makeSupabaseMock(opts: {
   const fromImpl = (table: string) => {
     calls.tables.push(table);
     if (table === 'org_members') {
-      return {
-        select: () => ({
-          eq: () =>
-            Promise.resolve({
-              data: opts.membershipError ? null : opts.memberships,
-              error: opts.membershipError ?? null,
-            }),
-        }),
+      // Chainable + thenable: the resolvers append
+      // .or('compliance_status.is.null,compliance_status.neq.inactive') after
+      // .eq(), so a mock that resolves straight off .eq() would throw on .or
+      // and mask the deprovisioning filter entirely.
+      const result = {
+        data: opts.membershipError ? null : opts.memberships,
+        error: opts.membershipError ?? null,
       };
+      const chain: Record<string, unknown> = {};
+      for (const method of ['select', 'eq', 'or', 'limit', 'order', 'in']) {
+        chain[method] = () => chain;
+      }
+      chain.then = (resolve: (v: unknown) => unknown) =>
+        Promise.resolve(result).then(resolve);
+      return chain;
     }
     if (table === 'user_preferences') {
       return {

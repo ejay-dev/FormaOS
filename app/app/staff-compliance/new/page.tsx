@@ -9,6 +9,7 @@ import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createStaffCredential } from '@/app/app/actions/care-operations';
 import { SubmitButton } from '@/components/ui/submit-button';
+import { resolveUserLabels } from '@/lib/identity/user-directory';
 
 const CREDENTIAL_TYPES = [
   { value: 'wwcc', label: 'Working With Children Check' },
@@ -50,38 +51,11 @@ export default async function NewCredentialPage() {
     ),
   );
 
-  let profiles: {
-    user_id?: string;
-    full_name?: string | null;
-    email?: string | null;
-  }[] = [];
-
-  if (memberIds.length > 0) {
-    const { data: profileRows, error: profilesError } = await db
-      .from('user_profiles')
-      .select('user_id, full_name, email')
-      .in('user_id', memberIds);
-
-    if (profilesError) {
-      throw new Error(
-        `Failed to load staff profiles: ${profilesError.message}`,
-      );
-    }
-
-    profiles = profileRows ?? [];
-  }
-
-  const profileLabelById = new Map(
-    profiles.map(
-      (profile) =>
-        [
-          profile.user_id as string,
-          (profile.full_name as string | null)?.trim() ||
-            (profile.email as string | null)?.trim() ||
-            (profile.user_id as string),
-        ] as const,
-    ),
-  );
+  // user_profiles.full_name and .email are NULL for all 2,598 production rows,
+  // so building the picker from that table produced a list of blank options.
+  // auth.users is the only populated source and is not reachable through
+  // PostgREST, hence the admin-API directory lookup.
+  const profileLabelById = await resolveUserLabels(db, memberIds);
 
   const staffMembers = memberIds.map((userId) => ({
     user_id: userId,

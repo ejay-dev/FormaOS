@@ -91,12 +91,28 @@ describe('calculateCoverage', () => {
     expect(result.coverage).toBe(30);
   });
 
+  // Audit 2026-08-02: this asserted `expect(builder.eq).toHaveBeenCalled()`
+  // with no arguments. The org-scoped client already calls eq() for the
+  // organization_id filter on every path, so the assertion passed even with
+  // the framework_id filter deleted from the implementation.
   it('applies frameworkId filter when provided', async () => {
     const builder = createBuilder({ data: null, error: null, count: 5 });
     mockAdmin.from = jest.fn(() => builder);
     await calculateCoverage('org-1', 'fw-1');
-    // eq should be called with framework_id
-    expect(builder.eq).toHaveBeenCalled();
+    expect(mockAdmin.from).toHaveBeenCalledWith('org_controls');
+    expect(builder.eq).toHaveBeenCalledWith('organization_id', 'org-1');
+    expect(builder.eq).toHaveBeenCalledWith('framework_id', 'fw-1');
+  });
+
+  it('omits the frameworkId filter when none is provided', async () => {
+    const builder = createBuilder({ data: null, error: null, count: 5 });
+    mockAdmin.from = jest.fn(() => builder);
+    await calculateCoverage('org-1');
+    expect(builder.eq).toHaveBeenCalledWith('organization_id', 'org-1');
+    expect(builder.eq).not.toHaveBeenCalledWith(
+      'framework_id',
+      expect.anything(),
+    );
   });
 
   it('handles null evidence data', async () => {
@@ -215,11 +231,28 @@ describe('identifyGaps', () => {
     expect(gaps[0].reason).toBe('needs_review');
   });
 
+  // Same defect as the calculateCoverage case above: a bare
+  // toHaveBeenCalled() could not distinguish the framework filter from the
+  // org filter the wrapper always applies.
   it('applies frameworkId filter to query', async () => {
     const builder = createBuilder({ data: [], error: null, count: null });
     mockAdmin.from = jest.fn(() => builder);
     await identifyGaps('org-1', 'fw-1');
-    expect(builder.eq).toHaveBeenCalled();
+    expect(mockAdmin.from).toHaveBeenCalledWith('org_controls');
+    expect(builder.select).toHaveBeenCalledWith('id, code, title, priority');
+    expect(builder.eq).toHaveBeenCalledWith('organization_id', 'org-1');
+    expect(builder.eq).toHaveBeenCalledWith('framework_id', 'fw-1');
+  });
+
+  it('omits the frameworkId filter when none is provided', async () => {
+    const builder = createBuilder({ data: [], error: null, count: null });
+    mockAdmin.from = jest.fn(() => builder);
+    await identifyGaps('org-1');
+    expect(builder.eq).toHaveBeenCalledWith('organization_id', 'org-1');
+    expect(builder.eq).not.toHaveBeenCalledWith(
+      'framework_id',
+      expect.anything(),
+    );
   });
 
   it('handles evidence with null control_id', async () => {

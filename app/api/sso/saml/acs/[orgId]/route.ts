@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logIdentityEvent } from '@/lib/identity/audit';
-import { provisionJitUser } from '@/lib/sso/jit-provisioning';
+import { findUserByEmail, provisionJitUser } from '@/lib/sso/jit-provisioning';
 import { getOrgSsoConfig } from '@/lib/sso/org-sso';
 import { buildServiceProviderUrls, validateSamlResponse } from '@/lib/sso/saml';
 
@@ -79,10 +79,7 @@ export async function POST(
 
     // The binding check below runs BEFORE any session exists — it is what
     // decides whether to mint one — so there is no authenticated context for
-    // createSupabaseOrgClient to bind to. The user_profiles lookup is also
-    // deliberately cross-tenant: it resolves an email to the accounts carrying
-    // it, then asks whether any belongs to THIS org. Scoping it to one org up
-    // front would defeat the check.
+    // createSupabaseOrgClient to bind to.
     // eslint-disable-next-line formaos/no-admin-client-with-org-filter
     const admin = createSupabaseAdminClient();
 
@@ -108,30 +105,16 @@ export async function POST(
     // pending invitation is also attacker-creatable (any org admin may invite
     // an arbitrary address), so accepting one here would leave the takeover
     // path open.
-    // Resolved in two explicit steps rather than one embedded join: user_profiles
-    // carries an organization_id, so a user who belongs to several orgs has
-    // several rows and .maybeSingle() would throw on a legitimate multi-org
-    // account.
-    const { data: profileRows, error: profileError } = await admin
-      .from('user_profiles')
-      .select('user_id')
-      .ilike('email', validated.email);
+    // Resolve the asserted address to a real auth account, then require that
+    // account to be a member of THIS organisation.
+    //
+    // Resolved through the auth admin API rather than public.user_profiles:
+    // that table has an `email` column but it is NULL for all 2,598 production
+    // rows, so a lookup against it matches nothing and would reject every
+    // legitimate SSO login.
+    const assertedUser = await findUserByEmail(validated.email);
 
-    if (profileError) {
-      throw new Error(
-        `Unable to verify SSO account binding: ${profileError.message}`,
-      );
-    }
-
-    const candidateUserIds = Array.from(
-      new Set(
-        (profileRows ?? [])
-          .map((row) => row.user_id as string | null)
-          .filter((id): id is string => Boolean(id)),
-      ),
-    );
-
-    if (candidateUserIds.length === 0) {
+    if (!assertedUser?.id) {
       throw new Error(
         'This account is not a member of the organization for this SSO connection',
       );
@@ -139,11 +122,12 @@ export async function POST(
 
     // Pre-session admin access, justified where the client is constructed above.
     // eslint-disable-next-line formaos/no-admin-client-with-org-filter
-    const { data: memberships, error: membershipError } = await admin
+    const { data: membership, error: membershipError } = await admin
       .from('org_members')
       .select('user_id')
       .eq('organization_id', orgId)
-      .in('user_id', candidateUserIds);
+      .eq('user_id', assertedUser.id)
+      .maybeSingle();
 
     if (membershipError) {
       throw new Error(
@@ -151,11 +135,12 @@ export async function POST(
       );
     }
 
-    if (!memberships || memberships.length === 0) {
+    if (!membership) {
       throw new Error(
         'This account is not a member of the organization for this SSO connection',
       );
     }
+
     const next = safeNext(typeof relayState === 'string' ? relayState : null);
     const redirectTo = `${appBase}/auth/callback?sso_org=${encodeURIComponent(orgId)}&next=${encodeURIComponent(next)}`;
     const { data: link, error } = await admin.auth.admin.generateLink({

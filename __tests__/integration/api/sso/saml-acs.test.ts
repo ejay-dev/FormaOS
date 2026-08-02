@@ -29,6 +29,10 @@ jest.mock('@/lib/sso/saml', () => ({
 }));
 jest.mock('@/lib/sso/jit-provisioning', () => ({
   provisionJitUser: jest.fn(),
+  // The ACS route resolves the asserted address through the auth admin API,
+  // not public.user_profiles — that table's `email` column is NULL for every
+  // production row, so a lookup against it would reject every real login.
+  findUserByEmail: jest.fn(),
 }));
 jest.mock('@/lib/supabase/admin', () => {
   const generateLink = jest.fn();
@@ -39,7 +43,7 @@ jest.mock('@/lib/supabase/admin', () => {
   const tableData: Record<string, { data: unknown; error: unknown }> = {};
   function builder(table: string) {
     const chain: Record<string, unknown> = {};
-    for (const method of ['select', 'ilike', 'eq', 'in', 'limit', 'order']) {
+    for (const method of ['select', 'ilike', 'eq', 'in', 'limit', 'order', 'maybeSingle', 'single']) {
       chain[method] = () => chain;
     }
     chain.then = (resolve: (v: unknown) => unknown) =>
@@ -60,13 +64,14 @@ jest.mock('@/lib/identity/audit', () => ({
 import { POST } from '@/app/api/sso/saml/acs/[orgId]/route';
 import { getOrgSsoConfig } from '@/lib/sso/org-sso';
 import { validateSamlResponse } from '@/lib/sso/saml';
-import { provisionJitUser } from '@/lib/sso/jit-provisioning';
+import { provisionJitUser, findUserByEmail } from '@/lib/sso/jit-provisioning';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logIdentityEvent } from '@/lib/identity/audit';
 
 const mockGetOrgSsoConfig = getOrgSsoConfig as jest.Mock;
 const mockValidateSamlResponse = validateSamlResponse as jest.Mock;
 const mockProvisionJitUser = provisionJitUser as jest.Mock;
+const mockFindUserByEmail = findUserByEmail as jest.Mock;
 const mockLogIdentityEvent = logIdentityEvent as jest.Mock;
 const mockGenerateLink = (
   jest.requireMock('@/lib/supabase/admin') as { __generateLink: jest.Mock }
@@ -96,8 +101,8 @@ beforeEach(() => {
   // Audit 2026-08-02: default to the asserted user genuinely being a member of
   // org-1, so the pre-existing happy-path tests still describe a legitimate
   // login. The rejection path has its own test below.
-  mockTableData.user_profiles = { data: [{ user_id: 'user-1' }], error: null };
-  mockTableData.org_members = { data: [{ user_id: 'user-1' }], error: null };
+  mockFindUserByEmail.mockResolvedValue({ id: 'user-1', email: 'user@example.com' });
+  mockTableData.org_members = { data: { user_id: 'user-1' }, error: null };
   // v4-031: the ACS route now defensively refuses IdP-initiated
   // assertions (those without an InResponseTo attribute matching a
   // cached request id) unless the org has explicitly set
@@ -221,7 +226,7 @@ describe('POST /api/sso/saml/acs/[orgId]', () => {
   // admin of any tenant could sign an assertion naming a victim on another
   // tenant and receive a magic link that logs them in as that user.
   it('refuses to mint a session for an email that is not a member of the org', async () => {
-    mockTableData.org_members = { data: [], error: null };
+    mockTableData.org_members = { data: null, error: null };
 
     const res = await POST(makeRequest(validResponse), {
       params: Promise.resolve({ orgId: 'org-1' }),
@@ -236,7 +241,7 @@ describe('POST /api/sso/saml/acs/[orgId]', () => {
   });
 
   it('refuses when the asserted email matches no known account', async () => {
-    mockTableData.user_profiles = { data: [], error: null };
+    mockFindUserByEmail.mockResolvedValue(null);
 
     const res = await POST(makeRequest(validResponse), {
       params: Promise.resolve({ orgId: 'org-1' }),

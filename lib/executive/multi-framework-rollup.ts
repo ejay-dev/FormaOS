@@ -4,6 +4,7 @@
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import { calculateFrameworkReadiness, type FrameworkReadiness } from '@/lib/audit/readiness-calculator';
 import type { FrameworkRollupItem, AuditReadinessForecast, AuditBlocker } from './types';
 
@@ -156,6 +157,48 @@ export async function calculateAuditForecast(
 }
 
 /**
+ * Per-control rows in org_control_evaluations are control_type='framework_control'
+ * (there has never been a 'control_snapshot' row). The table has no control_id or
+ * gap_description column — the control's code/title and the evaluator's reason
+ * live in `details`, and the verdict in `status`. framework_id is written by
+ * lib/frameworks/provisioning.ts but not by
+ * lib/compliance/evaluate-framework-controls.ts, which only stamps
+ * details.framework_code, so rows are matched to frameworks on either.
+ */
+type ControlEvaluationRow = {
+  framework_id: string | null;
+  status: string | null;
+  compliance_score: number | null;
+  details: Record<string, unknown> | null;
+};
+
+const BLOCKING_CONTROL_STATUSES = [
+  'at_risk',
+  'partial',
+  'in_progress',
+  'non_compliant',
+  'failed',
+];
+
+/** compliance_score is only written by the seed generator; status is authoritative. */
+const CONTROL_STATUS_SCORES: Record<string, number> = {
+  compliant: 100,
+  satisfied: 100,
+  met: 100,
+  partial: 50,
+  in_progress: 50,
+  at_risk: 50,
+  non_compliant: 0,
+  failed: 0,
+};
+
+function controlScoreFromRow(row: ControlEvaluationRow): number {
+  const rawScore = Number(row.compliance_score ?? 0);
+  if (rawScore > 0) return rawScore;
+  return CONTROL_STATUS_SCORES[(row.status ?? '').toLowerCase()] ?? 0;
+}
+
+/**
  * Get audit blockers (critical controls holding back readiness)
  */
 async function getAuditBlockers(
@@ -163,54 +206,65 @@ async function getAuditBlockers(
   admin: ReturnType<typeof createSupabaseAdminClient>,
   frameworks: FrameworkReadiness[]
 ): Promise<AuditBlocker[]> {
-  const frameworkIds = frameworks.map((fw) => fw.frameworkId);
+  const frameworkById = new Map(frameworks.map((fw) => [fw.frameworkId, fw]));
+  const frameworkByCode = new Map(frameworks.map((fw) => [fw.frameworkCode, fw]));
 
-  const { data: evaluations } = await admin
+  const { data, error } = await admin
     .from('org_control_evaluations')
-    .select(`
-      control_id,
-      framework_id,
-      compliance_score,
-      gap_description
-    `)
+    .select('framework_id, status, compliance_score, details')
     .eq('organization_id', orgId)
-    .eq('control_type', 'control_snapshot')
-    .in('framework_id', frameworkIds)
-    .lt('compliance_score', 50)
+    .eq('control_type', 'framework_control')
+    .in('status', BLOCKING_CONTROL_STATUSES)
     .order('compliance_score', { ascending: true })
-    .limit(5);
+    .order('last_evaluated_at', { ascending: false })
+    .limit(200);
 
-  if (!evaluations?.length) return [];
+  if (error) {
+    consoleShim.error(
+      '[MultiFrameworkRollup] Failed to fetch control evaluations:',
+      error
+    );
+    return [];
+  }
 
-  // Get control details
-  const controlIds = evaluations.map((e: { control_id?: string }) => e.control_id).filter(Boolean) as string[];
-  const { data: controls } = await admin
-    .from('compliance_controls')
-    .select('id, code, title')
-    .in('id', controlIds);
+  const evaluations = (data ?? []) as ControlEvaluationRow[];
+  if (!evaluations.length) return [];
 
-  const controlMap = new Map<string, { id: string; code: string; title: string }>(
-    controls?.map((c: { id: string; code: string; title: string }) => [c.id, c]) || []
-  );
+  return evaluations
+    .map((row) => {
+      const details = row.details ?? {};
+      const frameworkCode =
+        typeof details.framework_code === 'string' ? details.framework_code : null;
+      const framework =
+        (row.framework_id ? frameworkById.get(row.framework_id) : undefined) ??
+        (frameworkCode ? frameworkByCode.get(frameworkCode) : undefined);
 
-  // Get framework map
-  const frameworkMap = new Map(frameworks.map((fw) => [fw.frameworkId, fw]));
+      return { row, details, framework };
+    })
+    .filter((entry) => entry.framework !== undefined)
+    .slice(0, 5)
+    .map(({ row, details, framework }) => {
+      const score = controlScoreFromRow(row);
+      const code = details.control_code ?? details.code;
+      const title = details.control_title ?? details.title;
+      const evaluator = details.evaluator as
+        | { reason?: string | null }
+        | null
+        | undefined;
 
-  return evaluations.map((eval_: { control_id: string; framework_id: string; compliance_score?: number; gap_description?: string }) => {
-    const control = controlMap.get(eval_.control_id);
-    const framework = frameworkMap.get(eval_.framework_id);
-    const score = eval_.compliance_score ?? 0;
-
-    return {
-      controlCode: control?.code || 'UNKNOWN',
-      controlTitle: control?.title || 'Unknown Control',
-      framework: framework?.frameworkTitle || 'Unknown Framework',
-      reason: eval_.gap_description || 'Evidence gap or control not implemented',
-      priority: score < 25 ? 'critical' : score < 40 ? 'high' : 'medium',
-      estimatedEffort:
-        score < 25 ? 'high' : score < 40 ? 'medium' : 'low',
-    } as AuditBlocker;
-  });
+      return {
+        controlCode: typeof code === 'string' && code ? code : 'UNKNOWN',
+        controlTitle:
+          typeof title === 'string' && title ? title : 'Unknown Control',
+        framework: framework?.frameworkTitle || 'Unknown Framework',
+        reason:
+          (typeof evaluator?.reason === 'string' ? evaluator.reason : null) ||
+          'Evidence gap or control not implemented',
+        priority: score < 25 ? 'critical' : score < 40 ? 'high' : 'medium',
+        estimatedEffort:
+          score < 25 ? 'high' : score < 40 ? 'medium' : 'low',
+      } as AuditBlocker;
+    });
 }
 
 /**

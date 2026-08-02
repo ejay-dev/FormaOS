@@ -403,7 +403,8 @@ async function buildIso27001Report(
   const statementOfApplicability: SoaEntry[] = evaluations.map((evaluation) => {
     const score = evaluation.evaluated ? evaluation.complianceScore : 0;
     let status: SoaEntry['implementationStatus'] = 'not_implemented';
-    if (score >= 80) status = 'implemented';
+    if (!evaluation.evaluated) status = 'not_assessed';
+    else if (score >= 80) status = 'implemented';
     else if (score >= 40) status = 'partial';
 
     let justification: string;
@@ -477,7 +478,8 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
     (evaluation) => {
       const score = evaluation.evaluated ? evaluation.complianceScore : 0;
       let status: NdisPracticeStandard['complianceStatus'] = 'non_compliant';
-      if (score >= 80) status = 'compliant';
+      if (!evaluation.evaluated) status = 'not_assessed';
+      else if (score >= 80) status = 'compliant';
       else if (score >= 40) status = 'partial';
 
       return {

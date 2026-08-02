@@ -1,5 +1,7 @@
 import { createHash } from 'crypto';
+import type { User as AuthUser } from '@supabase/supabase-js';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getSupabaseServiceRoleKey, getSupabaseUrl } from '@/lib/supabase/env';
 import { revokeAllSessions } from '@/lib/auth/session-revocation';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
@@ -610,9 +612,62 @@ function getFullName(input: Record<string, unknown>) {
 const AUTH_USER_PAGE_SIZE = 200;
 const AUTH_USER_MAX_PAGES = 100;
 
-async function lookupUserByEmail(email: string) {
+// The page walk costs one round trip per 200 auth users on every POST /Users
+// — including the very common re-push of an existing user — which blows the
+// IdP connector timeout on a large directory. GoTrue's admin users endpoint
+// accepts a filter, so resolve the common case there first and keep the walk
+// as the fallback for processes without service-role credentials.
+type AdminApiLookup =
+  | { available: false }
+  | { available: true; user: AuthUser | null };
+
+async function lookupUserByEmailViaAdminApi(
+  target: string,
+): Promise<AdminApiLookup> {
+  const baseUrl = getSupabaseUrl().replace(/\/$/, '');
+  const serviceKey = getSupabaseServiceRoleKey();
+  if (!baseUrl || !serviceKey) return { available: false };
+
+  let body: { users?: AuthUser[] } | null;
+  try {
+    const response = await fetch(
+      `${baseUrl}/auth/v1/admin/users?per_page=${AUTH_USER_PAGE_SIZE}&filter=${encodeURIComponent(target)}`,
+      {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+        },
+        cache: 'no-store',
+      },
+    );
+
+    if (!response?.ok) return { available: false };
+
+    body = (await response.json()) as { users?: AuthUser[] } | null;
+  } catch {
+    // Any transport/parse failure is inconclusive, not "user absent" — the
+    // paginated walk below stays authoritative.
+    return { available: false };
+  }
+
+  const users = body?.users ?? [];
+
+  const match = users.find((user) => user.email?.toLowerCase() === target);
+  if (match) return { available: true, user: match };
+
+  // `filter` matches substrings, so a full page with no exact hit means the
+  // answer may still be on a later page — inconclusive, not "absent".
+  if (users.length >= AUTH_USER_PAGE_SIZE) return { available: false };
+
+  return { available: true, user: null };
+}
+
+async function lookupUserByEmail(email: string): Promise<AuthUser | null> {
   const admin = createSupabaseAdminClient();
   const target = email.toLowerCase();
+
+  const direct = await lookupUserByEmailViaAdminApi(target);
+  if (direct.available) return direct.user;
 
   for (let page = 1; page <= AUTH_USER_MAX_PAGES; page += 1) {
     const { data, error } = await admin.auth.admin.listUsers({

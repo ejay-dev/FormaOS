@@ -515,7 +515,43 @@ describe('getActiveWorkflowsByTrigger', () => {
       }),
     );
     const result = await getActiveWorkflowsByTrigger('org-1', 'manual');
-    expect(result.length).toBeGreaterThanOrEqual(1);
+    // The archived definition must be filtered out. `length >= 1` used to
+    // pass whether the filter dropped wf-2 or leaked it, so the fixture's
+    // whole point was unasserted.
+    expect(result.map((w) => w.id)).toEqual(['wf-1']);
+    expect(result[0].status).toBe('active');
+  });
+
+  it('excludes archived workflows even when the trigger type matches', async () => {
+    getClient().from.mockImplementation(() =>
+      createBuilder({
+        data: [
+          makeRow({
+            id: 'wf-archived',
+            definition: { ...makeRow().definition, status: 'archived' },
+          }),
+        ],
+        error: null,
+        count: 1,
+      }),
+    );
+    const result = await getActiveWorkflowsByTrigger('org-1', 'manual');
+    expect(result).toEqual([]);
+  });
+
+  it('scopes the query to the caller org and the requested trigger type', async () => {
+    const builder = createBuilder({ data: [makeRow()], error: null, count: 1 });
+    getClient().from.mockImplementation(() => builder);
+
+    await getActiveWorkflowsByTrigger('org-1', 'schedule');
+
+    expect(getClient().from).toHaveBeenCalledWith('workflow_definitions');
+    expect(builder.eq).toHaveBeenCalledWith('org_id', 'org-1');
+    expect(builder.eq).toHaveBeenCalledWith('enabled', true);
+    expect(builder.eq).toHaveBeenCalledWith(
+      'definition->trigger->>type',
+      'schedule',
+    );
   });
 });
 

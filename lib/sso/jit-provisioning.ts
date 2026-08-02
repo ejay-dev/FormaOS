@@ -139,7 +139,16 @@ async function findUserByEmailViaAdminApi(
   return { available: true, user: null };
 }
 
-async function findUserByEmail(email: string): Promise<User | null> {
+/**
+ * Resolve an email address to its auth user. Exported so the SAML ACS route can
+ * bind an asserted identity to a real account without duplicating the
+ * pagination/inconclusive-page rules below.
+ *
+ * Deliberately NOT resolved through public.user_profiles: that table has an
+ * `email` column but it is NULL for all 2,598 production rows, so a lookup
+ * against it silently matches nothing.
+ */
+export async function findUserByEmail(email: string): Promise<User | null> {
   const target = email.toLowerCase();
 
   const direct = await findUserByEmailViaAdminApi(target);

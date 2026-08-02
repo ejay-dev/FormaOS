@@ -51,7 +51,13 @@ export async function resolveActiveMembership(
   const { data: memberships, error } = await db
     .from('org_members')
     .select('organization_id, role')
-    .eq('user_id', user.id);
+    .eq('user_id', user.id)
+    // SCIM/directory deprovisioning parks the row at
+    // compliance_status='inactive' instead of deleting it; revoking the
+    // live session is not enough on its own, because the user can still
+    // sign in with their password and mint a fresh one. A bare .neq would
+    // also drop the nullable-column rows, which count as active.
+    .or('compliance_status.is.null,compliance_status.neq.inactive');
   if (error) {
     // Treat read errors as "no memberships" rather than silently
     // failing open — callers will return 4xx and ops will see the
@@ -143,6 +149,9 @@ export const getCachedUserMembership = cache(
       .from('org_members')
       .select('organization_id, role')
       .eq('user_id', user.id)
+      // Deprovisioned members keep their row with
+      // compliance_status='inactive' — see resolveActiveMembership above.
+      .or('compliance_status.is.null,compliance_status.neq.inactive')
       .limit(1);
 
     if (preferredOrgId) {

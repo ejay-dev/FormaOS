@@ -108,7 +108,7 @@ export function IntegrationConfigDialog({
     };
 
     if (!response.ok) {
-      throw new Error(payload.error ?? 'Request failed');
+      throw new Error(payload.error ?? `Request failed (${response.status})`);
     }
 
     return payload;
@@ -127,6 +127,23 @@ export function IntegrationConfigDialog({
   }
 
   function onConnect() {
+    // A blank secret means "keep the stored one", which only works once the
+    // integration is connected. On a first connect there is nothing to keep,
+    // so catch it here rather than letting the server reject the payload.
+    const missingSecrets = fields.filter(
+      (field) =>
+        field.secret &&
+        !(formState[field.key] ?? '').trim() &&
+        !savedSecretKeys.has(field.key),
+    );
+
+    if (missingSecrets.length > 0) {
+      setMessage(
+        `Enter ${missingSecrets.map((field) => field.label).join(', ')} before saving.`,
+      );
+      return;
+    }
+
     startTransition(async () => {
       try {
         setMessage(null);

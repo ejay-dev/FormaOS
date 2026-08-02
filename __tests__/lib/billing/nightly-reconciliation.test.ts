@@ -50,6 +50,26 @@ function getClient() {
   return require('@/lib/supabase/admin').__client;
 }
 
+/**
+ * Records every `from(table)` call together with the builder handed back, so
+ * a test can assert on the corrective write (`update` on org_subscriptions)
+ * rather than only on the reported discrepancy.
+ */
+let fromCalls: Array<{ table: string; builder: any }> = [];
+
+function mockFrom(impl: (table: string, index: number) => any) {
+  fromCalls = [];
+  getClient().from.mockImplementation((table: string) => {
+    const builder = impl(table, fromCalls.length);
+    fromCalls.push({ table, builder });
+    return builder;
+  });
+}
+
+function buildersFor(table: string) {
+  return fromCalls.filter((c) => c.table === table).map((c) => c.builder);
+}
+
 const mockStripe = {
   subscriptions: {
     retrieve: jest.fn(),
@@ -65,6 +85,19 @@ jest.mock('@/lib/billing/stripe', () => ({
 
 jest.mock('@/lib/billing/entitlements', () => ({
   syncEntitlementsForPlan: jest.fn().mockResolvedValue(undefined),
+}));
+
+// Entitlement drift has its own unit suite; stub it here so the reconciler's
+// discrepancy list is deterministic and `discrepancies[0]` means what the
+// test says it means.
+jest.mock('@/lib/billing/entitlement-drift-detector', () => ({
+  detectEntitlementDrift: jest.fn().mockResolvedValue({
+    hasDrift: false,
+    expected: {},
+    actual: {},
+    corrections: [],
+    autoFixed: false,
+  }),
 }));
 
 jest.mock('@/lib/plans', () => ({
@@ -157,32 +190,96 @@ describe('runBillingReconciliation', () => {
     expect(result.discrepancies).toHaveLength(0);
   });
 
-  it('detects status mismatch and auto-fixes', async () => {
-    const subs = [
-      {
-        organization_id: 'org-1',
-        plan_key: 'pro',
-        status: 'trialing',
-        stripe_subscription_id: 'sub_123',
-        stripe_customer_id: 'cus_123',
-        current_period_end: new Date(Date.now() + 30 * 86400000).toISOString(),
-        organizations: { name: 'Acme' },
-      },
-    ];
+  // Audit 2026-08-02: the old single test was named "detects status mismatch
+  // and auto-fixes" but asserted only that a discrepancy was reported. The
+  // reconciler could log the drift and skip the corrective write entirely and
+  // it still passed. AUTO_FIX_ENABLED is read from BILLING_AUTO_FIX at module
+  // load, so the two halves need separate module instances.
+  const mismatchedSub = () => ({
+    organization_id: 'org-1',
+    plan_key: 'pro',
+    status: 'trialing',
+    stripe_subscription_id: 'sub_123',
+    stripe_customer_id: 'cus_123',
+    current_period_end: new Date(Date.now() + 30 * 86400000).toISOString(),
+    organizations: { name: 'Acme' },
+  });
 
-    getClient().from.mockImplementation(() =>
-      createBuilder({ data: subs, error: null }),
-    );
+  const activeStripeSub = () => ({
+    status: 'active',
+    items: { data: [{ price: { id: 'price_pro' } }] },
+    current_period_end: Math.floor((Date.now() + 30 * 86400000) / 1000),
+  });
 
-    mockStripe.subscriptions.retrieve.mockResolvedValueOnce({
-      status: 'active',
-      items: { data: [{ price: { id: 'price_pro' } }] },
-      current_period_end: Math.floor((Date.now() + 30 * 86400000) / 1000),
-    });
+  it('reports a status mismatch but writes nothing when BILLING_AUTO_FIX is off', async () => {
+    const subs = [mismatchedSub()];
+    mockFrom(() => createBuilder({ data: subs, error: null }));
+    mockStripe.subscriptions.retrieve.mockResolvedValueOnce(activeStripeSub());
 
     const result = await runBillingReconciliation();
-    expect(result.discrepancies.length).toBeGreaterThanOrEqual(1);
+
+    expect(result.discrepancies).toHaveLength(1);
     expect(result.discrepancies[0].discrepancyType).toBe('status_mismatch');
+    expect(result.discrepancies[0].localValue).toBe('trialing');
+    expect(result.discrepancies[0].stripeValue).toBe('active');
+    expect(result.discrepancies[0].autoFixed).toBe(false);
+    expect(result.autoFixed).toBe(0);
+    expect(result.requiresManual).toBe(1);
+
+    // No corrective write may happen while auto-fix is disabled.
+    for (const builder of buildersFor('org_subscriptions')) {
+      expect(builder.update).not.toHaveBeenCalled();
+    }
+  });
+
+  it('auto-fixes the local status from Stripe when BILLING_AUTO_FIX=true', async () => {
+    const subs = [mismatchedSub()];
+    mockStripe.subscriptions.retrieve.mockResolvedValueOnce(activeStripeSub());
+
+    const previous = process.env.BILLING_AUTO_FIX;
+    process.env.BILLING_AUTO_FIX = 'true';
+
+    let pending: Promise<any>;
+    const calls: Array<{ table: string; builder: any }> = [];
+    try {
+      jest.isolateModules(() => {
+        const admin = require('@/lib/supabase/admin').__client;
+        admin.from.mockImplementation((table: string) => {
+          const builder = createBuilder({ data: subs, error: null });
+          calls.push({ table, builder });
+          return builder;
+        });
+        const {
+          runBillingReconciliation: run,
+        } = require('@/lib/billing/nightly-reconciliation');
+        pending = run();
+      });
+      const result = await pending!;
+
+      expect(result.discrepancies).toHaveLength(1);
+      expect(result.discrepancies[0].discrepancyType).toBe('status_mismatch');
+      expect(result.discrepancies[0].autoFixed).toBe(true);
+      expect(result.autoFixed).toBe(1);
+      expect(result.requiresManual).toBe(0);
+
+      // The corrective write is the whole point of the nightly job.
+      const updated = calls
+        .filter((c) => c.table === 'org_subscriptions')
+        .map((c) => c.builder)
+        .filter((b) => b.update.mock.calls.length > 0);
+      expect(updated).toHaveLength(1);
+      expect(updated[0].update).toHaveBeenCalledWith({
+        status: 'active',
+        updated_at: expect.any(String),
+      });
+      expect(updated[0].eq).toHaveBeenCalledWith('organization_id', 'org-1');
+    } finally {
+      if (previous === undefined) {
+        delete process.env.BILLING_AUTO_FIX;
+      } else {
+        process.env.BILLING_AUTO_FIX = previous;
+      }
+    }
   });
 
   it('handles missing Stripe subscription', async () => {

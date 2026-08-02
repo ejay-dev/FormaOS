@@ -35,13 +35,32 @@ describe('lib/cache/dashboard-cache', () => {
       expect(getFromCache('key1')).toEqual({ foo: 'bar' });
     });
 
-    it('returns cached data with zero TTL in same tick', () => {
-      setCache('ttl-zero', 'data', 0); // TTL of 0ms
-      // Within the same ms, the entry may not be expired yet
-      // This exercises the TTL code path
-      const result = getFromCache('ttl-zero');
-      // Either null or 'data' is valid depending on timing
-      expect([null, 'data']).toContain(result);
+    // Audit 2026-08-02: this used to accept `[null, 'data']` — either outcome
+    // passed, so the TTL branch had no deterministic coverage. Fake timers
+    // pin the clock so both sides of the expiry check are asserted.
+    it('serves a zero-TTL entry in the same millisecond and drops it after', () => {
+      jest.useFakeTimers();
+      try {
+        setCache('ttl-zero', 'data', 0);
+        expect(getFromCache('ttl-zero')).toBe('data');
+        jest.advanceTimersByTime(1);
+        expect(getFromCache('ttl-zero')).toBeNull();
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('expires an entry once its TTL has elapsed', () => {
+      jest.useFakeTimers();
+      try {
+        setCache('ttl-short', 'data', 5000);
+        jest.advanceTimersByTime(4999);
+        expect(getFromCache('ttl-short')).toBe('data');
+        jest.advanceTimersByTime(2);
+        expect(getFromCache('ttl-short')).toBeNull();
+      } finally {
+        jest.useRealTimers();
+      }
     });
 
     it('handles non-default TTL', () => {
@@ -153,13 +172,31 @@ describe('lib/cache/dashboard-cache', () => {
   });
 
   describe('cleanupCache', () => {
+    // Audit 2026-08-02: the original test inserted two 60s entries and
+    // asserted `removed === 0`, so the removal branch never ran — a
+    // cleanupCache that deleted nothing at all still passed.
     it('removes expired entries and returns count', () => {
+      jest.useFakeTimers();
+      try {
+        setCache('expired', 1, 1000);
+        setCache('also-expired', 2, 1000);
+        setCache('live', 3, 60000);
+
+        jest.advanceTimersByTime(2000);
+
+        expect(cleanupCache()).toBe(2);
+        expect(getCacheStats().keys).toEqual(['live']);
+        expect(getFromCache('live')).toBe(3);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('returns 0 and keeps every entry when nothing has expired', () => {
       setCache('live', 1, 60000);
       setCache('also-live', 2, 60000);
-      const removed = cleanupCache();
-      // No entries are expired since they have 60s TTL
-      expect(removed).toBe(0);
-      expect(getFromCache('live')).toBe(1);
+      expect(cleanupCache()).toBe(0);
+      expect(getCacheStats().size).toBe(2);
     });
   });
 
