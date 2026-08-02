@@ -17,30 +17,30 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au';
 const BASE = APP_URL.replace(/\/$/, '');
 
 const main = {
-  backgroundColor: '#0f172a',
-  fontFamily: 'Inter,-apple-system,BlinkMacSystemFont,sans-serif',
+  backgroundColor: '#111213',
+  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif',
 };
 const container = {
   margin: '0 auto',
   maxWidth: '600px',
-  backgroundColor: '#1e293b',
+  backgroundColor: '#1c1e1f',
   borderRadius: '12px',
   overflow: 'hidden' as const,
 };
 const header = {
   padding: '28px 40px 24px',
-  background: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)',
-  borderBottom: '1px solid rgba(34,211,238,0.2)',
+  background: '#16181a',
+  borderBottom: '1px solid rgba(255,255,255,0.2)',
 };
 const logo = {
-  color: '#22d3ee',
+  color: '#ffffff',
   fontSize: '24px',
   fontWeight: 800,
   letterSpacing: '-0.5px',
   margin: 0,
 };
 const tagline = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '11px',
   letterSpacing: '0.1em',
   textTransform: 'uppercase' as const,
@@ -48,24 +48,24 @@ const tagline = {
 };
 const content = { padding: '32px 40px' };
 const h2 = {
-  color: '#f1f5f9',
+  color: '#ededed',
   fontSize: '22px',
   lineHeight: 1.3,
   marginBottom: '6px',
 };
-const text = { color: '#cbd5e1', fontSize: '14px', lineHeight: 1.7 };
+const text = { color: '#d4d4d4', fontSize: '14px', lineHeight: 1.7 };
 const cta = {
   display: 'inline-block',
   padding: '14px 32px',
-  backgroundColor: '#22d3ee',
+  backgroundColor: '#ffffff',
   borderRadius: '8px',
-  color: '#0f172a',
+  color: '#111213',
   fontSize: '14px',
   fontWeight: 700,
   textDecoration: 'none',
 };
 const footer = {
-  color: '#475569',
+  color: '#6b6b6b',
   fontSize: '12px',
   fontStyle: 'italic' as const,
   margin: 0,
@@ -117,9 +117,9 @@ export function EvidenceExpiringAlertEmail({
             label: 'Soon',
           }
         : {
-            bg: 'linear-gradient(135deg,rgba(34,211,238,0.12),rgba(34,211,238,0.03))',
-            border: 'rgba(34,211,238,0.25)',
-            accent: '#22d3ee',
+            bg: 'linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))',
+            border: 'rgba(255,255,255,0.25)',
+            accent: '#ffffff',
             label: 'Upcoming',
           };
 
@@ -154,21 +154,21 @@ export function EvidenceExpiringAlertEmail({
 
   const metaRow = {
     padding: '10px 14px',
-    background: '#0f172a',
+    background: '#111213',
     border: '1px solid rgba(148,163,184,0.1)',
     borderRadius: '8px',
     marginBottom: '6px',
   };
 
   const metaLabel = {
-    color: '#64748b',
+    color: '#808080',
     fontSize: '11px',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.08em',
     margin: 0,
   };
   const metaValue = {
-    color: '#e2e8f0',
+    color: '#e5e5e5',
     fontSize: '14px',
     margin: '2px 0 0',
   };
@@ -206,7 +206,7 @@ export function EvidenceExpiringAlertEmail({
               <Text style={chip}>{heroTint.label}</Text>
               <Text style={heroValue}>
                 {daysUntilExpiry}
-                <span style={{ fontSize: '18px', color: '#94a3b8' }}> days</span>
+                <span style={{ fontSize: '18px', color: '#b8b8b8' }}> days</span>
               </Text>
               <Text style={{ ...text, margin: 0, fontSize: '13px' }}>
                 {expiryDate ? `Expires ${expiryDate}` : 'until expiry'}
@@ -240,18 +240,18 @@ export function EvidenceExpiringAlertEmail({
               </Button>
             </Section>
 
-            <Text style={{ ...text, fontSize: '12px', textAlign: 'center' as const, color: '#64748b' }}>
+            <Text style={{ ...text, fontSize: '12px', textAlign: 'center' as const, color: '#808080' }}>
               Or reply to re-assign this item to someone on your team.
             </Text>
 
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '22px 0 14px' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '22px 0 14px' }}
             />
             <Text style={footer}>
               You receive evidence expiry alerts for items you own.{' '}
               <a
                 href={`${BASE}/app/settings/notifications`}
-                style={{ color: '#64748b' }}
+                style={{ color: '#808080' }}
               >
                 Update preferences
               </a>

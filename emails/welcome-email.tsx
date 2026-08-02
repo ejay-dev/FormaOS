@@ -30,7 +30,7 @@ export default function WelcomeEmail({
   return (
     <Html>
       <Head />
-      <Preview>Welcome to FormaOS — Your compliance journey starts now</Preview>
+      <Preview>Your FormaOS workspace is ready</Preview>
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
@@ -41,13 +41,12 @@ export default function WelcomeEmail({
 
           {/* Content */}
           <Section style={content}>
-            <Heading style={h2}>Welcome, {userName}! 🎉</Heading>
+            <Heading style={h2}>Welcome, {userName}</Heading>
 
             <Text style={text}>
-              Your organization{' '}
-              <strong style={{ color: '#22d3ee' }}>{organizationName}</strong>{' '}
-              has been successfully created. You&rsquo;re all set to start your
-              compliance journey.
+              Your workspace for{' '}
+              <strong style={{ color: '#ffffff' }}>{organizationName}</strong> is
+              ready to use.
             </Text>
 
             <Text style={text}>FormaOS helps your team manage:</Text>
@@ -61,7 +60,7 @@ export default function WelcomeEmail({
                 'Team collaboration with role-based access',
               ].map((feature) => (
                 <Text key={feature} style={featureItem}>
-                  <span style={{ color: '#22d3ee', fontWeight: '700' }}>✓</span>
+                  <span style={{ color: '#ffffff', fontWeight: '700' }}>✓</span>
                   &nbsp;&nbsp;{feature}
                 </Text>
               ))}
@@ -84,13 +83,13 @@ export default function WelcomeEmail({
 }
 
 const main = {
-  backgroundColor: '#0f172a',
+  backgroundColor: '#111213',
   fontFamily:
-    "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
 };
 
 const container = {
-  backgroundColor: '#1e293b',
+  backgroundColor: '#1c1e1f',
   margin: '0 auto',
   maxWidth: '600px',
   borderRadius: '12px',
@@ -98,14 +97,14 @@ const container = {
 };
 
 const header = {
-  background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-  borderBottom: '1px solid rgba(34,211,238,0.2)',
+  background: '#16181a',
+  borderBottom: '1px solid rgba(255,255,255,0.2)',
   padding: '32px 40px',
   textAlign: 'center' as const,
 };
 
 const logo = {
-  color: '#22d3ee',
+  color: '#ffffff',
   fontSize: '28px',
   fontWeight: '800',
   margin: '0',
@@ -113,7 +112,7 @@ const logo = {
 };
 
 const tagline = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '12px',
   margin: '6px 0 0',
   textTransform: 'uppercase' as const,
@@ -125,7 +124,7 @@ const content = {
 };
 
 const h2 = {
-  color: '#f1f5f9',
+  color: '#ededed',
   fontSize: '24px',
   fontWeight: '700',
   lineHeight: '1.3',
@@ -133,7 +132,7 @@ const h2 = {
 };
 
 const text = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '15px',
   lineHeight: '1.7',
   margin: '16px 0',
@@ -144,7 +143,7 @@ const featureList = {
 };
 
 const featureItem = {
-  color: '#cbd5e1',
+  color: '#d4d4d4',
   fontSize: '14px',
   lineHeight: '1.6',
   margin: '8px 0',
@@ -156,9 +155,9 @@ const buttonContainer = {
 };
 
 const button = {
-  backgroundColor: '#22d3ee',
+  backgroundColor: '#ffffff',
   borderRadius: '8px',
-  color: '#0f172a',
+  color: '#111213',
   fontSize: '15px',
   fontWeight: '700',
   textDecoration: 'none',
@@ -168,12 +167,12 @@ const button = {
 };
 
 const divider = {
-  borderColor: 'rgba(34,211,238,0.1)',
+  borderColor: 'rgba(255,255,255,0.1)',
   margin: '24px 0',
 };
 
 const footer = {
-  color: '#475569',
+  color: '#6b6b6b',
   fontSize: '13px',
   marginTop: '16px',
   fontStyle: 'italic' as const,

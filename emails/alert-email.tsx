@@ -35,17 +35,17 @@ export default function AlertEmail({
 }: AlertEmailProps) {
   const alertConfig = {
     info: {
-      bg: 'rgba(34,211,238,0.12)',
-      border: '#22d3ee',
-      btnBg: '#22d3ee',
-      btnColor: '#0f172a',
+      bg: 'rgba(255,255,255,0.12)',
+      border: '#ffffff',
+      btnBg: '#ffffff',
+      btnColor: '#111213',
       icon: 'ℹ️',
     },
     warning: {
       bg: 'rgba(251,146,60,0.12)',
       border: '#fb923c',
       btnBg: '#fb923c',
-      btnColor: '#0f172a',
+      btnColor: '#111213',
       icon: '⚠️',
     },
     critical: {
@@ -116,13 +116,13 @@ export default function AlertEmail({
 }
 
 const main = {
-  backgroundColor: '#0f172a',
+  backgroundColor: '#111213',
   fontFamily:
-    "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
 };
 
 const container = {
-  backgroundColor: '#1e293b',
+  backgroundColor: '#1c1e1f',
   margin: '0 auto',
   maxWidth: '600px',
   borderRadius: '12px',
@@ -130,14 +130,14 @@ const container = {
 };
 
 const header = {
-  background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-  borderBottom: '1px solid rgba(34,211,238,0.2)',
+  background: '#16181a',
+  borderBottom: '1px solid rgba(255,255,255,0.2)',
   padding: '32px 40px',
   textAlign: 'center' as const,
 };
 
 const logo = {
-  color: '#22d3ee',
+  color: '#ffffff',
   fontSize: '28px',
   fontWeight: '800',
   margin: '0',
@@ -145,7 +145,7 @@ const logo = {
 };
 
 const tagline = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '12px',
   margin: '6px 0 0',
   textTransform: 'uppercase' as const,
@@ -157,7 +157,7 @@ const content = {
 };
 
 const h2 = {
-  color: '#f1f5f9',
+  color: '#ededed',
   fontSize: '22px',
   fontWeight: '700',
   lineHeight: '1.3',
@@ -165,7 +165,7 @@ const h2 = {
 };
 
 const text = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '15px',
   lineHeight: '1.7',
   margin: '16px 0',
@@ -178,7 +178,7 @@ const alertBox = {
 };
 
 const alertText = {
-  color: '#e2e8f0',
+  color: '#e5e5e5',
   fontSize: '15px',
   lineHeight: '1.6',
   margin: '0',
@@ -201,19 +201,19 @@ const button = {
 };
 
 const smallText = {
-  color: '#475569',
+  color: '#6b6b6b',
   fontSize: '13px',
   lineHeight: '1.6',
   margin: '16px 0',
 };
 
 const divider = {
-  borderColor: 'rgba(34,211,238,0.1)',
+  borderColor: 'rgba(255,255,255,0.1)',
   margin: '24px 0',
 };
 
 const footer = {
-  color: '#475569',
+  color: '#6b6b6b',
   fontSize: '13px',
   fontStyle: 'italic' as const,
 };

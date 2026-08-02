@@ -20,30 +20,30 @@ const BASE = APP_URL.replace(/\/$/, '');
 
 // Shared tokens — keep aligned with lifecycle-emails.tsx
 const main = {
-  backgroundColor: '#0f172a',
-  fontFamily: 'Inter,-apple-system,BlinkMacSystemFont,sans-serif',
+  backgroundColor: '#111213',
+  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif',
 };
 const container = {
   margin: '0 auto',
   maxWidth: '600px',
-  backgroundColor: '#1e293b',
+  backgroundColor: '#1c1e1f',
   borderRadius: '12px',
   overflow: 'hidden' as const,
 };
 const header = {
   padding: '28px 40px 24px',
-  background: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)',
-  borderBottom: '1px solid rgba(34,211,238,0.2)',
+  background: '#16181a',
+  borderBottom: '1px solid rgba(255,255,255,0.2)',
 };
 const logo = {
-  color: '#22d3ee',
+  color: '#ffffff',
   fontSize: '24px',
   fontWeight: 800,
   letterSpacing: '-0.5px',
   margin: 0,
 };
 const tagline = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '11px',
   letterSpacing: '0.1em',
   textTransform: 'uppercase' as const,
@@ -51,29 +51,29 @@ const tagline = {
 };
 const content = { padding: '32px 40px' };
 const h2 = {
-  color: '#f1f5f9',
+  color: '#ededed',
   fontSize: '22px',
   lineHeight: 1.3,
   marginBottom: '6px',
 };
 const subline = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '13px',
   margin: '0 0 20px',
 };
-const text = { color: '#cbd5e1', fontSize: '14px', lineHeight: 1.7 };
+const text = { color: '#d4d4d4', fontSize: '14px', lineHeight: 1.7 };
 const cta = {
   display: 'inline-block',
   padding: '14px 28px',
-  backgroundColor: '#22d3ee',
+  backgroundColor: '#ffffff',
   borderRadius: '8px',
-  color: '#0f172a',
+  color: '#111213',
   fontSize: '14px',
   fontWeight: 700,
   textDecoration: 'none',
 };
 const footer = {
-  color: '#475569',
+  color: '#6b6b6b',
   fontSize: '12px',
   fontStyle: 'italic' as const,
   margin: 0,
@@ -82,28 +82,28 @@ const footer = {
 // Hero readiness tile
 const readinessCard = {
   background:
-    'linear-gradient(135deg,rgba(34,211,238,0.12) 0%,rgba(136,100,255,0.10) 100%)',
-  border: '1px solid rgba(34,211,238,0.25)',
+    'linear-gradient(135deg,rgba(255,255,255,0.12) 0%,rgba(255,255,255,0.10) 100%)',
+  border: '1px solid rgba(255,255,255,0.25)',
   borderRadius: '12px',
   padding: '22px 24px',
   margin: '0 0 24px',
 };
 const readinessLabel = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '11px',
   letterSpacing: '0.12em',
   textTransform: 'uppercase' as const,
   margin: 0,
 };
 const readinessValue = {
-  color: '#22d3ee',
+  color: '#ffffff',
   fontSize: '44px',
   fontWeight: 800,
   lineHeight: 1,
   margin: '6px 0 2px',
 };
 const readinessDeltaStyle = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '13px',
   margin: 0,
 };
@@ -111,14 +111,14 @@ const readinessDeltaStyle = {
 // Bullet row
 const bulletRow = {
   padding: '12px 16px',
-  background: '#0f172a',
+  background: '#111213',
   border: '1px solid rgba(148,163,184,0.1)',
   borderRadius: '10px',
   marginBottom: '8px',
 };
 
 const sectionLabel = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '11px',
   letterSpacing: '0.12em',
   textTransform: 'uppercase' as const,
@@ -149,7 +149,7 @@ export function WeeklyComplianceDigestEmail({
 }: WeeklyComplianceDigestProps) {
   const deltaSign = readinessDelta > 0 ? '+' : '';
   const deltaColor =
-    readinessDelta > 0 ? '#34d399' : readinessDelta < 0 ? '#f87171' : '#94a3b8';
+    readinessDelta > 0 ? '#34d399' : readinessDelta < 0 ? '#f87171' : '#b8b8b8';
 
   return (
     <Html>
@@ -190,11 +190,11 @@ export function WeeklyComplianceDigestEmail({
                 {overdueControls.slice(0, 3).map((c, i) => (
                   <Section key={i} style={bulletRow}>
                     <Text
-                      style={{ ...text, margin: 0, color: '#f1f5f9' }}
+                      style={{ ...text, margin: 0, color: '#ededed' }}
                     >
                       <strong>{c.name}</strong>
                       {c.owner ? (
-                        <span style={{ color: '#94a3b8' }}> · {c.owner}</span>
+                        <span style={{ color: '#b8b8b8' }}> · {c.owner}</span>
                       ) : null}
                     </Text>
                     <Text
@@ -225,7 +225,7 @@ export function WeeklyComplianceDigestEmail({
                 {evidenceExpiring.slice(0, 3).map((e, i) => (
                   <Section key={i} style={bulletRow}>
                     <Text
-                      style={{ ...text, margin: 0, color: '#f1f5f9' }}
+                      style={{ ...text, margin: 0, color: '#ededed' }}
                     >
                       <strong>{e.name}</strong>
                     </Text>
@@ -251,7 +251,7 @@ export function WeeklyComplianceDigestEmail({
                 {tasksAssignedToYou.slice(0, 4).map((t, i) => (
                   <Section key={i} style={bulletRow}>
                     <Text
-                      style={{ ...text, margin: 0, color: '#f1f5f9' }}
+                      style={{ ...text, margin: 0, color: '#ededed' }}
                     >
                       {t.title}
                     </Text>
@@ -264,7 +264,7 @@ export function WeeklyComplianceDigestEmail({
                             ? '#f87171'
                             : t.dueInDays <= 7
                               ? '#fb923c'
-                              : '#94a3b8',
+                              : '#b8b8b8',
                         margin: '4px 0 0',
                       }}
                     >
@@ -292,11 +292,11 @@ export function WeeklyComplianceDigestEmail({
             </Section>
 
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '22px 0 14px' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '22px 0 14px' }}
             />
             <Text style={footer}>
               You receive weekly digests because you&apos;re a compliance owner.{' '}
-              <a href={`${BASE}/app/settings/notifications`} style={{ color: '#64748b' }}>
+              <a href={`${BASE}/app/settings/notifications`} style={{ color: '#808080' }}>
                 Update preferences
               </a>
               .
