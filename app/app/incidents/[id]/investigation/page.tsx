@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { getOrgMemberIdentities } from '@/lib/team/member-identity';
 import {
   Search,
   User,
@@ -111,9 +112,13 @@ export default async function InvestigationPage({
     .select('user_id, role')
     .eq('organization_id', state.organization.id);
 
+  const identities = await getOrgMemberIdentities();
+
   const memberOptions = (members ?? []).map((m) => ({
     id: m.user_id as string,
-    label: (m.role as string) ?? 'member',
+    label: `${identities[m.user_id as string]?.name ?? 'Unknown member'} (${
+      (m.role as string) ?? 'member'
+    })`,
   }));
 
   const statusIcons: Record<string, typeof CheckCircle2> = {
@@ -201,7 +206,10 @@ export default async function InvestigationPage({
                 Investigator
               </div>
               <p className="text-sm">
-                {investigation.lead_investigator_id ?? 'Not assigned'}
+                {investigation.lead_investigator_id
+                  ? (identities[investigation.lead_investigator_id]?.name ??
+                    'Unknown member')
+                  : 'Not assigned'}
               </p>
             </div>
             <div className="border border-border rounded-lg p-4 bg-card">
@@ -321,7 +329,7 @@ export default async function InvestigationPage({
                   <option value="">Unassigned</option>
                   {memberOptions.map((m) => (
                     <option key={m.id} value={m.id}>
-                      {m.id.slice(0, 8)} ({m.label})
+                      {m.label}
                     </option>
                   ))}
                 </select>

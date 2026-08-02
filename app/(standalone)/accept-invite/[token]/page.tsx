@@ -63,13 +63,18 @@ export default async function AcceptInvitePage({
   const resolvedSearchParams = await searchParams;
   const token = resolvedParams?.token ?? '';
   const actionError = resolvedSearchParams?.error ?? null;
+  // Sign-in reads `next` to send the invitee back here instead of the
+  // dashboard once they authenticate.
+  const signInHref = `/auth/signin?next=${encodeURIComponent(
+    `/accept-invite/${token}`,
+  )}`;
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect(`/auth/signin?redirect=/accept-invite/${token}`);
+    redirect(signInHref);
   }
 
   const validation = await validateInvitation(token);
@@ -135,7 +140,7 @@ export default async function AcceptInvitePage({
     } = await actionSupabase.auth.getUser();
 
     if (!actionUser) {
-      redirect(`/auth/signin?redirect=/accept-invite/${token}`);
+      redirect(signInHref);
     }
 
     const currentValidation = await validateInvitation(token);
@@ -201,7 +206,7 @@ export default async function AcceptInvitePage({
       actions: (
         <>
           <Link
-            href={`/auth/signin?redirect=/accept-invite/${token}`}
+            href={signInHref}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground px-6 py-3 font-semibold text-background transition-all hover:opacity-90"
           >
             Sign In with Different Account

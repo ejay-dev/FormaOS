@@ -15,41 +15,48 @@ export default function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [hasSession, setHasSession] = useState(false);
+  // The link is only known to be bad once the check resolves. Starting in
+  // 'checking' stops a valid link flashing the invalid-link card while the
+  // setSession call is still in flight.
+  const [sessionState, setSessionState] = useState<
+    'checking' | 'valid' | 'invalid'
+  >('checking');
 
   // Check for valid session from reset link
   useEffect(() => {
     const supabase = createSupabaseClient();
 
     const checkSession = async () => {
-      // Handle hash fragment from email link
-      if (typeof window !== 'undefined' && window.location.hash) {
-        const hash = window.location.hash.startsWith('#')
-          ? window.location.hash.slice(1)
-          : window.location.hash;
-        const params = new URLSearchParams(hash);
-        const accessToken = params.get('access_token');
-        const refreshToken = params.get('refresh_token');
-        const type = params.get('type');
+      try {
+        // Handle hash fragment from email link
+        if (typeof window !== 'undefined' && window.location.hash) {
+          const hash = window.location.hash.startsWith('#')
+            ? window.location.hash.slice(1)
+            : window.location.hash;
+          const params = new URLSearchParams(hash);
+          const accessToken = params.get('access_token');
+          const refreshToken = params.get('refresh_token');
+          const type = params.get('type');
 
-        if (accessToken && refreshToken && type === 'recovery') {
-          const { error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
-          if (!error) {
-            setHasSession(true);
-            // Clear the hash from URL
-            window.history.replaceState(null, '', window.location.pathname);
-            return;
+          if (accessToken && refreshToken && type === 'recovery') {
+            const { error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (!error) {
+              setSessionState('valid');
+              // Clear the hash from URL
+              window.history.replaceState(null, '', window.location.pathname);
+              return;
+            }
           }
         }
-      }
 
-      // Check existing session
-      const { data } = await supabase.auth.getSession();
-      if (data?.session) {
-        setHasSession(true);
+        // Check existing session
+        const { data } = await supabase.auth.getSession();
+        setSessionState(data?.session ? 'valid' : 'invalid');
+      } catch {
+        setSessionState('invalid');
       }
     };
 
@@ -105,7 +112,31 @@ export default function ResetPasswordPage() {
     }
   };
 
-  if (!hasSession) {
+  if (sessionState === 'checking') {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
+          <Logo variant="wordmark" size={28} className="text-foreground" />
+        </div>
+        <div className="flex items-center justify-center px-6 py-12">
+          <div className="w-full max-w-md">
+            <div
+              className="rounded-2xl border border-border bg-card p-8 text-center"
+              role="status"
+              aria-live="polite"
+            >
+              <div className="mx-auto mb-4 h-6 w-6 animate-spin rounded-full border-2 border-border border-t-foreground" />
+              <p className="text-sm text-muted-foreground">
+                Checking your reset link...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (sessionState === 'invalid') {
     return (
       <div className="min-h-screen bg-background">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
@@ -194,7 +225,7 @@ export default function ResetPasswordPage() {
                   htmlFor="password"
                   className="block text-xs font-semibold text-foreground mb-2"
                 >
-                  New Password
+                  New password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -203,13 +234,14 @@ export default function ResetPasswordPage() {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="12+ chars, upper/lower, number, symbol"
+                    placeholder="Enter a new password"
                     className="w-full rounded-lg border border-border bg-surface-2 pl-10 pr-10 py-3 text-base md:text-sm text-foreground placeholder-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                     required
                     disabled={isLoading}
                     minLength={12}
                     autoComplete="new-password"
                     enterKeyHint="next"
+                    aria-describedby="password-requirements"
                   />
                   <button
                     type="button"
@@ -223,6 +255,13 @@ export default function ResetPasswordPage() {
                     )}
                   </button>
                 </div>
+                <p
+                  id="password-requirements"
+                  className="mt-2 text-xs text-muted-foreground"
+                >
+                  At least 12 characters, with an uppercase letter, a lowercase
+                  letter, a number and a symbol.
+                </p>
               </div>
 
               <div>
@@ -230,7 +269,7 @@ export default function ResetPasswordPage() {
                   htmlFor="confirmPassword"
                   className="block text-xs font-semibold text-foreground mb-2"
                 >
-                  Confirm Password
+                  Confirm password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

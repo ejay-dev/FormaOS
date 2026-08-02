@@ -27,7 +27,7 @@ export default async function EmployeeOnboardingPage({
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/auth/signin?redirect=/onboarding/employee');
+    redirect('/auth/signin?next=/onboarding/employee');
   }
 
   // If already completed (fast path via user_metadata)

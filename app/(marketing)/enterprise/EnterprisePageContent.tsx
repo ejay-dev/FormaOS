@@ -569,7 +569,7 @@ const deploymentOptions: DeploymentOption[] = [
       'Row-level tenant isolation enforced in Postgres',
       'Australian hosting by default',
       'Automatic platform updates',
-      'Provisioning in minutes',
+      'Self-serve sign-up with guided onboarding',
       'Documented subprocessor list',
     ],
     icon: Globe,

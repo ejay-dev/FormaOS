@@ -58,15 +58,18 @@ export default async function AcceptOrganizationInvitePage({
   const resolvedSearchParams = await searchParams;
   const membershipId = resolvedParams?.membershipId ?? '';
   const actionError = resolvedSearchParams?.error;
+  // Sign-in reads `next` to send the invitee back here instead of the
+  // dashboard once they authenticate.
+  const signInHref = `/auth/signin?next=${encodeURIComponent(
+    `/accept-organization-invite/${membershipId}`,
+  )}`;
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect(
-      `/auth/signin?redirect=/accept-organization-invite/${membershipId}`,
-    );
+    redirect(signInHref);
   }
 
   const invitation = await getPendingInvitation(membershipId);
@@ -86,7 +89,7 @@ export default async function AcceptOrganizationInvitePage({
       <StateCard
         title="Wrong account"
         description={`This invitation was sent to ${invitation.user_email || 'another account'}. Sign in with that account to continue.`}
-        primaryHref={`/auth/signin?redirect=/accept-organization-invite/${membershipId}`}
+        primaryHref={signInHref}
         primaryLabel="Sign in with invited account"
         secondaryHref="/auth/signout"
         secondaryLabel="Sign out"
@@ -103,9 +106,7 @@ export default async function AcceptOrganizationInvitePage({
     } = await actionSupabase.auth.getUser();
 
     if (!actionUser) {
-      redirect(
-        `/auth/signin?redirect=/accept-organization-invite/${membershipId}`,
-      );
+      redirect(signInHref);
     }
 
     const currentInvitation = await getPendingInvitation(membershipId);

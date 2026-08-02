@@ -13,6 +13,10 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { CredentialInspectorModal } from '@/components/vault/credential-inspector-modal';
+import {
+  getOrgMemberIdentities,
+  type MemberIdentityMap,
+} from '@/lib/team/member-identity';
 import { useAppStore } from '@/lib/stores/app';
 
 type PendingCredential = {
@@ -33,6 +37,7 @@ export default function CredentialReviewPage() {
     null,
   );
   const [docs, setDocs] = useState<PendingCredential[]>([]);
+  const [identities, setIdentities] = useState<MemberIdentityMap>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -50,6 +55,7 @@ export default function CredentialReviewPage() {
       if (!isHydrated) return;
       if (!orgId) {
         setDocs([]);
+        setIdentities({});
         setLoading(false);
         return;
       }
@@ -58,23 +64,28 @@ export default function CredentialReviewPage() {
       setError(null);
 
       try {
-        const { data, error: fetchError } = await supabase
-          .from('org_credentials')
-          .select(
-            'id, user_id, document_type, issue_date, expiry_date, created_at, verification_status, file_path',
-          )
-          .eq('organization_id', orgId)
-          .eq('verification_status', 'pending')
-          .order('created_at', { ascending: false });
+        const [{ data, error: fetchError }, identityMap] = await Promise.all([
+          supabase
+            .from('org_credentials')
+            .select(
+              'id, user_id, document_type, issue_date, expiry_date, created_at, verification_status, file_path',
+            )
+            .eq('organization_id', orgId)
+            .eq('verification_status', 'pending')
+            .order('created_at', { ascending: false }),
+          getOrgMemberIdentities(),
+        ]);
 
         if (fetchError) throw fetchError;
         if (cancelled) return;
 
         setDocs((data ?? []) as PendingCredential[]);
+        setIdentities(identityMap);
       } catch (err) {
         if (cancelled) return;
         console.error('[CredentialReviewPage] Failed to load queue:', err);
         setDocs([]);
+        setIdentities({});
         setError('Unable to load verification queue right now.');
       } finally {
         if (!cancelled) setLoading(false);
@@ -109,11 +120,12 @@ export default function CredentialReviewPage() {
 
       if (!normalizedQuery) return true;
 
+      const identity = identities[doc.user_id];
       const searchableText =
-        `${doc.user_id} ${doc.document_type ?? ''}`.toLowerCase();
+        `${identity?.name ?? ''} ${identity?.email ?? ''} ${doc.document_type ?? ''}`.toLowerCase();
       return searchableText.includes(normalizedQuery);
     });
-  }, [docs, searchQuery, docFilter]);
+  }, [docs, identities, searchQuery, docFilter]);
 
   function handleCloseModal() {
     setSelectedDoc(null);
@@ -153,7 +165,7 @@ export default function CredentialReviewPage() {
               type="search"
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search by personnel ID or document type..."
+            placeholder="Search by staff name or document type"
             aria-label="Search documents"
             className="w-full pl-12 pr-4 py-2.5 text-sm font-medium outline-none bg-transparent"
               enterKeyHint="search"
@@ -185,8 +197,8 @@ export default function CredentialReviewPage() {
 
       {loading ? (
         <div className="py-24 text-center animate-pulse">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-            Synchronizing Vault Integrity...
+          <p className="text-sm text-muted-foreground">
+            Loading verification queue…
           </p>
         </div>
       ) : filteredDocs.length === 0 ? (
@@ -217,8 +229,8 @@ export default function CredentialReviewPage() {
                     <p className="text-sm font-black text-foreground tracking-tight">
                       {doc.document_type ?? 'Document'}
                     </p>
-                    <span className="px-2 py-0.5 bg-surface-2 text-muted-foreground rounded-md text-xs font-semibold uppercase tracking-wide border border-edge-2">
-                      Intake Node: USR-{doc.user_id.slice(0, 8)}
+                    <span className="px-2 py-0.5 bg-surface-2 text-muted-foreground rounded-md text-xs font-medium border border-edge-2">
+                      {identities[doc.user_id]?.name ?? 'Unknown member'}
                     </span>
                   </div>
                   <div className="flex items-center gap-4 mt-2">

@@ -6,7 +6,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Our Story | FormaOS',
   description:
-    'Why FormaOS exists and how we are building a compliance operating system for the regulated teams that take accountability seriously.',
+    'Why FormaOS exists, written by the engineer building it: a first project in compliance infrastructure, worked on from Adelaide since 2022.',
   alternates: {
     canonical: `${siteUrl}/our-story`,
   },
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Our Story | FormaOS',
     description:
-      'Why FormaOS exists and how we are building a compliance operating system for the regulated teams that take accountability seriously.',
+      'Why FormaOS exists, written by the engineer building it: a first project in compliance infrastructure, worked on from Adelaide since 2022.',
   },
 };
 

@@ -574,7 +574,7 @@ const features: PlatformFeature[] = [
     icon: Network,
     title: 'Framework Cross-Mapping',
     description:
-      'Map controls across frameworks with strength scoring. 40+ pre-loaded cross-mappings seeded between ISO 27001, SOC 2, HIPAA, and NIST CSF.',
+      'Map controls across frameworks with strength scoring. 40+ cross-mappings ship pre-loaded between ISO 27001, SOC 2, HIPAA, and NIST CSF.',
     longDescription:
       'Framework Cross-Mapping manages the relationships between controls across compliance frameworks. Each mapping carries a strength label (exact, partial, or related) so teams can judge overlap quality. 40+ cross-mappings ship pre-loaded across ISO 27001, SOC 2, HIPAA, and NIST CSF, and the engine walks both forward and reverse relationships so a satisfied control on one framework can cascade credit to its mapped peers on others.',
     category: 'Compliance Core',
@@ -651,6 +651,9 @@ const features: PlatformFeature[] = [
     ],
   },
 ];
+
+/* Exported so the route metadata quotes the catalog rather than a copy of it. */
+export const FEATURE_COUNT = features.length;
 
 const categories = [
   'Compliance Core',

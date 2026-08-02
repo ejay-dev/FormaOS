@@ -1,7 +1,21 @@
 import { validateAuditorToken, logAuditorActivity } from '@/lib/auditor/portal';
-import { redirect } from 'next/navigation';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { Shield, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { MinusCircle, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { AccessUnavailable } from '../AccessUnavailable';
+import {
+  CONTROL_STATUS_LABELS,
+  controlStatusGroup,
+  type ControlStatusGroup,
+} from '../control-status';
+
+const STATUS_ICON: Record<ControlStatusGroup, typeof CheckCircle2> = {
+  met: CheckCircle2,
+  partial: AlertCircle,
+  not_met: XCircle,
+  not_applicable: MinusCircle,
+  unassessed: MinusCircle,
+  unknown: MinusCircle,
+};
 
 export default async function AuditPortalControls({
   params,
@@ -10,52 +24,39 @@ export default async function AuditPortalControls({
 }) {
   const { token } = await params;
   const tokenData = await validateAuditorToken(token);
-  if (!tokenData) redirect('/');
+  if (!tokenData) return <AccessUnavailable />;
 
   const db = createSupabaseAdminClient();
   const orgId = tokenData.org_id;
 
   await logAuditorActivity(tokenData.id, orgId, 'viewed_control');
 
-  const { data: controls } = await db
+  // org_controls also carries framework-level evaluation runs, whose
+  // control_key ("framework:SOC2:<timestamp>") matches no framework control
+  // and therefore resolves to a null code. Those are evaluation history, not
+  // controls, and must not be counted or listed as such.
+  const { data: controls, error } = await db
     .from('org_controls')
-    .select('id, code, title, description, status, priority, framework_id')
+    .select('id, code, title, status, required')
     .eq('organization_id', orgId)
+    .not('code', 'is', null)
     .order('code', { ascending: true });
 
   const items = controls ?? [];
-  const satisfied = items.filter(
-    (c) => c.status === 'satisfied' || c.status === 'implemented',
+  const met = items.filter(
+    (c) => controlStatusGroup(c.status) === 'met',
   ).length;
-  const gaps = items.filter(
-    (c) => c.status === 'not_started' || c.status === 'gap',
+  const notMet = items.filter(
+    (c) => controlStatusGroup(c.status) === 'not_met',
   ).length;
-
-  const statusIcon: Record<string, typeof CheckCircle2> = {
-    satisfied: CheckCircle2,
-    implemented: CheckCircle2,
-    gap: XCircle,
-    not_started: XCircle,
-    in_progress: AlertCircle,
-    partial: AlertCircle,
-  };
-
-  const statusColor: Record<string, string> = {
-    satisfied: 'text-green-500',
-    implemented: 'text-green-500',
-    gap: 'text-red-500',
-    not_started: 'text-red-500',
-    in_progress: 'text-yellow-500',
-    partial: 'text-orange-500',
-  };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">Control Browser</h1>
+          <h1 className="text-xl font-bold">Controls</h1>
           <p className="text-sm text-muted-foreground">
-            {items.length} controls • {satisfied} satisfied • {gaps} gaps
+            {items.length} controls • {met} met • {notMet} not met
           </p>
         </div>
       </div>
@@ -74,36 +75,39 @@ export default async function AuditPortalControls({
                 Status
               </th>
               <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
-                Priority
+                Required
               </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {items.map((control) => {
-              const Icon = statusIcon[control.status ?? ''] ?? Shield;
-              const color =
-                statusColor[control.status ?? ''] ?? 'text-muted-foreground';
+              const group = controlStatusGroup(control.status);
+              const status = CONTROL_STATUS_LABELS[group];
+              const Icon = STATUS_ICON[group];
               return (
                 <tr key={control.id} className="hover:bg-muted/20">
                   <td className="px-4 py-3 font-mono text-xs">
                     {control.code ?? '—'}
                   </td>
                   <td className="px-4 py-3">
-                    <p className="font-medium">{control.title}</p>
-                    {control.description && (
-                      <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
-                        {control.description}
-                      </p>
-                    )}
+                    <p className="font-medium">
+                      {control.title ?? control.code}
+                    </p>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`flex items-center gap-1 ${color}`}>
+                    <span
+                      className={`flex items-center gap-1 ${status.className}`}
+                    >
                       <Icon className="h-3.5 w-3.5" />
-                      {(control.status ?? 'unknown').replace('_', ' ')}
+                      {status.label}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {control.priority ?? '—'}
+                    {control.required === true
+                      ? 'Required'
+                      : control.required === false
+                        ? 'Optional'
+                        : '—'}
                   </td>
                 </tr>
               );
@@ -114,7 +118,9 @@ export default async function AuditPortalControls({
                   colSpan={4}
                   className="px-4 py-12 text-center text-muted-foreground"
                 >
-                  No controls available.
+                  {error
+                    ? 'Control data could not be loaded. Try again shortly.'
+                    : 'No controls have been assessed for this organisation yet.'}
                 </td>
               </tr>
             )}

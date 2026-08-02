@@ -9,7 +9,8 @@ export default function Image() {
   return renderOg({
     eyebrow: 'Company',
     headline: 'Our Story',
-      subhead: 'Why FormaOS exists and how we are building a compliance operating system for regulated teams.',
+    subhead:
+      'Why FormaOS exists, written by the engineer building it from Adelaide since 2022.',
     badges: ['Australia', 'Adelaide HQ'],
     accent: 'violet',
   });

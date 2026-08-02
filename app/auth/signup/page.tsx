@@ -10,7 +10,7 @@ import {
   isSelfServePlan,
 } from '@/lib/billing/checkout-intent';
 import Link from 'next/link';
-import { CheckCircle2, ArrowRight, Star } from 'lucide-react';
+import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
 // OAuth consent branding can be further customized via Supabase Auth custom domains.
 // See: https://supabase.com/docs/guides/auth/custom-domains
@@ -278,9 +278,6 @@ function SignUpContent() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
         <Logo variant="wordmark" size={28} className="text-foreground" />
-        <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
-          Secure · Compliance-First · Enterprise-Ready
-        </div>
       </div>
 
       <div className="flex items-center justify-center px-6 py-12">
@@ -290,36 +287,20 @@ function SignUpContent() {
             <div className="text-center mb-8">
               {plan ? (
                 <>
-                  <div className="flex items-center justify-center gap-2 mb-3">
-                    <Star className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
-                      {plan.name} Plan Selected
-                    </span>
-                  </div>
                   <h1 className="text-3xl font-bold text-foreground mb-2">
-                    Start Your {plan.name} Assessment
+                    Create your {plan.name} account
                   </h1>
-                  <p className="text-muted-foreground mb-4">{plan.summary}</p>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-success/10 text-success border border-success/20 text-xs font-medium">
-                    <CheckCircle2 className="h-3 w-3" />
-                    {plan.key !== 'enterprise'
-                      ? 'Guided onboarding assessment'
-                      : 'Enterprise governance onboarding'}
-                  </div>
+                  <p className="text-muted-foreground">{plan.summary}</p>
                 </>
               ) : (
                 <>
                   <h1 className="text-3xl font-bold text-foreground mb-2">
-                    Join FormaOS
+                    Create your FormaOS account
                   </h1>
                   <p className="text-muted-foreground">
-                    Start building compliance into your organization
+                    Compliance operations for NDIS, aged care and healthcare
+                    providers.
                   </p>
-                  {journeyParam ? (
-                    <p className="mt-3 text-xs font-medium uppercase tracking-wider text-primary">
-                      Journey selected: {journeyParam}
-                    </p>
-                  ) : null}
                 </>
               )}
             </div>
@@ -396,7 +377,7 @@ function SignUpContent() {
                   htmlFor="email"
                   className="block text-xs font-semibold text-foreground mb-2"
                 >
-                  Email Address
+                  Email address
                 </label>
                 <input
                   id="email"
@@ -428,13 +409,22 @@ function SignUpContent() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="12+ chars, upper/lower, number, symbol"
+                  placeholder="Create a password"
                   className="w-full rounded-lg border border-border bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                   required
                   disabled={isLoading}
+                  minLength={12}
                   autoComplete="new-password"
                   enterKeyHint="next"
+                  aria-describedby="password-requirements"
                 />
+                <p
+                  id="password-requirements"
+                  className="mt-2 text-xs text-muted-foreground"
+                >
+                  At least 12 characters, with an uppercase letter, a lowercase
+                  letter, a number and a symbol.
+                </p>
               </div>
 
               <div>
@@ -442,7 +432,7 @@ function SignUpContent() {
                   htmlFor="confirm-password"
                   className="block text-xs font-semibold text-foreground mb-2"
                 >
-                  Confirm Password
+                  Confirm password
                 </label>
                 <input
                   id="confirm-password"
@@ -488,7 +478,7 @@ function SignUpContent() {
                   'Creating account...'
                 ) : (
                   <>
-                    Create FormaOS Account
+                    Create account
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
@@ -507,7 +497,7 @@ function SignUpContent() {
                     }
                     className="text-xs font-semibold text-primary hover:opacity-90 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    Compare Plans →
+                    Compare plans →
                   </button>
                 </div>
               </div>
@@ -521,7 +511,7 @@ function SignUpContent() {
                   href="/auth/signin"
                   className="font-semibold text-primary hover:opacity-90 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  Sign in to FormaOS
+                  Sign in
                 </Link>
               </p>
             </div>

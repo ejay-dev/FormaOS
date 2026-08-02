@@ -20,6 +20,7 @@ import {
 } from '@/app/app/actions/policies';
 import { ArtifactSidebar } from '@/components/policies/artifact-sidebar';
 import { getLatestVersion } from '@/lib/policies/lifecycle';
+import { getOrgMemberIdentities } from '@/lib/team/member-identity';
 
 export default async function PolicyDetailPage({
   params,
@@ -144,6 +145,8 @@ export default async function PolicyDetailPage({
         { data: [] },
       ];
 
+  const identities = await getOrgMemberIdentities();
+
   const totalPolicyMembers = memberCount ?? 0;
   const acknowledgedPolicies = acknowledgmentCount ?? 0;
   const acknowledgmentPercent =
@@ -173,11 +176,6 @@ export default async function PolicyDetailPage({
                 policy.last_updated_at || policy.created_at,
               ).toLocaleDateString()}
             </span>
-          </div>
-          <div className="h-4 w-px bg-border" />
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-success/10 text-success rounded-full text-xs font-black uppercase tracking-widest border border-success/20">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            Verified Template
           </div>
         </div>
       </div>
@@ -272,12 +270,6 @@ export default async function PolicyDetailPage({
                     </span>
                   </div>
                 ) : null}
-                <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
-                  <span className="text-muted-foreground">Governance ID</span>
-                  <span className="font-mono text-muted-foreground">
-                    POL-{policy.id.slice(0, 4).toUpperCase()}
-                  </span>
-                </div>
               </div>
 
               {isAdmin ? (
@@ -475,8 +467,9 @@ export default async function PolicyDetailPage({
                         className="rounded-2xl border border-edge-2 bg-surface-2 px-4 py-3 text-xs"
                       >
                         <div className="flex items-center justify-between gap-3">
-                          <span className="font-mono text-muted-foreground">
-                            {approval.approver_id.slice(0, 8)}
+                          <span className="text-muted-foreground">
+                            {identities[approval.approver_id]?.name ??
+                              'Unknown member'}
                           </span>
                           <span className="font-black uppercase tracking-widest text-foreground">
                             {approval.decision ?? 'pending'}
@@ -610,10 +603,14 @@ export default async function PolicyDetailPage({
                               className="h-3.5 w-3.5"
                             />
                             <span className="min-w-0">
-                              <span className="block truncate font-mono">
-                                {reviewer.user_id.slice(0, 8)}
+                              <span className="block truncate font-medium">
+                                {identities[reviewer.user_id]?.name ??
+                                  'Unknown member'}
                               </span>
-                              <span className="block text-[10px] uppercase tracking-widest text-muted-foreground">
+                              <span className="block truncate text-[10px] text-muted-foreground">
+                                {identities[reviewer.user_id]?.email
+                                  ? `${identities[reviewer.user_id]?.email} · `
+                                  : ''}
                                 {reviewer.role ?? 'member'}
                               </span>
                             </span>

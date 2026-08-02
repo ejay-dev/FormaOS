@@ -12,6 +12,10 @@ import {
   Search,
 } from 'lucide-react';
 import { AddCertificationModal } from '@/components/registers/add-certification-modal';
+import {
+  getOrgMemberIdentities,
+  type MemberIdentityMap,
+} from '@/lib/team/member-identity';
 import { useAppStore } from '@/lib/stores/app';
 
 type TrainingRecord = {
@@ -32,6 +36,7 @@ export default function TrainingRegisterPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [records, setRecords] = useState<TrainingRecord[]>([]);
   const [members, setMembers] = useState<OrgMember[]>([]);
+  const [identities, setIdentities] = useState<MemberIdentityMap>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [schemaAvailable, setSchemaAvailable] = useState(true);
@@ -50,6 +55,7 @@ export default function TrainingRegisterPage() {
       if (!orgId) {
         setRecords([]);
         setMembers([]);
+        setIdentities({});
         setLoading(false);
         return;
       }
@@ -61,6 +67,7 @@ export default function TrainingRegisterPage() {
         const [
           { data: recs, error: recError },
           { data: mems, error: memberError },
+          identityMap,
         ] = await Promise.all([
           supabase
             .from('org_training_records')
@@ -71,7 +78,10 @@ export default function TrainingRegisterPage() {
             .from('org_members')
             .select('user_id')
             .eq('organization_id', orgId),
+          getOrgMemberIdentities(),
         ]);
+
+        if (!cancelled) setIdentities(identityMap);
 
         if (
           recError?.code === 'PGRST205' &&
@@ -96,6 +106,7 @@ export default function TrainingRegisterPage() {
         setError('Unable to load training register right now.');
         setRecords([]);
         setMembers([]);
+        setIdentities({});
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -124,10 +135,12 @@ export default function TrainingRegisterPage() {
 
       if (!normalizedQuery) return true;
 
-      const searchableText = `${record.title} ${record.user_id}`.toLowerCase();
+      const identity = identities[record.user_id];
+      const searchableText =
+        `${record.title} ${identity?.name ?? ''} ${identity?.email ?? ''}`.toLowerCase();
       return searchableText.includes(normalizedQuery);
     });
-  }, [records, searchQuery, statusFilter]);
+  }, [records, identities, searchQuery, statusFilter]);
 
   return (
     <div className="space-y-8 pb-12">
@@ -178,7 +191,7 @@ export default function TrainingRegisterPage() {
               type="search"
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search by personnel ID or certification..."
+            placeholder="Search by name or certification"
             aria-label="Search training records"
             className="w-full pl-12 pr-4 py-2.5 text-sm font-medium outline-none bg-transparent"
               enterKeyHint="search"
@@ -214,24 +227,23 @@ export default function TrainingRegisterPage() {
                 <th className="px-8 py-6">Certification / Training</th>
                 <th className="px-8 py-6">Completion</th>
                 <th className="px-8 py-6">Expiry Status</th>
-                <th className="px-8 py-6 text-right">Reference</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={4}
                     className="px-8 py-20 text-center animate-pulse"
                   >
-                    <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">
-                      Synchronizing Registry...
+                    <p className="text-sm text-muted-foreground">
+                      Loading training records…
                     </p>
                   </td>
                 </tr>
               ) : filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-24 text-center">
+                  <td colSpan={4} className="px-8 py-24 text-center">
                     <div className="h-16 w-16 bg-surface-2 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-edge-2">
                       <GraduationCap className="h-8 w-8 text-muted-foreground" />
                     </div>
@@ -249,6 +261,7 @@ export default function TrainingRegisterPage() {
                     record.expiry_date &&
                     new Date(record.expiry_date) < new Date(),
                   );
+                  const identity = identities[record.user_id];
                   return (
                     <tr
                       key={record.id}
@@ -256,16 +269,22 @@ export default function TrainingRegisterPage() {
                     >
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-xl bg-surface-2 flex items-center justify-center text-muted-foreground border border-edge-2 group-hover:bg-surface-3 transition-colors">
-                            <User className="h-5 w-5" />
+                          <div className="h-10 w-10 rounded-xl bg-surface-2 flex items-center justify-center text-sm font-semibold text-muted-foreground border border-edge-2 group-hover:bg-surface-3 transition-colors">
+                            {identity ? (
+                              identity.initials
+                            ) : (
+                              <User className="h-5 w-5" />
+                            )}
                           </div>
                           <div className="flex flex-col">
                             <span className="text-sm font-semibold text-foreground">
-                              Workspace Member
+                              {identity?.name ?? 'Unknown member'}
                             </span>
-                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                              ID: {record.user_id.slice(0, 8)}
-                            </span>
+                            {identity?.email ? (
+                              <span className="text-xs font-medium text-muted-foreground">
+                                {identity.email}
+                              </span>
+                            ) : null}
                           </div>
                         </div>
                       </td>
@@ -299,11 +318,6 @@ export default function TrainingRegisterPage() {
                           {record.expiry_date &&
                             ` • ${new Date(record.expiry_date).toLocaleDateString()}`}
                         </div>
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                          Internal Record
-                        </span>
                       </td>
                     </tr>
                   );

@@ -1,30 +1,30 @@
 'use client';
 
-import {
-  BarChart3,
-  CheckCircle,
-  FileCheck,
-  ShieldCheck,
-  Workflow,
-} from 'lucide-react';
+import { BarChart3, CheckCircle, FileCheck, ShieldCheck } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import {
+  AUTOMATED_EVALUATOR_COUNT,
+  FRAMEWORK_CONTROL_COUNT,
+  FRAMEWORK_PACK_COUNT,
+  MANUAL_ATTESTATION_COUNT,
+} from '@/lib/marketing/claims';
 
-const OUTCOME_METRICS = [
+const COVERAGE = [
   {
-    label: 'Operating Model',
-    value: 'Cross-framework alignment',
-    trend: 'One system for tasks, evidence, and review',
+    label: 'Framework packs',
+    value: String(FRAMEWORK_PACK_COUNT),
+    detail: 'Installable today, each with its controls already mapped',
   },
   {
-    label: 'Evidence Continuity',
-    value: 'Source-linked history',
-    trend: 'Chain-of-custody tracked',
+    label: 'Mapped controls',
+    value: String(FRAMEWORK_CONTROL_COUNT),
+    detail: 'Every one carries an owner and an evidence requirement',
   },
   {
-    label: 'Buyer Readiness',
-    value: 'Trust path visible',
-    trend: 'Security review and enterprise context included',
+    label: 'Checked automatically',
+    value: String(AUTOMATED_EVALUATOR_COUNT),
+    detail: `Read from your live data; ${MANUAL_ATTESTATION_COUNT} more are tracked as attestations`,
   },
 ] as const;
 
@@ -49,51 +49,24 @@ const CAPABILITIES = [
   },
 ] as const;
 
-const WORKFLOW_STAGES = [
-  {
-    stage: 'Detect Drift',
-    owner: 'Control Ops',
-    sla: 'Continuous',
-    status: 'Stable',
-  },
-  {
-    stage: 'Assign & Escalate',
-    owner: 'Risk Lead',
-    sla: 'Owned',
-    status: 'Healthy',
-  },
-  {
-    stage: 'Verify Resolution',
-    owner: 'Assurance',
-    sla: 'Review-ready',
-    status: 'Tracked',
-  },
-  {
-    stage: 'Export Audit Packet',
-    owner: 'Reporting',
-    sla: 'On demand',
-    status: 'Ready',
-  },
-] as const;
-
 const FRAMEWORKS = ['SOC 2', 'ISO 27001', 'HIPAA', 'GDPR', 'NDIS'] as const;
 
 function ProductHeroExtras() {
   return (
     <div className="mx-auto w-full max-w-5xl space-y-3.5">
       <div className="grid gap-2.5 sm:grid-cols-3">
-        {OUTCOME_METRICS.map((metric) => (
+        {COVERAGE.map((item) => (
           <div
-            key={metric.label}
+            key={item.label}
             className="rounded-xl border border-white/[0.1] bg-slate-950/55 px-3.5 py-3 text-left"
           >
-            <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
-              {metric.label}
+            <p className="text-2xl font-semibold leading-none text-white">
+              {item.value}
             </p>
-            <p className="mt-1 text-sm font-semibold text-white">
-              {metric.value}
+            <p className="mt-1.5 text-sm font-semibold text-white">
+              {item.label}
             </p>
-            <p className="mt-1 text-[11px] text-slate-400">{metric.trend}</p>
+            <p className="mt-1 text-[11px] text-slate-400">{item.detail}</p>
           </div>
         ))}
       </div>
@@ -120,38 +93,6 @@ function ProductHeroExtras() {
         })}
       </div>
 
-      <div className="rounded-2xl border border-white/[0.1] bg-slate-950/55 p-3.5">
-        <div className="mb-3 flex items-center gap-2 border-b border-white/[0.08] pb-3">
-          <Workflow className="h-4 w-4 text-slate-300" />
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300">
-            Governance Workflow Snapshot
-          </p>
-        </div>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {WORKFLOW_STAGES.map((stage) => (
-            <div
-              key={stage.stage}
-              className="grid grid-cols-[1fr_auto] gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2"
-            >
-              <div>
-                <p className="text-xs font-semibold text-white">
-                  {stage.stage}
-                </p>
-                <p className="text-[11px] text-slate-400">{stage.owner}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-xs font-semibold text-slate-300">
-                  {stage.sla}
-                </p>
-                <p className="text-[10px] uppercase tracking-[0.12em] text-slate-400">
-                  {stage.status}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
         <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">
           {FRAMEWORKS.map((framework) => (
@@ -170,20 +111,16 @@ export function ProductScrollHero() {
   return (
     <ImmersiveHero
       theme="product"
-      badge={{
-        text: 'Compliance Operating System',
-        colorClass: 'slate',
-      }}
       headline={
         <>
-          Run Compliance as
+          Obligations in.
           <br />
           <span className="text-foreground">
-            a Compliance Operating System
+            Enforced work and evidence out.
           </span>
         </>
       }
-      subheadline="Connect frameworks, controls, tasks, and evidence into one governed workflow - with named owners, immutable audit trails, and buyer-ready assurance."
+      subheadline="Frameworks, controls, tasks, and evidence run as one governed workflow, with a named owner on every obligation and an audit trail nobody can quietly edit."
       extras={<ProductHeroExtras />}
       primaryCta={{ href: compliancePlanHref('product_scroll_hero'), label: PUBLIC_CTA_LABELS.compliancePlan }}
       secondaryCta={{ href: demoHref('product_scroll_hero'), label: PUBLIC_CTA_LABELS.bookDemo }}

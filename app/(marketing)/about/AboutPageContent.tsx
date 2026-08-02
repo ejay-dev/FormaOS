@@ -180,11 +180,10 @@ export default function AboutPageContent() {
                       <p>
                         FormaOS is my first project in compliance
                         infrastructure. I&apos;ve been writing it from Adelaide
-                        since 2022, fitting it around freelance work:
-                        websites and web apps for whoever was paying that month.
-                        FormaOS was always the bigger thing, the one I actually
-                        cared about. I just needed the freelance to fund the
-                        runway.
+                        since 2022, fitting it around freelance work: websites
+                        and web apps for whoever was paying that month. FormaOS
+                        was always the bigger thing, the one I actually cared
+                        about. I just needed the freelance to fund the runway.
                       </p>
                       <p>
                         Compliance picked me as much as I picked it. Australian
@@ -201,19 +200,18 @@ export default function AboutPageContent() {
                         started.
                       </p>
                       <p>
-                        Today FormaOS ships {EVALUATOR_COUNT} control
-                        evaluators across {FRAMEWORK_PACK_COUNT} framework packs
-                        covering {DISTINCT_FRAMEWORK_COUNT} standards:{' '}
+                        Today FormaOS ships {EVALUATOR_COUNT} control evaluators
+                        across {FRAMEWORK_PACK_COUNT} framework packs covering{' '}
+                        {DISTINCT_FRAMEWORK_COUNT} standards:{' '}
                         {DISTINCT_FRAMEWORK_NAMES.join(', ')}. Of those,{' '}
                         {AUTOMATED_EVALUATOR_COUNT} evaluate automatically
                         against your live data and the other{' '}
                         {MANUAL_ATTESTATION_COUNT} are surfaced as human
-                        attestations, labelled as such.
-                        The audit log is hash-chained in Postgres, with
-                        append-only enforced at the database layer by an
-                        immutability trigger and RLS deny policies, not
-                        application code, and the chain head anchors
-                        daily at 05:30 UTC to Sigstore Rekor, the same
+                        attestations, labelled as such. The audit log is
+                        hash-chained in Postgres, with append-only enforced at
+                        the database layer by an immutability trigger and RLS
+                        deny policies, not application code, and the chain head
+                        anchors daily at 05:30 UTC to Sigstore Rekor, the same
                         transparency log the Linux Foundation uses for signed
                         open-source releases. It&apos;s bootstrapped,
                         sole-engineered, AU-hosted. The roadmap is short on
@@ -392,9 +390,9 @@ export default function AboutPageContent() {
                 What ships today
               </h2>
               <p className="text-slate-400 max-w-xl mx-auto text-sm">
-                Counts from the running product, not results from customers we
-                do not have yet. Every one of them can be checked in the product
-                during evaluation.
+                Counts from the running product, not customer outcomes. There
+                are no deployments to report yet, and every number here can be
+                checked in the product during evaluation.
               </p>
             </ScrollReveal>
             <SectionChoreography
@@ -406,7 +404,7 @@ export default function AboutPageContent() {
                 {
                   stat: String(FRAMEWORK_PACK_COUNT),
                   label: 'Framework packs',
-                  detail: `Installable and scored, covering ${DISTINCT_FRAMEWORK_COUNT} distinct standards. SOC 2 ships as two packs, which is why the two numbers differ.`,
+                  detail: `Installable and scored, covering ${DISTINCT_FRAMEWORK_COUNT} distinct standards. SOC 2 ships as two packs, which is why the two numbers differ`,
                 },
                 {
                   stat: String(FRAMEWORK_CONTROL_COUNT),

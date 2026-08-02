@@ -111,26 +111,24 @@ test.describe('Infrastructure pricing and proof pages', () => {
     expect(productHref).toBe('/product');
   });
 
-  test('case studies page loads the proof pack route', async ({ page }) => {
+  test('case studies page states plainly that there are none yet', async ({
+    page,
+  }) => {
     const response = await page.goto('/case-studies', {
       waitUntil: 'domcontentloaded',
     });
     expect(response?.status()).toBeLessThan(400);
 
+    // The page used to present a simulated audit trail and invented savings
+    // as "representative proof packs". It now says there are no customer
+    // studies yet and points at material a buyer can actually inspect.
     await expect(
-      page.getByRole('heading', {
-        name: /Representative proof packs for regulated teams/i,
-      }),
+      page.getByRole('heading', { name: /No case studies yet/i }),
     ).toBeVisible();
     await expect(
-      page.getByText('Representative proof pack', { exact: true }),
+      page.getByRole('heading', { name: /What you can review today/i }),
     ).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Workflow trail' }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: /Build a Proof Walkthrough/i }),
-    ).toHaveAttribute('href', /\/contact\?type=case-study/);
+    await expect(page.getByText(/09:1\d/)).toHaveCount(0);
     await expectNoFreeTrialLanguage(page);
   });
 });

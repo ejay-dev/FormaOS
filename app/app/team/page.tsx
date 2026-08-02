@@ -216,17 +216,24 @@ export default async function TeamPage() {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                {memberRows.map((member) => (
+                {memberRows.map((member) => {
+                    const identity = identities[member.user_id ?? ''];
+                    return (
                     <tr key={member.id} className="hover:bg-muted/30 transition-colors">
                     <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                         <div className="h-7 w-7 rounded-full bg-muted text-foreground flex items-center justify-center text-xs font-medium uppercase">
-                            {member.user_id?.slice(0, 2) || "??"}
+                            {identity?.initials ?? "?"}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-sm font-medium text-foreground truncate max-w-[200px]">
-                                {member.user_id}
+                            <span className="text-sm font-medium text-foreground truncate max-w-[220px]">
+                                {identity?.name ?? "Unknown member"}
                             </span>
+                            {identity?.email ? (
+                                <span className="text-xs text-muted-foreground truncate max-w-[220px]">
+                                    {identity.email}
+                                </span>
+                            ) : null}
                         </div>
                         </div>
                     </td>
@@ -245,7 +252,8 @@ export default async function TeamPage() {
                         </span>
                     </td>
                     </tr>
-                ))}
+                    );
+                })}
                 </tbody>
             </table>
           </div>

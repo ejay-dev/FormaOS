@@ -14,7 +14,7 @@ export interface MemberIdentity {
 }
 
 /** Keyed by user id. A plain object so it survives the server-action boundary. */
-export type MemberIdentityMap = Record<string, MemberIdentity>;
+export type MemberIdentityMap = Record<string, MemberIdentity | undefined>;
 
 type ProfileRow = {
   user_id?: string | null;
@@ -39,9 +39,15 @@ function buildInitials(fullName: string | null, email: string | null): string {
  * the helper into a lookup endpoint for arbitrary accounts. The org is
  * resolved from the session instead.
  *
- * user_profiles is readable only by its owner under RLS, so the profile
- * read goes through the service-role client; the id list is narrowed to
- * the caller's own organisation before it reaches that query.
+ * Names come from auth.users via the admin API, NOT from public.user_profiles.
+ * Verified against production 2026-08-03: user_profiles has 2,598 rows and both
+ * `full_name` and `email` are NULL on every one of them, so a lookup there
+ * returns nothing and every option renders as "Unknown member". auth.users is
+ * the only populated source (6,738 rows, all with an email) and is not
+ * reachable through PostgREST, hence the per-id admin call.
+ *
+ * The id list is narrowed to the caller's own organisation before any of this
+ * runs, so the fan-out is bounded by org size.
  */
 export async function getOrgMemberIdentities(): Promise<MemberIdentityMap> {
   const membership = await getMembershipData();
@@ -65,17 +71,25 @@ export async function getOrgMemberIdentities(): Promise<MemberIdentityMap> {
   if (userIds.length === 0) return {};
 
   const admin = createSupabaseAdminClient();
-  const { data: profiles } = await admin
-    .from('user_profiles')
-    .select('user_id, full_name, email')
-    .in('user_id', userIds);
-
-  const profileByUserId = new Map(
-    ((profiles ?? []) as ProfileRow[]).map((profile) => [
-      profile.user_id ?? '',
-      profile,
-    ]),
+  const resolved = await Promise.all(
+    userIds.map(async (userId) => {
+      const { data, error } = await admin.auth.admin.getUserById(userId);
+      if (error || !data?.user) return [userId, null] as const;
+      const meta = (data.user.user_metadata ?? {}) as Record<string, unknown>;
+      const metaName =
+        typeof meta.full_name === 'string'
+          ? meta.full_name
+          : typeof meta.name === 'string'
+            ? meta.name
+            : null;
+      return [
+        userId,
+        { full_name: metaName, email: data.user.email ?? null } as ProfileRow,
+      ] as const;
+    }),
   );
+
+  const profileByUserId = new Map(resolved);
 
   const identities: MemberIdentityMap = {};
   for (const userId of userIds) {

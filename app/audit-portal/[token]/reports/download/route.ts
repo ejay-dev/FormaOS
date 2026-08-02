@@ -30,9 +30,11 @@ export async function GET(
     const tokenData = await validateAuditorToken(token);
 
     if (!tokenData) {
-      return NextResponse.json(
-        { error: 'Invalid auditor token' },
-        { status: 401 },
+      // A bookmarked download link outlives the token it was issued under.
+      // Send the auditor to the portal, which explains the expired access,
+      // rather than answering a browser navigation with raw JSON.
+      return NextResponse.redirect(
+        new URL(`/audit-portal/${token}`, request.url),
       );
     }
 

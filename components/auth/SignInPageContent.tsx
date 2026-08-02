@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
 import { z } from 'zod';
 
@@ -44,6 +44,27 @@ const resolveAppBase = () => {
   const host = window.location.hostname;
   if (host.startsWith('app.')) return origin;
   return DEFAULT_APP_BASE;
+};
+
+// Sign-in only ever navigates to its own origin. An absolute URL — whether
+// it came back from bootstrap or was planted in ?next= — would turn this
+// page into an open redirect towards a phishing page styled as FormaOS.
+// Returns an absolute, same-origin URL, or null when the value is untrusted.
+const resolveSameOriginTarget = (
+  raw: string | null | undefined,
+  base: string,
+): string | null => {
+  if (typeof raw !== 'string' || raw.length === 0) return null;
+  if (raw.startsWith('//') || raw.startsWith('/\\')) return null;
+  if (raw.startsWith('/')) return `${base}${raw}`;
+  try {
+    const candidate = new URL(raw, base);
+    return candidate.origin === new URL(base).origin
+      ? candidate.toString()
+      : null;
+  } catch {
+    return null;
+  }
 };
 
 const withTimeout = async <T,>(
@@ -94,6 +115,11 @@ const getAuthBackendMessage = (
 
 function SignInContent() {
   const searchParams = useSearchParams();
+  // Invite, form and gated-page links send unauthenticated visitors here with
+  // the page they were trying to reach. `next` is the canonical param name;
+  // `redirect` is still accepted so links already in inboxes keep working.
+  const returnPath =
+    searchParams.get('next') ?? searchParams.get('redirect') ?? null;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -167,34 +193,20 @@ function SignInContent() {
         };
       }
       const payload = await response.json().catch(() => ({}));
-      // v4-015: only accept same-origin redirects. `next.startsWith('http')`
-      // previously sent users to any absolute URL the server returned —
-      // a misconfigured bootstrap response or a compromised intermediary
-      // becomes an open-redirect into a phishing page styled to look
-      // like FormaOS. Treat anything that isn't a path-only redirect
-      // (or an absolute URL whose origin matches `base`) as untrusted
-      // and fall back to /app.
-      const raw = typeof payload?.next === 'string' ? payload.next : '/app';
-      let target = '/app';
-      if (raw.startsWith('/') && !raw.startsWith('//')) {
-        target = `${base}${raw}`;
-      } else {
-        try {
-          const candidate = new URL(raw, base);
-          if (candidate.origin === new URL(base).origin) {
-            target = candidate.toString();
-          }
-        } catch {
-          // fall through to /app
-        }
-      }
+      // The page the visitor was originally trying to reach wins over the
+      // workspace default bootstrap computes, otherwise invite and form
+      // links dead-end on the dashboard.
+      const target =
+        resolveSameOriginTarget(returnPath, base) ??
+        resolveSameOriginTarget(payload?.next, base) ??
+        `${base}/app`;
       window.location.href = target;
       return { ok: true };
     } catch (err) {
       console.error('[Auth] bootstrap failed:', err);
       return { ok: false, status: 0 };
     }
-  }, []);
+  }, [returnPath]);
 
   // Check for success messages from URL params (e.g., session cleared after JWT rotation)
   useEffect(() => {
@@ -407,12 +419,24 @@ function SignInContent() {
       // OAuth state, where an XSS could steal it. Better to fail
       // visibly so the user retries (and the team gets paged) than
       // to silently weaken the OAuth flow.
+
+      // /auth/callback resolves its own destination, so the return path has
+      // to travel with the Google round trip or it is lost.
+      const callbackUrl = new URL('/auth/callback', base);
+      const safeReturn = resolveSameOriginTarget(returnPath, base);
+      if (safeReturn) {
+        const returnUrl = new URL(safeReturn);
+        callbackUrl.searchParams.set(
+          'next',
+          `${returnUrl.pathname}${returnUrl.search}`,
+        );
+      }
       const initRes = await fetch('/api/auth/oauth/init', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           provider: 'google',
-          redirectTo: `${base}/auth/callback`,
+          redirectTo: callbackUrl.toString(),
         }),
       });
       if (!initRes.ok) {
@@ -479,7 +503,7 @@ function SignInContent() {
     if (ssoRequired && ssoOrgId) {
       setIsLoading(false);
       setErrorMessage(
-        'Your organization requires SSO. Please use “Continue with SSO”.',
+        'Your organisation requires SSO. Please use “Continue with SSO”.',
       );
       void logLoginFailure('sso_required', 'email');
       return;
@@ -569,9 +593,6 @@ function SignInContent() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
         <Logo variant="wordmark" size={28} className="text-foreground" />
-        <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
-          Secure · Compliance-First · Enterprise-Ready
-        </div>
       </div>
 
       <div className="flex items-center justify-center px-6 py-12">
@@ -580,33 +601,12 @@ function SignInContent() {
           <div className="rounded-2xl border border-border bg-card p-8">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Welcome to FormaOS
+                Sign in to FormaOS
               </h1>
               <p className="text-muted-foreground">
-                The compliance-first operating system for modern enterprises
+                Compliance operations for NDIS, aged care and healthcare
+                providers.
               </p>
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 p-4 rounded-lg bg-surface-1 border border-border">
-              <div className="text-center">
-                <CheckCircle2 className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
-                <div className="text-xs font-medium text-muted-foreground">
-                  Audit-ready controls
-                </div>
-              </div>
-              <div className="text-center">
-                <CheckCircle2 className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
-                <div className="text-xs font-medium text-muted-foreground">
-                  Evidence integrity
-                </div>
-              </div>
-              <div className="text-center">
-                <CheckCircle2 className="h-5 w-5 text-muted-foreground mx-auto mb-1" />
-                <div className="text-xs font-medium text-muted-foreground">
-                  Access governance
-                </div>
-              </div>
             </div>
 
             {successMessage && (
@@ -685,7 +685,7 @@ function SignInContent() {
             <button
               onClick={signInWithGoogle}
               disabled={isLoading}
-              className="w-full rounded-lg bg-white text-slate-900 px-6 py-4 text-sm font-semibold hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 mb-6"
+              className="w-full rounded-lg bg-foreground text-background px-6 py-4 text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 mb-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
@@ -710,11 +710,11 @@ function SignInContent() {
 
             {/* Divider */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="flex-1 border-t border-edge-2" />
+              <div className="flex-1 border-t border-border" />
               <span className="text-xs text-muted-foreground">
                 or use email
               </span>
-              <div className="flex-1 border-t border-edge-2" />
+              <div className="flex-1 border-t border-border" />
             </div>
 
             {/* Email/Password Form */}
@@ -722,9 +722,9 @@ function SignInContent() {
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-xs font-semibold text-foreground/70 mb-2"
+                  className="block text-xs font-semibold text-foreground mb-2"
                 >
-                  Email Address
+                  Email address
                 </label>
                 <input
                   id="email"
@@ -732,7 +732,7 @@ function SignInContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@company.com"
-                  className="w-full rounded-lg border border-edge-2 bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
+                  className="w-full rounded-lg border border-border bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                   required
                   disabled={isLoading}
                   autoComplete="email"
@@ -749,17 +749,17 @@ function SignInContent() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="text-sm font-semibold text-foreground">
-                        Enterprise SSO detected
+                        Single sign-on available
                       </div>
                       <div className="text-xs text-muted-foreground mt-1">
                         {ssoRequired
-                          ? 'This organization requires SSO for sign-in.'
-                          : 'You can sign in with SSO for faster enterprise access.'}
+                          ? 'This organisation requires SSO for sign-in.'
+                          : "You can sign in with your organisation's single sign-on."}
                       </div>
                     </div>
                     <button
                       type="button"
-                      onClick={() => startSsoLogin('/app')}
+                      onClick={() => startSsoLogin(returnPath ?? '/app')}
                       disabled={isLoading}
                       className="shrink-0 rounded-lg bg-surface-2 hover:bg-surface-3 border border-border px-3 py-2 text-xs font-semibold text-foreground transition-colors disabled:opacity-50"
                     >
@@ -775,7 +775,7 @@ function SignInContent() {
                 <div className="flex items-center justify-between mb-2">
                   <label
                     htmlFor="password"
-                    className="block text-xs font-semibold text-foreground/70"
+                    className="block text-xs font-semibold text-foreground"
                   >
                     Password
                   </label>
@@ -792,7 +792,7 @@ function SignInContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full rounded-lg border border-edge-2 bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30"
+                  className="w-full rounded-lg border border-border bg-surface-2 px-4 py-3 text-base md:text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring"
                   required={!ssoRequired}
                   disabled={isLoading}
                   autoComplete="current-password"
@@ -802,14 +802,15 @@ function SignInContent() {
 
               <button
                 type="submit"
+                data-testid="signin-submit-button"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {isLoading ? (
                   'Signing in...'
                 ) : (
                   <>
-                    Access FormaOS
+                    Sign in
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
@@ -817,29 +818,17 @@ function SignInContent() {
             </form>
 
             {/* Sign Up Link */}
-            <div className="mt-8 pt-6 border-t border-edge-2">
+            <div className="mt-8 pt-6 border-t border-border">
               <p className="text-center text-sm text-muted-foreground">
                 New to FormaOS?{' '}
                 <Link
                   href={`${RENDER_APP_BASE}/auth/signup`}
                   className="font-semibold text-foreground hover:text-foreground/70 transition-colors"
                 >
-                  Start your compliance journey
+                  Create an account
                 </Link>
               </p>
             </div>
-          </div>
-
-          {/* Security Notice */}
-          <div className="mt-6 text-center text-xs text-muted-foreground/60">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Logo variant="mark" size={14} className="text-foreground" />
-              <span>Enterprise-grade security</span>
-            </div>
-            <p>
-              Your data is encrypted and protected with audit-ready security
-              controls.
-            </p>
           </div>
         </div>
       </div>

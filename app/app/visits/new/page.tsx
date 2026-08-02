@@ -3,14 +3,13 @@
  */
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { getOrgMemberIdentities } from '@/lib/team/member-identity';
 import { createVisit } from '@/app/app/actions/care-operations';
 import { SubmitButton } from '@/components/ui/submit-button';
-import { resolveUserLabels } from '@/lib/identity/user-directory';
 
 export default async function NewVisitPage() {
   const systemState = await fetchSystemState();
@@ -27,41 +26,28 @@ export default async function NewVisitPage() {
     .eq('care_status', 'active')
     .order('full_name');
 
-  // Fetch staff members for dropdown. `users:user_id(...)` cannot be embedded —
-  // org_members.user_id points at auth.users and the production schema declares
-  // no FK to a public table — so profiles are resolved in a second query.
-  const db = createSupabaseAdminClient();
+  // Staff names come from the shared identity helper: org_members has no
+  // foreign key to a profile table, so a PostgREST embed cannot resolve them.
+  const [{ data: staffMembers }, identities] = await Promise.all([
+    supabase
+      .from('org_members')
+      .select('user_id')
+      .eq('organization_id', organization.id),
+    getOrgMemberIdentities(),
+  ]);
 
-  const { data: members, error: membersError } = await db
-    .from('org_members')
-    .select('user_id')
-    .eq('organization_id', organization.id);
-
-  if (membersError) {
-    throw new Error(`Failed to load staff members: ${membersError.message}`);
-  }
-
-  const memberIds = Array.from(
-    new Set(
-      (members ?? [])
-        .map((member) => member.user_id as string)
-        .filter(Boolean),
-    ),
-  );
-
-  // user_profiles.full_name and .email are NULL for all 2,598 production rows,
-  // so building the picker from that table produced a list of blank options.
-  // auth.users is the only populated source and is not reachable through
-  // PostgREST, hence the admin-API directory lookup.
-  const profileLabelById = await resolveUserLabels(db, memberIds);
-
-  const staffMembers = memberIds.map((userId) => ({
-    user_id: userId,
-    label: profileLabelById.get(userId) ?? userId,
-  }));
+  const staffOptions = ((staffMembers ?? []) as Array<{
+    user_id: string | null;
+  }>)
+    .map((member) => member.user_id)
+    .filter((userId): userId is string => Boolean(userId))
+    .map((userId) => ({
+      userId,
+      name: identities[userId]?.name ?? 'Unknown member',
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   type Client = NonNullable<typeof clients>[number];
-  type StaffMember = (typeof staffMembers)[number];
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -128,9 +114,9 @@ export default async function NewVisitPage() {
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
                 <option value="">Assign later...</option>
-                {staffMembers.map((member: StaffMember) => (
-                  <option key={member.user_id} value={member.user_id}>
-                    {member.label}
+                {staffOptions.map((staff) => (
+                  <option key={staff.userId} value={staff.userId}>
+                    {staff.name}
                   </option>
                 ))}
               </select>

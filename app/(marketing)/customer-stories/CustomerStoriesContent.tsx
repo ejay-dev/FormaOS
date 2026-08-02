@@ -38,14 +38,14 @@ const stories = [
     title: 'NDIS provider scenario',
     context:
       'Illustrative scope: multi-site NDIS Commission-registered provider',
-    framework: 'NDIS Practice Standards · 25 evaluators across 8 modules',
+    framework: `NDIS Practice Standards · ${controlsPhrase('ndis')}`,
     situation:
-      'Rapid growth fragments evidence across shared drives. Reportable incidents tracked manually. NDIS Commission audits require days of reconstruction. Statutory SIRS clock (24h immediate / 5 business-day detailed) is hard to evidence after the fact.',
+      'Rapid growth fragments evidence across shared drives. Reportable incidents tracked manually. NDIS Commission audits require days of reconstruction. Statutory SIRS clock (24 hours for the immediate notification, five business days for the detailed report) is hard to evidence after the fact.',
     outcome: [
-      'NDIS Practice Standards mapped end-to-end (25 evaluators), named owner per module',
-      'org_incidents schema encodes the SIRS 24h / 5bd clock at the predicate layer',
-      'Hash-chained audit log; chain top anchors daily to Sigstore Rekor at 05:30 UTC',
-      'Audit export ZIP with framework summary, evidence references, score history',
+      'NDIS Practice Standards installed as a scored pack, with a named owner on every control',
+      'The SIRS clock runs on the incident record itself: 24 hours to notify, five business days for the detailed report, both enforced as deadlines rather than reminders',
+      'Hash-chained audit log, anchored daily to a public transparency log so a regulator can verify an event without trusting us',
+      'Audit export bundle with the framework summary, evidence references and score history',
     ],
   },
   {
@@ -59,8 +59,8 @@ const stories = [
     outcome: [
       'AHPRA credential register with 90 / 60 / 30-day expiry alerts',
       'Custom-control mapping for NSQHS Standards + RACGP general-practice requirements',
-      'ISO 27001 (93 evaluators) auto-evaluating nightly against your live data',
-      'Cross-site executive posture rendered at /app/compliance/health',
+      `ISO 27001:2022 (${controlsPhrase('iso27001-2022')}) checked nightly against your live data`,
+      'Cross-site posture on one executive screen, updated as evidence lands',
     ],
   },
   {
@@ -87,7 +87,7 @@ const stories = [
     situation:
       'Fintech partnerships introduce new third-party risk. ASIC reportable-situation timelines are tight; teams rely on email threads to reconstruct incident histories. Board governance reporting consumes days of analyst time each quarter. APRA CPS 234 is mapped via custom controls (not a shipping evaluator pack).',
     outcome: [
-      'SOC 2 TSC (61 evaluators) + ISO 27001 (93 evaluators) running nightly',
+      `SOC 2 (${controlsPhrase('soc2-tsc')}) and ISO 27001 (${controlsPhrase('iso27001-2022')}) checked nightly`,
       'APRA CPS 234 obligations mapped via custom controls with named owners',
       'AML/CTF program tracked in the policy library with review cadence enforced',
       'Board-ready posture rendered live; audit export ZIP available on demand',
@@ -231,12 +231,14 @@ export default function CustomerStoriesContent() {
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
-                ROI proof: a worked example
+                The four workflows worth measuring
               </h3>
               <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
-                Based on an NDIS provider with 400 staff, 3 FTE compliance team,
-                and 4 audit cycles per year. Loaded hourly rate: $85/hr
-                (mid-market compliance analyst).
+                This is a worksheet, not a result. It assumes a multi-site NDIS
+                provider with about 400 staff, three full-time compliance people
+                and four audit cycles a year. During an evaluation each row gets
+                replaced with your own figures, so the difference is measured
+                rather than asserted.
               </p>
 
               {/* Worked example table */}
@@ -248,13 +250,13 @@ export default function CustomerStoriesContent() {
                         Workflow
                       </th>
                       <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-rose-400">
-                        Before FormaOS
+                        Assumed manual effort
                       </th>
                       <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-emerald-400">
-                        After FormaOS
+                        Target with FormaOS
                       </th>
                       <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-white">
-                        Hours Saved / Cycle
+                        Difference to verify
                       </th>
                     </tr>
                   </thead>
@@ -314,7 +316,7 @@ export default function CustomerStoriesContent() {
                         className="py-3 px-4 font-semibold text-white"
                         colSpan={3}
                       >
-                        Total hours saved per quarter
+                        Hours to measure per quarter
                       </td>
                       <td className="py-3 px-4 text-center font-bold text-white">
                         ~326 hrs
@@ -324,64 +326,18 @@ export default function CustomerStoriesContent() {
                 </table>
               </div>
 
-              {/* ROI summary */}
-              <SectionChoreography
-                pattern="stagger-wave"
-                className="mt-6 grid gap-3 md:grid-cols-4"
-              >
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
-                  <div className="text-xl font-bold text-white">$27,710</div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    Quarterly savings
-                  </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    326 hrs × $85/hr
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
-                  <div className="text-xl font-bold text-white">$110,840</div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    Annual savings
-                  </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    4 audit cycles / year
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
-                  <div className="text-xl font-bold text-white">
-                    &lt; 1 month
-                  </div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    Payback period
-                  </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    At Growth tier pricing
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
-                  <div className="text-xl font-bold text-white">38×</div>
-                  <div className="text-xs text-slate-400 mt-1">
-                    Annual ROI multiple
-                  </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    Savings ÷ annual license
-                  </div>
-                </div>
-              </SectionChoreography>
-
-              <p className="mt-4 text-[10px] text-slate-500">
-                Illustrative example based on typical NDIS provider metrics as
-                of March 2026. Actual savings vary by organization size, audit
-                frequency, and compliance team structure. We can model your
-                specific scenario during evaluation.
+              <p className="mt-4 text-xs leading-relaxed text-slate-500">
+                No deployment sits behind these figures. They are starting
+                assumptions to test against your own operation, line by line,
+                and none of them belongs in a business case until it has been.
               </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  href="/customer-stories/template"
+                  href={compliancePlanHref('customer_stories_worksheet')}
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground text-background px-6 py-3 text-sm font-semibold shadow-lg transition hover:opacity-90"
                 >
-                  Use Case Study Template
+                  {PUBLIC_CTA_LABELS.compliancePlan}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link

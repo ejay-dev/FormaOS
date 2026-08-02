@@ -5,19 +5,26 @@ import { getPackClaim } from '@/lib/marketing/claims';
 import { SeoLandingTemplate } from '../components/shared/SeoLandingTemplate';
 
 /**
- * Control counts come from the installed SOC 2 pack. Buyers on this page
- * know the Trust Services Criteria, so a number that does not match what
- * ships is the fastest way to lose them.
+ * Two packs, two numbers, and they must not be swapped: the readiness score
+ * is calculated from the scored SOC 2 pack (lib/soc2/readiness-engine.ts),
+ * while the full Trust Services Criteria pack is the deeper control set an
+ * organisation maps against. Buyers on this page know SOC 2, so a count that
+ * does not match what ships is the fastest way to lose them.
  */
-const soc2Pack = getPackClaim('soc2-tsc');
+const scoredPack = getPackClaim('soc2');
+const tscPack = getPackClaim('soc2-tsc');
 
-const evidenceCheckCoverage = soc2Pack
-  ? `Automated evidence checks against your own data for ${soc2Pack.automatedEvaluatorCount} of the ${soc2Pack.controlCount} controls in the SOC 2 pack, with the remaining ${soc2Pack.manualAttestationCount} tracked as attestations`
-  : 'Automated evidence checks against your own data, with the remaining controls tracked as attestations';
+const evidenceCheckCoverage = scoredPack
+  ? `Automated evidence checks against your own data for ${scoredPack.automatedEvaluatorCount} of the ${scoredPack.controlCount} scored controls`
+  : 'Automated evidence checks against your own data for the scored controls';
 
-const readinessSummary = soc2Pack
-  ? `weighted readiness scoring across all five Trust Services Criteria domains, automated evidence checks for ${soc2Pack.automatedEvaluatorCount} of the ${soc2Pack.controlCount} controls in the SOC 2 pack, attestation tracking for the remaining ${soc2Pack.manualAttestationCount}, gap analysis with prioritised remediation, and milestone tracking through to a readiness report`
-  : 'weighted readiness scoring across all five Trust Services Criteria domains, automated evidence checks where a control can be measured from your data, attestation tracking for the rest, gap analysis with prioritised remediation, and milestone tracking through to a readiness report';
+const tscPackCoverage = tscPack
+  ? `The full Trust Services Criteria pack ships ${tscPack.controlCount} controls, of which ${tscPack.automatedEvaluatorCount} are checked automatically against your data and ${tscPack.manualAttestationCount} are tracked as attestations you sign off.`
+  : null;
+
+const readinessSummary = scoredPack
+  ? `weighted readiness scoring across all five Trust Services Criteria domains, automated evidence checks for ${scoredPack.automatedEvaluatorCount} of the ${scoredPack.controlCount} scored controls, gap analysis with prioritised remediation, and milestone tracking through to a readiness report`
+  : 'weighted readiness scoring across all five Trust Services Criteria domains, automated evidence checks where a control can be measured from your data, gap analysis with prioritised remediation, and milestone tracking through to a readiness report';
 
 export default function Soc2Content() {
   return (
@@ -66,7 +73,7 @@ export default function Soc2Content() {
         {
           heading: 'SOC 2 readiness scoring and gap analysis',
           paragraphs: [
-            'FormaOS scores how ready you are against the Trust Services Criteria, checks the evidence behind each control, and exports a readiness report your auditor can work from. It does not issue an attestation: only an independent CPA firm can do that.',
+            'FormaOS scores how ready you are against the Trust Services Criteria, checks the evidence sitting behind the scored controls, and exports a readiness report your auditor can work from. It does not issue an attestation: only an independent CPA firm can do that.',
           ],
           bullets: [
             'Weighted readiness scoring across all 5 Trust Services Criteria domains (Security 30%, Availability 20%, Confidentiality 20%, Processing Integrity 15%, Privacy 15%)',
@@ -80,6 +87,7 @@ export default function Soc2Content() {
           heading: 'Trust Services Criteria mapping',
           paragraphs: [
             'Map controls across all five TSC categories with clear ownership, testing frequency, and evidence requirements.',
+            ...(tscPackCoverage ? [tscPackCoverage] : []),
           ],
           bullets: [
             'Security (Common Criteria), CC1 through CC9 control mapping',

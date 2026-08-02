@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { fetchSystemState } from "@/lib/system-state/server";
+import { getOrgMemberIdentities } from "@/lib/team/member-identity";
 import { updateVisitStatus } from "@/app/app/actions/care-operations";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
@@ -45,8 +46,8 @@ type VisitRow = {
   billable: boolean | null;
   funding_source: string | null;
   created_at: string;
+  staff_id: string | null;
   client: { id: string; full_name: string } | null;
-  staff: { id: string; email: string | null } | null;
 };
 
 export default async function VisitDetailPage({
@@ -83,8 +84,8 @@ export default async function VisitDetailPage({
       billable,
       funding_source,
       created_at,
-      client:client_id(id, full_name),
-      staff:staff_id(id, email)
+      staff_id,
+      client:client_id(id, full_name)
     `,
     )
     .eq("organization_id", orgId)
@@ -94,6 +95,11 @@ export default async function VisitDetailPage({
   const visit = visitData as VisitRow | null;
   if (!visit) notFound();
   const resolvedVisitId = visit.id;
+
+  const identities = await getOrgMemberIdentities();
+  const staffName = visit.staff_id
+    ? (identities[visit.staff_id]?.name ?? 'Unknown member')
+    : 'Unassigned';
 
   const canStart = visit.status === "scheduled";
   const canComplete = visit.status === "in_progress";
@@ -185,7 +191,7 @@ export default async function VisitDetailPage({
           <dl className="mt-4 grid gap-3 text-sm">
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">Staff</dt>
-              <dd>{visit.staff?.email || "Unassigned"}</dd>
+              <dd>{staffName}</dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">Service Category</dt>

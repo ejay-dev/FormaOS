@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   UserPlus,
   Shield,
-  User,
   CheckSquare,
   ShieldCheck,
   Search,
@@ -16,6 +15,10 @@ import {
   fetchPeopleOverview,
   type PeopleOverviewMember,
 } from '@/app/app/actions/people';
+import {
+  getOrgMemberIdentities,
+  type MemberIdentityMap,
+} from '@/lib/team/member-identity';
 import { useAppStore } from '@/lib/stores/app';
 import { TeamEmptyState } from '@/components/empty-states';
 
@@ -24,6 +27,7 @@ const ALL_FILTER = 'all';
 export default function PeoplePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [members, setMembers] = useState<PeopleOverviewMember[]>([]);
+  const [identities, setIdentities] = useState<MemberIdentityMap>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
@@ -40,6 +44,7 @@ export default function PeoplePage() {
       if (!isHydrated) return;
       if (!orgId) {
         setMembers([]);
+        setIdentities({});
         setLoading(false);
         return;
       }
@@ -48,14 +53,19 @@ export default function PeoplePage() {
       setError(null);
 
       try {
-        const payload = await fetchPeopleOverview();
+        const [payload, identityMap] = await Promise.all([
+          fetchPeopleOverview(),
+          getOrgMemberIdentities(),
+        ]);
         if (cancelled) return;
         setMembers(payload.members);
+        setIdentities(identityMap);
       } catch (err) {
         if (cancelled) return;
         console.error('[PeoplePage] Failed to fetch personnel data:', err);
         setMembers([]);
-        setError('Unable to load personnel records right now.');
+        setIdentities({});
+        setError('Unable to load people right now.');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -92,8 +102,10 @@ export default function PeoplePage() {
       const normalizedCompliance = (
         member.compliance_status ?? 'active'
       ).toLowerCase();
+      const identity = identities[member.user_id];
       const searchableText = [
-        member.user_id,
+        identity?.name ?? '',
+        identity?.email ?? '',
         member.department ?? '',
         normalizedRole,
         normalizedCompliance,
@@ -111,7 +123,7 @@ export default function PeoplePage() {
 
       return matchesQuery && matchesRole && matchesCompliance;
     });
-  }, [members, query, roleFilter, complianceFilter]);
+  }, [members, identities, query, roleFilter, complianceFilter]);
 
   return (
     <div className="space-y-8 pb-12">
@@ -123,18 +135,18 @@ export default function PeoplePage() {
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground tracking-tight">
-            Personnel Oversight
+            People
           </h1>
           <p className="mt-1 text-muted-foreground font-medium tracking-tight">
-            Workforce access, role, and compliance activity.
+            Everyone in your workspace, with their role and compliance status.
           </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-surface-2 text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
+          className="flex items-center gap-2 bg-surface-2 text-foreground px-6 py-3.5 rounded-2xl text-sm font-medium hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
         >
           <UserPlus className="h-4 w-4" />
-          Provision Access
+          Invite person
         </button>
       </div>
 
@@ -145,7 +157,7 @@ export default function PeoplePage() {
               type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search by member ID, department, or role..."
+            placeholder="Search by name, email, department, or role"
             aria-label="Search people"
             className="w-full pl-12 pr-4 py-2.5 text-sm font-medium outline-none bg-transparent"
               enterKeyHint="search"
@@ -193,9 +205,7 @@ export default function PeoplePage() {
       <div className="grid grid-cols-1 gap-4">
         {loading ? (
           <div className="py-20 text-center animate-pulse">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              Synchronizing Personnel Records...
-            </p>
+            <p className="text-sm text-muted-foreground">Loading people…</p>
           </div>
         ) : filteredMembers.length === 0 ? (
           // v4-031: distinguish "no data at all" (open the invite modal)
@@ -209,7 +219,7 @@ export default function PeoplePage() {
           ) : (
             <div className="rounded-3xl border border-edge-2 bg-surface-1 py-14 text-center">
               <p className="text-sm font-semibold text-foreground/90">
-                No personnel match the current filters.
+                No one matches the current filters.
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Adjust search terms or filters and try again.
@@ -225,6 +235,7 @@ export default function PeoplePage() {
             const joinedDate = new Date(
               member.start_date ?? member.created_at,
             ).toLocaleDateString();
+            const identity = identities[member.user_id];
 
             return (
               <div
@@ -232,13 +243,13 @@ export default function PeoplePage() {
                 className="group bg-surface-1 border border-edge-2 rounded-[2.5rem] p-6 hover:border-edge-2 transition-all shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6"
               >
                 <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 rounded-[1.25rem] bg-surface-2 border border-edge-2 flex items-center justify-center text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-300">
-                    <User className="h-6 w-6" />
+                  <div className="h-14 w-14 rounded-[1.25rem] bg-surface-2 border border-edge-2 flex items-center justify-center text-sm font-semibold text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-300">
+                    {identity?.initials ?? '?'}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-black text-foreground leading-none">
-                        Workspace Member
+                        {identity?.name ?? 'Unknown member'}
                       </p>
 
                       <div
@@ -256,7 +267,12 @@ export default function PeoplePage() {
                         {complianceStatus}
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-2">
+                    {identity?.email ? (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {identity.email}
+                      </p>
+                    ) : null}
+                    <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-1">
                       {member.department || 'General Staff'} • Joined{' '}
                       {joinedDate}
                     </p>

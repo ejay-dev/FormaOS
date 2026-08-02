@@ -4,8 +4,7 @@
  */
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
+import { getOrgMemberIdentities } from '@/lib/team/member-identity';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -84,7 +83,6 @@ export default async function VisitsPage({
   const { organization } = systemState;
   const label = getVisitLabel(organization.industry);
   const supabase = await createSupabaseServerClient();
-  const admin = createSupabaseAdminClient();
 
   // Fetch visits and resolve related labels explicitly so schema-cache FK drift
   // does not break the whole page.
@@ -119,7 +117,7 @@ export default async function VisitsPage({
   type VisitRow = NonNullable<typeof visits>[number];
   type Visit = VisitRow & {
     client: { full_name?: string | null } | null;
-    staff: { email?: string | null } | null;
+    staff: { name: string } | null;
   };
 
   const visitRows = (visits ?? []) as VisitRow[];
@@ -130,15 +128,8 @@ export default async function VisitsPage({
         .filter((value): value is string => Boolean(value)),
     ),
   );
-  const staffIds = Array.from(
-    new Set(
-      visitRows
-        .map((visit) => visit.staff_id as string | null | undefined)
-        .filter((value): value is string => Boolean(value)),
-    ),
-  );
 
-  const [{ data: clients }, staffProfiles] = await Promise.all([
+  const [{ data: clients }, staffIdentities] = await Promise.all([
     clientIds.length
       ? supabase
           .from('org_patients')
@@ -147,9 +138,7 @@ export default async function VisitsPage({
       : Promise.resolve({
           data: [] as Array<{ id: string; full_name: string | null }>,
         }),
-    staffIds.length
-      ? getAdminProfileDirectoryEntries(staffIds, admin)
-      : Promise.resolve([]),
+    getOrgMemberIdentities(),
   ]);
 
   const clientNameById = new Map(
@@ -158,9 +147,6 @@ export default async function VisitsPage({
       (client.full_name as string | null | undefined) ?? null,
     ]),
   );
-  const staffEmailById = new Map(
-    staffProfiles.map((profile) => [profile.userId, profile.email ?? null]),
-  );
 
   const enrichedVisits: Visit[] = visitRows.map((visit) => ({
     ...visit,
@@ -168,7 +154,11 @@ export default async function VisitsPage({
       ? { full_name: clientNameById.get(visit.client_id as string) ?? null }
       : null,
     staff: visit.staff_id
-      ? { email: staffEmailById.get(visit.staff_id as string) ?? null }
+      ? {
+          name:
+            staffIdentities[visit.staff_id as string]?.name ??
+            'Unknown member',
+        }
       : null,
   }));
 
@@ -180,12 +170,14 @@ export default async function VisitsPage({
     const clientName = (
       (visit.client as { full_name?: string } | null)?.full_name ?? ''
     ).toLowerCase();
+    const staffName = (visit.staff?.name ?? '').toLowerCase();
     const visitType = (visit.visit_type ?? '').toLowerCase();
     const serviceCategory = (visit.service_category ?? '').toLowerCase();
     const locationType = (visit.location_type ?? '').toLowerCase();
 
     return (
       clientName.includes(qLower) ||
+      staffName.includes(qLower) ||
       visitType.includes(qLower) ||
       serviceCategory.includes(qLower) ||
       locationType.includes(qLower)
@@ -319,10 +311,7 @@ export default async function VisitsPage({
                 const clientName =
                   (visit.client as { full_name?: string } | null)?.full_name ||
                   'Unassigned';
-                const staffName =
-                  (visit.staff as { email?: string } | null)?.email?.split(
-                    '@',
-                  )[0] || null;
+                const staffName = visit.staff?.name ?? null;
                 return (
                   <RecordCard
                     key={visit.id}
@@ -423,9 +412,7 @@ export default async function VisitsPage({
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     <span className="text-sm text-muted-foreground">
-                      {(visit.staff as { email?: string } | null)?.email?.split(
-                        '@',
-                      )[0] || '-'}
+                      {visit.staff?.name || '-'}
                     </span>
                   </td>
                   <td className="px-4 py-3 hidden xl:table-cell">

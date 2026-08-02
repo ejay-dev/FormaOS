@@ -94,7 +94,7 @@ const industries = [
       'Manage WHS Act safety systems, contractor compliance programs, incident reporting, SafeWork obligations, and multi-site regulatory audit readiness, with defensible evidence at every stage.',
     features: [
       'WHS Act & SafeWork Obligations',
-      'Contractor License Verification',
+      'Contractor Licence Verification',
       'Multi-site Incident Reporting',
     ],
     color: 'orange',
@@ -125,137 +125,36 @@ const industries = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  IndustryCard, flip card revealing per-industry metrics           */
+/*  IndustryCard, the whole card routes to the industry page          */
 /* ------------------------------------------------------------------ */
 function IndustryCard({
   industry,
-  reducedMotion,
 }: {
   industry: (typeof industries)[number];
-  reducedMotion: boolean;
 }) {
-  const [flipped, setFlipped] = useState(false);
   const Icon = industry.icon;
 
-  // Reduced-motion: static card without flip
-  if (reducedMotion) {
-    return (
-      <div
-        className={`group bg-white/[0.03] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-all duration-300`}
-      >
-        <CardFrontContent industry={industry} />
-      </div>
-    );
-  }
-
   return (
-    <motion.div
-      onClick={() => setFlipped(!flipped)}
-      whileHover={{ y: -4 }}
-      style={{ perspective: 1000 }}
-      className="cursor-pointer"
+    <Link
+      href={industry.href}
+      className={`group block h-full bg-white/[0.03] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-colors duration-300`}
     >
-      <motion.div
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        style={{ transformStyle: 'preserve-3d' }}
-        className="relative"
-      >
-        {/* ---------- FRONT FACE ---------- */}
-        <div
-          className={`group bg-white/[0.03] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-[border-color] duration-300 relative overflow-hidden`}
-          style={{ backfaceVisibility: 'hidden' }}
-        >
-          <CardFrontContent industry={industry} />
-
-          {/* Tap to flip indicator */}
-          <div className="mt-4 flex items-center gap-1.5 text-[11px] text-slate-500/70 select-none">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-            Tap to flip
-          </div>
-        </div>
-
-        {/* ---------- BACK FACE ---------- */}
-        <div
-          className={`absolute inset-0 bg-white/[0.03] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-[border-color] duration-300 overflow-hidden flex flex-col justify-between`}
-          style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
-        >
-          {/* Header */}
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div
-                className={`flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br ${industry.gradient} ${industry.border} flex items-center justify-center`}
-              >
-                <Icon className={`h-5 w-5 ${industry.textColor}`} />
-              </div>
-              <h4 className="font-bold text-white text-base">{industry.title}</h4>
-            </div>
-
-            {/* Metrics */}
-            <div className="space-y-4">
-              {industry.metrics.map((metric) => (
-                <div key={metric.label}>
-                  <div className="flex items-baseline justify-between mb-1">
-                    <span className="text-xs text-slate-400">{metric.label}</span>
-                    <span className={`text-lg font-bold ${industry.textColor}`}>
-                      {metric.value}
-                    </span>
-                  </div>
-                  <div className="h-px w-full bg-gradient-to-r from-white/[0.06] via-white/[0.10] to-white/[0.06]" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Learn more link */}
-          <Link
-            href={industry.href}
-            onClick={(e) => e.stopPropagation()}
-            className={`mt-4 inline-flex items-center gap-1.5 text-xs font-medium ${industry.textColor} hover:underline`}
-          >
-            Learn more <ArrowRight className="h-3 w-3" />
-          </Link>
-
-          {/* Tap to flip back indicator */}
-          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-500/70 select-none">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 rotate-180">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-            Tap to flip back
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  CardFrontContent, extracted so reduced-motion path can reuse it  */
-/* ------------------------------------------------------------------ */
-function CardFrontContent({
-  industry,
-}: {
-  industry: (typeof industries)[number];
-}) {
-  const Icon = industry.icon;
-  return (
-    <>
       <div className="flex items-start gap-4 mb-4">
         <div
-          className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${industry.gradient} ${industry.border} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+          className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${industry.gradient} ${industry.border} flex items-center justify-center`}
         >
           <Icon className={`h-6 w-6 ${industry.textColor}`} />
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <div className={`flex-shrink-0 w-2.5 h-2.5 rounded-full ${industry.dotColor}`} />
-            <h4
-              className={`font-bold text-lg mb-1 text-white group-hover:${industry.textColor} transition-colors duration-300`}
-            >
+            <h4 className="font-bold text-lg mb-1 text-white">
               {industry.title}
             </h4>
+            <ArrowRight
+              className="ml-auto h-4 w-4 flex-shrink-0 text-slate-500 transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none"
+              aria-hidden="true"
+            />
           </div>
         </div>
       </div>
@@ -277,7 +176,7 @@ function CardFrontContent({
           </div>
         ))}
       </div>
-    </>
+    </Link>
   );
 }
 
@@ -285,13 +184,6 @@ function CardFrontContent({
 /*  IndustryVerticals, main section                                  */
 /* ------------------------------------------------------------------ */
 export function IndustryVerticals() {
-  const prefersReducedMotion = useReducedMotion();
-  const tierConfig = useDeviceTier();
-  const reducedMotion =
-    Boolean(prefersReducedMotion) ||
-    tierConfig.tier !== 'high' ||
-    tierConfig.isTouch;
-
   return (
     <section className="relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
@@ -320,11 +212,7 @@ export function IndustryVerticals() {
         {/* Industries Grid */}
         <SectionChoreography pattern="stagger-wave" stagger={0.05} className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
           {industries.map((industry) => (
-            <IndustryCard
-              key={industry.title}
-              industry={industry}
-              reducedMotion={reducedMotion}
-            />
+            <IndustryCard key={industry.title} industry={industry} />
           ))}
         </SectionChoreography>
       </div>

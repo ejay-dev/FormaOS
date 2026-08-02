@@ -213,11 +213,11 @@ function TheProblem() {
         >
           <div className="space-y-6">
             <p className="text-lg text-slate-400 leading-relaxed">
-              I spent the first year reading the actual instruments: the NDIS
-              Practice Standards, the Aged Care Quality Standards, ISO 27001
-              Annex A, the SOC 2 trust services criteria. Then I looked at the
-              software that says it covers them. Almost all of it is a document
-              library with a workflow tab bolted on.
+              I started by reading the actual instruments: the NDIS Practice
+              Standards, the Aged Care Quality Standards, ISO 27001 Annex A, the
+              SOC 2 trust services criteria. Then I looked at the software that
+              says it covers them. Almost all of it is a document library with a
+              workflow tab bolted on.
             </p>
             <p className="text-lg text-slate-400 leading-relaxed">
               The obligations are not really about documents. They are about who
@@ -345,7 +345,9 @@ function TheApproach() {
                 <div className="flex-shrink-0 w-10 h-10 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center">
                   <capability.icon className="w-5 h-5 text-slate-300" />
                 </div>
-                <span className="text-lg text-slate-300">{capability.text}</span>
+                <span className="text-lg text-slate-300">
+                  {capability.text}
+                </span>
               </div>
             ))}
           </SectionChoreography>

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | Legal',
     description:
-      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA, and subprocessors.',
+      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA, subprocessors, and platform status.',
   },
 };
 

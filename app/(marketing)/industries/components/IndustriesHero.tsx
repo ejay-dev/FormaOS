@@ -7,6 +7,7 @@ import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing
 
 const PILLS = [
   { color: 'bg-slate-400', label: 'NDIS & Aged Care' },
+  { color: 'bg-slate-400', label: 'Mental Health Services' },
   { color: 'bg-slate-400', label: 'Healthcare & Allied Health' },
   { color: 'bg-slate-400', label: 'Financial Services' },
   { color: 'bg-slate-400', label: 'Education & Childcare' },
@@ -47,7 +48,8 @@ function IndustriesExtras() {
   return (
     <div className="max-w-2xl mx-auto text-center">
       <p className="text-sm text-slate-500 mb-3">
-        5 regulated industries covered, from NDIS Commission to ASIC and AHPRA
+        Six regulated industries covered, from the NDIS Commission to ASIC and
+        AHPRA
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600">
         {PILLS.map((pill) => (

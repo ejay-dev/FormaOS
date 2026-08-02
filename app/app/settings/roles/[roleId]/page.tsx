@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation';
 import { ArrowLeft, Lock, Shield, Users } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { getOrgMemberIdentities } from '@/lib/team/member-identity';
 import {
   getRolePermissions,
   PERMISSION_MODULES,
@@ -68,6 +69,8 @@ export default async function RoleDetailPage({
   const teamNameById = new Map(
     (teams ?? []).map((team) => [team.id as string, team.name as string]),
   );
+
+  const identities = await getOrgMemberIdentities();
 
   const enabledCount = PERMISSION_MODULES.reduce(
     (sum, module) =>
@@ -187,8 +190,14 @@ export default async function RoleDetailPage({
                 className="flex items-center justify-between px-4 py-3 text-sm"
               >
                 <div>
-                  <p className="font-medium">User {member.user_id}</p>
+                  <p className="font-medium">
+                    {identities[member.user_id as string]?.name ??
+                      'Unknown member'}
+                  </p>
                   <p className="text-xs text-muted-foreground">
+                    {identities[member.user_id as string]?.email
+                      ? `${identities[member.user_id as string]?.email} · `
+                      : ''}
                     Team {teamNameById.get(member.team_id) ?? member.team_id}
                   </p>
                 </div>

@@ -21,7 +21,7 @@ export function IndustriesCTA() {
 
               <ScrollReveal variant="blurIn" range={[0.04, 0.35]}>
                 <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-6 text-white">
-                  If your organization operates under regulation,
+                  If your organisation operates under regulation,
                   <br className="hidden lg:inline" />
                   <span className="text-foreground">
                     FormaOS provides the system to run compliance as part of

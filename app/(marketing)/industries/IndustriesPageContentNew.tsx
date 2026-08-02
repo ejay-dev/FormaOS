@@ -3,7 +3,6 @@
 import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   CrossIndustryPrinciples,
-  HealthcareSection,
   IndustriesCTA,
   IndustriesHero,
   IndustryVerticals,
@@ -26,9 +25,10 @@ export default function IndustriesPageContent() {
         <IndustriesHero />
       </div>
 
+      {/* No single vertical is deep-dived here: the six cards above are the
+          route to each industry page, which carries that detail. */}
       <IndustryVerticals />
       <MissionCriticalContext />
-      <HealthcareSection />
       <CrossIndustryPrinciples />
 
       {/* Closing CTA with photographic backdrop */}

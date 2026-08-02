@@ -15,6 +15,7 @@ import {
   PUBLIC_CTA_LABELS,
   salesHref,
 } from '@/lib/marketing/cta';
+import { CLAIM_PHRASES } from '@/lib/marketing/claims';
 import { siteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -53,20 +54,20 @@ const PILLARS: Pillar[] = [
         detail: 'Global security and privacy framework packs, ready on day one.',
       },
       {
-        name: 'NIST CSF, CIS Controls, Essential Eight',
+        name: 'NIST CSF, CIS Controls',
         detail: 'Deep library for security-heavy regulated environments.',
       },
       {
         name: 'NDIS Practice Standards',
         detail:
-          'Purpose-built for Australian NDIS providers. The wedge vs generic tools.',
+          'Written against the standards Australian NDIS providers are actually audited on, not a generic control set.',
       },
       {
         name: 'Custom frameworks',
         detail: 'Bring your own obligations: map controls, owners, evidence.',
       },
     ],
-    footnote: '8 framework packs included. Cross-map once, satisfy many.',
+    footnote: `${CLAIM_PHRASES.packs} included. Cross-map once, satisfy many.`,
   },
   {
     id: 'evidence',
@@ -126,7 +127,7 @@ const PILLARS: Pillar[] = [
     id: 'care',
     eyebrow: 'Pillar 04',
     title: 'Care Operations',
-    lede: 'The wedge. Participants, visits, progress notes, credentials, all in compliance context.',
+    lede: 'Participants, visits, progress notes, and credentials, all held in compliance context.',
     Icon: HeartPulse,
     accent: 'from-zinc-600 via-zinc-700 to-zinc-800',
     glow: 'radial-gradient(circle at 60% 70%, rgba(161,161,170,0.18), transparent 60%)',
@@ -148,7 +149,8 @@ const PILLARS: Pillar[] = [
         detail: 'Shift-ready notes that also satisfy regulator reporting.',
       },
     ],
-    footnote: 'What general GRC tools don&apos;t have. Built for AU regulated operators.',
+    footnote:
+      'Care delivery and compliance in one record, so evidence comes from the shift rather than a later reconstruction.',
   },
   {
     id: 'trust',

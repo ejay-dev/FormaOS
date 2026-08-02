@@ -5,7 +5,6 @@ import {
   Briefcase,
   ShieldCheck,
   AlertCircle,
-  FileText,
   Clock,
 } from 'lucide-react';
 import { PageHero } from '@/components/ui/page-hero';
@@ -30,6 +29,25 @@ export default async function EmployeeProfilePage() {
     .maybeSingle();
 
   if (!profile) return null;
+
+  const { data: credentials } = await supabase
+    .from('org_credentials')
+    .select('expiry_date, verification_status')
+    .eq('organization_id', profile.organization_id)
+    .eq('user_id', profile.user_id);
+
+  const credentialRows = (credentials ?? []) as Array<{
+    expiry_date: string | null;
+    verification_status: string | null;
+  }>;
+  const verifiedCredentials = credentialRows.filter(
+    (row) => row.verification_status === 'verified',
+  ).length;
+  const nextExpiry = credentialRows
+    .map((row) => row.expiry_date)
+    .filter((value): value is string => Boolean(value))
+    .sort()
+    .find((value) => new Date(value) >= new Date());
 
   const _statusColors = {
     active: 'bg-emerald-400/10 text-emerald-700 border-emerald-400/30',
@@ -108,18 +126,9 @@ export default async function EmployeeProfilePage() {
               <div className="flex items-center gap-3">
                 <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Access Tier</p>
+                  <p className="text-xs text-muted-foreground">Role</p>
                   <p className="text-sm font-medium capitalize">
                     {profile.role}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Employee ID</p>
-                  <p className="text-sm font-mono font-medium">
-                    USR-{profile.user_id.slice(0, 8).toUpperCase()}
                   </p>
                 </div>
               </div>
@@ -128,21 +137,36 @@ export default async function EmployeeProfilePage() {
 
           {/* Credential Integrity */}
           <div className="lg:col-span-4 rounded-lg border border-border bg-card p-4 space-y-3">
-            <h3 className="section-label">Credential Integrity</h3>
+            <h3 className="section-label">Credentials</h3>
             <p className="text-xs text-muted-foreground">
-              Professional licenses and identity documents are managed by the
-              organization vault.
+              Professional licences and identity documents are held in the
+              organisation vault.
             </p>
             <div className="pt-3 border-t border-border space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">Document Status</span>
-                <span className="text-emerald-500 font-medium">
-                  Audit Ready
-                </span>
-              </div>
-              <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500 w-full" />
-              </div>
+              {credentialRows.length === 0 ? (
+                <p className="text-xs text-muted-foreground">
+                  No documents on file yet.
+                </p>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Documents</span>
+                    <span className="font-medium">
+                      {verifiedCredentials} of {credentialRows.length} verified
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Next expiry</span>
+                    <span className="font-medium">
+                      {nextExpiry
+                        ? new Date(nextExpiry).toLocaleDateString(undefined, {
+                            dateStyle: 'medium',
+                          })
+                        : 'None recorded'}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
