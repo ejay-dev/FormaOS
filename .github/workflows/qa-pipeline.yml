@@ -46,6 +46,21 @@ jobs:
       - run: npm run stylelint
       - run: npm run type-check
 
+      # Both rules are off in eslint.config.mjs because each has a few hundred
+      # pre-existing call sites that would blow past --max-warnings above. The
+      # ratchets stop the counts going UP while the backlogs are worked down.
+      # (The tenant-isolation ratchet has existed since 2026-05-26 but was never
+      # actually wired into CI, so it was not holding anything.)
+      - name: Tenant-isolation ratchet
+        run: npm run check:tenant-isolation-ratchet
+
+      # Audit 2026-08-02. supabase-js resolves with { data, error } rather than
+      # rejecting, so an unchecked write fails silently — the root cause behind
+      # undelivered notifications, dead automation triggers, empty audit reports
+      # and no-op admin actions.
+      - name: Unchecked-Supabase-error ratchet
+        run: npm run check:supabase-error-ratchet
+
       - name: App route/link integrity check
         run: npm run check:app-links
 
