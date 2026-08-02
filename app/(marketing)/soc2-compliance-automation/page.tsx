@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   title:
     'SOC 2 Compliance Automation | FormaOS',
   description:
-    'Automate SOC 2 compliance with FormaOS. Map Trust Service Criteria to operational controls, capture evidence continuously, and streamline Type II audit readiness.',
+    'Automate SOC 2 compliance with FormaOS. Map Trust Services Criteria to operational controls, capture evidence continuously, and streamline Type II audit readiness.',
   alternates: { canonical: `${siteUrl}/soc2-compliance-automation` },
   openGraph: {
     title: 'SOC 2 Compliance Automation | FormaOS',
     description:
-      'Automate SOC 2 compliance. Map Trust Service Criteria, capture evidence, and stay audit-ready with FormaOS.',
+      'Automate SOC 2 compliance. Map Trust Services Criteria, capture evidence, and stay audit-ready with FormaOS.',
     type: 'website',
     url: `${siteUrl}/soc2-compliance-automation`,
   },
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'SOC 2 Compliance Automation | FormaOS',
     description:
-      'Automate SOC 2 compliance. Map Trust Service Criteria, capture evidence, and stay audit-ready with FormaOS.',
+      'Automate SOC 2 compliance. Map Trust Services Criteria, capture evidence, and stay audit-ready with FormaOS.',
   },
 };
 
@@ -31,9 +31,9 @@ const pageFaq = [
       'Yes. FormaOS is designed for continuous compliance, which aligns directly with the SOC 2 Type II requirement to demonstrate controls operating effectively over a period of time, not just at a point in time.',
   },
   {
-    question: 'Which Trust Service Criteria does FormaOS cover?',
+    question: 'Which Trust Services Criteria does FormaOS cover?',
     answer:
-      'FormaOS supports all five Trust Service Criteria: Security (Common Criteria), Availability, Processing Integrity, Confidentiality, and Privacy. Controls can be mapped across one or multiple criteria.',
+      'FormaOS supports all five Trust Services Criteria: Security (Common Criteria), Availability, Processing Integrity, Confidentiality, and Privacy. Controls can be mapped across one or multiple criteria.',
   },
   {
     question: 'Can FormaOS generate auditor-ready evidence packages?',

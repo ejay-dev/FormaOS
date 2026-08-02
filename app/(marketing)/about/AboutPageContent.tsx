@@ -20,10 +20,18 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
-import { EnterpriseShaderHero } from '@/components/marketing/EnterpriseShaderHero';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import {
+  AUTOMATED_EVALUATOR_COUNT,
+  DISTINCT_FRAMEWORK_COUNT,
+  DISTINCT_FRAMEWORK_NAMES,
+  EVALUATOR_COUNT,
+  FRAMEWORK_CONTROL_COUNT,
+  FRAMEWORK_PACK_COUNT,
+  MANUAL_ATTESTATION_COUNT,
+} from '@/lib/marketing/claims';
 
 const DemoAuditTrailCard = dynamic(
   () => import('@/components/marketing/demo/DemoAuditTrailCard'),
@@ -114,24 +122,6 @@ export default function AboutPageContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <DeferredSection minHeight={480}>
-        <EnterpriseShaderHero
-          badgeText="Compliance Execution Network"
-          headline={{
-            line1: 'Operational Signal',
-            line2: 'Across Every Control Surface',
-          }}
-          subtitle="A live strategic view of how governance, evidence, and accountability stay synchronized for regulated teams operating at enterprise scale."
-          primaryCta={{ href: '/product', label: 'Explore Product' }}
-          secondaryCta={{ href: '/contact', label: 'Book Walkthrough' }}
-          className="pt-10 sm:pt-12 pb-8 sm:pb-10"
-        />
-      </DeferredSection>
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
       {/* Founder Origin Story */}
       <DeferredSection minHeight={220}>
         <section className="mk-section relative">
@@ -142,7 +132,7 @@ export default function AboutPageContent() {
               className="text-center mb-10"
             >
               <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
-                Built by operators, for operators
+                Why an engineer built this
               </h2>
             </ScrollReveal>
 
@@ -211,11 +201,14 @@ export default function AboutPageContent() {
                         started.
                       </p>
                       <p>
-                        Today FormaOS ships 252 control evaluators across
-                        framework packs spanning SOC&nbsp;2, ISO&nbsp;27001,
-                        HIPAA, GDPR, PCI-DSS, CIS, NIST&nbsp;CSF and NDIS. Over
-                        a hundred auto-evaluate against your live data; the rest
-                        are surfaced as human attestations and labelled as such.
+                        Today FormaOS ships {EVALUATOR_COUNT} control
+                        evaluators across {FRAMEWORK_PACK_COUNT} framework packs
+                        covering {DISTINCT_FRAMEWORK_COUNT} standards:{' '}
+                        {DISTINCT_FRAMEWORK_NAMES.join(', ')}. Of those,{' '}
+                        {AUTOMATED_EVALUATOR_COUNT} evaluate automatically
+                        against your live data and the other{' '}
+                        {MANUAL_ATTESTATION_COUNT} are surfaced as human
+                        attestations, labelled as such.
                         The audit log is hash-chained in Postgres, with
                         append-only enforced at the database layer by an
                         immutability trigger and RLS deny policies, not
@@ -396,11 +389,12 @@ export default function AboutPageContent() {
               className="text-center mb-10"
             >
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-                Operational Proof, Not Promises
+                What ships today
               </h2>
               <p className="text-slate-400 max-w-xl mx-auto text-sm">
-                These are the outcomes regulated teams achieve when compliance
-                runs as infrastructure.
+                Counts from the running product, not results from customers we
+                do not have yet. Every one of them can be checked in the product
+                during evaluation.
               </p>
             </ScrollReveal>
             <SectionChoreography
@@ -410,28 +404,26 @@ export default function AboutPageContent() {
             >
               {[
                 {
-                  stat: '< 2 min',
-                  label: 'Audit packet export',
-                  detail:
-                    'Framework-mapped evidence bundles generated on demand, no manual reconstruction',
+                  stat: String(FRAMEWORK_PACK_COUNT),
+                  label: 'Framework packs',
+                  detail: `Installable and scored, covering ${DISTINCT_FRAMEWORK_COUNT} distinct standards. SOC 2 ships as two packs, which is why the two numbers differ.`,
                 },
                 {
-                  stat: '9',
-                  label: 'Pre-built frameworks',
+                  stat: String(FRAMEWORK_CONTROL_COUNT),
+                  label: 'Mapped controls',
                   detail:
-                    'ISO 27001, SOC 2, NDIS, NSQHS, RACGP, Essential Eight, HIPAA, GDPR, PCI-DSS',
+                    'Each one carries its framework reference and the evidence it expects, so a gap is visible before an auditor finds it',
                 },
                 {
-                  stat: '100%',
-                  label: 'Control ownership',
-                  detail:
-                    'Every control has a named owner, review cadence, and evidence trail, no orphaned obligations',
+                  stat: String(AUTOMATED_EVALUATOR_COUNT),
+                  label: 'Automated checks',
+                  detail: `Evaluated against your live data. The remaining ${MANUAL_ATTESTATION_COUNT} evaluators need a person to attest, and say so on screen`,
                 },
                 {
-                  stat: '~90%',
-                  label: 'Audit prep reduction',
+                  stat: '05:30 UTC',
+                  label: 'Daily chain anchor',
                   detail:
-                    'Teams reduce audit preparation from weeks to hours with continuous compliance posture',
+                    'The hash-chained audit log anchors its head to Sigstore Rekor every day, so an event can be verified without trusting us',
                 },
               ].map(({ stat, label, detail }) => (
                 <div

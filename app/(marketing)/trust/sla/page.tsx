@@ -4,17 +4,18 @@ import { Clock } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
+import { PLAN_CATALOG, type PlanKey } from '@/lib/plans';
 import { siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | SLA',
   description:
-    'Service-level agreements, support expectations, and availability review guidance for FormaOS Growth, Scale, and Enterprise plans.',
+    'Service-level agreements, support expectations, and availability review guidance for FormaOS Foundation, Growth, Scale, and Enterprise plans.',
   alternates: { canonical: `${siteUrl}/trust/sla` },
   openGraph: {
     title: 'FormaOS | SLA',
     description:
-      'Service-level agreements, support expectations, and availability review guidance for FormaOS Growth, Scale, and Enterprise plans.',
+      'Service-level agreements, support expectations, and availability review guidance for FormaOS Foundation, Growth, Scale, and Enterprise plans.',
     type: 'website',
     url: `${siteUrl}/trust/sla`,
   },
@@ -22,13 +23,15 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | SLA',
     description:
-      'Service-level agreements, support expectations, and availability review guidance for FormaOS Growth, Scale, and Enterprise plans.',
+      'Service-level agreements, support expectations, and availability review guidance for FormaOS Foundation, Growth, Scale, and Enterprise plans.',
   },
 };
 
-const tiers = [
+// Tier names come from PLAN_CATALOG so this page cannot drift from the
+// plans sold on /pricing.
+const tiers: { planKey: PlanKey; points: string[] }[] = [
   {
-    tier: 'Foundation',
+    planKey: 'basic',
     points: [
       'No contractual SLA by default.',
       'Standard email support (business hours); response time varies.',
@@ -36,7 +39,7 @@ const tiers = [
     ],
   },
   {
-    tier: 'Growth',
+    planKey: 'pro',
     points: [
       'No contractual SLA by default; best-effort service model.',
       'Priority email support with faster handling than Foundation.',
@@ -44,7 +47,16 @@ const tiers = [
     ],
   },
   {
-    tier: 'Enterprise',
+    planKey: 'scale',
+    points: [
+      'No contractual SLA by default; the same best-effort service model as Growth.',
+      'Priority email support, covering every site on the plan.',
+      'Security review artifacts available via Trust Center for procurement.',
+      'Contractual availability targets require an Enterprise agreement.',
+    ],
+  },
+  {
+    planKey: 'enterprise',
     points: [
       'Executed agreements can define availability targets and support expectations.',
       'Incident handling, escalation paths, and reporting cadence are documented during contracting.',
@@ -54,7 +66,7 @@ const tiers = [
       'Service reporting and any contractual remedies are handled through the executed agreement.',
     ],
   },
-] as const;
+];
 
 export default function SlaPage() {
   return (
@@ -75,11 +87,11 @@ export default function SlaPage() {
         <div className="space-y-4">
           {tiers.map((t) => (
             <section
-              key={t.tier}
+              key={t.planKey}
               className="rounded-2xl border border-border bg-card p-6"
             >
               <h2 className="text-lg font-semibold text-foreground">
-                {t.tier}
+                {PLAN_CATALOG[t.planKey].name}
               </h2>
               <ul className="mt-3 list-disc pl-6 space-y-2 text-sm text-muted-foreground">
                 {t.points.map((p) => (
@@ -90,9 +102,19 @@ export default function SlaPage() {
           ))}
         </div>
 
-        {/* "Status And Uptime Signals" block removed 2026-05-13 with
-            the /status route; will return when a real status provider
-            is wired. */}
+        <section className="mt-8 rounded-2xl border border-border bg-card p-6">
+          <h2 className="text-lg font-semibold text-foreground">
+            Status and uptime signals
+          </h2>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+            Live platform health is published without sign-in at{' '}
+            <Link href="/status" className="text-primary hover:underline">
+              formaos.com.au/status
+            </Link>
+            . It reports current subsystem checks and audit-chain anchoring
+            rather than a historical uptime percentage.
+          </p>
+        </section>
 
         <div className="mt-12 flex flex-col sm:flex-row gap-4 text-sm">
           <Link href="/trust" className="text-primary hover:underline">

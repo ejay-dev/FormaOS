@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import LogoLoop from './LogoLoop';
 import { duration, easing } from '@/config/motion';
+import { FRAMEWORK_PACK_COUNT } from '@/lib/marketing/claims';
 
 const signatureEase: [number, number, number, number] = [
   ...easing.signature,
@@ -144,10 +145,13 @@ export const FrameworkTrustStrip = memo(function FrameworkTrustStrip({
               }}
             />
             <span className="font-medium tracking-wide">
-              <span className="text-white font-bold">8</span> framework packs
-              shipping today
+              <span className="text-white font-bold">
+                {FRAMEWORK_PACK_COUNT}
+              </span>{' '}
+              framework packs you can install today
               <span className="ml-1 text-slate-600">
-                · AU regulatory coverage in templates &amp; policy library
+                · the other standards below are referenced in the policy and
+                register templates
               </span>
             </span>
             <span

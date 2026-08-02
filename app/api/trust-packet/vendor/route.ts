@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { brand } from '@/config/brand';
 import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
 import { fetchPublicUptimeChecks } from '@/lib/status/public-uptime';
 import {
@@ -287,7 +288,7 @@ async function buildVendorTrustPacketPdf(payload: {
     y2 -= 6;
   }
 
-  page2.drawText('Contact: Formaos.team@gmail.com', {
+  page2.drawText(`Contact: ${brand.email.billingEmail}`, {
     x: margin,
     y: margin - 10,
     size: 9,

@@ -61,6 +61,18 @@ import {
   PUBLIC_CTA_LABELS,
   salesHref,
 } from '@/lib/marketing/cta';
+import {
+  AUTOMATED_EVALUATOR_COUNT,
+  CLAIM_PHRASES,
+  DISTINCT_FRAMEWORK_NAMES,
+  EVALUATOR_COUNT,
+  FRAMEWORK_CONTROL_COUNT,
+  FRAMEWORK_PACK_COUNT,
+  FRAMEWORK_PACKS,
+  getPackClaim,
+  getPackShortName,
+  MANUAL_ATTESTATION_COUNT,
+} from '@/lib/marketing/claims';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 
 const stickyPlanHref = compliancePlanHref('features_sticky');
@@ -238,14 +250,27 @@ interface PlatformFeature {
   capabilities: string[];
 }
 
+/* SOC 2 numbers come from the pack itself. When a pack is missing the copy
+   drops the number rather than printing a stale one. */
+const soc2Tsc = getPackClaim('soc2-tsc');
+
+const soc2Summary = soc2Tsc
+  ? `${soc2Tsc.controlCount} SOC 2 Trust Services Criteria controls mapped, ${soc2Tsc.automatedEvaluatorCount} of them evaluated automatically against your live data`
+  : 'SOC 2 Trust Services Criteria controls mapped, with automatic evaluation wherever a live signal exists';
+
+const soc2Capabilities = soc2Tsc
+  ? [
+      `${soc2Tsc.controlCount} SOC 2 TSC controls mapped`,
+      `${soc2Tsc.automatedEvaluatorCount} auto-evaluated against live data`,
+    ]
+  : ['SOC 2 TSC controls mapped', 'Auto-evaluated against live data'];
+
 const features: PlatformFeature[] = [
   {
     icon: Layers,
-    title: '8 Pre-Built Framework Packs',
-    description:
-      'SOC 2 TSC, ISO 27001:2022, NIST CSF 2.0, CIS v8, HIPAA, GDPR, PCI DSS 4.0, and NDIS Practice Standards, each with mapped controls and evaluator coverage in lib/compliance/evaluators/register.ts.',
-    longDescription:
-      'Each Framework Pack ships with pre-mapped controls, evidence templates, and an evaluator implementation. 252 total controls across the 8 packs: 102 auto-evaluate against your live data, 150 require human attestation. Controls are mapped cross-framework (40+ seeded mappings) so evidence collected for ISO 27001 cascades credit to overlapping SOC 2 and HIPAA requirements.',
+    title: `${FRAMEWORK_PACK_COUNT} Pre-Built Framework Packs`,
+    description: `${CLAIM_PHRASES.frameworks} across ${FRAMEWORK_PACK_COUNT} installable packs: ${DISTINCT_FRAMEWORK_NAMES.join(', ')}. Every evaluator is registered in code, so a security reviewer can check the coverage instead of taking our word for it.`,
+    longDescription: `Each framework pack ships with pre-mapped controls, evidence templates, and an evaluator implementation. ${CLAIM_PHRASES.coverageSentence} Controls are mapped across frameworks, so evidence collected for ISO 27001 cascades credit to overlapping SOC 2 and HIPAA requirements.`,
     category: 'Compliance Core',
     highlight: 'Most popular',
     capabilities: [
@@ -531,15 +556,16 @@ const features: PlatformFeature[] = [
   {
     icon: ShieldCheck,
     title: 'SOC 2 readiness + report generator',
-    description:
-      '61 SOC 2 Trust Service Criteria controls mapped, automated evaluators for ~28 of them, milestone tracking through audit readiness, and a downloadable report.',
-    longDescription:
-      'SOC 2 Type II readiness across all 61 Trust Service Criteria (CC, A, C, PI, P) per lib/compliance/evaluators/register.ts. ~28 controls auto-evaluate against your live data (MFA coverage, audit-log freshness, policy cadence, etc.); the remaining ~33 require human attestation. Milestone tracker at /app/compliance/soc2 guides you from framework enablement through evidence collection to a readiness report. Score weights are not fixed marketing percentages. They reflect the actual count of passing vs. failing evaluators in each TSC category.',
+    description: `${soc2Summary}, milestone tracking through audit readiness, and a downloadable report.`,
+    longDescription: `SOC 2 Type II readiness across the Trust Services Criteria (CC, A, C, PI, P). ${
+      soc2Tsc
+        ? `${soc2Tsc.automatedEvaluatorCount} controls auto-evaluate against your live data (MFA coverage, audit-log freshness, policy cadence, and similar signals); the remaining ${soc2Tsc.manualAttestationCount} are tracked as human attestations.`
+        : 'Controls auto-evaluate against your live data wherever a signal exists; the rest are tracked as human attestations.'
+    } A milestone tracker in the app guides you from framework enablement through evidence collection to a readiness report. Score weights are not fixed marketing percentages. They reflect the actual count of passing and failing evaluators in each TSC category.`,
     category: 'AI & Certification',
     highlight: 'Shipping',
     capabilities: [
-      '61 SOC 2 TSC controls mapped',
-      '~28 auto-evaluated against live data',
+      ...soc2Capabilities,
       'Milestone tracker for readiness',
       'Downloadable readiness report',
     ],
@@ -550,7 +576,7 @@ const features: PlatformFeature[] = [
     description:
       'Map controls across frameworks with strength scoring. 40+ pre-loaded cross-mappings seeded between ISO 27001, SOC 2, HIPAA, and NIST CSF.',
     longDescription:
-      'Framework Cross-Mapping manages the relationships between controls across compliance frameworks. Each mapping carries a strength label (exact, partial, or related) so teams can judge overlap quality. 40+ cross-mappings are seeded by migration 20260403003 covering ISO 27001, SOC 2, HIPAA, and NIST CSF, and the engine walks both forward and reverse relationships so a satisfied control on one framework can cascade credit to its mapped peers on others.',
+      'Framework Cross-Mapping manages the relationships between controls across compliance frameworks. Each mapping carries a strength label (exact, partial, or related) so teams can judge overlap quality. 40+ cross-mappings ship pre-loaded across ISO 27001, SOC 2, HIPAA, and NIST CSF, and the engine walks both forward and reverse relationships so a satisfied control on one framework can cascade credit to its mapped peers on others.',
     category: 'Compliance Core',
     highlight: 'Shipping',
     capabilities: [
@@ -833,13 +859,27 @@ const architectureLayers = [
 
 /* ─── Stats ─────────────────────────────────────────────── */
 
+/* Every tile is a count the reader can check: the last two sum to the
+   evaluator total, which is why they are labelled separately from controls. */
 const platformStats = [
-  { value: '23', label: 'Platform Features', suffix: '' },
-  { value: '7', label: 'Framework Packs', suffix: '+' },
-  { value: '12', label: 'Automation Triggers', suffix: '+' },
-  { value: '5', label: 'Security Layers', suffix: '' },
-  { value: 'AU', label: 'Default Hosting Region', suffix: '' },
-  { value: 'Audit', label: 'Evidence Export', suffix: '-ready' },
+  { value: String(features.length), label: 'Platform features', suffix: '' },
+  { value: String(FRAMEWORK_PACK_COUNT), label: 'Framework packs', suffix: '' },
+  {
+    value: String(FRAMEWORK_CONTROL_COUNT),
+    label: 'Mapped controls',
+    suffix: '',
+  },
+  { value: String(EVALUATOR_COUNT), label: 'Control evaluators', suffix: '' },
+  {
+    value: String(AUTOMATED_EVALUATOR_COUNT),
+    label: 'Checked automatically',
+    suffix: '',
+  },
+  {
+    value: String(MANUAL_ATTESTATION_COUNT),
+    label: 'Tracked as attestations',
+    suffix: '',
+  },
 ];
 
 /* ─── Animated Counter ──────────────────────────────────── */
@@ -1289,8 +1329,8 @@ function StatsSection() {
                 The platform at a glance
               </h2>
               <p className="text-sm text-slate-400 max-w-lg mx-auto">
-                Numbers that reflect the depth and breadth of FormaOS as a
-                compliance operating system.
+                Every number here is generated from the shipping code, so it
+                stays true as the packs change.
               </p>
             </ScrollReveal>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -1387,59 +1427,36 @@ function FeatureCatalogIndex() {
 
 /* ─── Framework Coverage Grid ───────────────────────────── */
 
-const frameworks = [
-  {
-    name: 'ISO 27001',
-    controls: '114',
-    status: 'Full Coverage',
-    description:
-      'Information security management system with Annex A controls.',
-    badge: 'Popular',
-  },
-  {
-    name: 'SOC 2',
-    controls: '64',
-    status: 'Full Coverage',
-    description:
-      'Trust Services Criteria across security, availability, and processing integrity.',
-    badge: 'Popular',
-  },
-  {
-    name: 'GDPR',
-    controls: '45',
-    status: 'Full Coverage',
-    description:
-      'EU General Data Protection Regulation compliance with Article mapping.',
-  },
-  {
-    name: 'HIPAA',
-    controls: '72',
-    status: 'Full Coverage',
-    description:
-      'Healthcare data protection with Administrative, Physical, and Technical safeguards.',
-  },
-  {
-    name: 'PCI-DSS',
-    controls: '78',
-    status: 'Full Coverage',
-    description:
-      'Payment card industry data security standard for cardholder data protection.',
-  },
-  {
-    name: 'NIST CSF',
-    controls: '108',
-    status: 'Full Coverage',
-    description:
-      'Cybersecurity framework covering Identify, Protect, Detect, Respond, Recover.',
-  },
-  {
-    name: 'CIS Controls',
-    controls: '153',
-    status: 'Full Coverage',
-    description:
-      'Center for Internet Security prioritized security best practices.',
-  },
-];
+/* Blurbs only. Names and counts come from the packs themselves, so this grid
+   can never disagree with the total quoted above it. */
+const packBlurbs: Record<string, string> = {
+  'iso27001-2022':
+    'Information security management with the full Annex A control set.',
+  'soc2-tsc':
+    'Trust Services Criteria across security, availability, confidentiality, processing integrity, and privacy.',
+  soc2: 'A shorter SOC 2 starting point for teams beginning readiness work.',
+  'financial-services-au':
+    'Australian financial services obligations, including ASIC and AUSTRAC duties.',
+  'cis-controls':
+    'Prioritised security practices from the Center for Internet Security.',
+  'nist-csf':
+    'Govern, identify, protect, detect, respond, and recover, mapped control by control.',
+  'mental-health-au':
+    'National Standards for Mental Health Services, for Australian providers.',
+  'pci-dss': 'Cardholder data protection for organisations that take payments.',
+  gdpr: 'EU personal data obligations with article-level mapping.',
+  hipaa:
+    'Administrative, physical, and technical safeguards under the Security Rule.',
+  ndis: 'NDIS Practice Standards core module, for registered Australian providers.',
+};
+
+const frameworks = FRAMEWORK_PACKS.map((pack) => ({
+  slug: pack.slug,
+  name: getPackShortName(pack.slug),
+  controls: pack.controlCount,
+  automated: pack.automatedEvaluatorCount,
+  description: packBlurbs[pack.slug] ?? pack.name,
+}));
 
 function FrameworkCoverageSection() {
   return (
@@ -1450,7 +1467,7 @@ function FrameworkCoverageSection() {
             label="Framework Packs"
             title="Pre-built compliance"
             emphasis="framework libraries"
-            description="Each framework ships with mapped controls, evidence templates, and cross-framework overlap detection. Activate in one click."
+            description={`${CLAIM_PHRASES.coverageSentence} Each pack ships with mapped controls, evidence templates, and cross-framework overlap detection.`}
           />
 
           <SectionChoreography
@@ -1460,7 +1477,7 @@ function FrameworkCoverageSection() {
           >
             {frameworks.map((fw) => (
               <div
-                key={fw.name}
+                key={fw.slug}
                 className="group grid grid-cols-1 sm:grid-cols-[1fr,auto,auto] gap-3 sm:gap-6 items-center
                   rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6
                   hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300
@@ -1471,31 +1488,24 @@ function FrameworkCoverageSection() {
                     <Shield className="w-5 h-5 text-slate-200" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base font-semibold text-white">
-                        {fw.name}
-                      </h3>
-                      {fw.badge && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-white/10 bg-white/[0.06] text-slate-300">
-                          {fw.badge}
-                        </span>
-                      )}
-                    </div>
+                    <h3 className="text-base font-semibold text-white">
+                      {fw.name}
+                    </h3>
                     <p className="text-sm text-slate-400 mt-0.5">
                       {fw.description}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-slate-500">Controls:</span>
+                <div className="flex items-baseline gap-2 text-sm">
+                  <span className="text-slate-500">Controls</span>
                   <span className="text-white font-semibold">
                     {fw.controls}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-slate-300" />
-                  <span className="text-sm text-slate-300 font-medium">
-                    {fw.status}
+                <div className="flex items-baseline gap-2 text-sm">
+                  <span className="text-slate-500">Checked automatically</span>
+                  <span className="text-white font-semibold">
+                    {fw.automated}
                   </span>
                 </div>
               </div>
@@ -2054,9 +2064,9 @@ function FeaturesHero() {
           transition={{ duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO }}
           className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          25 features across compliance, workflow, identity, collaboration,
-          and AI, built for regulated teams that need provable control over
-          every obligation.
+          {features.length} features across compliance, workflow, identity,
+          collaboration, and AI, built for regulated teams that need provable
+          control over every obligation.
         </motion.p>
 
         <motion.div

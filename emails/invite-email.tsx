@@ -12,6 +12,7 @@ import {
   Hr,
 } from '@react-email/components';
 import * as React from 'react';
+import { brand } from '@/config/brand';
 
 const DEFAULT_APP_URL =
   process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au';
@@ -26,7 +27,7 @@ interface InviteEmailProps {
 
 export default function InviteEmail({
   inviterName = 'A team member',
-  inviterEmail = 'Formaos.team@gmail.com',
+  inviterEmail = brand.email.contactEmail,
   organizationName = 'Organization',
   inviteUrl = `${DEFAULT_APP_URL.replace(/\/$/, '')}/accept-invite`,
   role = 'member',

@@ -4,6 +4,11 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Building2, Target, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+/**
+ * A worked example of an operating model, not a customer. FormaOS has no
+ * customers who have consented to be named, so these cards must never be
+ * presented, labelled or laid out as case studies.
+ */
 export interface TrustCard {
   persona: string;
   need: string;
@@ -45,7 +50,14 @@ export function SocialProof({ metricsBanner, trustCards, regulatoryBodies }: Soc
           </div>
         </motion.div>
 
-        {/* Trust cards */}
+        {/* Worked examples */}
+        <div className="mb-8 text-center">
+          <p className="text-sm text-slate-400">
+            Worked examples of how the platform maps to common operating
+            models. These are illustrations, not customers.
+          </p>
+        </div>
+
         <div className="grid md:grid-cols-3 gap-6 mb-16">
           {trustCards.map((card, i) => (
             <motion.div
@@ -66,7 +78,8 @@ export function SocialProof({ metricsBanner, trustCards, regulatoryBodies }: Soc
               <div className="space-y-3">
                 <div>
                   <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-slate-600 mb-1">
-                    <Target className="h-3 w-3" /> What they needed
+                    <Target className="h-3 w-3" /> What this kind of
+                    organisation needs
                   </div>
                   <p className="text-sm text-slate-400 leading-relaxed">{card.need}</p>
                 </div>

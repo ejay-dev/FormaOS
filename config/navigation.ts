@@ -99,6 +99,7 @@ export const footerLinks = {
     { href: '/blog', label: 'Blog' },
     { href: '/trust', label: 'Trust Center' },
     { href: '/security-review', label: 'Security Review Packet' },
+    { href: '/status', label: 'Platform Status' },
     { href: '/changelog', label: 'Changelog' },
     { href: '/faq', label: 'FAQ' },
   ],

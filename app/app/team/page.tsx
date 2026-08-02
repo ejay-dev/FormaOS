@@ -5,6 +5,7 @@ import { Users, Mail, Clock, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { hasPermission, normalizeRole } from "@/app/app/actions/rbac";
+import { getOrgMemberIdentities } from "@/lib/team/member-identity";
 import { PageHero, type PageHeroMetric } from "@/components/ui/page-hero";
 import {
   RecordCard,
@@ -96,12 +97,14 @@ export default async function TeamPage() {
     { data: subscription },
     { data: entitlements },
     { data: actorRow },
+    identities,
   ] = await Promise.all([
     supabase.from('org_members').select('id, user_id, role, created_at').eq('organization_id', orgId).order('created_at', { ascending: true }).limit(100),
     supabase.from('team_invitations').select('id, email, role, created_at').eq('organization_id', orgId).eq('status', 'pending').order('created_at', { ascending: false }).limit(50),
     supabase.from('org_subscriptions').select('status').eq('organization_id', orgId).maybeSingle(),
     supabase.from('org_entitlements').select('feature_key, enabled, limit_value').eq('organization_id', orgId),
     supabase.from('org_members').select('role').eq('organization_id', orgId).eq('user_id', user?.id ?? '').maybeSingle(),
+    getOrgMemberIdentities(),
   ]);
 
   const actorRoleRaw = String((actorRow as { role?: string } | null)?.role ?? '').toLowerCase();
@@ -177,9 +180,8 @@ export default async function TeamPage() {
             {memberRows.map((member) => (
               <RecordCard
                 key={member.id}
-                title={
-                  <span className="font-mono text-xs">{member.user_id}</span>
-                }
+                title={identities[member.user_id ?? '']?.name ?? 'Unknown member'}
+                subtitle={identities[member.user_id ?? '']?.email ?? undefined}
                 status={
                   <span className="status-pill status-pill-green">Active</span>
                 }

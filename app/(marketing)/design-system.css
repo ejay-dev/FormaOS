@@ -32,8 +32,8 @@
   );
   --mk-gradient-shell: linear-gradient(
     180deg,
-    rgba(10, 15, 28, 0.96) 0%,
-    rgba(10, 15, 28, 0.92) 100%
+    rgba(17, 18, 19, 0.96) 0%,
+    rgba(17, 18, 19, 0.92) 100%
   );
 
   --mk-glass-bg: rgba(255, 255, 255, 0.06);
@@ -41,18 +41,37 @@
   --mk-glass-border: rgba(255, 255, 255, 0.12);
 
   --mk-shadow-md:
-    0 12px 32px rgba(2, 6, 23, 0.35), 0 4px 16px rgba(0, 0, 0, 0.2);
+    0 12px 32px rgba(6, 7, 8, 0.35), 0 4px 16px rgba(0, 0, 0, 0.2);
   --mk-shadow-lg:
-    0 24px 64px rgba(2, 6, 23, 0.42), 0 8px 24px rgba(0, 0, 0, 0.28);
+    0 24px 64px rgba(6, 7, 8, 0.42), 0 8px 24px rgba(0, 0, 0, 0.28);
   --mk-shadow-glow-cyan: 0 0 20px rgba(113, 113, 122, 0.15);
   --mk-shadow-glow-violet: 0 0 28px rgba(245, 158, 11, 0.22);
 
-  --mk-focus: 0 0 0 2px rgba(2, 6, 23, 0.9), 0 0 0 4px rgba(255, 255, 255, 0.85);
+  --mk-focus: 0 0 0 2px rgba(6, 7, 8, 0.9), 0 0 0 4px rgba(255, 255, 255, 0.85);
   --mk-radius-pill: 999px;
   --mk-radius-card: 20px;
   --mk-transition: var(--motion-fast) var(--ease-signature);
   --mk-section-y: clamp(4.75rem, 8.2vw, 8.5rem);
   --mk-nav-height: clamp(4.25rem, 6.4vw, 4.75rem);
+}
+
+/* Marketing palette, pinned.
+   Custom properties resolve from the nearest ancestor that declares them,
+   so declaring the palette here — rather than inheriting it from the app's
+   :root theme — isolates every public page from the app's theme picker.
+   Values are the brand charcoal ramp (#1C1E1F family) with neutral ink;
+   they intentionally do not reference the app's semantic tokens. */
+.mk-shell {
+  --mk-bg-1: #111213;
+  --mk-bg-2: #16181a;
+  --mk-surface: #131415;
+  --mk-card: #1c1e1f;
+  --mk-card-border: rgba(255, 255, 255, 0.08);
+  --mk-ink: #ededed;
+  --mk-muted: #b8b8b8;
+
+  --mk-rgb-bg: 17, 18, 19;
+  --mk-rgb-bg-dark: 10, 11, 11;
 }
 
 /* Base shell consistency */
@@ -112,6 +131,16 @@
    even where a component used a bespoke Tailwind size instead of the tokens. */
 .mk-marketing-flow :is(h1, h2) {
   font-family: var(--font-display);
+}
+
+/* Emphasise ONE word in a headline, not a phrase and not every heading.
+   The warmth comes from the contrast with the grotesk around it, which is
+   lost the moment it appears twice on a screen. */
+.mk-accent {
+  font-family: var(--font-accent), Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .mk-heading-display {
@@ -185,7 +214,7 @@
   );
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
-    0 40px 80px rgba(2, 6, 23, 0.5),
+    0 40px 80px rgba(6, 7, 8, 0.5),
     0 16px 32px rgba(0, 0, 0, 0.35);
 }
 
@@ -243,13 +272,13 @@
   background: var(--mk-gradient-brand);
   border-color: rgba(255, 255, 255, 0.18);
   box-shadow:
-    0 10px 30px rgba(2, 6, 23, 0.45),
+    0 10px 30px rgba(6, 7, 8, 0.45),
     0 0 14px rgba(148, 163, 184, 0.12);
 }
 
 .mk-btn-primary:hover {
   box-shadow:
-    0 16px 40px rgba(2, 6, 23, 0.5),
+    0 16px 40px rgba(6, 7, 8, 0.5),
     0 0 20px rgba(148, 163, 184, 0.16);
 }
 
@@ -506,13 +535,13 @@
   background: var(--mk-gradient-brand);
   border-color: rgba(255, 255, 255, 0.18);
   box-shadow:
-    0 10px 30px rgba(2, 6, 23, 0.45),
+    0 10px 30px rgba(6, 7, 8, 0.45),
     0 0 14px rgba(148, 163, 184, 0.12);
 }
 
 .mk-shell .btn-primary:hover {
   box-shadow:
-    0 16px 40px rgba(2, 6, 23, 0.5),
+    0 16px 40px rgba(6, 7, 8, 0.5),
     0 0 20px rgba(148, 163, 184, 0.16);
 }
 
@@ -536,7 +565,7 @@
   button[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600'] {
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
-    0 10px 30px rgba(2, 6, 23, 0.45),
+    0 10px 30px rgba(6, 7, 8, 0.45),
     0 0 14px rgba(148, 163, 184, 0.12);
   transition:
     transform var(--mk-transition),
@@ -550,7 +579,7 @@
   button[class*='bg-gradient-to-r'][class*='from-teal-500'][class*='to-emerald-600']:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 16px 40px rgba(2, 6, 23, 0.5),
+    0 16px 40px rgba(6, 7, 8, 0.5),
     0 0 20px rgba(148, 163, 184, 0.16);
 }
 
@@ -685,7 +714,7 @@
 
   .mk-marketing-flow [class*='shadow-2xl'],
   .mk-marketing-flow [class*='shadow-xl'] {
-    box-shadow: 0 16px 36px rgba(2, 6, 23, 0.34);
+    box-shadow: 0 16px 36px rgba(6, 7, 8, 0.34);
   }
 }
 
@@ -716,8 +745,8 @@
 
   .mk-btn-primary {
     box-shadow:
-      0 12px 32px rgba(2, 6, 23, 0.4),
-      0 2px 6px rgba(2, 6, 23, 0.25),
+      0 12px 32px rgba(6, 7, 8, 0.4),
+      0 2px 6px rgba(6, 7, 8, 0.25),
       inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
 }
@@ -772,7 +801,7 @@
     transform: none;
     border-color: rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 24px 64px rgba(2, 6, 23, 0.44),
+      0 24px 64px rgba(6, 7, 8, 0.44),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 

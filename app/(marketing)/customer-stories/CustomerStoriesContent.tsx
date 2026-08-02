@@ -15,15 +15,24 @@ import {
   demoHref,
   PUBLIC_CTA_LABELS,
 } from '@/lib/marketing/cta';
+import { getPackControlCount } from '@/lib/marketing/claims';
+
+/**
+ * Renders a pack's real control count. Falls back to a countless phrase so a
+ * renamed slug surfaces as vague copy in review rather than "null mapped
+ * controls" on the live page.
+ */
+function controlsPhrase(slug: string): string {
+  const count = getPackControlCount(slug);
+  return count === null ? 'mapped controls' : `${count} mapped controls`;
+}
 
 // Illustrative use-case scenarios, not anonymised customer histories.
 // Each one describes how FormaOS would land in a buyer of this shape,
-// using product capabilities that are actually shipping. Framework
-// labels reflect what's in lib/compliance/evaluators/register.ts: only
-// the 8 packs (SOC 2 TSC, ISO 27001, NIST CSF, CIS, HIPAA, GDPR, PCI DSS,
-// NDIS Practice Standards) ship as auto-evaluators. Industry standards
-// like NSQHS, RACGP, ACQS, and APRA CPS 234 are mapped via custom
-// controls + templates, not as full evaluator packs.
+// using capabilities that ship today. Standards named without a control
+// count (NSQHS, RACGP, the Aged Care Quality Standards, APRA CPS 234) are
+// mapped through custom controls and templates rather than scored packs,
+// and the copy has to keep saying so.
 const stories = [
   {
     title: 'NDIS provider scenario',

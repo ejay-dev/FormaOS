@@ -14,6 +14,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { brand } from '@/config/brand';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { routeLog } from '@/lib/monitoring/server-logger';
 
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
           trigger_type: 'scheduled',
           is_active: true,
           actions: {
-            notifications: ['Formaos.team@gmail.com'],
+            notifications: [brand.email.contactEmail],
             create_tasks: true,
             update_scores: true,
           },

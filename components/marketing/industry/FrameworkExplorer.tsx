@@ -10,7 +10,13 @@ export interface FrameworkTab {
   body: string;
   updated: string;
   obligationCount: string;
-  categories: { name: string; pct: number }[];
+  /**
+   * Accepted but not rendered. The industry pages still pass per-category
+   * coverage percentages; there is no measurement behind them, so they are
+   * not published. The category names themselves already appear under
+   * `requirements`.
+   */
+  categories?: { name: string; pct?: number }[];
   requirements: string[];
 }
 
@@ -103,29 +109,6 @@ export function FrameworkExplorer({ headline, description, frameworks }: Framewo
                     <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-400">
                       Pre-built
                     </span>
-                  </div>
-                </div>
-
-                {/* Coverage bars */}
-                <div className="mb-6">
-                  <div className="text-[10px] uppercase tracking-wider text-slate-600 mb-3">Coverage by category</div>
-                  <div className="space-y-2.5">
-                    {active.categories.map((cat) => (
-                      <div key={cat.name}>
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-slate-400">{cat.name}</span>
-                          <span className="text-[10px] font-mono text-cyan-400">{cat.pct}%</span>
-                        </div>
-                        <div className="h-1.5 w-full rounded-full bg-white/[0.06]">
-                          <motion.div
-                            className="h-full rounded-full bg-gradient-to-r from-cyan-500/80 to-cyan-400/60"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${cat.pct}%` }}
-                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                          />
-                        </div>
-                      </div>
-                    ))}
                   </div>
                 </div>
 

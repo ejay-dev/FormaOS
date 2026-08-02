@@ -269,9 +269,9 @@ export default function HealthcareComplianceContent() {
         statsBar={
           <HeroStatsBar
             stats={[
-              '1,204 practitioners tracked',
-              '8/8 NSQHS Standards covered',
-              'Zero evidence gaps at accreditation',
+              'All 16 AHPRA-regulated professions',
+              'All 8 NSQHS standards, criterion-level',
+              'Expiry alerts at 90, 60 and 30 days',
               'AU-hosted',
             ]}
           />
@@ -954,26 +954,26 @@ export default function HealthcareComplianceContent() {
 
       <SocialProof
         metricsBanner={[
-          '206+ tables with row-level security',
+          'All 8 NSQHS standards, criterion-level',
           'AU-hosted by default, data never leaves Australia',
-          'Zero evidence gaps at audit, immutable chain',
-          'SOC 2 compliance in progress',
+          'Immutable, timestamped evidence chain',
+          'Audit exports you can verify independently',
         ]}
         trustCards={[
           {
-            persona: 'Hospital Group, 400+ practitioners across 3 campuses',
-            need: 'AHPRA credential tracking and NSQHS evidence management across all departments with zero manual reconciliation',
+            persona: 'A hospital group running three campuses',
+            need: 'AHPRA credential tracking and NSQHS evidence management across every department, without manual reconciliation',
             delivers:
-              'Automated practitioner register, credential expiry alerts, NSQHS standards tree with evidence attachment, and one-click accreditation evidence packs',
+              'Practitioner register, credential expiry alerts, NSQHS standards tree with evidence attachment, and accreditation evidence packs on export',
           },
           {
-            persona: 'GP Practice Network, 25 clinics',
-            need: 'RACGP accreditation readiness and CPD tracking for GPs, nurses, and allied health staff across all sites',
+            persona: 'A GP practice network across multiple clinics',
+            need: 'RACGP accreditation readiness and CPD tracking for GPs, nurses, and allied health staff at every site',
             delivers:
-              'Pre-built RACGP standards framework, centralised CPD tracking per profession, and accreditation-ready evidence export for every clinic',
+              'Pre-built RACGP standards framework, centralised CPD tracking per profession, and accreditation-ready evidence export per clinic',
           },
           {
-            persona: 'Allied Health Network, 80+ practitioners',
+            persona: 'An allied health network across several professions',
             need: 'AHPRA registration monitoring across physiotherapy, occupational therapy, psychology, and speech pathology',
             delivers:
               'Multi-profession credential dashboard, profession-specific CPD rules, indemnity insurance tracking, and 90/60/30-day expiry escalation paths',

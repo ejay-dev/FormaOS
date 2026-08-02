@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { resolvePlanKey, PLAN_CATALOG } from '@/lib/plans';
+import { brand } from '@/config/brand';
 import { CreditCard, ShieldCheck } from 'lucide-react';
 import { BillingActionButtons } from '@/components/billing/BillingActionButtons';
 import { PlanComparisonTable } from '@/components/billing/PlanComparisonTable';
@@ -24,6 +25,84 @@ type SubscriptionRow = {
   trial_expires_at: string | null;
   stripe_customer_id: string | null;
 };
+
+/**
+ * org_entitlements.feature_key is a database key (`retention_governance`,
+ * `sso_saml`). Keep this in step with EntitlementKey in
+ * lib/billing/entitlements.ts — it can't be imported here because that module
+ * pulls in the server Supabase client.
+ */
+const ENTITLEMENT_LABELS: Record<
+  string,
+  { name: string; description: string }
+> = {
+  audit_export: {
+    name: 'Audit export',
+    description: 'Export audit trails and evidence packs.',
+  },
+  reports: {
+    name: 'Standard reports',
+    description: 'Built-in compliance and activity reporting.',
+  },
+  framework_evaluations: {
+    name: 'Framework evaluations',
+    description: 'Automated control checks against your installed packs.',
+  },
+  certifications: {
+    name: 'Certifications',
+    description: 'Track staff certifications and expiry dates.',
+  },
+  team_limit: {
+    name: 'Team members',
+    description: 'People you can invite to this workspace.',
+  },
+  ai_assistant: {
+    name: 'AI assistant',
+    description: 'Ask questions about your controls, policies and evidence.',
+  },
+  capa_management: {
+    name: 'Corrective actions',
+    description: 'Log corrective actions with an owner and a due date.',
+  },
+  custom_reports: {
+    name: 'Custom reports',
+    description: 'Build reports from your own filters and fields.',
+  },
+  form_analytics: {
+    name: 'Form analytics',
+    description: 'Completion and response trends across your forms.',
+  },
+  workflow_automation: {
+    name: 'Workflow automation',
+    description: 'Scheduled and triggered actions across tasks and evidence.',
+  },
+  sso_saml: {
+    name: 'Single sign-on',
+    description: 'Sign in through your SAML identity provider.',
+  },
+  directory_sync: {
+    name: 'Directory sync',
+    description: 'Keep workspace members in step with your directory.',
+  },
+  retention_governance: {
+    name: 'Retention governance',
+    description: 'Retention policies and legal holds.',
+  },
+};
+
+function describeEntitlement(featureKey: string): {
+  name: string;
+  description: string;
+} {
+  const known = ENTITLEMENT_LABELS[featureKey];
+  if (known) return known;
+
+  const humanised = featureKey.replaceAll('_', ' ');
+  return {
+    name: humanised.charAt(0).toUpperCase() + humanised.slice(1),
+    description: '',
+  };
+}
 
 /**
  * =========================================================
@@ -87,14 +166,14 @@ export default function BillingPage() {
     [subscription],
   );
 
-  useEffect(() => {
-    if (!orgId) {
-      setError('Organization not found');
-      setIsLoading(false);
-      return;
-    }
+  const loadBillingData = useCallback(
+    async () => {
+      if (!orgId) {
+        setError('Organization not found');
+        setIsLoading(false);
+        return;
+      }
 
-    const fetchBillingData = async () => {
       try {
         setIsLoading(true);
 
@@ -138,25 +217,42 @@ export default function BillingPage() {
       } finally {
         setIsLoading(false);
       }
-    };
+    },
+    [orgId, supabase],
+  );
 
-    fetchBillingData();
-  }, [orgId, supabase]);
+  useEffect(() => {
+    loadBillingData();
+  }, [loadBillingData]);
 
-  if (!orgId) {
-    return (
-      <div className="text-center text-muted-foreground">Loading organization...</div>
-    );
-  }
-
-  if (isLoading) {
+  if (!orgId || isLoading) {
     return <PageSkeleton title="Billing & Plan" cards={2} tableRows={0} />;
   }
 
   if (error) {
     return (
-      <div className="rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-500">
-        Error: {error}
+      <div className="flex min-h-[40vh] items-center justify-center px-6 py-10">
+        <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-xl">
+          <h2 className="text-lg font-semibold">
+            Billing details could not be loaded
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Your subscription is not affected. Try again, or email{' '}
+            <a
+              href={`mailto:${brand.email.billingEmail}`}
+              className="underline underline-offset-2"
+            >
+              {brand.email.billingEmail}
+            </a>{' '}
+            if it keeps failing.
+          </p>
+          <button
+            onClick={() => loadBillingData()}
+            className="mt-4 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          >
+            Try again
+          </button>
+        </div>
       </div>
     );
   }
@@ -206,7 +302,14 @@ export default function BillingPage() {
       ) : null}
       {status === 'contact' ? (
         <div className="rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-sm text-primary">
-          Enterprise billing can be coordinated via Formaos.team@gmail.com.
+          Enterprise plans are invoiced directly. Email{' '}
+          <a
+            href={`mailto:${brand.email.billingEmail}`}
+            className="underline underline-offset-2"
+          >
+            {brand.email.billingEmail}
+          </a>{' '}
+          to get set up.
         </div>
       ) : null}
       {resumeCheckoutPlan && !canSelfServe ? (
@@ -217,7 +320,14 @@ export default function BillingPage() {
       ) : null}
       {status === 'checkout_failed' ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          We couldn&apos;t start checkout. Please try again, or contact Formaos.team@gmail.com if the issue persists.
+          Checkout could not be started. Try again, or email{' '}
+          <a
+            href={`mailto:${brand.email.billingEmail}`}
+            className="underline underline-offset-2"
+          >
+            {brand.email.billingEmail}
+          </a>{' '}
+          if it keeps failing.
         </div>
       ) : null}
       {status === 'stripe_unavailable' ? (
@@ -227,7 +337,14 @@ export default function BillingPage() {
       ) : null}
       {status === 'missing_price' ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          This plan requires a guided billing review. Contact Formaos.team@gmail.com to proceed.
+          This plan is invoiced directly rather than through checkout. Email{' '}
+          <a
+            href={`mailto:${brand.email.billingEmail}`}
+            className="underline underline-offset-2"
+          >
+            {brand.email.billingEmail}
+          </a>{' '}
+          to arrange it.
         </div>
       ) : null}
       {trialExpired ? (
@@ -258,7 +375,15 @@ export default function BillingPage() {
         />
         {planKey === 'enterprise' ? (
           <div className="mt-3 text-xs text-muted-foreground">
-            Enterprise billing is coordinated through procurement, security review, and invoiced rollout with Formaos.team@gmail.com.
+            Enterprise plans are invoiced directly, not through checkout. Email{' '}
+            <a
+              href={`mailto:${brand.email.billingEmail}`}
+              className="underline underline-offset-2"
+            >
+              {brand.email.billingEmail}
+            </a>{' '}
+            with your billing contact and purchase order number to get an
+            invoice.
           </div>
         ) : null}
         {trialEndsAt && !trialExpired ? (
@@ -271,18 +396,28 @@ export default function BillingPage() {
       <div className="rounded-lg border border-border bg-card p-4">
         <h3 className="section-label mb-3">Entitlements</h3>
         <div className="grid gap-2 md:grid-cols-2">
-          {entitlements.map((entitlement) => (
-            <div
-              key={entitlement.feature_key}
-              className="rounded-md border border-border px-3 py-2 text-sm"
-            >
-              <div className="font-medium">{entitlement.feature_key}</div>
-              <div className="text-xs text-muted-foreground">
-                {entitlement.enabled ? 'Enabled' : 'Disabled'}
-                {entitlement.limit_value ? ` · Limit ${entitlement.limit_value}` : ''}
+          {entitlements.map((entitlement) => {
+            const label = describeEntitlement(entitlement.feature_key);
+            return (
+              <div
+                key={entitlement.feature_key}
+                className="rounded-md border border-border px-3 py-2 text-sm"
+              >
+                <div className="font-medium">{label.name}</div>
+                {label.description ? (
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {label.description}
+                  </p>
+                ) : null}
+                <div className="mt-1 text-xs text-muted-foreground">
+                  {entitlement.enabled ? 'Included' : 'Not included'}
+                  {entitlement.limit_value
+                    ? ` · up to ${entitlement.limit_value}`
+                    : ''}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {entitlements.length === 0 ? (
             <div className="text-sm text-muted-foreground">
               No entitlements active yet.

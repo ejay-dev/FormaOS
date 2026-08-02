@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
+import { Activity } from 'lucide-react';
 import StatusPageClient from './StatusPageClient';
+import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
+import { CompactHero } from '@/components/motion/CompactHero';
+import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 import { siteUrl } from '@/lib/seo';
 
 // Audit 2026-05-27, public platform status page.
@@ -31,5 +35,21 @@ export const metadata: Metadata = {
 };
 
 export default function StatusPage() {
-  return <StatusPageClient />;
+  return (
+    <MarketingPageShell>
+      <CompactHero
+        title="Platform Status"
+        description="Live health checks for the FormaOS API, database, authentication, and audit-chain anchoring. Sampled every 30 seconds, no sign-in required."
+        topColor="slate"
+        bottomColor="slate"
+        visualContent={
+          <CompactHeroIcon
+            icon={<Activity className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
+          />
+        }
+      />
+      <StatusPageClient />
+    </MarketingPageShell>
+  );
 }

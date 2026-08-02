@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import {
   Heart,
@@ -11,10 +10,8 @@ import {
   Brain,
   ArrowRight,
 } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { useDeviceTier } from '@/lib/device-tier';
 
 const industries = [
   {
@@ -22,7 +19,7 @@ const industries = [
     href: '/ndis-providers',
     title: 'Disability and Aged Care',
     description:
-      'Operationalize NDIS Practice Standards, Aged Care Quality Standards, safeguarding, reportable incident obligations, and NDIS Commission audit readiness, for providers where unannounced visits are real.',
+      'Operationalise NDIS Practice Standards, Aged Care Quality Standards, safeguarding, reportable incident obligations, and NDIS Commission audit readiness, for providers where unannounced visits are real.',
     features: [
       'NDIS Practice Standards (all 8 modules)',
       'NDIS Commission Reportable Incidents',
@@ -34,18 +31,13 @@ const industries = [
     hoverBorder: 'hover:border-white/20',
     textColor: 'text-slate-300',
     dotColor: 'bg-slate-400',
-    metrics: [
-      { label: 'NDIS Practice Standards Modules', value: '8/8' },
-      { label: 'Reportable Incident Response', value: '<24h' },
-      { label: 'Audit Pack Export', value: '< 4 hrs' },
-    ],
   },
   {
     icon: Brain,
     href: '/mental-health-compliance',
     title: 'Mental Health Services',
     description:
-      'Operationalize the National Standards for Mental Health Services, restrictive-practice governance, reportable incidents, consumer rights, and worker screening, with continuous evidence, not pre-review scrambles.',
+      'Operationalise the National Standards for Mental Health Services, restrictive-practice governance, reportable incidents, consumer rights, and worker screening, with continuous evidence, not pre-review scrambles.',
     features: [
       'National Standards for Mental Health Services',
       'Restrictive Practices Register & Reviews',
@@ -57,11 +49,6 @@ const industries = [
     hoverBorder: 'hover:border-white/20',
     textColor: 'text-slate-300',
     dotColor: 'bg-slate-400',
-    metrics: [
-      { label: 'NSMHS Standards Covered', value: '10/10' },
-      { label: 'Restrictive Practice Reviews', value: 'Tracked' },
-      { label: 'Review Pack Export', value: '1-click' },
-    ],
   },
   {
     icon: Shield,
@@ -80,11 +67,6 @@ const industries = [
     hoverBorder: 'hover:border-white/20',
     textColor: 'text-slate-300',
     dotColor: 'bg-slate-400',
-    metrics: [
-      { label: 'NSQHS Standards Covered', value: '8/8' },
-      { label: 'Clinical Governance Tasks', value: '120+' },
-      { label: 'Credential Renewal Lead Time', value: '90 days' },
-    ],
   },
   {
     icon: TrendingUp,
@@ -103,11 +85,6 @@ const industries = [
     hoverBorder: 'hover:border-white/20',
     textColor: 'text-slate-300',
     dotColor: 'bg-slate-400',
-    metrics: [
-      { label: 'Regulatory Obligations Tracked', value: '250+' },
-      { label: 'Risk Control Coverage', value: '98%' },
-      { label: 'Audit Findings Resolved', value: '<48h' },
-    ],
   },
   {
     icon: Building2,
@@ -126,18 +103,13 @@ const industries = [
     hoverBorder: 'hover:border-white/20',
     textColor: 'text-slate-300',
     dotColor: 'bg-slate-400',
-    metrics: [
-      { label: 'Safety System Controls', value: '180+' },
-      { label: 'Contractor Compliance Rate', value: '99.5%' },
-      { label: 'Incident Report Time', value: '<1h' },
-    ],
   },
   {
     icon: Users,
     href: '/childcare-compliance',
     title: 'Education and Childcare',
     description:
-      'Operationalize ACECQA National Quality Framework compliance, staff credential governance, child safety policy adherence, and inspection readiness, with continuous evidence, not pre-visit scrambles.',
+      'Operationalise ACECQA National Quality Framework compliance, staff credential governance, child safety policy adherence, and inspection readiness, with continuous evidence, not pre-visit scrambles.',
     features: [
       'ACECQA National Quality Framework (NQF)',
       'Child Safety Compliance Workflows',
@@ -149,11 +121,6 @@ const industries = [
     hoverBorder: 'hover:border-white/20',
     textColor: 'text-slate-300',
     dotColor: 'bg-slate-400',
-    metrics: [
-      { label: 'NQF Quality Areas Covered', value: '7/7' },
-      { label: 'Staff Compliance Rate', value: '97%' },
-      { label: 'Inspection Readiness', value: 'Continuous' },
-    ],
   },
 ];
 

@@ -12,10 +12,15 @@
 :root {
   --radius: 8px;
 
-  /* Typography */
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Sora', 'Inter', system-ui, sans-serif;
-  --font-hero: var(--font-display), 'Sora', 'Inter', system-ui, sans-serif;
+  /* Typography.
+     next/font injects the real families into these variables at runtime;
+     the names below are the no-JS/fallback chain and must stay in step
+     with app/layout.tsx. */
+  --font-body: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif;
+  --font-hero:
+    var(--font-display), 'Bricolage Grotesque', 'Hanken Grotesk', system-ui,
+    sans-serif;
   --font-mono:
     'JetBrains Mono', ui-monospace, Menlo, Monaco, 'Courier New', monospace;
 
@@ -146,60 +151,70 @@
     0 24px 64px rgba(0, 0, 0, 0.85),
     0 10px 20px rgba(0, 0, 0, 0.06);
 
-  /* Glows — neutralized cyan glow (near-invisible neutral) */
+  /* Glows. Coloured glow is the "neon SaaS" tell the brand avoids, so all
+     three resolve to a faint neutral lift. The names are kept because
+     call sites across the app still reference them. */
   --glow-cyan: 0 0 20px rgba(113, 113, 122, 0.15);
-  --glow-blue: 0 0 28px rgba(59, 130, 246, 0.3);
-  --glow-violet: 0 0 28px rgba(139, 92, 246, 0.35);
+  --glow-blue: 0 0 24px rgba(140, 140, 145, 0.14);
+  --glow-violet: 0 0 24px rgba(140, 140, 145, 0.14);
 
   /* Semantic color tokens — FormaOS Dark (default)
-   * The flagship theme — deep space cyber with cyan/violet energy.
-   * Three-tier surface stack for clear visual hierarchy.
-   * Enhanced shadows with brand-tinted depth layers. */
-  --background: 232 65% 5%;
-  --foreground: 220 18% 92%;
+   *
+   * Brand charcoal: #1C1E1F is hsl(200 5% 12%), which the --card level
+   * matches exactly. Surfaces carry a trace of hue 200 so the stack reads
+   * as considered rather than flat black; text and greys sit at 0%
+   * saturation, tracking the #808080 / #FFF end of the brand.
+   *
+   * Lightness values are unchanged from the palette this replaced, so the
+   * three-tier surface hierarchy and every contrast ratio hold; only hue
+   * and saturation moved. Accent roles (primary/secondary/accent/ring)
+   * resolve to neutrals: a white primary is what the CTA buttons already
+   * draw, and there is no second brand colour to spend. */
+  --background: 200 6% 6%;
+  --foreground: 0 0% 93%;
 
-  --card: 225 38% 12%;
-  --card-foreground: 220 18% 92%;
-  --panel-2: 226 35% 13%;
+  --card: 200 5% 12%;
+  --card-foreground: 0 0% 93%;
+  --panel-2: 200 5% 14%;
 
-  --popover: 228 48% 8%;
-  --popover-foreground: 220 18% 92%;
+  --popover: 200 6% 9%;
+  --popover-foreground: 0 0% 93%;
 
-  --primary: 189 94% 53%;
-  --primary-foreground: 232 65% 5%;
+  --primary: 0 0% 96%;
+  --primary-foreground: 200 6% 8%;
 
-  --secondary: 258 90% 66%;
-  --secondary-foreground: 220 18% 92%;
+  --secondary: 200 5% 20%;
+  --secondary-foreground: 0 0% 93%;
 
-  --muted: 225 30% 18%;
-  --muted-foreground: 215 20% 74%;
+  --muted: 200 5% 18%;
+  --muted-foreground: 0 0% 72%;
 
-  --accent: 258 90% 66%;
-  --accent-foreground: 220 18% 92%;
+  --accent: 200 5% 20%;
+  --accent-foreground: 0 0% 93%;
 
   --destructive: 0 85% 58%;
-  --destructive-foreground: 220 18% 92%;
+  --destructive-foreground: 0 0% 98%;
 
-  --border: 224 22% 17%;
-  --input: 228 48% 8%;
-  --ring: 189 94% 53%;
+  --border: 200 5% 18%;
+  --input: 200 6% 9%;
+  --ring: 0 0% 70%;
 
-  --sidebar: 228 42% 6%;
-  --sidebar-foreground: 220 18% 92%;
-  --sidebar-primary: 189 94% 53%;
-  --sidebar-primary-foreground: 232 65% 5%;
-  --sidebar-accent: 228 40% 12%;
-  --sidebar-accent-foreground: 220 18% 92%;
-  --sidebar-border: 224 22% 14%;
-  --sidebar-ring: 189 94% 53%;
+  --sidebar: 200 6% 7%;
+  --sidebar-foreground: 0 0% 93%;
+  --sidebar-primary: 0 0% 96%;
+  --sidebar-primary-foreground: 200 6% 8%;
+  --sidebar-accent: 200 5% 13%;
+  --sidebar-accent-foreground: 0 0% 93%;
+  --sidebar-border: 200 5% 15%;
+  --sidebar-ring: 0 0% 70%;
 
   /* Marketing surface tokens — use instead of hardcoded hex */
-  --marketing-bg: 232 60% 5%;
-  --marketing-bg-alt: 230 50% 7%;
-  --marketing-surface: 228 50% 6%;
-  --marketing-card: 221 39% 11%;
+  --marketing-bg: 200 6% 7%;
+  --marketing-bg-alt: 200 6% 9%;
+  --marketing-surface: 200 6% 8%;
+  --marketing-card: 200 5% 12%;
   --marketing-card-border: 0 0% 100% / 0.08;
-  --marketing-glow: 189 94% 53% / 0.15;
+  --marketing-glow: 0 0% 100% / 0.06;
 
   /* Status semantic tokens */
   --success: 142 76% 36%;
@@ -1501,7 +1516,9 @@
     @apply border-primary text-foreground;
   }
 
-  /* App-shell typography override — Inter only inside app, no Sora */
+  /* The app shell stays on the body face at every heading level: the
+     display face is editorial and reads as marketing inside a dense
+     operational UI. */
   .app-shell h1,
   .app-shell h2,
   .app-shell h3,
@@ -2176,3 +2193,121 @@
   }
 }
 
+
+/* =========================================================
+ * PRINT
+ *
+ * Auditors, regulators and boards print from this product: control
+ * registers, the audit trail, reports, policy documents and the external
+ * auditor portal all end up on paper or in a PDF attached to an email.
+ * Until now there were no print rules at all, so those pages printed the
+ * dark application chrome — navigation, sidebars and toasts included — as
+ * large blocks of ink around the content someone actually needed.
+ *
+ * The approach: drop to ink-on-paper, remove interface furniture that has
+ * no meaning off-screen, and stop tables and cards from being sliced in
+ * half across a page boundary.
+ * ======================================================= */
+@media print {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 28%;
+    --border: 0 0% 78%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Backgrounds and shadows are screen affordances; on paper they cost
+     toner and reduce legibility. Text colour is deliberately not reset
+     here so semantic status colours survive where a printer supports
+     them. */
+  *,
+  *::before,
+  *::after {
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Interface furniture with no meaning on paper. */
+  aside,
+  nav,
+  [role='navigation'],
+  [role='dialog'],
+  [role='alertdialog'],
+  [data-sonner-toaster],
+  .app-topbar,
+  .mk-header-premium,
+  .command-palette,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Content should own the page once the chrome is gone. */
+  main,
+  #main-content,
+  .app-shell,
+  .mk-shell {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Horizontal scrollers clip their contents in print — a table wider
+     than the viewport would silently lose its right-hand columns. */
+  .overflow-x-auto,
+  .overflow-auto,
+  .overflow-hidden {
+    overflow: visible !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr,
+  img,
+  figure {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+    page-break-after: avoid;
+    color: #000 !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
+
+  @page {
+    margin: 16mm;
+  }
+}

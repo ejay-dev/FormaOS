@@ -1,6 +1,7 @@
 "use server";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { brand } from "@/config/brand";
 import { logActivity } from "@/app/app/actions/audit";
 import { logActivity as logProductActivity } from "@/lib/activity/feed";
 import { revalidatePath } from "next/cache";
@@ -153,7 +154,8 @@ export async function inviteMember(email: string, role: string): Promise<InviteM
     user.user_metadata?.name ||
     user.email?.split("@")[0] ||
     "A team member";
-  const inviterEmail = user.email ?? process.env.SUPPORT_EMAIL ?? "Formaos.team@gmail.com";
+  const inviterEmail =
+    user.email ?? process.env.SUPPORT_EMAIL ?? brand.email.contactEmail;
 
   const emailResult = await sendEmail({
     type: "invite",

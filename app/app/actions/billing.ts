@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { brand } from '@/config/brand';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
 import { resolvePlanKey } from '@/lib/plans';
 import { isFounder } from '@/lib/utils/founder';
@@ -103,7 +104,7 @@ export async function startCheckout(
     const priceId = getStripePriceId(planKey);
     if (!priceId) {
       return billingActionError(
-        'This plan requires a guided billing review. Contact Formaos.team@gmail.com to proceed.',
+        `This plan is invoiced directly rather than through checkout. Email ${brand.email.billingEmail} to arrange it.`,
         'missing_price',
       );
     }

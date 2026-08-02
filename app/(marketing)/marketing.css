@@ -6,7 +6,7 @@
 /* ── Design tokens ─────────────────────────────────────── */
 /* RGB values for rgba() usage - derived from globals.css palette */
 :root {
-  --mk-rgb-bg: 10, 15, 28; /* --space-800 */
+  --mk-rgb-bg: 17, 18, 19; /* brand charcoal floor, matches --marketing-bg */
   --mk-rgb-cyan: 113, 113, 122; /* neutral grey (cyan retired) */
   --mk-rgb-cyan-alt: 113, 113, 122; /* neutralized (teal retired) */
   --mk-rgb-blue: 100, 116, 139; /* neutralized (teal retired) */
@@ -18,33 +18,27 @@
   --mk-rgb-violet-alt: var(--mk-rgb-amber-alt);
   --mk-rgb-emerald: 113, 113, 122; /* neutralized */
   --mk-rgb-emerald-alt: 113, 113, 122; /* neutralized */
-  --mk-rgb-bg-dark: 3, 7, 18; /* --space-950 */
+  --mk-rgb-bg-dark: 10, 11, 11; /* deepest charcoal, matches --marketing-bg */
 }
 
 /* ── Shell (page wrapper) ──────────────────────────────── */
 .mk-shell {
   background-color: var(--mk-bg-1, rgb(var(--mk-rgb-bg)));
+  /* One soft overhead lift instead of the three tinted radial blobs this
+     replaced. Corner blobs are the gradient-blob tell, and with the accent
+     ramps neutralised they were three grey smudges doing no work; a single
+     light source reads as lighting rather than decoration. */
   background-image:
     radial-gradient(
-      circle at 20% 15%,
-      rgba(var(--mk-rgb-cyan), 0.14),
-      transparent 55%
-    ),
-    radial-gradient(
-      circle at 80% 20%,
-      rgba(var(--mk-rgb-blue), 0.12),
-      transparent 55%
-    ),
-    radial-gradient(
-      circle at 50% 80%,
-      rgba(var(--mk-rgb-violet), 0.1),
+      120% 70% at 50% -10%,
+      rgba(255, 255, 255, 0.05),
       transparent 60%
     ),
     linear-gradient(
       180deg,
-      var(--mk-bg-1, #0a0f1c) 0%,
-      var(--mk-bg-2, #0d1421) 55%,
-      var(--mk-bg-1, #0f1320) 100%
+      var(--mk-bg-1, #111213) 0%,
+      var(--mk-bg-2, #16181a) 55%,
+      var(--mk-bg-1, #111213) 100%
     );
   background-repeat: no-repeat;
   background-size: 140% 140%;
@@ -210,7 +204,7 @@
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(12, 15, 30, 0.95);
-  box-shadow: 0 24px 60px rgba(2, 6, 23, 0.65);
+  box-shadow: 0 24px 60px rgba(6, 7, 8, 0.65);
   padding: 24px;
 }
 
@@ -420,7 +414,7 @@
       rgba(4, 10, 20, 0.72) 0%,
       rgba(6, 15, 24, 0.46) 42%,
       rgba(8, 14, 24, 0.66) 72%,
-      rgba(10, 15, 28, 0.92) 100%
+      rgba(17, 18, 19, 0.92) 100%
     ),
     radial-gradient(
       ellipse 72% 56% at 50% 22%,
@@ -431,7 +425,7 @@
 
 .mk-route-photo-fade {
   height: clamp(180px, 28vh, 320px);
-  background: linear-gradient(180deg, rgba(10, 15, 28, 0) 0%, #0a0f1c 100%);
+  background: linear-gradient(180deg, rgba(17, 18, 19, 0) 0%, #111213 100%);
 }
 
 /* ── Background depth layers ───────────────────────────── */
@@ -475,7 +469,7 @@
   left: 0;
   right: 0;
   height: clamp(120px, 18vh, 240px);
-  background: linear-gradient(to bottom, transparent, #0a0f1c);
+  background: linear-gradient(to bottom, transparent, #111213);
   pointer-events: none;
   z-index: 5;
 }
@@ -483,7 +477,7 @@
 /* ── Hero section ──────────────────────────────────────── */
 .home-hero {
   position: relative;
-  background: linear-gradient(180deg, #060b17 0%, #091224 48%, #060b17 100%);
+  background: linear-gradient(180deg, #0d0e0f 0%, #131415 48%, #0d0e0f 100%);
 }
 
 .home-hero--dense {
@@ -627,7 +621,7 @@
 
 .hero-title-stack {
   text-shadow:
-    0 16px 48px rgba(2, 6, 23, 0.52),
+    0 16px 48px rgba(6, 7, 8, 0.52),
     0 2px 10px rgba(0, 0, 0, 0.36);
 }
 
@@ -639,18 +633,18 @@
 .hero-badge-shell {
   box-shadow:
     0 0 0 1px rgba(var(--mk-rgb-cyan), 0.18),
-    0 14px 42px rgba(2, 6, 23, 0.28);
+    0 14px 42px rgba(6, 7, 8, 0.28);
 }
 
 .hero-command-deck {
   box-shadow:
-    0 24px 70px rgba(2, 6, 23, 0.55),
+    0 24px 70px rgba(6, 7, 8, 0.55),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .hero-primary-cta {
   box-shadow:
-    0 20px 56px rgba(2, 6, 23, 0.4),
+    0 20px 56px rgba(6, 7, 8, 0.4),
     0 0 18px rgba(148, 163, 184, 0.16);
 }
 
@@ -668,7 +662,7 @@
 
 .hero-floating-metric {
   box-shadow:
-    0 26px 70px rgba(2, 6, 23, 0.58),
+    0 26px 70px rgba(6, 7, 8, 0.58),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
@@ -851,7 +845,7 @@
     rgba(5, 9, 20, 0.92) 100%
   );
   box-shadow:
-    0 24px 64px rgba(2, 6, 23, 0.44),
+    0 24px 64px rgba(6, 7, 8, 0.44),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
   transition:
     border-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -892,7 +886,7 @@
 .home-panel:hover {
   border-color: rgba(var(--mk-rgb-cyan), 0.32);
   box-shadow:
-    0 28px 76px rgba(2, 6, 23, 0.5),
+    0 28px 76px rgba(6, 7, 8, 0.5),
     0 0 32px rgba(var(--mk-rgb-cyan), 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
@@ -909,7 +903,7 @@
   );
   border-color: rgba(255, 255, 255, 0.06);
   box-shadow:
-    0 18px 42px rgba(2, 6, 23, 0.34),
+    0 18px 42px rgba(6, 7, 8, 0.34),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -922,7 +916,7 @@
     rgba(5, 10, 22, 0.96) 100%
   );
   box-shadow:
-    0 34px 82px rgba(2, 6, 23, 0.56),
+    0 34px 82px rgba(6, 7, 8, 0.56),
     0 0 40px rgba(var(--mk-rgb-cyan), 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
@@ -1066,7 +1060,7 @@
     rgba(6, 10, 22, 0.92) 100%
   );
   box-shadow:
-    0 26px 70px rgba(2, 6, 23, 0.5),
+    0 26px 70px rgba(6, 7, 8, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition:
     border-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -1106,7 +1100,7 @@
 .product-panel:hover {
   border-color: rgba(var(--mk-rgb-cyan), 0.35);
   box-shadow:
-    0 34px 84px rgba(2, 6, 23, 0.56),
+    0 34px 84px rgba(6, 7, 8, 0.56),
     0 0 34px rgba(var(--mk-rgb-cyan), 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
@@ -1123,7 +1117,7 @@
     rgba(8, 13, 24, 0.62) 100%
   );
   box-shadow:
-    0 18px 42px rgba(2, 6, 23, 0.36),
+    0 18px 42px rgba(6, 7, 8, 0.36),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -1136,7 +1130,7 @@
     rgba(6, 11, 24, 0.96) 100%
   );
   box-shadow:
-    0 38px 92px rgba(2, 6, 23, 0.58),
+    0 38px 92px rgba(6, 7, 8, 0.58),
     0 0 44px rgba(var(--mk-rgb-cyan), 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
@@ -1250,8 +1244,8 @@
 
   .home-hero .mk-btn-primary {
     box-shadow:
-      0 16px 40px rgba(2, 6, 23, 0.45),
-      0 4px 12px rgba(2, 6, 23, 0.25),
+      0 16px 40px rgba(6, 7, 8, 0.45),
+      0 4px 12px rgba(6, 7, 8, 0.25),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
@@ -1531,39 +1525,10 @@
   }
 }
 
-/* ── Theme-aware marketing overrides ──────────────────── */
-/* Midnight Blue - cool blue-tinted marketing surfaces */
-[data-theme='midnight-blue'] {
-  --mk-rgb-bg: 15, 23, 48;
-  --mk-rgb-cyan: 96, 165, 250;
-  --mk-rgb-blue: 59, 130, 246;
-  --mk-rgb-violet: 139, 92, 246;
-  --mk-rgb-bg-dark: 10, 17, 38;
-}
-
-/* Graphite - neutral warm-grey marketing surfaces */
-[data-theme='graphite'] {
-  --mk-rgb-bg: 17, 17, 21;
-  --mk-rgb-cyan: 148, 163, 184;
-  --mk-rgb-blue: 100, 116, 139;
-  --mk-rgb-violet: 148, 163, 184;
-  --mk-rgb-bg-dark: 9, 9, 11;
-}
-
-/* Aurora - cyan/violet iridescent marketing surfaces */
-[data-theme='aurora'] {
-  --mk-rgb-bg: 8, 15, 28;
-  --mk-rgb-cyan: 34, 211, 238;
-  --mk-rgb-blue: 139, 92, 246;
-  --mk-rgb-violet: 192, 132, 252;
-  --mk-rgb-bg-dark: 3, 7, 18;
-}
-
-/* Light - inverted for light marketing surfaces */
-[data-theme='light'] {
-  --mk-rgb-bg: 248, 250, 252;
-  --mk-rgb-cyan: 14, 116, 144;
-  --mk-rgb-blue: 37, 99, 235;
-  --mk-rgb-violet: 124, 58, 237;
-  --mk-rgb-bg-dark: 241, 245, 249;
-}
+/* The per-theme marketing palettes that used to live here are gone.
+   next-themes stamps data-theme on <html> for every route, so a signed-in
+   user who picked Aurora in app settings then browsed the public site got
+   a vivid cyan/violet marketing page, and a Light user got dark ink on the
+   charcoal canvas. Marketing has no theme switcher of its own and is a
+   brand surface, so its palette is now pinned on .mk-shell in
+   design-system.css and no longer inherits whatever the app is wearing. */

@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { brand } from '@/config/brand';
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
@@ -654,7 +655,7 @@ async function saveInvites(formData: FormData) {
         user.email?.split('@')[0] ||
         'A team member';
       const inviterEmail =
-        user.email ?? process.env.SUPPORT_EMAIL ?? 'Formaos.team@gmail.com';
+        user.email ?? process.env.SUPPORT_EMAIL ?? brand.email.contactEmail;
 
       const inviteResults = await Promise.all(
         validation.validEmails.map(async (email) => {

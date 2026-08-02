@@ -18,7 +18,6 @@ import {
   CheckCircle2,
   ArrowRight,
   Building2,
-  Server,
   ChevronDown,
   ChevronRight,
   Database,
@@ -41,6 +40,7 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { demoHref, PUBLIC_CTA_LABELS, salesHref } from '@/lib/marketing/cta';
+import { getPackClaim } from '@/lib/marketing/claims';
 
 /* ─── Easing ──────────────────────────────────────────────── */
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -306,6 +306,10 @@ interface EnterpriseFeature {
   colorRgb: string;
 }
 
+/* The readiness engine scores against the SOC 2 Trust Services Criteria pack.
+   Missing pack drops the number rather than printing a stale one. */
+const soc2Tsc = getPackClaim('soc2-tsc');
+
 const enterpriseFeatures: EnterpriseFeature[] = [
   {
     icon: Lock,
@@ -388,11 +392,16 @@ const enterpriseFeatures: EnterpriseFeature[] = [
     title: 'SOC 2 Readiness Engine',
     description:
       'Automated readiness scoring with weighted domain analysis and one-click certification reports.',
-    longDescription:
-      'Evaluate SOC 2 readiness across all five Trust Service Criteria domains with weighted scoring. Automated evidence checks across 11 controls, a gap analyzer with prioritized remediation actions, milestone tracking from enablement to certification, and one-click report generation that packages everything auditors need.',
+    longDescription: `Evaluate SOC 2 readiness across all five Trust Services Criteria domains with weighted scoring. ${
+      soc2Tsc
+        ? `${soc2Tsc.controlCount} controls are mapped and ${soc2Tsc.automatedEvaluatorCount} of them are checked automatically against your live data.`
+        : 'Mapped controls are checked automatically wherever a live data signal exists.'
+    } A gap analyser prioritises remediation actions, milestones track progress from enablement to certification, and report generation packages what an auditor asks for.`,
     highlights: [
       'Weighted domain scoring',
-      '11 automated checks',
+      soc2Tsc
+        ? `${soc2Tsc.automatedEvaluatorCount} automated checks`
+        : 'Automated checks',
       'Gap remediation',
       'Certification reports',
     ],
@@ -493,6 +502,8 @@ const procurementItems: ProcurementItem[] = [
 
 /* ─── SLA Commitments ─────────────────────────────────────── */
 
+/* Only commitments with a real number get the numeral treatment. The rest are
+   assurances, and forcing them into a stat tile made them harder to read. */
 interface SLAItem {
   metric: string;
   value: string;
@@ -502,40 +513,37 @@ interface SLAItem {
 
 const slaItems: SLAItem[] = [
   {
-    metric: 'Status Visibility',
+    metric: 'Status visibility',
     value: '24/7',
     unit: '',
     detail: 'Public uptime checks and operational updates',
   },
   {
-    metric: 'Maintenance Notice',
+    metric: 'Maintenance notice',
     value: '72',
     unit: 'h',
     detail: 'Advance notice target for planned maintenance',
   },
+];
+
+const slaAssurances: Array<{ metric: string; detail: string }> = [
   {
-    metric: 'Procurement Artifacts',
-    value: 'DPA',
-    unit: '+',
-    detail: 'Trust packet, subprocessor, and review materials',
+    metric: 'Procurement artifacts',
+    detail:
+      'Data processing agreement, trust packet, subprocessor list, and security review materials',
   },
   {
-    metric: 'Priority Support',
-    value: '1',
-    unit: 'path',
-    detail: 'Named enterprise escalation path for active reviews',
+    metric: 'Priority support',
+    detail:
+      'A named escalation path for the duration of an active enterprise review',
   },
   {
-    metric: 'Data Export',
-    value: 'Self',
-    unit: '-serve',
-    detail: 'Audit-ready exports and portability workflows',
+    metric: 'Data export',
+    detail: 'Self-serve audit-ready exports and portability workflows',
   },
   {
-    metric: 'Identity Controls',
-    value: 'SAML',
-    unit: '+',
-    detail: 'Enterprise SSO, MFA, and session controls',
+    metric: 'Identity controls',
+    detail: 'SAML 2.0 single sign-on, MFA enforcement, and session policies',
   },
 ];
 
@@ -550,49 +558,36 @@ interface DeploymentOption {
   colorRgb: string;
 }
 
+/* Only the multi-tenant cloud ships today. Anything beyond it is described as
+   a procurement conversation, matching the hedged voice of the FAQ above. */
 const deploymentOptions: DeploymentOption[] = [
   {
-    name: 'Multi-Tenant Cloud',
+    name: 'Multi-tenant AU cloud',
     description:
-      'Shared infrastructure with logical tenant isolation. Fastest deployment with automatic updates and zero maintenance overhead.',
+      'How every organisation runs FormaOS today. Shared infrastructure hosted in Australia, with tenant isolation enforced in the database rather than in application code.',
     features: [
-      'Logical tenant isolation',
+      'Row-level tenant isolation enforced in Postgres',
+      'Australian hosting by default',
       'Automatic platform updates',
-      'Shared infrastructure cost efficiency',
-      'Instant provisioning',
-      'Standard data residency options',
+      'Provisioning in minutes',
+      'Documented subprocessor list',
     ],
     icon: Globe,
+    recommended: true,
     colorRgb: '203,213,225',
   },
   {
-    name: 'Dedicated Cloud',
+    name: 'Dedicated arrangements',
     description:
-      'Isolated cloud infrastructure with dedicated compute, storage, and network resources for your organization.',
+      'If your review requires stronger separation than the shared platform provides, we scope what is feasible during procurement rather than listing it as shipping.',
     features: [
-      'Dedicated compute & storage',
-      'Network-level isolation (VPC)',
-      'Custom update schedule',
-      'Enhanced performance SLAs',
-      'Extended data residency options',
+      'Isolation requirements assessed against current architecture',
+      'Residency and retention terms set in the agreement',
+      'Update and maintenance windows agreed in writing',
+      'Feasibility and timing confirmed before contract',
     ],
     icon: CloudCog,
-    recommended: true,
     colorRgb: '161,161,170',
-  },
-  {
-    name: 'On-Premise / Private Cloud',
-    description:
-      'Deploy FormaOS within your own infrastructure. Full control over data, networking, and compliance boundary.',
-    features: [
-      'Your infrastructure, your rules',
-      'Air-gapped deployment support',
-      'Custom integration endpoints',
-      'Internal PKI certificate support',
-      'Full compliance boundary control',
-    ],
-    icon: Server,
-    colorRgb: '148,163,184',
   },
 ];
 
@@ -1053,9 +1048,9 @@ function SLASection() {
           <SectionChoreography
             pattern="stagger-wave"
             stagger={0.06}
-            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-4 sm:grid-cols-2"
           >
-            {slaItems.map((item, i) => (
+            {slaItems.map((item) => (
               <div
                 key={item.metric}
                 className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5
@@ -1072,6 +1067,22 @@ function SLASection() {
               </div>
             ))}
           </SectionChoreography>
+
+          <ul className="mt-4 divide-y divide-white/[0.06] rounded-2xl border border-white/[0.06] bg-white/[0.02]">
+            {slaAssurances.map((item) => (
+              <li
+                key={item.metric}
+                className="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-baseline sm:gap-6"
+              >
+                <span className="text-sm font-semibold text-white sm:w-52 sm:shrink-0">
+                  {item.metric}
+                </span>
+                <span className="text-sm leading-relaxed text-slate-400">
+                  {item.detail}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </DeferredSection>
@@ -1087,15 +1098,15 @@ function DeploymentSection() {
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <CenteredHeader
             label="Deployment Models"
-            title="Deploy"
-            emphasis="your way"
-            description="Choose the deployment model that matches your security requirements, regulatory constraints, and operational preferences."
+            title="How FormaOS"
+            emphasis="is deployed"
+            description="One deployment model is live today. Anything beyond it is scoped during procurement, so nothing here commits us to infrastructure we do not run."
           />
 
           <SectionChoreography
             pattern="cascade"
             stagger={0.08}
-            className="grid gap-6 lg:grid-cols-3"
+            className="grid gap-6 lg:grid-cols-2"
           >
             {deploymentOptions.map((option) => {
               const Icon = option.icon;
@@ -1113,7 +1124,7 @@ function DeploymentSection() {
                   {option.recommended && (
                     <div className="absolute -top-3 left-6">
                       <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-200 border border-white/20 bg-white/[0.06]">
-                        Recommended
+                        Live today
                       </span>
                     </div>
                   )}
