@@ -77,6 +77,13 @@ export async function POST(
       });
     }
 
+    // The binding check below runs BEFORE any session exists — it is what
+    // decides whether to mint one — so there is no authenticated context for
+    // createSupabaseOrgClient to bind to. The user_profiles lookup is also
+    // deliberately cross-tenant: it resolves an email to the accounts carrying
+    // it, then asks whether any belongs to THIS org. Scoping it to one org up
+    // front would defeat the check.
+    // eslint-disable-next-line formaos/no-admin-client-with-org-filter
     const admin = createSupabaseAdminClient();
 
     // Audit 2026-08-02 — bind the asserted identity to THIS organisation.
@@ -130,6 +137,8 @@ export async function POST(
       );
     }
 
+    // Pre-session admin access, justified where the client is constructed above.
+    // eslint-disable-next-line formaos/no-admin-client-with-org-filter
     const { data: memberships, error: membershipError } = await admin
       .from('org_members')
       .select('user_id')
