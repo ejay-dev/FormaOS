@@ -71,15 +71,17 @@
   --ease-spring: cubic-bezier(0.5, 1, 0.89, 1);
   --ease-snappy: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-  /* Premium color palette */
-  --space-950: #030509;
-  --space-900: #060a12;
-  --space-850: #080d18;
-  --space-800: #0a101f;
-  --space-750: #0d1326;
-  --space-700: #10162d;
-  --space-650: #141b35;
-  --space-600: #18203d;
+  /* Canvas ramp, exposed as bg-canvas-950 … bg-canvas-600.
+     Was a blue-shifted navy scale left from the pre-charcoal palette; the
+     steps are preserved, the blue is not. */
+  --space-950: #0a0b0b;
+  --space-900: #0d0e0f;
+  --space-850: #111213;
+  --space-800: #131415;
+  --space-750: #16181a;
+  --space-700: #1c1e1f;
+  --space-650: #212325;
+  --space-600: #26282a;
 
   /* Cyan ramp neutralized to charcoal/ink — retired brand accent */
   --cyan-50: #fafafa;
@@ -91,23 +93,7 @@
   --cyan-600: #52525b;
   --cyan-700: #3f3f46;
 
-  --blue-50: #e6f3ff;
-  --blue-100: #cce6ff;
-  --blue-200: #99ccff;
-  --blue-300: #66b3ff;
-  --blue-400: #3399ff;
-  --blue-500: #0080ff;
-  --blue-600: #0066cc;
-  --blue-700: #004d99;
 
-  --violet-50: #f3f0ff;
-  --violet-100: #e7e0ff;
-  --violet-200: #d0c1ff;
-  --violet-300: #b8a2ff;
-  --violet-400: #a083ff;
-  --violet-500: #8864ff;
-  --violet-600: #7050cc;
-  --violet-700: #583c99;
 
   /* Gradients — neutral mono sweep (retired cyan/blue/violet brand) */
   --gradient-primary: linear-gradient(
