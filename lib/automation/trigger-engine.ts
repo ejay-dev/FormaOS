@@ -181,6 +181,12 @@ async function handleEvidenceExpiry(
       supabase,
       {
         organization_id: event.organizationId,
+        // entity_id is the precise dedupe key the nightly sweep in
+        // scheduled-processor.ts uses to tell whether this record already has a
+        // task. Titles are not unique — production has 79 (organization_id,
+        // file_name) collisions — so keying on the title alone silently
+        // suppresses distinct records.
+        entity_id: evidence.id,
         title: `Renew Evidence: ${evidence.file_name}`,
         description: `Evidence "${evidence.file_name}" has expired and needs to be renewed.`,
         priority: 'high',
@@ -259,6 +265,7 @@ async function handlePolicyReviewDue(
       supabase,
       {
         organization_id: event.organizationId,
+        entity_id: policyId,
         title: `Review Policy: ${policy.title}`,
         description: `Policy "${policy.title}" is due for scheduled review.`,
         priority: 'medium',

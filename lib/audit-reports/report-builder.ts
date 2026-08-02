@@ -19,6 +19,7 @@ import type {
 
 type EvaluationRow = {
   control_key: string | null;
+  status: string | null;
   compliance_score: number | null;
   last_evaluated_at: string | null;
   details: Record<string, unknown> | null;
@@ -29,10 +30,36 @@ type ControlEvaluation = {
   controlTitle: string;
   category: string | null;
   complianceScore: number;
+  /**
+   * False for provisioning baseline rows, which carry no assessed verdict —
+   * treating them as scored results asserts gaps that were never measured.
+   */
+  evaluated: boolean;
   approvedEvidenceCount: number;
   requiredEvidenceCount: number;
   lastEvaluatedAt: string | null;
 };
+
+/**
+ * org_control_evaluations.compliance_score is never written for
+ * control_type='framework_control' rows — neither lib/frameworks/provisioning.ts
+ * nor lib/compliance/evaluate-framework-controls.ts sets the column, so it keeps
+ * its 0 default and the verdict lives in `status`.
+ */
+const STATUS_SCORES: Record<string, number> = {
+  compliant: 100,
+  satisfied: 100,
+  met: 100,
+  partial: 50,
+  in_progress: 50,
+  at_risk: 50,
+  non_compliant: 0,
+  failed: 0,
+};
+
+function scoreFromStatus(status: string | null): number {
+  return STATUS_SCORES[(status ?? '').toLowerCase()] ?? 0;
+}
 
 /**
  * compliance_controls / compliance_frameworks are global catalog tables with
@@ -99,7 +126,7 @@ async function loadControlEvaluations(
 ): Promise<ControlEvaluation[]> {
   let query = admin
     .from('org_control_evaluations')
-    .select('control_key, compliance_score, last_evaluated_at, details')
+    .select('control_key, status, compliance_score, last_evaluated_at, details')
     .eq('control_type', 'framework_control');
 
   if (options.frameworkCode) {
@@ -122,26 +149,32 @@ async function loadControlEvaluations(
       ? await loadControlDomains(admin, options.frameworkCode)
       : new Map<string, string | null>();
 
-  return rows.map((row) => {
-    const details = (row.details ?? {}) as Record<string, unknown>;
-    const controlId = row.control_key?.startsWith('control:')
-      ? row.control_key.slice('control:'.length)
-      : null;
-    const category =
-      typeof details.category === 'string' && details.category
-        ? details.category
-        : ((controlId ? domains.get(controlId) : null) ?? null);
+  return rows
+    .filter((row) => (row.status ?? '').toLowerCase() !== 'not_applicable')
+    .map((row) => {
+      const details = (row.details ?? {}) as Record<string, unknown>;
+      const controlId = row.control_key?.startsWith('control:')
+        ? row.control_key.slice('control:'.length)
+        : null;
+      const category =
+        typeof details.category === 'string' && details.category
+          ? details.category
+          : ((controlId ? domains.get(controlId) : null) ?? null);
+      const rawScore = Number(row.compliance_score ?? 0);
 
-    return {
-      controlCode: String(details.control_code ?? details.code ?? ''),
-      controlTitle: String(details.control_title ?? details.title ?? ''),
-      category,
-      complianceScore: Number(row.compliance_score ?? 0),
-      approvedEvidenceCount: Number(details.approved_evidence_count ?? 0),
-      requiredEvidenceCount: Number(details.required_evidence_count ?? 0),
-      lastEvaluatedAt: row.last_evaluated_at ?? null,
-    };
-  });
+      return {
+        controlCode: String(details.control_code ?? details.code ?? ''),
+        controlTitle: String(details.control_title ?? details.title ?? ''),
+        category,
+        complianceScore: rawScore > 0 ? rawScore : scoreFromStatus(row.status),
+        // Only evaluate-framework-controls.ts writes `code`; the provisioning
+        // baseline writes `control_code` and has never been assessed.
+        evaluated: typeof details.code === 'string' || rawScore > 0,
+        approvedEvidenceCount: Number(details.approved_evidence_count ?? 0),
+        requiredEvidenceCount: Number(details.required_evidence_count ?? 0),
+        lastEvaluatedAt: row.last_evaluated_at ?? null,
+      };
+    });
 }
 
 /**
@@ -368,19 +401,25 @@ async function buildIso27001Report(
 
   // Build SoA entries
   const statementOfApplicability: SoaEntry[] = evaluations.map((evaluation) => {
-    const score = evaluation.complianceScore;
+    const score = evaluation.evaluated ? evaluation.complianceScore : 0;
     let status: SoaEntry['implementationStatus'] = 'not_implemented';
     if (score >= 80) status = 'implemented';
     else if (score >= 40) status = 'partial';
+
+    let justification: string;
+    if (!evaluation.evaluated) {
+      justification = 'Not yet assessed — no control evaluation has been run';
+    } else if (score >= 80) {
+      justification = 'Control fully implemented with evidence';
+    } else {
+      justification = 'Control requires additional implementation';
+    }
 
     return {
       clauseNumber: evaluation.controlCode || 'A.X.X',
       controlName: evaluation.controlTitle || 'Unknown Control',
       applicable: true,
-      justification:
-        score >= 80
-          ? 'Control fully implemented with evidence'
-          : 'Control requires additional implementation',
+      justification,
       implementationStatus: status,
       evidenceCount: evaluation.approvedEvidenceCount,
     };
@@ -436,7 +475,7 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
 
   const practiceStandards: NdisPracticeStandard[] = evaluations.map(
     (evaluation) => {
-      const score = evaluation.complianceScore;
+      const score = evaluation.evaluated ? evaluation.complianceScore : 0;
       let status: NdisPracticeStandard['complianceStatus'] = 'non_compliant';
       if (score >= 80) status = 'compliant';
       else if (score >= 40) status = 'partial';
@@ -447,7 +486,7 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
         category: evaluation.category || 'Core',
         complianceStatus: status,
         evidenceCount: evaluation.approvedEvidenceCount,
-        lastReviewDate: evaluation.lastEvaluatedAt,
+        lastReviewDate: evaluation.evaluated ? evaluation.lastEvaluatedAt : null,
       };
     },
   );
@@ -551,6 +590,31 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
   };
 }
 
+type HipaaRule = 'privacy' | 'security' | 'breach';
+
+/**
+ * The installed HIPAA pack is the Security Rule catalogue: codes are prefixed
+ * HIPAA-ADM, HIPAA-PHY and HIPAA-TECH under domains Administrative, Physical
+ * and Technical. Security incident procedures (HIPAA-ADM-4) is the requirement
+ * that drives breach response; the Privacy Rule has no controls in this pack,
+ * so it reports 0 requirements rather than a score derived from nothing.
+ */
+const HIPAA_BREACH_CONTROL_CODES = new Set(['HIPAA-ADM-4']);
+const HIPAA_SECURITY_RULE_DOMAINS = new Set([
+  'administrative',
+  'physical',
+  'technical',
+]);
+
+function hipaaRuleForControl(evaluation: ControlEvaluation): HipaaRule | null {
+  const code = evaluation.controlCode.toUpperCase();
+  if (HIPAA_BREACH_CONTROL_CODES.has(code)) return 'breach';
+  if (HIPAA_SECURITY_RULE_DOMAINS.has((evaluation.category ?? '').toLowerCase()))
+    return 'security';
+  if (/^HIPAA-(ADM|PHY|TECH)-/.test(code)) return 'security';
+  return null;
+}
+
 /**
  * Build HIPAA compliance report
  */
@@ -565,32 +629,26 @@ async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
   });
 
   // Calculate rule compliance
-  const calculateRuleCompliance = (keyword: string) => {
-    const needle = keyword.toLowerCase();
-    const ruleEvals = evaluations.filter((evaluation) =>
-      [
-        evaluation.category ?? '',
-        evaluation.controlCode,
-        evaluation.controlTitle,
-      ]
-        .join(' ')
-        .toLowerCase()
-        .includes(needle),
+  const calculateRuleCompliance = (rule: HipaaRule) => {
+    const ruleEvals = evaluations.filter(
+      (evaluation) => hipaaRuleForControl(evaluation) === rule,
     );
+    const effectiveScore = (evaluation: ControlEvaluation) =>
+      evaluation.evaluated ? evaluation.complianceScore : 0;
     const totalReqs = ruleEvals.length;
     const satisfiedReqs = ruleEvals.filter(
-      (evaluation) => evaluation.complianceScore >= 80,
+      (evaluation) => effectiveScore(evaluation) >= 80,
     ).length;
     const avgScore = ruleEvals.length
       ? Math.round(
           ruleEvals.reduce(
-            (sum, evaluation) => sum + evaluation.complianceScore,
+            (sum, evaluation) => sum + effectiveScore(evaluation),
             0,
           ) / ruleEvals.length,
         )
       : 0;
     const criticalGaps = ruleEvals.filter(
-      (evaluation) => evaluation.complianceScore < 40,
+      (evaluation) => evaluation.evaluated && evaluation.complianceScore < 40,
     ).length;
 
     return {
@@ -688,7 +746,9 @@ async function getCriticalGaps(
   });
 
   return evaluations
-    .filter((evaluation) => evaluation.complianceScore < 50)
+    .filter(
+      (evaluation) => evaluation.evaluated && evaluation.complianceScore < 50,
+    )
     .sort((left, right) => left.complianceScore - right.complianceScore)
     .slice(0, 10)
     .map((evaluation) => {

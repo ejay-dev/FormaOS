@@ -35,6 +35,66 @@ function setPostHog(instance: PostHogInstance): void {
   (window as WindowWithPostHog).posthog = instance;
 }
 
+/** Cookie written by the consent banner and the /privacy-settings page. */
+export const ANALYTICS_CONSENT_COOKIE = 'formaos_cookie_consent';
+
+export type AnalyticsConsentValue = 'accepted' | 'rejected' | null;
+
+// PostHog may still be loading when the visitor makes a choice, so retry
+// briefly instead of dropping the decision.
+const CONSENT_APPLY_ATTEMPTS = 10;
+const CONSENT_APPLY_RETRY_MS = 500;
+
+/**
+ * Read the stored consent decision. `null` means the visitor has not chosen
+ * yet, which is treated as "no consent" everywhere below.
+ */
+export function readAnalyticsConsent(): AnalyticsConsentValue {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith(`${ANALYTICS_CONSENT_COOKIE}=`));
+  if (!match) return null;
+  const value = match.split('=')[1];
+  if (value === 'accepted' || value === 'rejected') return value;
+  return null;
+}
+
+export function hasAnalyticsConsent(): boolean {
+  return readAnalyticsConsent() === 'accepted';
+}
+
+/**
+ * Apply a consent decision to the running PostHog client. posthog-js persists
+ * opt-in/opt-out, so this also governs capture and session recording on later
+ * page loads, not just this one. Only call it for an explicit decision — an
+ * absent preference must not persist an opt-out.
+ */
+export function applyAnalyticsConsent(value: AnalyticsConsentValue): void {
+  if (typeof window === 'undefined') return;
+
+  let attempts = 0;
+  const apply = () => {
+    const ph = getPostHog();
+
+    if (!ph) {
+      attempts += 1;
+      if (attempts < CONSENT_APPLY_ATTEMPTS) {
+        window.setTimeout(apply, CONSENT_APPLY_RETRY_MS);
+      }
+      return;
+    }
+
+    if (value === 'accepted') {
+      ph.opt_in_capturing();
+    } else {
+      ph.opt_out_capturing();
+    }
+  };
+
+  apply();
+}
+
 interface AnalyticsEvent {
   event: string;
   properties?: Record<string, unknown>;
@@ -119,6 +179,11 @@ class Analytics {
       return;
     }
 
+    // Consent gate: capture and session recording stay off until the visitor
+    // accepts analytics cookies in the banner or on /privacy-settings.
+    const consent = readAnalyticsConsent();
+    const analyticsAllowed = consent === 'accepted';
+
     try {
       // Dynamically import PostHog to avoid SSR issues
       const { default: posthog } = await import('posthog-js');
@@ -129,7 +194,7 @@ class Analytics {
         persistence: 'localStorage', // Avoid cookies
         autocapture: false, // Manual tracking only
         capture_pageview: false, // Manual pageview tracking
-        disable_session_recording: false, // Enable session recording for debugging
+        disable_session_recording: !analyticsAllowed,
         session_recording: {
           maskAllInputs: true, // Mask sensitive inputs
           maskTextSelector: '.sensitive, [data-sensitive]', // Mask sensitive elements
@@ -138,13 +203,22 @@ class Analytics {
         },
         // GDPR compliance
         respect_dnt: true, // Respect Do Not Track
-        opt_out_capturing_by_default: false, // Users can opt out
+        opt_out_capturing_by_default: !analyticsAllowed,
         loaded: (posthog) => {
           // Set initial session properties
           posthog.register({
             session_id: this.sessionId,
             app_version: process.env.NEXT_PUBLIC_APP_VERSION || 'unknown',
           });
+
+          // An opt-in/opt-out persisted by posthog-js on an earlier visit
+          // outranks opt_out_capturing_by_default, so re-assert the stored
+          // decision. No decision leaves the default (opted out) in place.
+          if (consent === 'accepted') {
+            posthog.opt_in_capturing();
+          } else if (consent === 'rejected') {
+            posthog.opt_out_capturing();
+          }
         },
       });
 

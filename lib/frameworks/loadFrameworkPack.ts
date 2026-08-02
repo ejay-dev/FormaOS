@@ -187,8 +187,18 @@ export async function loadFrameworkPack(
     const byName = new Map<string, DomainEntry[]>()
     for (const entry of entries) {
       const group = byName.get(entry.name)
-      if (group) group.push(entry)
-      else byName.set(entry.name, [entry])
+      if (group) {
+        const previous = group[group.length - 1]
+        if (
+          previous.description !== entry.description ||
+          previous.sortOrder !== entry.sortOrder
+        ) {
+          warnings.push(
+            `Duplicate domain name in pack with conflicting details, keeping last: ${entry.name}`,
+          )
+        }
+        group.push(entry)
+      } else byName.set(entry.name, [entry])
     }
 
     for (const batch of chunkRows([...byName.entries()])) {
@@ -198,8 +208,8 @@ export async function loadFrameworkPack(
           batch.map(([name, group]) => ({
             framework_id: frameworkId,
             name,
-            description: group[0].description,
-            sort_order: group[0].sortOrder,
+            description: group[group.length - 1].description,
+            sort_order: group[group.length - 1].sortOrder,
           })),
           { onConflict: 'framework_id,name' },
         )
@@ -296,7 +306,12 @@ export async function loadFrameworkPack(
     }
 
     // Same conflict-target rule as domains: one row per control_code per batch.
-    if (controlRowsByCode.has(control.control_code)) continue
+    // Later entries win, matching the sequential upsert this batching replaced.
+    if (controlRowsByCode.has(control.control_code)) {
+      warnings.push(
+        `Duplicate control code in pack, keeping last: ${control.control_code}`,
+      )
+    }
 
     controlRowsByCode.set(control.control_code, {
       framework_id: frameworkId,
@@ -363,7 +378,11 @@ export async function loadFrameworkPack(
     const normalizedStrength = strength === 'primary' ? 'primary' : 'secondary'
 
     const conflictKey = `${internalControlId}|${mapping.framework_slug}|${mapping.external_control_reference}`
-    if (mappingRowsByKey.has(conflictKey)) continue
+    if (mappingRowsByKey.has(conflictKey)) {
+      warnings.push(
+        `Duplicate mapping in pack for ${mapping.framework_slug} ${mapping.external_control_reference}, keeping last`,
+      )
+    }
 
     mappingRowsByKey.set(conflictKey, {
       internal_control_id: internalControlId,

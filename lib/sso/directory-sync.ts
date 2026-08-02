@@ -242,22 +242,25 @@ async function loadDirectorySnapshot(
 }
 
 // auth.admin.listUsers() defaults to page 1 / perPage 50, so an
-// unpaginated call only ever sees the first 50 auth users. Load the
-// whole table once, paginated, and resolve every directory user and
-// group member against that map — the previous per-email call issued
-// one admin round-trip per directory entry and reported anyone past
-// page 1 as new, which made createUser() fail on a duplicate email
-// and abort the entire sync run.
+// unpaginated call only ever sees the first 50 auth users — anyone
+// past page 1 was reported as new, which made createUser() fail on a
+// duplicate email and abort the entire sync run. Pages are pulled
+// lazily and cached: a lookup only walks far enough to find its
+// email, so a three-user directory on a project with thousands of
+// auth users costs one page instead of the whole table, while a
+// large directory degrades to the same full walk as before.
 const AUTH_USER_PAGE_SIZE = 200;
 const AUTH_USER_MAX_PAGES = 100;
 
-async function loadAuthUsersByEmail(): Promise<Map<string, User>> {
+function createAuthUserLookup() {
   const admin = createSupabaseAdminClient();
   const byEmail = new Map<string, User>();
+  let nextPage = 1;
+  let exhausted = false;
 
-  for (let page = 1; page <= AUTH_USER_MAX_PAGES; page += 1) {
+  async function loadNextPage() {
     const { data, error } = await admin.auth.admin.listUsers({
-      page,
+      page: nextPage,
       perPage: AUTH_USER_PAGE_SIZE,
     });
 
@@ -267,12 +270,36 @@ async function loadAuthUsersByEmail(): Promise<Map<string, User>> {
 
     const users = data?.users ?? [];
     for (const user of users) {
-      if (user.email) byEmail.set(user.email.toLowerCase(), user);
+      const key = user.email?.toLowerCase();
+      // First page wins so a user created earlier in this run is not
+      // clobbered by a later page that already includes it.
+      if (key && !byEmail.has(key)) byEmail.set(key, user);
     }
-    if (users.length < AUTH_USER_PAGE_SIZE) break;
+
+    nextPage += 1;
+    if (users.length < AUTH_USER_PAGE_SIZE || nextPage > AUTH_USER_MAX_PAGES) {
+      exhausted = true;
+    }
   }
 
-  return byEmail;
+  return {
+    async find(email: string): Promise<User | null> {
+      const key = email.toLowerCase();
+      const cached = byEmail.get(key);
+      if (cached) return cached;
+
+      while (!exhausted) {
+        await loadNextPage();
+        const match = byEmail.get(key);
+        if (match) return match;
+      }
+
+      return null;
+    },
+    remember(email: string, user: User) {
+      byEmail.set(email.toLowerCase(), user);
+    },
+  };
 }
 
 export async function upsertDirectorySyncConfig(args: {
@@ -384,7 +411,7 @@ export async function syncDirectory(
 
   try {
     const snapshot = await loadDirectorySnapshot(provider, config);
-    const authUsersByEmail = await loadAuthUsersByEmail();
+    const authUsers = createAuthUserLookup();
 
     let createdUsers = 0;
     let updatedUsers = 0;
@@ -394,7 +421,7 @@ export async function syncDirectory(
       if (!directoryUser.email) continue;
 
       const emailKey = directoryUser.email.toLowerCase();
-      let user = authUsersByEmail.get(emailKey) ?? null;
+      let user = await authUsers.find(emailKey);
       if (!user) {
         const created = await admin.auth.admin.createUser({
           email: directoryUser.email,
@@ -412,7 +439,7 @@ export async function syncDirectory(
           );
         }
         user = created.data.user;
-        authUsersByEmail.set(emailKey, user);
+        authUsers.remember(emailKey, user);
         createdUsers += 1;
       } else {
         await admin.auth.admin.updateUserById(user.id, {
@@ -467,7 +494,7 @@ export async function syncDirectory(
 
       const memberIds: string[] = [];
       for (const email of group.members) {
-        const user = authUsersByEmail.get(email.toLowerCase());
+        const user = await authUsers.find(email);
         if (user) {
           memberIds.push(user.id);
         }

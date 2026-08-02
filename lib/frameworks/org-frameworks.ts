@@ -388,9 +388,35 @@ export async function getCurrentOrgId() {
   const { data: membership, error: membershipError } =
     await membershipQuery.maybeSingle();
 
-  if (membershipError || !membership?.organization_id) {
+  if (membershipError) {
     throw new Error('Organization not found');
   }
 
-  return membership.organization_id as string;
+  let organizationId =
+    (membership?.organization_id as string | undefined) ?? undefined;
+
+  // The stored preference can point at an org the user has since been removed
+  // from (or one that was retired). Fall back to any remaining membership
+  // instead of hard-failing the whole page.
+  if (!organizationId && preferredOrgId) {
+    const { data: fallback, error: fallbackError } = await supabase
+      .from('org_members')
+      .select('organization_id')
+      .eq('user_id', user.id)
+      .limit(1)
+      .maybeSingle();
+
+    if (fallbackError) {
+      throw new Error('Organization not found');
+    }
+
+    organizationId =
+      (fallback?.organization_id as string | undefined) ?? undefined;
+  }
+
+  if (!organizationId) {
+    throw new Error('Organization not found');
+  }
+
+  return organizationId;
 }

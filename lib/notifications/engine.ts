@@ -315,8 +315,32 @@ export async function notify(
       event,
       'email',
     );
+    // `inAppRecord` is null for two materially different reasons, and they must
+    // not be treated alike: the recipient DISABLED in-app, or in-app delivery
+    // was attempted and THREW. Collapsing them re-introduces the bug this
+    // module was just fixed for — an in-app outage silently suppressing every
+    // other channel.
+    const inAppDeliveryFailed = inAppPreference.enabled && !inAppRecord;
+
+    const emailDigestFrequency =
+      event.priority === 'critical' || inAppDeliveryFailed
+        ? 'instant'
+        : emailPreference.digest_frequency;
+
+    // Digest queueing references a persisted notification id, so with in-app
+    // switched off a digest email genuinely cannot be queued; escalating it to
+    // instant would override the recipient's stored digest_frequency, so hold
+    // it back and report it. When in-app FAILED we escalate to instant instead
+    // (above) — briefly overriding a digest preference is better than dropping
+    // the notification on every channel.
+    const emailDigestUnavailable =
+      emailPreference.enabled &&
+      emailDigestFrequency !== 'instant' &&
+      !inAppRecord;
+
     if (
       emailPreference.enabled &&
+      !emailDigestUnavailable &&
       !isWithinQuietHours(
         emailPreference.quiet_hours,
         recipient.timezone || 'UTC',
@@ -327,12 +351,7 @@ export async function notify(
           recipient,
           event,
           notification,
-          // Digest queueing references a persisted notification id; without an
-          // in-app row the email can only be sent instantly.
-          digestFrequency:
-            event.priority === 'critical' || !inAppRecord
-              ? 'instant'
-              : emailPreference.digest_frequency,
+          digestFrequency: emailDigestFrequency,
         });
         deliveredChannels.push('email');
       } catch (error) {
@@ -400,7 +419,9 @@ export async function notify(
           : undefined
         : deliveryFailed
           ? 'delivery_failed'
-          : 'all_channels_disabled',
+          : emailDigestUnavailable
+            ? 'digest_unavailable'
+            : 'all_channels_disabled',
     });
   }
 

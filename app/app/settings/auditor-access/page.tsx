@@ -1,13 +1,48 @@
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { fetchSystemState } from '@/lib/system-state/server';
-import { listAuditorAccess, getAuditorActivity } from '@/lib/auditor/portal';
+import {
+  listAuditorAccess,
+  getAuditorActivity,
+  revokeAuditorAccess,
+} from '@/lib/auditor/portal';
 import { Shield, Clock, Eye, Plus } from 'lucide-react';
 
 export const metadata = { title: 'Auditor Access | Settings | FormaOS' };
 
-export default async function AuditorAccessPage() {
+async function revokeAccess(formData: FormData) {
+  'use server';
   const state = await fetchSystemState();
   if (!state) redirect('/auth/signin');
+
+  const tokenId = String(formData.get('token_id') ?? '').trim();
+  if (!tokenId) {
+    redirect('/app/settings/auditor-access?error=missing-grant-id');
+  }
+
+  // redirect() signals by throwing NEXT_REDIRECT, so only the revoke call is
+  // guarded — a catch spanning the redirect below would swallow it.
+  await revokeAuditorAccess(tokenId, state.organization.id).catch(
+    (err: unknown): never => {
+      const message =
+        err instanceof Error ? err.message : 'Failed to revoke access';
+      redirect(
+        `/app/settings/auditor-access?error=${encodeURIComponent(message)}`,
+      );
+    },
+  );
+
+  revalidatePath('/app/settings/auditor-access');
+}
+
+export default async function AuditorAccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const state = await fetchSystemState();
+  if (!state) redirect('/auth/signin');
+  const { error } = await searchParams;
 
   const tokens = await listAuditorAccess(state.organization.id);
   const activity = await getAuditorActivity(state.organization.id);
@@ -35,6 +70,12 @@ export default async function AuditorAccessPage() {
           Grant Access
         </a>
       </div>
+
+      {error && (
+        <div className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
       {/* Active tokens */}
       <div className="rounded-lg border border-border bg-card overflow-hidden">
@@ -71,6 +112,17 @@ export default async function AuditorAccessPage() {
                 >
                   {t.status}
                 </span>
+                {t.status === 'active' && (
+                  <form action={revokeAccess}>
+                    <input type="hidden" name="token_id" value={t.id} />
+                    <button
+                      type="submit"
+                      className="rounded-md border border-border px-2 py-1 text-xs hover:bg-muted"
+                    >
+                      Revoke
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           ))}

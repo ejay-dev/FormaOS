@@ -9,15 +9,25 @@ import { createSafeSseWriter } from '@/lib/control-plane/sse';
 
 const SSE_POLL_MS = 1_000;
 const SSE_HEARTBEAT_MS = 20_000;
-const STREAM_VERSION_CACHE_MS = 750;
+const STREAM_VERSION_CACHE_MS = 400;
+const SNAPSHOT_CACHE_MS = 400;
 
 type RuntimeStreamVersion = Awaited<
   ReturnType<typeof readRuntimeStreamVersion>
 >;
 
+type RuntimeSnapshot = Awaited<ReturnType<typeof getRuntimeSnapshot>>;
+
+type StreamContext = Awaited<ReturnType<typeof resolveContext>>;
+
 const streamVersionCache = new Map<
   string,
   { expiresAt: number; promise: Promise<RuntimeStreamVersion> }
+>();
+
+const snapshotCache = new Map<
+  string,
+  { expiresAt: number; promise: Promise<RuntimeSnapshot> }
 >();
 
 // This route is on the public allow-list, so every open EventSource would
@@ -38,6 +48,51 @@ function readCachedRuntimeStreamVersion(
 
   streamVersionCache.set(environment, {
     expiresAt: Date.now() + STREAM_VERSION_CACHE_MS,
+    promise,
+  });
+
+  return promise;
+}
+
+// getRuntimeSnapshot re-reads the stream marker internally, so an unauthenticated
+// open/close loop would spend four service-role queries per connection. Key the
+// cache on the marker the caller already read, so a version change still forces a
+// recompute while concurrent connections share one.
+function readCachedRuntimeSnapshot(
+  environment: string,
+  context: StreamContext,
+  streamVersion: string,
+): Promise<RuntimeSnapshot> {
+  const key = [
+    environment,
+    streamVersion,
+    context.userId ?? '',
+    context.orgId ?? '',
+  ].join('|');
+
+  const now = Date.now();
+  const cached = snapshotCache.get(key);
+  if (cached && cached.expiresAt > now) {
+    return cached.promise;
+  }
+
+  const promise = getRuntimeSnapshot({
+    environment,
+    context,
+    includePrivateFlags: false,
+  }).catch((error) => {
+    snapshotCache.delete(key);
+    throw error;
+  });
+
+  for (const [cachedKey, entry] of snapshotCache) {
+    if (entry.expiresAt <= now) {
+      snapshotCache.delete(cachedKey);
+    }
+  }
+
+  snapshotCache.set(key, {
+    expiresAt: now + SNAPSHOT_CACHE_MS,
     promise,
   });
 
@@ -111,12 +166,12 @@ export async function GET(request: Request) {
         return;
       }
 
-      const pushSnapshot = async () => {
-        const snapshot = await getRuntimeSnapshot({
+      const pushSnapshot = async (streamVersion: string) => {
+        const snapshot = await readCachedRuntimeSnapshot(
           environment,
           context,
-          includePrivateFlags: false,
-        });
+          streamVersion,
+        );
         writer.enqueue(encoder.encode(encodeSse(snapshot)));
       };
 
@@ -129,7 +184,7 @@ export async function GET(request: Request) {
         writer.enqueue(encoder.encode('retry: 1500\n\n'));
         writer.enqueue(encoder.encode(encodeSseComment('connected')));
 
-        await pushSnapshot();
+        await pushSnapshot(currentVersion);
 
         interval = setInterval(async () => {
           if (writer.isClosed()) return;
@@ -138,7 +193,7 @@ export async function GET(request: Request) {
             const marker = await readCachedRuntimeStreamVersion(environment);
             if (marker.streamVersion !== currentVersion) {
               currentVersion = marker.streamVersion;
-              await pushSnapshot();
+              await pushSnapshot(currentVersion);
               return;
             }
 

@@ -601,15 +601,38 @@ function getFullName(input: Record<string, unknown>) {
   return typeof input.displayName === 'string' ? input.displayName.trim() : '';
 }
 
+// auth.admin.listUsers() defaults to page 1 / perPage 50, so an
+// unpaginated call only ever searches the first 50 auth users. Walk
+// every page until a short page is returned, otherwise an existing
+// user sorting past page 1 is treated as new and createUser() fails
+// on the duplicate email — a permanent SCIM provisioning outage for
+// that user.
+const AUTH_USER_PAGE_SIZE = 200;
+const AUTH_USER_MAX_PAGES = 100;
+
 async function lookupUserByEmail(email: string) {
   const admin = createSupabaseAdminClient();
-  const { data } = await admin.auth.admin.listUsers();
-  return (
-    data?.users?.find(
-      (user: { email?: string }) =>
-        user.email?.toLowerCase() === email.toLowerCase(),
-    ) ?? null
-  );
+  const target = email.toLowerCase();
+
+  for (let page = 1; page <= AUTH_USER_MAX_PAGES; page += 1) {
+    const { data, error } = await admin.auth.admin.listUsers({
+      page,
+      perPage: AUTH_USER_PAGE_SIZE,
+    });
+
+    if (error) {
+      throw new Error(`Failed to look up SCIM user: ${error.message}`);
+    }
+
+    const users = data?.users ?? [];
+    const match = users.find(
+      (user: { email?: string }) => user.email?.toLowerCase() === target,
+    );
+    if (match) return match;
+    if (users.length < AUTH_USER_PAGE_SIZE) break;
+  }
+
+  return null;
 }
 
 export async function createUser(
@@ -631,7 +654,19 @@ export async function createUser(
     };
   }
 
-  let authUser = await lookupUserByEmail(email);
+  let authUser: Awaited<ReturnType<typeof lookupUserByEmail>>;
+  try {
+    authUser = await lookupUserByEmail(email);
+  } catch (error) {
+    return {
+      status: 500,
+      error: scimError(
+        500,
+        error instanceof Error ? error.message : 'Failed to look up SCIM user',
+      ),
+    };
+  }
+
   if (!authUser) {
     const created = await admin.auth.admin.createUser({
       email,
@@ -835,7 +870,10 @@ export async function updateUser(
     current[SCIM_ENTERPRISE_USER_EXTENSION]?.department ??
     null;
 
-  const membershipStatus = payload.active === false ? 'inactive' : 'active';
+  // PUT carries `active` straight from the IdP, so it needs the same
+  // "True"/"False" string normalisation the PATCH path applies.
+  const nextActive = normalizeScimActive(payload.active);
+  const membershipStatus = nextActive === false ? 'inactive' : 'active';
 
   // Only touch org_members.role when the request actually carries one — a
   // display-name or activation update must not demote an owner/admin.
@@ -882,6 +920,18 @@ export async function updateUser(
           'Failed to update user',
       ),
     };
+  }
+
+  // Deactivation is a deprovisioning event, not just a flag flip: an
+  // already-issued token keeps working until expiry unless the session
+  // watermark moves. Mirror deleteUser and revoke on the transition
+  // only, so a repeated no-op push from the IdP doesn't keep bumping it.
+  if (current.active && membershipStatus === 'inactive') {
+    try {
+      await revokeAllSessions(userId, { reason: 'scim_deprovision' });
+    } catch (err) {
+      consoleShim.error('[SCIM] updateUser: session revoke failed', err);
+    }
   }
 
   const updated = await getUser(orgId, userId, baseUrl);

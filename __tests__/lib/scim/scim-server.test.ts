@@ -233,6 +233,23 @@ function setupUser(
   });
 }
 
+// mockAdmin.from() reassigns chain.update on every call, so the getUser()
+// that runs after the write would drop the recorded org_members payload.
+// Pin a spy that survives those reassignments and collect what was written.
+function captureMemberUpdates(): Array<Record<string, unknown>> {
+  const payloads: Array<Record<string, unknown>> = [];
+  const updateSpy = jest.fn((payload: Record<string, unknown>) => {
+    payloads.push(payload);
+    return makeMutationChain();
+  });
+  Object.defineProperty(mockFromChains.org_members, 'update', {
+    get: () => updateSpy,
+    set: () => {},
+    configurable: true,
+  });
+  return payloads;
+}
+
 function setupGroup(ov: Record<string, unknown> = {}) {
   mockFromChains.scim_groups = makeChain({ data: [groupRow(ov)], error: null });
   mockGetGroupMembers.mockResolvedValue([]);
@@ -1101,21 +1118,49 @@ describe('updateUser', () => {
     ).toBe(200);
   });
 
-  it('PATCH no path applies to userName/displayName/active', async () => {
+  // RFC 7644 §3.5.2: a path-less value is an object of attribute paths, so a
+  // scalar has nothing to apply and must leave every attribute alone.
+  it('PATCH path-less scalar value changes no attribute', async () => {
     setupUser();
-    expect(
-      (
-        await updateUser(
-          ORG,
-          UID,
-          {
-            schemas: [SCIM_SCHEMA_PATCH],
-            Operations: [{ op: 'replace', value: 'val' }],
-          },
-          BASE,
-        )
-      ).status,
-    ).toBe(200);
+    const memberUpdates = captureMemberUpdates();
+    const result = await updateUser(
+      ORG,
+      UID,
+      {
+        schemas: [SCIM_SCHEMA_PATCH],
+        Operations: [{ op: 'replace', value: 'val' }],
+      },
+      BASE,
+    );
+
+    expect(result.status).toBe(200);
+    expect(memberUpdates).toHaveLength(1);
+    expect(memberUpdates[0]).toMatchObject({ compliance_status: 'active' });
+    expect(memberUpdates[0]).not.toHaveProperty('role');
+    expect(mockUpdateUserById).toHaveBeenCalledWith(
+      UID,
+      expect.objectContaining({
+        email: 'alice@example.com',
+        user_metadata: expect.objectContaining({ full_name: 'Alice Smith' }),
+      }),
+    );
+  });
+
+  it('PATCH path-less { active: false } deactivates the member', async () => {
+    setupUser();
+    const memberUpdates = captureMemberUpdates();
+    const result = await updateUser(
+      ORG,
+      UID,
+      {
+        schemas: [SCIM_SCHEMA_PATCH],
+        Operations: [{ op: 'replace', value: { active: false } }],
+      },
+      BASE,
+    );
+
+    expect(result.status).toBe(200);
+    expect(memberUpdates[0]).toMatchObject({ compliance_status: 'inactive' });
   });
 
   it('PATCH add name.givenName', async () => {
@@ -1284,6 +1329,53 @@ describe('updateUser', () => {
       (await updateUser(ORG, UID, { userName: 'alice@example.com' }, BASE))
         .status,
     ).toBe(200);
+  });
+
+  it('leaves role out of the member update when the payload carries none', async () => {
+    setupUser({ role: 'owner' });
+    const memberUpdates = captureMemberUpdates();
+    const result = await updateUser(
+      ORG,
+      UID,
+      { userName: 'alice@example.com', displayName: 'Alice Renamed' },
+      BASE,
+    );
+
+    expect(result.status).toBe(200);
+    expect(memberUpdates).toHaveLength(1);
+    expect(memberUpdates[0]).not.toHaveProperty('role');
+  });
+
+  it('writes role when the payload carries one', async () => {
+    setupUser({ role: 'owner' });
+    const memberUpdates = captureMemberUpdates();
+    const result = await updateUser(
+      ORG,
+      UID,
+      { userName: 'alice@example.com', roles: [{ value: 'viewer' }] },
+      BASE,
+    );
+
+    expect(result.status).toBe(200);
+    expect(memberUpdates[0]).toMatchObject({ role: 'viewer' });
+  });
+
+  it('PATCH replace active=false leaves role untouched', async () => {
+    setupUser({ role: 'owner' });
+    const memberUpdates = captureMemberUpdates();
+    const result = await updateUser(
+      ORG,
+      UID,
+      {
+        schemas: [SCIM_SCHEMA_PATCH],
+        Operations: [{ op: 'replace', path: 'active', value: false }],
+      },
+      BASE,
+    );
+
+    expect(result.status).toBe(200);
+    expect(memberUpdates[0]).toMatchObject({ compliance_status: 'inactive' });
+    expect(memberUpdates[0]).not.toHaveProperty('role');
   });
 });
 

@@ -28,6 +28,14 @@ const DEFAULT_INVITE_BASE = 'https://app.formaos.com.au';
 
 export const runtime = 'nodejs';
 
+// Only a signed-in owner may issue an owner invitation — accepting one
+// upserts org_members with the invited role verbatim. API-key access
+// carries no role, so it never qualifies. Mirrors the guard in
+// /api/v1/members/[memberId] and /api/v1/members/invite.
+function isOwnerActor(context: { accessType: string; role: string | null }) {
+  return context.accessType === 'session' && context.role === 'owner';
+}
+
 function getInviteBase() {
   const raw =
     (process.env.NEXT_PUBLIC_APP_URL ||
@@ -126,6 +134,16 @@ export async function POST(request: Request) {
     return response;
   }
   const { email, role } = validation.data;
+
+  if (role === 'owner' && !isOwnerActor(auth.context)) {
+    const response = jsonWithContext(
+      auth.context,
+      { error: 'Only owners can invite other owners' },
+      { status: 403 },
+    );
+    await logV1Access(auth.context, 403, 'members:write');
+    return response;
+  }
 
   const admin = createSupabaseAdminClient();
   const token = createInvitationToken();

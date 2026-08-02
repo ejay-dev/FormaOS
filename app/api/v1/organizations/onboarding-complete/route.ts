@@ -9,6 +9,7 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 const log = routeLog('/api/v1/organizations/onboarding-complete');
 
 export const runtime = 'nodejs';
+export const maxDuration = 60;
 
 export async function POST(request: Request) {
   try {
@@ -43,22 +44,40 @@ export async function POST(request: Request) {
     // Provision controls for all frameworks the org selected during onboarding.
     // This seeds org_control_evaluations so the compliance score starts at 0%
     // (real baseline) rather than showing blank/missing data.
-    const { data: orgFrameworks } = await admin
+    const { data: orgFrameworks, error: frameworksError } = await admin
       .from('org_frameworks')
       .select('framework_slug')
       .eq('organization_id', orgId);
 
+    if (frameworksError) {
+      log.warn(
+        { err: frameworksError },
+        '[onboarding-complete] Failed to load org frameworks',
+      );
+    }
+
     if (orgFrameworks && orgFrameworks.length > 0) {
-      for (const { framework_slug } of orgFrameworks) {
-        provisionFrameworkControls(orgId, framework_slug as string, {
-          force: true,
-        }).catch((err) => {
+      // Awaited: a serverless invocation is frozen once the response is
+      // returned, so fire-and-forget leaves provisioning half-written.
+      const results = await Promise.allSettled(
+        orgFrameworks.map(({ framework_slug }) =>
+          provisionFrameworkControls(orgId, framework_slug as string, {
+            force: true,
+          }),
+        ),
+      );
+
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
           log.warn(
-            { err, framework_slug },
+            {
+              err: result.reason,
+              framework_slug: orgFrameworks[index].framework_slug,
+            },
             '[onboarding-complete] Failed to provision controls',
           );
-        });
-      }
+        }
+      });
     }
 
     return NextResponse.json({ success: true });

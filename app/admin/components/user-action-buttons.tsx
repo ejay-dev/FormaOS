@@ -54,10 +54,7 @@ export function UserActionButtons({ userId, initialLocked: _initialLocked = fals
 
       const res = await fetch(endpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(reason ? { "x-admin-reason": reason } : {}),
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
 

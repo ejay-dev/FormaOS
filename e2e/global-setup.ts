@@ -1,25 +1,19 @@
 import fs from 'fs';
-import os from 'os';
-import path from 'path';
 import { config } from 'dotenv';
 import {
   getTestCredentials,
   createPasswordSession,
   createMagicLinkSession,
+  ensureE2ECacheDir,
+  E2E_SESSION_CACHE_PATH,
+  E2E_LEGACY_CACHE_PATHS,
 } from './helpers/test-auth';
 import type { Session } from '@supabase/supabase-js';
 
-// The cached session carries a live access_token and refresh_token for
-// the E2E user, which owns a real organization. It must never live under
-// `test-results/` — CI uploads that directory wholesale as a downloadable
-// build artifact, so anyone who can fetch the artifact could replay the
-// refresh token. Keep it in the runner's temp dir instead: outside the
-// repo, outside every artifact upload glob.
-const SESSION_CACHE_PATH = path.join(
-  os.tmpdir(),
-  'formaos-e2e',
-  'e2e-session-cache.json',
-);
+// The cache location is owned by e2e/helpers/test-auth.ts — the workers
+// read the pre-warmed session from that same constant, so it must not be
+// re-derived here.
+const SESSION_CACHE_PATH = E2E_SESSION_CACHE_PATH;
 
 // (Cookie-consent storageState is now written at playwright.config.ts
 // load time so it exists before contexts spawn; see CONSENT_STATE_PATH
@@ -36,6 +30,13 @@ const SESSION_CACHE_PATH = path.join(
  */
 export default async function globalSetup(): Promise<void> {
   config({ path: '.env.local' });
+
+  // Credentials written under test-results/ by an earlier revision are
+  // still picked up by the CI artifact uploads on any workspace that is
+  // not freshly cloned.
+  for (const legacyPath of E2E_LEGACY_CACHE_PATHS) {
+    fs.rmSync(legacyPath, { force: true });
+  }
 
   const baseUrl =
     process.env.PLAYWRIGHT_BASE_URL ||
@@ -116,10 +117,7 @@ async function prewarmSession(): Promise<void> {
   }
 
   if (session) {
-    fs.mkdirSync(path.dirname(SESSION_CACHE_PATH), {
-      recursive: true,
-      mode: 0o700,
-    });
+    ensureE2ECacheDir();
     fs.writeFileSync(SESSION_CACHE_PATH, JSON.stringify(session, null, 2), {
       mode: 0o600,
     });

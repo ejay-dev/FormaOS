@@ -86,6 +86,27 @@ export async function runScheduledAutomation(): Promise<{
   return results;
 }
 
+// PostgREST caps every select at its `max_rows` setting and truncates the
+// response silently, so marker lookups are walked in explicit ordered pages and
+// their filter lists are chunked to keep the request URL bounded.
+const MARKER_PAGE_SIZE = 500;
+const MARKER_FILTER_CHUNK_SIZE = 100;
+
+// The overdue check only considers tasks that crossed their due date recently.
+// Without the window it would replay the entire historic backlog at every
+// organization on its first run.
+const OVERDUE_LOOKBACK_DAYS = 7;
+const MAX_OVERDUE_TASKS_PER_RUN = 200;
+const OVERDUE_TRIGGER_CONCURRENCY = 10;
+
+function chunkValues<T>(values: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    chunks.push(values.slice(index, index + size));
+  }
+  return chunks;
+}
+
 /**
  * De-duplication marker for the nightly checks below.
  *
@@ -102,29 +123,103 @@ async function alreadyNotifiedIds(
   orgIds: string[],
 ): Promise<Set<string>> {
   const seen = new Set<string>();
+  const uniqueOrgIds = Array.from(new Set(orgIds));
 
-  if (orgIds.length === 0) {
+  if (uniqueOrgIds.length === 0) {
     return seen;
   }
 
-  const { data, error } = await supabase
-    .from('org_notifications')
-    .select('data')
-    .in('type', types)
-    .in('org_id', Array.from(new Set(orgIds)));
+  for (const orgChunk of chunkValues(uniqueOrgIds, MARKER_FILTER_CHUNK_SIZE)) {
+    for (let offset = 0; ; offset += MARKER_PAGE_SIZE) {
+      const { data, error } = await supabase
+        .from('org_notifications')
+        .select('id, data')
+        .in('type', types)
+        .in('org_id', orgChunk)
+        .order('id', { ascending: true })
+        .range(offset, offset + MARKER_PAGE_SIZE - 1);
 
-  if (error) {
-    throw new Error(
-      `Error fetching ${types.join('/')} notifications: ${error.message}`,
-    );
+      if (error) {
+        throw new Error(
+          `Error fetching ${types.join('/')} notifications: ${error.message}`,
+        );
+      }
+
+      const rows = (data ?? []) as Array<{
+        id: string;
+        data: Record<string, unknown> | null;
+      }>;
+
+      for (const row of rows) {
+        const value = row.data?.[dataKey];
+        if (typeof value === 'string') {
+          seen.add(value);
+        }
+      }
+
+      if (rows.length < MARKER_PAGE_SIZE) break;
+    }
   }
 
-  for (const row of (data ?? []) as Array<{
-    data: Record<string, unknown> | null;
-  }>) {
-    const value = row.data?.[dataKey];
-    if (typeof value === 'string') {
-      seen.add(value);
+  return seen;
+}
+
+/**
+ * Second de-duplication marker, for the checks whose handler creates a task
+ * before it writes any notification.
+ *
+ * The notification write can legitimately fail — org_notifications.user_id is
+ * NOT NULL and an organization may have no owner, admin or compliance officer —
+ * and the notification marker alone would then let the next run create another
+ * task for the same record, every night, forever. The handlers build these
+ * titles verbatim from the source record, so an existing task with that title
+ * is the marker for the side effect that actually happened first.
+ *
+ * Keyed on org_tasks.entity_id, which trigger-engine.ts stamps with the source
+ * record id. Titles are NOT unique — production has 79 colliding
+ * (organization_id, file_name) pairs — so a title-keyed marker silently
+ * suppresses genuinely distinct records.
+ *
+ * Returns the set of `${organization_id}::${entity_id}` pairs that already exist.
+ */
+async function existingTaskEntityIds(
+  supabase: ReturnType<typeof createSupabaseAdminClient>,
+  rows: Array<{ organizationId: string; entityId: string }>,
+): Promise<Set<string>> {
+  const seen = new Set<string>();
+
+  if (rows.length === 0) {
+    return seen;
+  }
+
+  for (const batch of chunkValues(rows, MARKER_FILTER_CHUNK_SIZE)) {
+    const orgIds = Array.from(new Set(batch.map((row) => row.organizationId)));
+    const entityIds = Array.from(new Set(batch.map((row) => row.entityId)));
+
+    for (let offset = 0; ; offset += MARKER_PAGE_SIZE) {
+      const { data, error } = await supabase
+        .from('org_tasks')
+        .select('id, organization_id, entity_id')
+        .in('organization_id', orgIds)
+        .in('entity_id', entityIds)
+        .order('id', { ascending: true })
+        .range(offset, offset + MARKER_PAGE_SIZE - 1);
+
+      if (error) {
+        throw new Error(`Error fetching existing tasks: ${error.message}`);
+      }
+
+      const found = (data ?? []) as Array<{
+        id: string;
+        organization_id: string;
+        entity_id: string | null;
+      }>;
+
+      for (const task of found) {
+        if (task.entity_id) seen.add(`${task.organization_id}::${task.entity_id}`);
+      }
+
+      if (found.length < MARKER_PAGE_SIZE) break;
     }
   }
 
@@ -179,8 +274,34 @@ async function checkExpiringEvidence(): Promise<{
     return results;
   }
 
-  const pendingEvidence = expiringEvidence.filter(
+  const notNotifiedEvidence = expiringEvidence.filter(
     (evidence: { id: string }) => !notified.has(evidence.id),
+  );
+
+  if (notNotifiedEvidence.length === 0) {
+    return results;
+  }
+
+  // handleEvidenceExpiry titles its renewal task `Renew Evidence: <file_name>`.
+  let renewalTasks: Set<string>;
+  try {
+    renewalTasks = await existingTaskEntityIds(
+      supabase,
+      notNotifiedEvidence.map((evidence: { organization_id: string; id: string }) => ({
+        organizationId: evidence.organization_id,
+        entityId: evidence.id,
+      })),
+    );
+  } catch (err) {
+    results.errors.push(
+      err instanceof Error ? err.message : 'Unknown error fetching existing tasks',
+    );
+    return results;
+  }
+
+  const pendingEvidence = notNotifiedEvidence.filter(
+    (evidence: { organization_id: string; id: string }) =>
+      !renewalTasks.has(`${evidence.organization_id}::${evidence.id}`),
   );
 
   if (pendingEvidence.length === 0) {
@@ -207,8 +328,16 @@ async function checkExpiringEvidence(): Promise<{
         triggeredAt: new Date(),
       };
 
-      await processTrigger(triggerEvent);
+      const outcome = await processTrigger(triggerEvent);
       results.triggersExecuted++;
+
+      if (outcome.errors.length > 0) {
+        results.errors.push(
+          ...outcome.errors.map(
+            (message) => `Evidence ${evidence.id}: ${message}`,
+          ),
+        );
+      }
     } catch (err) {
       results.errors.push(
         `Failed to process evidence ${evidence.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
@@ -266,8 +395,34 @@ async function checkPolicyReviews(): Promise<{
     return results;
   }
 
-  const pendingPolicies = policiesDueReview.filter(
+  const notNotifiedPolicies = policiesDueReview.filter(
     (policy: { id: string }) => !notified.has(policy.id),
+  );
+
+  if (notNotifiedPolicies.length === 0) {
+    return results;
+  }
+
+  // handlePolicyReviewDue stamps its review task with entity_id = policy id.
+  let reviewTasks: Set<string>;
+  try {
+    reviewTasks = await existingTaskEntityIds(
+      supabase,
+      notNotifiedPolicies.map((policy: { organization_id: string; id: string }) => ({
+        organizationId: policy.organization_id,
+        entityId: policy.id,
+      })),
+    );
+  } catch (err) {
+    results.errors.push(
+      err instanceof Error ? err.message : 'Unknown error fetching existing tasks',
+    );
+    return results;
+  }
+
+  const pendingPolicies = notNotifiedPolicies.filter(
+    (policy: { organization_id: string; id: string }) =>
+      !reviewTasks.has(`${policy.organization_id}::${policy.id}`),
   );
 
   if (pendingPolicies.length === 0) {
@@ -293,8 +448,14 @@ async function checkPolicyReviews(): Promise<{
         triggeredAt: new Date(),
       };
 
-      await processTrigger(triggerEvent);
+      const outcome = await processTrigger(triggerEvent);
       results.triggersExecuted++;
+
+      if (outcome.errors.length > 0) {
+        results.errors.push(
+          ...outcome.errors.map((message) => `Policy ${policy.id}: ${message}`),
+        );
+      }
     } catch (err) {
       results.errors.push(
         `Failed to process policy ${policy.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
@@ -316,13 +477,19 @@ async function checkOverdueTasks(): Promise<{
   const results = { triggersExecuted: 0, errors: [] as string[] };
 
   const now = new Date();
+  const overdueSince = new Date(now);
+  overdueSince.setDate(overdueSince.getDate() - OVERDUE_LOOKBACK_DAYS);
 
-  // Find overdue tasks
+  // Find tasks that went overdue inside the lookback window, newest first, so a
+  // long-standing backlog can never be escalated in a single run.
   const { data: overdueTasks, error } = await supabase
     .from('org_tasks')
     .select('id, organization_id, title, due_date, priority, assigned_to')
     .eq('status', 'pending')
-    .lt('due_date', now.toISOString());
+    .lt('due_date', now.toISOString())
+    .gte('due_date', overdueSince.toISOString())
+    .order('due_date', { ascending: false })
+    .limit(MAX_OVERDUE_TASKS_PER_RUN);
 
   if (error) {
     results.errors.push(`Error fetching overdue tasks: ${error.message}`);
@@ -361,35 +528,56 @@ async function checkOverdueTasks(): Promise<{
 
   automationLogger.info('overdue_tasks_found', { count: pendingTasks.length });
 
-  for (const task of pendingTasks) {
-    try {
-      const daysOverdue = Math.floor(
-        (now.getTime() - new Date(task.due_date).getTime()) /
-          (24 * 60 * 60 * 1000),
-      );
+  for (const batch of chunkValues(pendingTasks, OVERDUE_TRIGGER_CONCURRENCY)) {
+    await Promise.all(
+      batch.map(
+        async (task: {
+          id: string;
+          organization_id: string;
+          title: string;
+          due_date: string;
+          priority: string | null;
+          assigned_to: string | null;
+        }) => {
+          try {
+            const daysOverdue = Math.floor(
+              (now.getTime() - new Date(task.due_date).getTime()) /
+                (24 * 60 * 60 * 1000),
+            );
 
-      const triggerEvent: TriggerEvent = {
-        type: 'task_overdue',
-        organizationId: task.organization_id,
-        entityId: task.id,
-        entityType: 'task',
-        metadata: {
-          taskId: task.id,
-          title: task.title,
-          daysOverdue,
-          priority: task.priority,
-          assignedTo: task.assigned_to,
+            const triggerEvent: TriggerEvent = {
+              type: 'task_overdue',
+              organizationId: task.organization_id,
+              entityId: task.id,
+              entityType: 'task',
+              metadata: {
+                taskId: task.id,
+                title: task.title,
+                daysOverdue,
+                priority: task.priority,
+                assignedTo: task.assigned_to,
+              },
+              triggeredAt: new Date(),
+            };
+
+            const outcome = await processTrigger(triggerEvent);
+            results.triggersExecuted++;
+
+            if (outcome.errors.length > 0) {
+              results.errors.push(
+                ...outcome.errors.map(
+                  (message) => `Task ${task.id}: ${message}`,
+                ),
+              );
+            }
+          } catch (err) {
+            results.errors.push(
+              `Failed to process task ${task.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
+            );
+          }
         },
-        triggeredAt: new Date(),
-      };
-
-      await processTrigger(triggerEvent);
-      results.triggersExecuted++;
-    } catch (err) {
-      results.errors.push(
-        `Failed to process task ${task.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
-      );
-    }
+      ),
+    );
   }
 
   return results;
@@ -487,8 +675,16 @@ async function checkExpiringCertifications(): Promise<{
         triggeredAt: new Date(),
       };
 
-      await processTrigger(triggerEvent);
+      const outcome = await processTrigger(triggerEvent);
       results.triggersExecuted++;
+
+      if (outcome.errors.length > 0) {
+        results.errors.push(
+          ...outcome.errors.map(
+            (message) => `Certification ${cert.id}: ${message}`,
+          ),
+        );
+      }
     } catch (err) {
       results.errors.push(
         `Failed to process certification ${cert.id}: ${err instanceof Error ? err.message : 'Unknown error'}`,
@@ -570,7 +766,15 @@ async function updateAllComplianceScores(): Promise<{
                 triggeredAt: new Date(),
               };
 
-              await processTrigger(triggerEvent);
+              const outcome = await processTrigger(triggerEvent);
+
+              if (outcome.errors.length > 0) {
+                results.errors.push(
+                  ...outcome.errors.map(
+                    (message) => `Org ${org.id}: ${message}`,
+                  ),
+                );
+              }
             }
           }
         } catch (err) {

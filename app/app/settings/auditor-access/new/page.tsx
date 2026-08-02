@@ -130,6 +130,40 @@ export default async function NewAuditorAccessPage({
     );
   }
 
+  // The grant was created but the cookie carrying the one-time link is gone
+  // (past its 10 minute life, a different browser, or cookies blocked). The
+  // raw token is unrecoverable, so say so instead of falling through to a
+  // blank form that reads as if nothing happened.
+  if (issued && !issuedToken) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-6 p-6">
+        <div>
+          <h1 className="text-2xl font-bold">Link No Longer Available</h1>
+          <p className="text-sm text-muted-foreground">
+            The auditor access grant was created, but its one-time link can no
+            longer be shown. Revoke the grant on the access list and issue a new
+            one.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Link
+            href="/app/settings/auditor-access"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            Back to auditor access
+          </Link>
+          <Link
+            href="/app/settings/auditor-access/new"
+            className="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted"
+          >
+            Issue a new grant
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">
       <div className="flex items-center gap-3">

@@ -28,6 +28,19 @@ function readRecordRole(record: unknown): string | null {
   return typeof role === 'string' ? role.toLowerCase() : null;
 }
 
+// Mirrors updateMemberRole in app/app/actions/team.ts: an org must keep at
+// least one owner, so the last owner can neither be demoted nor removed.
+async function isLastOwner(orgId: string, db: SupabaseClient) {
+  const { count, error } = await db
+    .from('org_members')
+    .select('id', { count: 'exact', head: true })
+    .eq('organization_id', orgId)
+    .eq('role', 'owner');
+
+  if (error) return null;
+  return (count ?? 0) <= 1;
+}
+
 async function findMemberRecord(
   orgId: string,
   memberId: string,
@@ -131,9 +144,11 @@ export async function PATCH(request: Request, context: RouteContext) {
     return response;
   }
 
+  const currentRole = readRecordRole(target.record);
+
   if (
     !isOwnerActor(auth.context) &&
-    (role === 'owner' || readRecordRole(target.record) === 'owner')
+    (role === 'owner' || currentRole === 'owner')
   ) {
     const response = jsonWithContext(
       auth.context,
@@ -142,6 +157,31 @@ export async function PATCH(request: Request, context: RouteContext) {
     );
     await logV1Access(auth.context, 403, 'members:write');
     return response;
+  }
+
+  if (target.kind === 'member' && currentRole === 'owner' && role !== 'owner') {
+    const lastOwner = await isLastOwner(auth.context.orgId, auth.context.db);
+    if (lastOwner === null) {
+      const response = jsonWithContext(
+        auth.context,
+        { error: 'Failed to update member' },
+        { status: 500 },
+      );
+      await logV1Access(auth.context, 500, 'members:write');
+      return response;
+    }
+    if (lastOwner) {
+      const response = jsonWithContext(
+        auth.context,
+        {
+          error:
+            'Cannot demote the last remaining owner. Promote another member first.',
+        },
+        { status: 409 },
+      );
+      await logV1Access(auth.context, 409, 'members:write');
+      return response;
+    }
   }
 
   const actorId = getActorId(auth.context);
@@ -228,7 +268,9 @@ export async function DELETE(request: Request, context: RouteContext) {
     return response;
   }
 
-  if (!isOwnerActor(auth.context) && readRecordRole(target.record) === 'owner') {
+  const targetRole = readRecordRole(target.record);
+
+  if (!isOwnerActor(auth.context) && targetRole === 'owner') {
     const response = jsonWithContext(
       auth.context,
       { error: 'Forbidden - only owners can remove an owner' },
@@ -236,6 +278,31 @@ export async function DELETE(request: Request, context: RouteContext) {
     );
     await logV1Access(auth.context, 403, 'members:write');
     return response;
+  }
+
+  if (target.kind === 'member' && targetRole === 'owner') {
+    const lastOwner = await isLastOwner(auth.context.orgId, auth.context.db);
+    if (lastOwner === null) {
+      const response = jsonWithContext(
+        auth.context,
+        { error: 'Failed to remove member' },
+        { status: 500 },
+      );
+      await logV1Access(auth.context, 500, 'members:write');
+      return response;
+    }
+    if (lastOwner) {
+      const response = jsonWithContext(
+        auth.context,
+        {
+          error:
+            'Cannot remove the last remaining owner. Promote another member first.',
+        },
+        { status: 409 },
+      );
+      await logV1Access(auth.context, 409, 'members:write');
+      return response;
+    }
   }
 
   const actorId = getActorId(auth.context);

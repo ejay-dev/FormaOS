@@ -50,27 +50,37 @@ export default async function NewCredentialPage() {
     ),
   );
 
-  const { data: profiles } =
-    memberIds.length > 0
-      ? await db
-          .from('user_profiles')
-          .select('user_id, full_name, email')
-          .in('user_id', memberIds)
-      : {
-          data: [] as {
-            user_id?: string;
-            full_name?: string | null;
-            email?: string | null;
-          }[],
-        };
+  let profiles: {
+    user_id?: string;
+    full_name?: string | null;
+    email?: string | null;
+  }[] = [];
+
+  if (memberIds.length > 0) {
+    const { data: profileRows, error: profilesError } = await db
+      .from('user_profiles')
+      .select('user_id, full_name, email')
+      .in('user_id', memberIds);
+
+    if (profilesError) {
+      throw new Error(
+        `Failed to load staff profiles: ${profilesError.message}`,
+      );
+    }
+
+    profiles = profileRows ?? [];
+  }
 
   const profileLabelById = new Map(
-    (profiles ?? []).map((profile) => [
-      profile.user_id as string,
-      (profile.full_name as string | null)?.trim() ||
-        (profile.email as string | null)?.trim() ||
-        (profile.user_id as string),
-    ]),
+    profiles.map(
+      (profile) =>
+        [
+          profile.user_id as string,
+          (profile.full_name as string | null)?.trim() ||
+            (profile.email as string | null)?.trim() ||
+            (profile.user_id as string),
+        ] as const,
+    ),
   );
 
   const staffMembers = memberIds.map((userId) => ({

@@ -39,7 +39,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/trial/extend`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-reason": reason },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ days, reason }),
       })
       if (!res.ok) {
@@ -62,7 +62,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/trial/reset`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-reason": reason },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),
       })
       if (!res.ok) {
@@ -85,7 +85,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
     try {
       const res = await fetch(`/api/admin/subscriptions/${orgId}/resync-stripe`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-reason": reason },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),
       })
       if (!res.ok) {
@@ -108,7 +108,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/billing/retry-invoice`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-reason": reason },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),
       })
       const data = await res.json().catch(() => ({}))
@@ -139,7 +139,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/billing/refund`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-reason": reason },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),
       })
       const data = await res.json().catch(() => ({}))

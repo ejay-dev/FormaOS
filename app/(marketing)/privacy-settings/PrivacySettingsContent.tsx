@@ -3,69 +3,22 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, ArrowLeft, ArrowRight, Download, ShieldCheck, X } from 'lucide-react';
+import {
+  ANALYTICS_CONSENT_COOKIE,
+  applyAnalyticsConsent,
+  readAnalyticsConsent,
+  type AnalyticsConsentValue,
+} from '@/lib/monitoring/analytics';
 
-const CONSENT_COOKIE = 'formaos_cookie_consent';
 const CONSENT_MAX_AGE_DAYS = 365;
 
-type ConsentValue = 'accepted' | 'rejected' | null;
-
-type PostHogConsentApi = {
-  opt_in_capturing?: () => void;
-  opt_out_capturing?: () => void;
-};
-
-// PostHog may still be loading when the visitor makes a choice, so retry
-// briefly instead of dropping the decision.
-const POSTHOG_WAIT_ATTEMPTS = 10;
-const POSTHOG_WAIT_MS = 500;
-
-/**
- * Apply the consent decision to the running analytics client. posthog-js
- * persists opt-in/opt-out, so this also suppresses capture and session
- * recording on later page loads, not just this one.
- */
-function applyAnalyticsConsent(value: ConsentValue) {
-  if (typeof window === 'undefined') return;
-
-  let attempts = 0;
-  const apply = () => {
-    const posthog = (window as Window & { posthog?: PostHogConsentApi })
-      .posthog;
-
-    if (!posthog) {
-      attempts += 1;
-      if (attempts < POSTHOG_WAIT_ATTEMPTS) {
-        window.setTimeout(apply, POSTHOG_WAIT_MS);
-      }
-      return;
-    }
-
-    if (value === 'accepted') {
-      posthog.opt_in_capturing?.();
-    } else {
-      posthog.opt_out_capturing?.();
-    }
-  };
-
-  apply();
-}
-
-function readConsent(): ConsentValue {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith(`${CONSENT_COOKIE}=`));
-  if (!match) return null;
-  const value = match.split('=')[1];
-  if (value === 'accepted' || value === 'rejected') return value;
-  return null;
-}
+type ConsentValue = AnalyticsConsentValue;
 
 function writeConsent(value: 'accepted' | 'rejected') {
   if (typeof document === 'undefined') return;
   const maxAge = CONSENT_MAX_AGE_DAYS * 24 * 60 * 60;
   const secure = window.location.protocol === 'https:' ? '; Secure' : '';
-  document.cookie = `${CONSENT_COOKIE}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+  document.cookie = `${ANALYTICS_CONSENT_COOKIE}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
   applyAnalyticsConsent(value);
   window.dispatchEvent(
     new CustomEvent('formaos:cookie-consent', { detail: { value } }),
@@ -74,7 +27,7 @@ function writeConsent(value: 'accepted' | 'rejected') {
 
 function clearConsent() {
   if (typeof document === 'undefined') return;
-  document.cookie = `${CONSENT_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
+  document.cookie = `${ANALYTICS_CONSENT_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
   // No stored preference means no consent, so capture stays off until the
   // visitor accepts again.
   applyAnalyticsConsent(null);
@@ -89,10 +42,15 @@ export default function PrivacySettingsContent() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const current = readConsent();
+    const current = readAnalyticsConsent();
     setConsent(current);
     setMounted(true);
-    applyAnalyticsConsent(current);
+    // Only re-assert an explicit decision. Opting out here when nothing is
+    // stored would persist that opt-out in posthog-js just for viewing this
+    // page, and no consent already means capture is off by default.
+    if (current !== null) {
+      applyAnalyticsConsent(current);
+    }
   }, []);
 
   const accept = () => {
