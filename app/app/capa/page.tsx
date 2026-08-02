@@ -126,19 +126,20 @@ export default async function CAPAPage({
           </div>
         </div>
         <div className="page-content">
-          <section className="rounded-lg border border-cyan-400/30 bg-cyan-500/10 p-6">
+          <section className="rounded-lg border border-border bg-card p-6">
             <h2 className="text-lg font-semibold text-foreground">
-              CAPA management is not enabled
+              CAPA is not included in your current plan
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              CAPA creation, ownership, evidence, verification, and closure
-              require the capa_management entitlement.
+              Upgrading turns on corrective and preventive actions: raising a
+              CAPA, assigning an owner, attaching evidence, and recording
+              verification and closure.
             </p>
             <Link
               href="/app/billing"
-              className="mt-5 inline-flex rounded-md border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+              className="mt-5 inline-flex rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
-              Review Billing
+              View plans
             </Link>
           </section>
         </div>

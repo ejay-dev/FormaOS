@@ -52,7 +52,7 @@ export default async function WorkflowsPage() {
 
         <div className="page-content">
           <section
-            className="rounded-[28px] border border-cyan-400/30 bg-cyan-500/10 p-6"
+            className="rounded-[28px] border border-border bg-card p-6"
             data-testid="workflow-entitlement-disabled"
           >
             <h2 className="text-lg font-semibold text-foreground">
@@ -66,7 +66,7 @@ export default async function WorkflowsPage() {
             <div className="mt-5 flex flex-wrap gap-2">
               <a
                 href="/app/billing"
-                className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+                className="inline-flex items-center gap-2 rounded-xl border bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
               >
                 Review Billing
               </a>

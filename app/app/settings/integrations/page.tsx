@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { PlugZap, Workflow } from 'lucide-react';
+import { PlugZap } from 'lucide-react';
 import { getIntegrationStatus, listConnectedIntegrations } from '@/lib/integrations/manager';
 import { IntegrationCatalog, type IntegrationCatalogItem } from '@/components/integrations/integration-catalog';
 import { fetchSystemState } from '@/lib/system-state/server';
@@ -71,49 +71,37 @@ export default async function IntegrationSettingsPage() {
           ← Back to Settings
         </Link>
         <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-300">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
             <PlugZap className="h-6 w-6" />
           </div>
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              Integration Control Plane
+              Integrations
             </h1>
             <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
-              Connect customer-facing channels, issue trackers, and evidence repositories.
-              Every integration on this page flows through the same delivery, audit, and health model
-              as the new v1 API.
+              Connect messaging channels, issue trackers, and evidence
+              repositories. Every integration is delivered, logged, and health
+              checked the same way.
             </p>
           </div>
         </div>
       </header>
 
-      <section className="grid gap-4 rounded-[2rem] border border-edge-2 bg-surface-1 p-6 md:grid-cols-3">
-        <div className="rounded-2xl border border-edge-2 bg-background/50 p-4">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
-            Connected
-          </p>
-          <p className="mt-3 text-3xl font-black text-foreground">
+      {/* The third tile here used to be labelled "Event Fanout" and contained
+          a sentence rather than a number, so a stat row read as two facts and
+          one slogan. */}
+      <section className="grid gap-4 rounded-2xl border border-edge-2 bg-surface-1 p-6 sm:grid-cols-2">
+        <div className="rounded-xl border border-edge-2 bg-background/50 p-4">
+          <p className="text-sm text-muted-foreground">Connected</p>
+          <p className="mt-2 text-3xl font-semibold text-foreground">
             {items.filter((item) => item.connected).length}
           </p>
         </div>
-        <div className="rounded-2xl border border-edge-2 bg-background/50 p-4">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
-            Healthy
-          </p>
-          <p className="mt-3 text-3xl font-black text-foreground">
+        <div className="rounded-xl border border-edge-2 bg-background/50 p-4">
+          <p className="text-sm text-muted-foreground">Healthy</p>
+          <p className="mt-2 text-3xl font-semibold text-foreground">
             {items.filter((item) => item.health === 'healthy').length}
           </p>
-        </div>
-        <div className="rounded-2xl border border-edge-2 bg-background/50 p-4">
-          <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
-            Event Fanout
-          </p>
-          <div className="mt-3 flex items-center gap-2 text-foreground">
-            <Workflow className="h-5 w-5 text-cyan-300" />
-            <span className="text-sm font-semibold">
-              Webhooks, notifications, and external systems share one delivery plane.
-            </span>
-          </div>
         </div>
       </section>
 

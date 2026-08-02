@@ -130,7 +130,7 @@ export default async function RetentionPage({
     return (
       <div className="mx-auto max-w-5xl space-y-6 p-6">
         <RetentionHeader />
-        <section className="rounded-lg border border-cyan-400/30 bg-cyan-500/10 p-6">
+        <section className="rounded-lg border border-border bg-card p-6">
           <h2 className="text-lg font-semibold text-foreground">
             Retention governance is an Enterprise feature
           </h2>
@@ -140,7 +140,7 @@ export default async function RetentionPage({
           </p>
           <a
             href="/app/billing"
-            className="mt-5 inline-flex rounded-md border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+            className="mt-5 inline-flex rounded-md border bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             Review Billing
           </a>

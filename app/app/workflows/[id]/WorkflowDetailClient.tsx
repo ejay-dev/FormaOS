@@ -105,7 +105,7 @@ export function WorkflowDetailClient({
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+            className="inline-flex items-center gap-2 rounded-xl border bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
             onClick={runWorkflow}
             disabled={isPending}
           >
@@ -116,9 +116,9 @@ export function WorkflowDetailClient({
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <MetricCard icon={<Workflow className="h-5 w-5 text-cyan-300" />} label="Executions" value={String(metrics.total)} />
-        <MetricCard icon={<Clock3 className="h-5 w-5 text-cyan-300" />} label="Success Rate" value={`${metrics.successRate}%`} />
-        <MetricCard icon={<Settings2 className="h-5 w-5 text-cyan-300" />} label="Version" value={`v${currentWorkflow.version}`} />
+        <MetricCard icon={<Workflow className="h-5 w-5 text-muted-foreground" />} label="Executions" value={String(metrics.total)} />
+        <MetricCard icon={<Clock3 className="h-5 w-5 text-muted-foreground" />} label="Success Rate" value={`${metrics.successRate}%`} />
+        <MetricCard icon={<Settings2 className="h-5 w-5 text-muted-foreground" />} label="Version" value={`v${currentWorkflow.version}`} />
       </div>
 
       {operationError ? (
@@ -138,7 +138,7 @@ export function WorkflowDetailClient({
             key={tab}
             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
               activeTab === tab
-                ? 'bg-cyan-500/15 text-cyan-100'
+                ? 'bg-secondary text-secondary-foreground'
                 : 'bg-background/70 text-foreground/70 hover:bg-white/[0.06]'
             }`}
             onClick={() => setActiveTab(tab as Tab)}
@@ -186,7 +186,7 @@ export function WorkflowDetailClient({
           <div className="grid gap-4 md:grid-cols-2">
             <SettingField label="Name">
               <input
-                className="w-full rounded-xl border border-edge-2 bg-background/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
+                className="w-full rounded-xl border border-edge-2 bg-background/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-ring"
                 value={currentWorkflow.name}
                 onChange={(event) =>
                   setCurrentWorkflow((current) => ({
@@ -198,7 +198,7 @@ export function WorkflowDetailClient({
             </SettingField>
             <SettingField label="Trigger Type">
               <input
-                className="w-full rounded-xl border border-edge-2 bg-background/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
+                className="w-full rounded-xl border border-edge-2 bg-background/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-ring"
                 value={currentWorkflow.trigger.type}
                 onChange={(event) =>
                   setCurrentWorkflow((current) => ({
@@ -238,7 +238,7 @@ export function WorkflowDetailClient({
               Description
             </p>
             <textarea
-              className="mt-3 min-h-28 w-full rounded-xl border border-edge-2 bg-background/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
+              className="mt-3 min-h-28 w-full rounded-xl border border-edge-2 bg-background/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-ring"
               value={currentWorkflow.description}
               onChange={(event) =>
                 setCurrentWorkflow((current) => ({
@@ -251,7 +251,7 @@ export function WorkflowDetailClient({
           <div className="mt-6 flex justify-end">
             <button
               type="button"
-              className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+              className="rounded-xl border bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
               onClick={saveSettings}
             >
               Save Settings
