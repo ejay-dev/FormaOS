@@ -1,5 +1,12 @@
 // Centralized brand configuration and guard
 // Single source of truth for all branding across the app
+import {
+  DISTINCT_FRAMEWORK_COUNT,
+  DISTINCT_FRAMEWORK_NAMES,
+  FRAMEWORK_CONTROL_COUNT,
+  FRAMEWORK_PACK_COUNT,
+  FRAMEWORK_PACK_NAMES,
+} from '@/lib/marketing/claims';
 
 export const brand = {
   appName: 'FormaOS',
@@ -34,6 +41,13 @@ export const brand = {
       process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@formaos.com.au',
     senderName: 'FormaOS',
     senderEmail: process.env.RESEND_FROM_EMAIL || 'support@formaos.com.au',
+    // Billing/procurement contact shown on paid surfaces. The billing page,
+    // checkout error copy and plan comparison previously printed the raw
+    // Formaos.team@gmail.com address — a consumer mailbox on the screen that
+    // asks an enterprise buyer for money, which reads as an unvetted vendor
+    // during procurement review.
+    billingEmail:
+      process.env.NEXT_PUBLIC_BILLING_EMAIL || 'billing@formaos.com.au',
   },
   // Canonical company address. Mirrors the JSON-LD PostalAddress
   // emitted from lib/seo.ts so visible copy and structured data can't
@@ -62,20 +76,23 @@ export const brand = {
     ).trim(),
     ogImage: '/og-image.png',
   },
-  /** Framework packs shipped and mapped with live controls */
+  /**
+   * Framework packs shipped and mapped with live controls.
+   *
+   * Derived from PACK_REGISTRY and the pack files rather than typed by
+   * hand: the hardcoded values here had fallen to 8 packs / 70 controls
+   * while the product shipped 11 packs / 271 controls, and pages that
+   * bypassed this constant published four different pack counts between
+   * them. See lib/marketing/claims.ts.
+   */
   frameworks: {
-    count: 8,
-    controlCount: 70,
-    packs: [
-      'ISO 27001',
-      'SOC 2',
-      'NIST CSF',
-      'HIPAA',
-      'GDPR',
-      'PCI DSS',
-      'CIS Controls',
-      'AU Financial Services',
-    ] as const,
+    /** Distinct standards covered — use wherever copy says "frameworks". */
+    count: DISTINCT_FRAMEWORK_COUNT,
+    /** Installable packs — use wherever copy says "packs". */
+    packCount: FRAMEWORK_PACK_COUNT,
+    controlCount: FRAMEWORK_CONTROL_COUNT,
+    packs: FRAMEWORK_PACK_NAMES,
+    names: DISTINCT_FRAMEWORK_NAMES,
   },
 } as const;
 
