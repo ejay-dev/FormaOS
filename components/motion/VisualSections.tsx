@@ -119,16 +119,16 @@ export function VisualDivider({ gradient = true }: { gradient?: boolean }) {
 // Section header with animated underline
 interface SectionHeaderProps {
   badge?: string;
+  /** Accepted and ignored — see the badge comment in the body. */
   badgeIcon?: ReactNode;
   title: ReactNode;
   subtitle?: string;
   alignment?: "left" | "center";
 }
 
-export function SectionHeader({ 
-  badge, 
-  badgeIcon,
-  title, 
+export function SectionHeader({
+  badge,
+  title,
   subtitle,
   alignment = "center"
 }: SectionHeaderProps) {
@@ -144,26 +144,16 @@ export function SectionHeader({
       transition={{ duration: shouldReduceMotion ? 0 : 0.7 }}
       className={`flex flex-col ${alignmentClasses} mb-16 lg:mb-24`}
     >
+      {/* The badge was a glass pill in uppercase wide tracking whose icon
+          rotated on an infinite loop, and this header is stamped several
+          times per page by the landing templates — so a single page carried
+          four identical pills, each with something wiggling in it. A label
+          above a heading is only worth rendering when it says something the
+          heading does not, and then it can be plain text. */}
       {badge && (
-        <motion.div 
-          initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.9 }}
-          whileInView={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : 0.1 }}
-          className="inline-flex items-center gap-2.5 glass-panel-strong rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-wider mb-8 border border-primary/20 shadow-lg"
-        >
-          {badgeIcon && (
-            <motion.div
-              animate={shouldReduceMotion ? undefined : { rotate: [0, 5, -5, 0] }}
-              transition={shouldReduceMotion ? undefined : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            >
-              {badgeIcon}
-            </motion.div>
-          )}
-          <span>{badge}</span>
-        </motion.div>
+        <p className="mb-4 text-sm font-medium text-foreground/60">{badge}</p>
       )}
-      
+
       <h2 className={`text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold font-display mb-6 max-w-4xl ${maxWidthClass} leading-[1.1]`}>
         {title}
       </h2>
@@ -180,18 +170,6 @@ export function SectionHeader({
         </motion.p>
       )}
 
-      {/* Animated underline with glow */}
-      <motion.div
-        initial={shouldReduceMotion ? false : { scaleX: 0, opacity: 0 }}
-        whileInView={shouldReduceMotion ? undefined : { scaleX: 1, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: shouldReduceMotion ? 0 : 0.8, delay: shouldReduceMotion ? 0 : 0.3 }}
-        className="relative h-1 w-28 mt-8"
-        style={{ originX: alignment === "center" ? 0.5 : 0 }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary rounded-full" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary rounded-full blur-md opacity-60" />
-      </motion.div>
     </motion.div>
   );
 }

@@ -142,7 +142,6 @@ export function SeoLandingTemplate({
       <DeferredSection minHeight={400}>
         <section className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <SectionHeader
-            badge="How FormaOS Helps"
             title="From obligation to operational control"
             subtitle="FormaOS transforms compliance requirements into executable workflows with built-in evidence capture."
           />
@@ -185,7 +184,7 @@ export function SeoLandingTemplate({
       <DeferredSection minHeight={400}>
         <section className="relative mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
           <SectionHeader
-            badge="Comparison"
+            alignment="left"
             title={comparison.title}
             subtitle={comparison.subtitle}
           />
@@ -255,7 +254,7 @@ export function SeoLandingTemplate({
       {/* FAQ / Structured Answers */}
       <DeferredSection minHeight={400}>
         <section className="relative mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
-          <SectionHeader badge="FAQ" title="Common questions" />
+          <SectionHeader alignment="left" title="Common questions" />
           <div className="mt-8 space-y-6">
             {faq.map((item, idx) => (
               <ScrollReveal key={item.question} variant="fadeUp" range={[0, 0.25 + idx * 0.04]}>
@@ -274,7 +273,7 @@ export function SeoLandingTemplate({
       {/* Related internal links */}
       <DeferredSection minHeight={200}>
         <section className="relative mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8">
-          <SectionHeader badge="Related" title="Explore more" />
+          <SectionHeader alignment="left" title="Explore more" />
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {relatedLinks.map((link) => (
               <HoverLift key={link.href}>
