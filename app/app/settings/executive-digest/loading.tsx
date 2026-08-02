@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Executive Digest" cards={2} tableRows={4} />;
+export default function AppSettingsExecutiveDigestLoading() {
+  return <PageSkeleton title="Executive digest" cards={2} tableRows={4} />;
 }

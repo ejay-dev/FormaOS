@@ -1,79 +1,61 @@
 'use client';
 
-import { BookOpen, Search, Rocket, Code, Shield, Zap } from 'lucide-react';
+import Link from 'next/link';
+import { BookOpen, Code, Shield, Scale, Activity } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { DocsHeroVisual } from './DocsHeroVisual';
 
 const quickLinks = [
   {
-    title: 'Quick Start',
-    description: 'Get running in 15 minutes',
-    icon: Rocket,
-    href: '#getting-started',
-  },
-  {
-    title: 'API Reference',
-    description: 'Complete API documentation',
+    title: 'API reference',
+    description: 'Endpoints, scopes, and the OpenAPI spec',
     icon: Code,
-    href: '#integrations',
+    href: '/documentation/api',
   },
   {
-    title: 'Security Docs',
-    description: 'Enterprise security details',
+    title: 'Security',
+    description: 'Encryption, isolation, and audit integrity',
     icon: Shield,
-    href: '#security',
+    href: '/security',
   },
   {
-    title: 'Troubleshooting',
-    description: 'Solve common issues',
-    icon: Zap,
-    href: '#support',
+    title: 'Trust Center',
+    description: 'DPA, sub-processors, SLA, and incidents',
+    icon: Scale,
+    href: '/trust',
+  },
+  {
+    title: 'Platform status',
+    description: 'Live subsystem health checks',
+    icon: Activity,
+    href: '/status',
   },
 ];
 
 function DocsHeroExtras() {
   return (
-    <>
-      {/* Search bar */}
-      <div className="w-full max-w-xl mx-auto mb-10 relative">
-        <div className="relative">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search documentation..."
-            className="w-full pl-14 pr-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all backdrop-blur-sm text-lg"
-          />
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-xs text-gray-500 bg-white/[0.06] px-2 py-1 rounded-md border border-white/[0.1]">
-            <span>⌘</span>
-            <span>K</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick links */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl mx-auto">
-        {quickLinks.map((link) => {
-          const Icon = link.icon;
-          return (
-            <a
-              key={link.title}
-              href={link.href}
-              className="group flex flex-col items-center text-center p-4 rounded-xl backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/[0.08] hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300"
-            >
-              <div className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                <Icon className="w-5 h-5 text-slate-300" />
-              </div>
-              <span className="text-sm font-medium text-white group-hover:text-slate-200 transition-colors">
-                {link.title}
-              </span>
-              <span className="text-xs text-gray-500 mt-1">
-                {link.description}
-              </span>
-            </a>
-          );
-        })}
-      </div>
-    </>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-3xl mx-auto">
+      {quickLinks.map((link) => {
+        const Icon = link.icon;
+        return (
+          <Link
+            key={link.title}
+            href={link.href}
+            className="group flex flex-col items-center text-center p-4 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300"
+          >
+            <div className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center mb-2">
+              <Icon className="w-5 h-5 text-slate-300" />
+            </div>
+            <span className="text-sm font-medium text-white group-hover:text-slate-200 transition-colors">
+              {link.title}
+            </span>
+            <span className="text-xs text-slate-500 mt-1">
+              {link.description}
+            </span>
+          </Link>
+        );
+      })}
+    </div>
   );
 }
 
@@ -84,7 +66,7 @@ export function DocsHero() {
       visualContent={<DocsHeroVisual />}
       badge={{
         icon: <BookOpen className="w-4 h-4" />,
-        text: 'Knowledge Base',
+        text: 'Documentation',
       }}
       headline={
         <>
@@ -94,9 +76,9 @@ export function DocsHero() {
           </span>
         </>
       }
-      subheadline="Comprehensive guides, tutorials, and API references to help you master the compliance operating system."
+      subheadline="The API reference, the security and procurement documents, and the operational pages, indexed in one place."
       extras={<DocsHeroExtras />}
-      primaryCta={{ href: '#getting-started', label: 'Open Guides' }}
+      primaryCta={{ href: '/documentation/api', label: 'Open the API reference' }}
     />
   );
 }

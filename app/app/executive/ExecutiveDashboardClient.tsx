@@ -344,7 +344,7 @@ export function ExecutiveDashboardClient({
                   >
                     <div className="flex items-center gap-2 mb-1.5">
                       <cell.icon className="h-3.5 w-3.5 text-muted-foreground" />
-                      <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground truncate">
+                      <p className="truncate text-xs text-muted-foreground">
                         {cell.label}
                       </p>
                     </div>
@@ -401,7 +401,7 @@ export function ExecutiveDashboardClient({
 
             {/* Automation Metrics */}
             <div className="rounded-lg border border-border bg-card p-4">
-              <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
+              <h4 className="mb-2 text-sm font-medium text-muted-foreground">
                 Automation Performance
               </h4>
               <div className="space-y-2">

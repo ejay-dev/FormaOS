@@ -158,9 +158,7 @@ export default async function ParticipantDetailPage({
             <ArrowLeft className="h-4 w-4" />
             Back to {label.toLowerCase()} list
           </Link>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {profile.full_name}
-          </h1>
+          <h1 className="page-title">{profile.full_name}</h1>
           <p className="text-sm text-muted-foreground">
             {label} profile and linked operations
           </p>
@@ -184,12 +182,12 @@ export default async function ParticipantDetailPage({
       </div>
 
       {profile.emergency_flag || profile.risk_level === 'critical' ? (
-        <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 px-5 py-4 text-rose-100">
-          <div className="inline-flex items-center gap-2 text-sm font-semibold">
+        <div className="rounded-xl border border-destructive/40 bg-destructive/10 px-5 py-4">
+          <div className="inline-flex items-center gap-2 text-sm font-semibold text-destructive">
             <ShieldAlert className="h-4 w-4" />
             Elevated risk profile
           </div>
-          <p className="mt-1 text-xs text-rose-200">
+          <p className="mt-1 text-xs text-foreground">
             This {label.toLowerCase()} has emergency or critical-risk markers.
           </p>
         </div>
@@ -200,13 +198,13 @@ export default async function ParticipantDetailPage({
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Active Incidents
           </p>
-          <p className="mt-1 text-2xl font-black">{openIncidents}</p>
+          <p className="mt-1 text-2xl font-semibold">{openIncidents}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Recent Visits
           </p>
-          <p className="mt-1 text-2xl font-black">
+          <p className="mt-1 text-2xl font-semibold">
             {recentVisits?.length ?? 0}
           </p>
         </div>
@@ -214,7 +212,7 @@ export default async function ParticipantDetailPage({
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Care Status
           </p>
-          <p className="mt-1 text-2xl font-black capitalize">
+          <p className="mt-1 text-2xl font-semibold capitalize">
             {profile.care_status}
           </p>
         </div>

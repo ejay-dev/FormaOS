@@ -15,7 +15,7 @@ import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 const comparisons = [
   {
     href: '/compare/complispace',
-    name: 'Ideagen Policy Logic',
+    name: 'Ideagen CompliSpace',
     tagline:
       'Enterprise GRC training + policy management vs operational compliance execution',
   },
@@ -108,9 +108,9 @@ export default function CompareIndexContent() {
               <motion.div key={c.href} whileHover={{ y: -6 }}>
                 <Link
                   href={c.href}
-                  className="group block rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                  className="group block rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
                 >
-                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <div className="text-xs font-semibold text-slate-400">
                     Compare
                   </div>
                   <div className="mt-2 text-xl font-semibold text-white">
@@ -147,7 +147,7 @@ export default function CompareIndexContent() {
           Most platforms that show up in a procurement shortlist sit in one
           of three buckets: legacy GRC suites built for SaaS security teams
           (6clicks, Riskware), policy and training repositories with light
-          workflow on top (Ideagen / CompliSpace), or vertical care software
+          workflow on top (Ideagen CompliSpace), or vertical care software
           that solves clinical reporting but treats compliance as a side
           module (HealthMetrics). Each does its bucket well. None of them
           treat compliance as an operating layer that the rest of the
@@ -241,7 +241,7 @@ export default function CompareIndexContent() {
       <DeferredSection minHeight={280}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 lg:p-10">
               <h2 className="text-lg font-semibold text-white">
                 What FormaOS is optimized for
               </h2>
@@ -273,9 +273,9 @@ export default function CompareIndexContent() {
               <motion.article
                 key={step.title}
                 whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
               >
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
+                <h3 className="text-sm font-semibold text-slate-400">
                   {step.title}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">

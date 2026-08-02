@@ -1,93 +1,53 @@
-'use client';
-
-import { useRef } from 'react';
 import Link from 'next/link';
-import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Building2, FileCheck2 } from 'lucide-react';
-import { duration, easing } from '@/config/motion';
 
-const signatureEase: [number, number, number, number] = [
-  ...easing.signature,
-] as [number, number, number, number];
-
-/* ════════════════════════════════════════════════════════════
-   Data, three audiences, one evaluation. No per-card colour
-   identity: the palette stays monochrome so the copy carries it.
-   ════════════════════════════════════════════════════════════ */
+/* Three audiences, one evaluation. No per-card colour identity: the palette
+   stays monochrome so the copy carries it. Server-rendered, so the three
+   entry paths are in the initial HTML. */
 
 const PROOF_BLOCKS = [
   {
     icon: FileCheck2,
-    eyebrow: 'For operators',
+    audience: 'Operators',
     title: 'Controls run as workflows, not as documents',
     body: 'Named tasks, approval gates, and evidence chains execute inside daily operations, not in a separate compliance layer.',
     href: '/product',
     cta: 'See how it works',
-    step: '01',
   },
   {
     icon: Building2,
-    eyebrow: 'For enterprise buyers',
+    audience: 'Enterprise buyers',
     title: 'One evaluation flow from security review to rollout',
     body: 'Identity controls, audit exports, hosting posture, and procurement artifacts stay in a single narrative buyers can verify.',
     href: '/enterprise',
     cta: 'See enterprise path',
-    step: '02',
   },
   {
     icon: ShieldCheck,
-    eyebrow: 'For security reviewers',
+    audience: 'Security reviewers',
     title: 'Trust evidence is visible before the first call',
     body: 'Trust documentation, evidence defensibility, and review-ready context surface early so reviewers can verify substance upfront.',
     href: '/trust',
-    cta: 'Visit trust center',
-    step: '03',
+    cta: 'Visit trust centre',
   },
 ] as const;
 
-/* ════════════════════════════════════════════════════════════
-   Card, restrained surface, hairline border, quiet hover lift.
-   ════════════════════════════════════════════════════════════ */
-
 function ConvictionCard({
   block,
-  index,
-  isInView,
-  noMotion,
 }: {
   block: (typeof PROOF_BLOCKS)[number];
-  index: number;
-  isInView: boolean;
-  noMotion: boolean;
 }) {
   return (
-    <motion.article
-      initial={noMotion ? false : { opacity: 0, y: 24 }}
-      animate={isInView ? { opacity: 1, y: 0 } : undefined}
-      transition={{
-        duration: duration.slow,
-        delay: 0.12 + index * 0.1,
-        ease: signatureEase,
-      }}
-      className="group relative flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 transition-colors duration-300 hover:border-white/20 sm:p-8"
-    >
-      {/* Quiet step index, typographic, not a watermark gimmick */}
-      <span className="absolute right-6 top-6 text-sm font-medium tabular-nums text-slate-400">
-        {block.step}
-      </span>
-
-      {/* Monochrome icon tile */}
+    <article className="group relative flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 transition-colors duration-300 hover:border-white/20 sm:p-8">
       <div className="inline-flex w-fit rounded-xl border border-white/10 bg-white/[0.05] p-3">
-        <block.icon className="h-5 w-5 text-slate-300" aria-hidden="true" />
+        <block.icon className="h-5 w-5 text-zinc-300" aria-hidden="true" />
       </div>
 
-      <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-        {block.eyebrow}
-      </p>
-      <h3 className="mt-2.5 text-lg font-semibold leading-snug text-white">
+      <p className="mt-6 text-sm font-medium text-zinc-300">{block.audience}</p>
+      <h3 className="mt-2 text-lg font-semibold leading-snug text-white">
         {block.title}
       </h3>
-      <p className="mt-3 text-sm leading-relaxed text-slate-400">{block.body}</p>
+      <p className="mt-3 text-sm leading-relaxed text-zinc-400">{block.body}</p>
 
       <Link
         href={block.href}
@@ -99,71 +59,33 @@ function ConvictionCard({
           aria-hidden="true"
         />
       </Link>
-    </motion.article>
+    </article>
   );
 }
 
-/* ════════════════════════════════════════════════════════════
-   Section
-   ════════════════════════════════════════════════════════════ */
-
 export function HomeProofStaticShell() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const noMotion = Boolean(useReducedMotion());
-  const isInView = useInView(sectionRef, { once: true, margin: '-60px' });
-
   return (
-    <section
-      ref={sectionRef}
-      className="relative z-10 overflow-hidden bg-slate-950 px-6 pt-20 pb-4 sm:px-8 sm:pt-24 sm:pb-6 lg:px-12 lg:pt-28 lg:pb-8"
-    >
+    <section className="relative z-10 overflow-hidden bg-marketing-bg px-6 pt-20 pb-4 sm:px-8 sm:pt-24 sm:pb-6 lg:px-12 lg:pt-28 lg:pb-8">
       {/* Single hairline top seam, no rainbow edge glow */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
-        <div className="mx-auto mb-12 max-w-2xl text-center lg:mb-14">
-          <motion.p
-            initial={noMotion ? false : { opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: duration.slow, ease: signatureEase }}
-            className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400"
-          >
-            Why buyers stay
-          </motion.p>
-
-          <motion.h2
-            initial={noMotion ? false : { opacity: 0, y: 16 }}
-            animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: duration.slow, delay: 0.08, ease: signatureEase }}
-            className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]"
-          >
-            Three paths to conviction,
-            <br className="hidden sm:block" />
-            <span className="sm:hidden"> </span>
-            <span className="text-slate-400">visible before the first call</span>
-          </motion.h2>
-
-          <motion.p
-            initial={noMotion ? false : { opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: duration.slow, delay: 0.16, ease: signatureEase }}
-            className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400"
-          >
+        {/* Editorial header: headline left, the argument in a paired column,
+            no label above it. */}
+        <div className="mb-12 grid gap-x-10 gap-y-5 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
+          <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:col-span-7 lg:text-[2.6rem]">
+            Three paths to conviction, visible before the first call
+          </h2>
+          <p className="max-w-md text-base leading-relaxed text-zinc-400 lg:col-span-5">
             Operators see accountable workflows. Security reviewers see
             defensible evidence. Procurement sees a structured evaluation path.
             Each audience gets substance without waiting for a demo.
-          </motion.p>
+          </p>
         </div>
 
         <div className="grid gap-5 lg:grid-cols-3">
-          {PROOF_BLOCKS.map((block, i) => (
-            <ConvictionCard
-              key={block.title}
-              block={block}
-              index={i}
-              isInView={isInView}
-              noMotion={noMotion}
-            />
+          {PROOF_BLOCKS.map((block) => (
+            <ConvictionCard key={block.title} block={block} />
           ))}
         </div>
       </div>

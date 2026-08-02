@@ -92,14 +92,14 @@ export function OutcomeJourneyPage({
         subheadline={description}
         extras={
           <Reveal variant="fadeInUp" delay={0.2}>
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6">
-              <div className="text-xs uppercase tracking-wider text-slate-400">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6">
+              <div className="text-xs text-zinc-400">
                 {proofLabel}
               </div>
               <div className="mt-2 text-3xl font-black text-white">
                 {proofValue}
               </div>
-              <p className="mt-2 text-sm text-slate-400">
+              <p className="mt-2 text-sm text-zinc-400">
                 {proofNote ??
                   'Used by regulated teams that need clearer accountability, earlier risk visibility, and stronger review readiness.'}
               </p>
@@ -110,8 +110,8 @@ export function OutcomeJourneyPage({
                     variant="fadeLeft"
                     range={[idx * 0.04, 0.3 + idx * 0.04]}
                   >
-                    <div className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-slate-950/40 px-3 py-2.5 text-sm text-slate-200">
-                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.1] text-xs font-semibold text-slate-200">
+                    <div className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-zinc-950/40 px-3 py-2.5 text-sm text-zinc-200">
+                      <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.1] text-xs font-semibold text-zinc-200">
                         {idx + 1}
                       </span>
                       <span>{step}</span>
@@ -139,13 +139,13 @@ export function OutcomeJourneyPage({
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal variant="fadeInUp">
             <div className="mx-auto max-w-3xl text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              <p className="text-xs font-semibold text-zinc-500">
                 {pillarsEyebrow}
               </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
                 {pillarsTitle}
               </h2>
-              <p className="mt-4 text-sm leading-7 text-slate-300 sm:text-base">
+              <p className="mt-4 text-sm leading-7 text-zinc-300 sm:text-base">
                 {pillarsDescription}
               </p>
             </div>
@@ -158,17 +158,17 @@ export function OutcomeJourneyPage({
             {pillars.map((pillar) => (
               <div
                 key={pillar.title}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 backdrop-blur-sm"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5"
               >
                 <h3 className="text-lg font-semibold text-white">
                   {pillar.title}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                <p className="mt-3 text-sm leading-relaxed text-zinc-300">
                   {pillar.detail}
                 </p>
                 <a
                   href={pillar.href}
-                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-slate-300 transition-colors hover:text-white"
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-zinc-300 transition-colors hover:text-white"
                 >
                   {pillar.cta}
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -188,8 +188,8 @@ export function OutcomeJourneyPage({
             {outcomes.map((outcome) => (
                 <div key={outcome} className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors hover:border-white/20">
                   <div className="flex items-start gap-3">
-                    <Target className="mt-0.5 h-5 w-5 text-slate-300 flex-shrink-0" />
-                    <p className="text-sm leading-relaxed text-slate-200">
+                    <Target className="mt-0.5 h-5 w-5 text-zinc-300 flex-shrink-0" />
+                    <p className="text-sm leading-relaxed text-zinc-200">
                       {outcome}
                     </p>
                   </div>
@@ -198,8 +198,8 @@ export function OutcomeJourneyPage({
           </SectionChoreography>
 
           <Reveal delay={0.2}>
-            <div className="mt-10 rounded-2xl border border-white/[0.1] bg-slate-950/60 p-5">
-              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-200">
+            <div className="mt-10 rounded-2xl border border-white/[0.1] bg-zinc-950/60 p-5">
+              <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-zinc-200">
                 <ShieldCheck className="h-4 w-4" />
                 Enterprise Trust Layer
               </div>
@@ -207,7 +207,7 @@ export function OutcomeJourneyPage({
                 {resolvedTrustArtifacts.map((artifact) => (
                   <div
                     key={artifact}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-xs text-slate-200"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-xs text-zinc-200"
                   >
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     {artifact}

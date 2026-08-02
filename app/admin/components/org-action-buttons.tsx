@@ -252,7 +252,7 @@ export function OrgActionButtons({
           onChange={(e) => setSelectedPlan(e.target.value)}
           disabled={loading !== null}
           className={cn(
-            'rounded-lg border border-edge-2 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200',
+            'rounded-lg border border-edge-2 bg-[hsl(var(--card))] px-2 py-1 text-xs text-foreground',
             'disabled:opacity-50 disabled:cursor-not-allowed',
           )}
         >
@@ -265,7 +265,7 @@ export function OrgActionButtons({
           disabled={loading !== null}
           className={cn(
             'rounded-lg border border-edge-2 px-3 py-1.5 text-xs font-bold',
-            'text-slate-200 hover:bg-surface-1 transition-all',
+            'text-foreground hover:bg-surface-1 transition-all',
             'flex items-center gap-2',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             'active:scale-95 disabled:active:scale-100',
@@ -290,7 +290,7 @@ export function OrgActionButtons({
           max={90}
           disabled={loading !== null}
           className={cn(
-            'w-16 rounded-lg border border-edge-2 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200',
+            'w-16 rounded-lg border border-edge-2 bg-[hsl(var(--card))] px-2 py-1 text-xs text-foreground',
             'disabled:opacity-50 disabled:cursor-not-allowed',
           )}
         />
@@ -299,7 +299,7 @@ export function OrgActionButtons({
           disabled={loading !== null}
           className={cn(
             'rounded-lg border border-edge-2 px-3 py-1.5 text-xs font-bold',
-            'text-slate-200 hover:bg-surface-1 transition-all',
+            'text-foreground hover:bg-surface-1 transition-all',
             'flex items-center gap-2',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             'active:scale-95 disabled:active:scale-100',
@@ -324,8 +324,8 @@ export function OrgActionButtons({
           'disabled:opacity-50 disabled:cursor-not-allowed',
           'active:scale-95 disabled:active:scale-100',
           isBlocked
-            ? 'border-emerald-400/30 text-emerald-300 hover:bg-emerald-500/20'
-            : 'border-rose-400/30 text-rose-300 hover:bg-rose-500/20',
+            ? 'border-success/20 text-success hover:bg-success/10'
+            : 'border-destructive/20 text-destructive hover:bg-destructive/10',
         )}
       >
         {loading === 'lock' ? (
@@ -347,8 +347,8 @@ export function OrgActionButtons({
           'disabled:opacity-50 disabled:cursor-not-allowed',
           'active:scale-95 disabled:active:scale-100',
           canRestoreLifecycle
-            ? 'border-cyan-400/30 text-cyan-200 hover:bg-cyan-500/20'
-            : 'border-amber-400/30 text-amber-200 hover:bg-amber-500/20',
+            ? 'border-border text-foreground hover:bg-muted'
+            : 'border-warning/20 text-warning hover:bg-warning/10',
         )}
       >
         {loading === 'lifecycle' ? (
@@ -366,8 +366,8 @@ export function OrgActionButtons({
           onClick={handleRetireLifecycle}
           disabled={loading !== null}
           className={cn(
-            'rounded-lg border border-rose-400/30 px-3 py-1.5 text-xs font-bold',
-            'text-rose-200 hover:bg-rose-500/20 transition-all',
+            'rounded-lg border border-destructive/20 px-3 py-1.5 text-xs font-bold',
+            'text-destructive hover:bg-destructive/10 transition-all',
             'flex items-center gap-2',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             'active:scale-95 disabled:active:scale-100',

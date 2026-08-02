@@ -46,7 +46,7 @@ export function SecurityHero() {
             {SECURITY_PILLS.map((item) => (
               <div
                 key={item.label}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1] backdrop-blur-sm"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]"
               >
                 <item.icon className="h-4 w-4 text-slate-400" />
                 <span className="text-sm font-medium text-slate-300">
@@ -55,19 +55,14 @@ export function SecurityHero() {
               </div>
             ))}
           </div>
-          {/*
-            Audit row #31: "Tamper-Evident Logs" and "Chain of Custody"
-            are strong technical claims. Buyers want to know what
-            algorithm/anchor backs them. The detailed model lives at
-            /trust/data-handling. Inline link makes the buyer
-            one-click away from the substantive explanation instead
-            of leaving them with a pill they have to trust.
-          */}
+          {/* Target must stay the AuditChainProof section: it is the only
+              page that names the HMAC chaining, the Rekor anchor, and the
+              database trigger behind these two pills. */}
           <Link
-            href="/trust/data-handling"
+            href="/trust#trust-audit-chain-heading"
             className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition"
           >
-            How tamper-evident logging + chain of custody works
+            How tamper-evident logging and chain of custody work
             <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
         </div>

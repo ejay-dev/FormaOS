@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Versions" cards={2} tableRows={4} />;
+export default function AppPoliciesVersionsLoading() {
+  return <PageSkeleton title="Policy versions" cards={0} tableRows={6} />;
 }

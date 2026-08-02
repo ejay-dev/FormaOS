@@ -41,7 +41,7 @@ function MobileStickyPlanCta() {
           animate={{ y: 0 }}
           exit={reduce ? undefined : { y: '110%' }}
           transition={{ duration: reduce ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0a0f1c]/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur-md md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#181a1c]/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 md:hidden"
         >
           <Link
             href={stickyPlanHref}
@@ -55,7 +55,7 @@ function MobileStickyPlanCta() {
                 variant: 'primary',
               })
             }
-            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-slate-900 transition active:bg-slate-100"
+            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-zinc-900 transition active:bg-zinc-100"
           >
             {PUBLIC_CTA_LABELS.compliancePlan}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -96,7 +96,7 @@ function PlanScopeSection() {
         >
           <div className="mb-5 flex items-center justify-center gap-4">
             <span className="h-px w-10 bg-white/20" />
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <span className="text-xs font-semibold text-zinc-500">
               What shapes your plan
             </span>
             <span className="h-px w-10 bg-white/20" />
@@ -104,7 +104,7 @@ function PlanScopeSection() {
           <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Priced by compliance scope, not feature unlocks.
           </h2>
-          <p className="mt-4 text-base leading-7 text-slate-400">
+          <p className="mt-4 text-base leading-7 text-zinc-400">
             Answer four questions about how you operate. We&rsquo;ll point you to
             the tier your scope requires. Every plan runs the same engine.
           </p>
@@ -132,14 +132,14 @@ function CostOfNonCompliance() {
       <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-12">
         {/* Header, left labelled rule */}
         <ScrollReveal variant="slideUp" range={[0, 0.3]} className="mb-12 max-w-2xl">
-          <div className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="mb-4 flex items-center gap-3 text-xs font-semibold text-zinc-500">
             <span className="h-px w-8 bg-white/25" />
             <span>The math</span>
           </div>
           <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl">
             Price it against the work it removes.
           </h2>
-          <p className="mt-5 text-base leading-7 text-slate-400">
+          <p className="mt-5 text-base leading-7 text-zinc-400">
             Compliance run on spreadsheets is mostly labour: audit prep,
             evidence chasing, credential tracking. Set your scope and see what
             the manual version actually costs.
@@ -159,10 +159,10 @@ function CostOfNonCompliance() {
                 key={item.label}
                 className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5"
               >
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <p className="text-[11px] font-semibold text-zinc-500">
                   {item.label}
                 </p>
-                <p className="mt-2 text-sm text-slate-500 line-through decoration-slate-700/70">
+                <p className="mt-2 text-sm text-zinc-500 line-through decoration-zinc-700/70">
                   {item.manual}
                 </p>
                 <p className="mt-1.5 flex items-start gap-2 text-sm font-medium text-white">

@@ -659,23 +659,23 @@ export function AdminCommandCenter() {
   if (loading) {
     return (
       <div className="space-y-6 p-6">
-        <div className="h-8 w-64 animate-pulse rounded-md bg-slate-800" />
+        <div className="h-8 w-64 animate-pulse rounded-md bg-muted" />
         <div className="grid gap-4 md:grid-cols-3">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-24 animate-pulse rounded-lg bg-slate-900/60"
+              className="h-24 animate-pulse rounded-lg bg-card"
             />
           ))}
         </div>
-        <div className="h-[420px] animate-pulse rounded-lg bg-slate-900/60" />
+        <div className="h-[420px] animate-pulse rounded-lg bg-card" />
       </div>
     );
   }
 
   if (!snapshot) {
     return (
-      <div className="rounded-lg border border-red-800/40 bg-red-950/30 p-6 text-red-100">
+      <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-6 text-destructive">
         {error ?? 'Failed to load control plane.'}
       </div>
     );

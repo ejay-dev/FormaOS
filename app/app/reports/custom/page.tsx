@@ -4,6 +4,7 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import { Plus, Clock, Calendar, FileBarChart, Lock } from 'lucide-react';
+import { ReportsTabs } from '../ReportsTabs';
 
 export const metadata = { title: 'My Reports | FormaOS' };
 
@@ -36,56 +37,41 @@ export default async function CustomReportsPage() {
   const custom = items.filter((r) => r.type === 'custom');
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-bold">My Reports</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="page-title">My reports</h1>
+          <p className="page-description">
             Build custom reports and schedule automated delivery.
           </p>
         </div>
-        {reportsUnavailable || !customReportsEnabled ? (
-          <button
-            type="button"
-            disabled
-            data-testid="custom-reports-schema-disabled"
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground"
-          >
-            <Lock className="h-4 w-4" />
-            {customReportsEnabled
-              ? 'Custom reports unavailable'
-              : 'Custom reports gated'}
-          </button>
-        ) : (
-          <Link
-            href="/app/reports/custom/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            <Plus className="h-4 w-4" />
-            New Report
-          </Link>
-        )}
+        <div className="flex items-center gap-3">
+          <ReportsTabs current="/app/reports/custom" />
+          {reportsUnavailable || !customReportsEnabled ? (
+            <button
+              type="button"
+              disabled
+              data-testid="custom-reports-schema-disabled"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm font-medium text-muted-foreground"
+            >
+              <Lock className="h-3.5 w-3.5" />
+              {customReportsEnabled
+                ? 'Custom reports unavailable'
+                : 'Not on your plan'}
+            </button>
+          ) : (
+            <Link
+              href="/app/reports/custom/new"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              New report
+            </Link>
+          )}
+        </div>
       </div>
 
-      {/* Sub-navigation */}
-      <div className="flex gap-2">
-        <Link
-          href="/app/reports"
-          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-surface-1 hover:text-foreground"
-        >
-          Standard Reports
-        </Link>
-        <span className="rounded-lg bg-surface-2 px-3 py-1.5 text-sm font-semibold text-foreground">
-          My Reports
-        </span>
-        <Link
-          href="/app/reports/trends"
-          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-surface-1 hover:text-foreground"
-        >
-          Trends
-        </Link>
-      </div>
-
+      <div className="page-content space-y-4">
       {/* Summary Cards */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-border bg-card p-4">
@@ -114,7 +100,7 @@ export default async function CustomReportsPage() {
       {/* Reports List */}
       <div className="rounded-lg border border-border bg-card overflow-hidden">
         <div className="border-b border-border px-4 py-3">
-          <h2 className="font-semibold">All Reports</h2>
+          <h2 className="font-semibold">All reports</h2>
         </div>
         <div className="divide-y divide-border">
           {(reportsUnavailable || !customReportsEnabled) && (
@@ -126,13 +112,14 @@ export default async function CustomReportsPage() {
                     Custom report storage is not enabled for this workspace yet.
                   </p>
                   <p className="mt-1 text-xs">
-                    The create and schedule actions are disabled until the reporting
-                    schema is provisioned.
+                    Creating and scheduling reports stays switched off until it
+                    is. Contact support to turn it on.
                   </p>
                 </>
               ) : (
                 <p className="mt-2 text-sm">
-                  Custom reports require a Growth or Enterprise entitlement.
+                  Custom reports are available on the Growth and Enterprise
+                  plans.
                 </p>
               )}
             </div>
@@ -153,7 +140,7 @@ export default async function CustomReportsPage() {
               </div>
               <div className="flex items-center gap-3">
                 {r.schedule && (
-                  <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-400">
+                  <span className="rounded-full bg-info/10 px-2 py-0.5 text-[10px] font-medium text-info">
                     Scheduled
                   </span>
                 )}
@@ -175,6 +162,7 @@ export default async function CustomReportsPage() {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 export interface FaqItem {
   question: string;
@@ -20,7 +20,7 @@ export function IndustryFAQ({ industry, faqs }: IndustryFAQProps) {
 
   return (
     <section className="relative py-24 lg:py-32">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a] via-[#0d1117] to-[#080b14]" />
+      <div className="absolute inset-0 bg-marketing-bg" />
 
       <div className="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -30,12 +30,8 @@ export function IndustryFAQ({ industry, faqs }: IndustryFAQProps) {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-slate-700/50 bg-slate-800/50 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-6">
-            <HelpCircle className="h-3.5 w-3.5" />
-            {industry} FAQ
-          </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-white font-[var(--font-display)] leading-[1.1]">
-            Frequently Asked Questions
+            {industry} compliance questions
           </h2>
         </motion.div>
 
@@ -51,7 +47,7 @@ export function IndustryFAQ({ industry, faqs }: IndustryFAQProps) {
                 transition={{ duration: 0.4, delay: i * 0.05 }}
                 className={`rounded-xl border transition-all ${
                   isOpen
-                    ? 'border-cyan-500/20 bg-cyan-500/[0.03]'
+                    ? 'border-white/15 bg-white/[0.04]'
                     : 'border-white/[0.06] bg-white/[0.02]'
                 }`}
               >

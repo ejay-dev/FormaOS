@@ -61,10 +61,10 @@ function ComplianceScoreWidget({ data }: { data?: Record<string, unknown> }) {
   const score = (data?.score as number) || 0;
   const color =
     score >= 80
-      ? 'text-green-600'
+      ? 'text-success'
       : score >= 50
-        ? 'text-yellow-600'
-        : 'text-red-600';
+        ? 'text-warning'
+        : 'text-destructive';
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <p className={`text-4xl font-bold ${color}`}>{score}%</p>

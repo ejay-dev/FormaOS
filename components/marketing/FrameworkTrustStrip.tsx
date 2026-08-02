@@ -87,7 +87,9 @@ function toLogoItems(items: FrameworkItem[]) {
 const row1Logos = toLogoItems(ROW_1);
 const row2Logos = toLogoItems(ROW_2);
 
-const FADE_COLOR = '#030712';
+/* Must resolve to the same colour as the strip's own background, or the
+   edge fade shows as a band. */
+const FADE_COLOR = 'rgb(var(--mk-rgb-bg))';
 
 /* ════════════════════════════════════════════════════════════
    Main component
@@ -105,11 +107,7 @@ export const FrameworkTrustStrip = memo(function FrameworkTrustStrip({
   return (
     <section
       ref={sectionRef}
-      className={`relative z-10 overflow-hidden py-4 sm:py-5 ${className}`}
-      style={{
-        background:
-          'linear-gradient(180deg, #020617 0%, #050a15 50%, #020617 100%)',
-      }}
+      className={`relative z-10 overflow-hidden bg-marketing-bg py-4 sm:py-5 ${className}`}
       aria-label="Supported compliance frameworks"
     >
       {/* Top/bottom edge lines */}

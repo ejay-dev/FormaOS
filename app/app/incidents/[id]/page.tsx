@@ -14,6 +14,7 @@ import { EntityEvidencePanel } from '@/components/compliance/EntityEvidencePanel
 import { IncidentStatusPipeline } from '@/components/incidents/IncidentStatusPipeline';
 import { IncidentRegulatoryCountdowns } from '@/components/incidents/RegulatoryCountdown';
 import { IncidentChainView } from '@/components/incidents/incident-chain-view';
+import { SeverityBadge } from '@/components/care/severity-badge';
 import { RegulatoryNotificationTrackerWired } from '@/components/incidents/regulatory-notification-tracker-wired';
 
 function formatDateTime(value: string | null | undefined): string {
@@ -231,6 +232,14 @@ export default async function IncidentDetailPage({
 
   const incidentClockStart = incident.occurred_at ?? incident.created_at;
 
+  const incidentTypeLabel = (incident.incident_type || 'general').replace(
+    /_/g,
+    ' ',
+  );
+  const pageTitle = incident.patient?.full_name
+    ? `${incidentTypeLabel} · ${incident.patient.full_name}`
+    : incidentTypeLabel;
+
   const isOpen = incident.status === 'open';
   const resolveAction = async (fd: FormData) => {
     'use server';
@@ -251,9 +260,10 @@ export default async function IncidentDetailPage({
           <ArrowLeft className="h-4 w-4" />
           Back to incidents
         </Link>
-        <h1 className="text-3xl font-bold tracking-tight">Incident Detail</h1>
+        <h1 className="page-title capitalize">{pageTitle}</h1>
         <p className="text-sm text-muted-foreground">
-          Case status, controls, and closure details.
+          Occurred {formatDateTime(incident.occurred_at)}
+          {incident.location ? ` · ${incident.location}` : ''}
         </p>
       </div>
 
@@ -264,15 +274,15 @@ export default async function IncidentDetailPage({
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Severity
           </p>
-          <p className="mt-1 text-2xl font-black capitalize">
-            {incident.severity}
-          </p>
+          <div className="mt-2">
+            <SeverityBadge level={incident.severity} />
+          </div>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Status
           </p>
-          <p className="mt-1 text-2xl font-black capitalize">
+          <p className="mt-1 text-2xl font-semibold capitalize">
             {incident.status}
           </p>
         </div>
@@ -281,7 +291,7 @@ export default async function IncidentDetailPage({
             Type
           </p>
           <p className="mt-1 text-lg font-semibold capitalize">
-            {(incident.incident_type || 'general').replace('_', ' ')}
+            {incidentTypeLabel}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
@@ -363,22 +373,22 @@ export default async function IncidentDetailPage({
       </section>
 
       {incident.root_cause || incident.preventive_measures ? (
-        <section className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-5">
-          <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-emerald-200">
+        <section className="rounded-xl border border-success/30 bg-success/10 p-5">
+          <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-success">
             <ClipboardCheck className="h-4 w-4" />
             Resolution Record
           </h2>
           {incident.root_cause ? (
-            <div className="mt-3 text-sm text-emerald-100">
-              <p className="text-xs uppercase tracking-wider text-emerald-300">
+            <div className="mt-3 text-sm text-foreground">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
                 Root Cause
               </p>
               <p className="mt-1 whitespace-pre-wrap">{incident.root_cause}</p>
             </div>
           ) : null}
           {incident.preventive_measures ? (
-            <div className="mt-3 text-sm text-emerald-100">
-              <p className="text-xs uppercase tracking-wider text-emerald-300">
+            <div className="mt-3 text-sm text-foreground">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
                 Preventive Measures
               </p>
               <p className="mt-1 whitespace-pre-wrap">
@@ -429,8 +439,8 @@ export default async function IncidentDetailPage({
       </section>
 
       {isOpen ? (
-        <section className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5">
-          <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-amber-200">
+        <section className="rounded-xl border border-warning/30 bg-warning/10 p-5">
+          <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-warning">
             <AlertTriangle className="h-4 w-4" />
             Resolve Incident
           </h2>
@@ -441,39 +451,39 @@ export default async function IncidentDetailPage({
           >
             <div>
               <label
-                htmlFor="field-8"
-                className="text-xs uppercase tracking-wider text-amber-200"
+                htmlFor="incident-root-cause"
+                className="text-xs uppercase tracking-wider text-muted-foreground"
               >
                 Root Cause
               </label>
               <textarea
-                id="field-8"
+                id="incident-root-cause"
                 name="root_cause"
                 rows={3}
                 required
-                className="mt-1 w-full rounded-lg border border-amber-500/40 bg-amber-500/5 px-3 py-2 text-sm text-amber-50 outline-none"
+                className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none"
                 placeholder="Describe root cause analysis..."
               />
             </div>
             <div>
               <label
-                htmlFor="field-7"
-                className="text-xs uppercase tracking-wider text-amber-200"
+                htmlFor="incident-preventive-measures"
+                className="text-xs uppercase tracking-wider text-muted-foreground"
               >
                 Preventive Measures
               </label>
               <textarea
-                id="field-7"
+                id="incident-preventive-measures"
                 name="preventive_measures"
                 rows={3}
                 required
-                className="mt-1 w-full rounded-lg border border-amber-500/40 bg-amber-500/5 px-3 py-2 text-sm text-amber-50 outline-none"
+                className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none"
                 placeholder="Document preventive actions..."
               />
             </div>
             <button
               type="submit"
-              className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-foreground hover:bg-emerald-400 transition-colors"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               data-testid="resolve-incident-submit"
             >
               <CheckCircle2 className="h-4 w-4" />

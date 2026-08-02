@@ -33,7 +33,7 @@ export default async function NewBehaviourSupportPlanPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">New Behaviour Support Plan</h1>
+          <h1 className="page-title">New behaviour support plan</h1>
           <p className="text-sm text-muted-foreground">
             NDIS Restrictive Practices and Behaviour Support Rules 2018
             (F2018L00632) — interim within 1 month, comprehensive within 6 months
@@ -82,7 +82,7 @@ export default async function NewBehaviourSupportPlanPage() {
                 htmlFor="plan_type"
                 className="block text-sm font-medium mb-1"
               >
-                Plan type <span className="text-red-500">*</span>
+                Plan type <span className="text-destructive">*</span>
               </label>
               <select
                 id="plan_type"
@@ -103,9 +103,9 @@ export default async function NewBehaviourSupportPlanPage() {
         <div className="rounded-xl border border-border p-6 space-y-4">
           <h2 className="text-lg font-semibold">Lifecycle timestamps</h2>
           <p className="text-xs text-muted-foreground">
-            These drive the NDIS-V.2 and NDIS-M.2 predicates. First-RP date is
-            the statutory clock-starter; authorisation and expiry feed the
-            renewal cadence check.
+            The first restrictive practice date starts the statutory clock: an
+            interim plan is due within 1 month and a comprehensive plan within
+            6. Authorisation and expiry dates drive the renewal reminder.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

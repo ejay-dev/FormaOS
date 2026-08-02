@@ -36,34 +36,34 @@ const assurancePillars = [
 export function ProcurementReadiness() {
   return (
     <section className="relative overflow-hidden py-28">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(148,163,184,0.1),transparent_42%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_80%,rgba(148,163,184,0.1),transparent_40%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#181a1c] via-[#202325] to-[#181a1c]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(161,161,170,0.1),transparent_42%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_80%,rgba(161,161,170,0.1),transparent_40%)]" />
       <StampPattern />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
         <ScrollReveal variant="depthScale" range={[0, 0.35]} className="mx-auto max-w-3xl text-center">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+          <p className="mb-4 text-xs font-semibold text-zinc-500">
             Procurement Assurance
           </p>
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             Built to survive security and procurement scrutiny
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-slate-300">
+          <p className="mt-4 text-base leading-relaxed text-zinc-300">
             Enterprise buyers need a clear review path. FormaOS surfaces the materials, controls, and operating context early so security and procurement teams can evaluate with less back-and-forth.
           </p>
         </ScrollReveal>
 
         <SectionChoreography pattern="center-burst" stagger={0.06} className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {assurancePillars.map((pillar) => (
-              <article key={pillar.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
+              <article key={pillar.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6">
                 <div className="inline-flex rounded-lg border border-white/15 bg-white/[0.06] p-2">
-                  <pillar.icon className="h-5 w-5 text-slate-300" />
+                  <pillar.icon className="h-5 w-5 text-zinc-300" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-white">
                   {pillar.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                <p className="mt-2 text-sm leading-relaxed text-zinc-300">
                   {pillar.detail}
                 </p>
               </article>

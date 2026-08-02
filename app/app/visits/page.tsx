@@ -39,14 +39,14 @@ function formatDateTime(date: string | null) {
 function getStatusIcon(status: string) {
   switch (status) {
     case 'completed':
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
+      return <CheckCircle className="h-4 w-4 text-success" />;
     case 'cancelled':
     case 'missed':
-      return <XCircle className="h-4 w-4 text-red-500" />;
+      return <XCircle className="h-4 w-4 text-destructive" />;
     case 'in_progress':
-      return <Clock className="h-4 w-4 text-blue-500" />;
+      return <Clock className="h-4 w-4 text-info" />;
     default:
-      return <AlertCircle className="h-4 w-4 text-amber-500" />;
+      return <AlertCircle className="h-4 w-4 text-muted-foreground" />;
   }
 }
 
@@ -184,15 +184,30 @@ export default async function VisitsPage({
     );
   });
 
+  // Hero metrics count the whole organisation, not the filtered row window.
+  const orgVisits = () =>
+    supabase
+      .from('org_visits')
+      .select('id', { count: 'exact', head: true })
+      .eq('organization_id', organization.id);
+
+  const [
+    { count: totalVisits },
+    { count: scheduledVisits },
+    { count: completedVisits },
+    { count: missedVisits },
+  ] = await Promise.all([
+    orgVisits(),
+    orgVisits().eq('status', 'scheduled'),
+    orgVisits().eq('status', 'completed'),
+    orgVisits().in('status', ['missed', 'cancelled']),
+  ]);
+
   const stats = {
-    total: filteredVisits.length,
-    scheduled: filteredVisits.filter((v: Visit) => v.status === 'scheduled')
-      .length,
-    completed: filteredVisits.filter((v: Visit) => v.status === 'completed')
-      .length,
-    missed: filteredVisits.filter(
-      (v: Visit) => v.status === 'missed' || v.status === 'cancelled',
-    ).length,
+    total: totalVisits ?? 0,
+    scheduled: scheduledVisits ?? 0,
+    completed: completedVisits ?? 0,
+    missed: missedVisits ?? 0,
   };
 
   const heroMetrics: PageHeroMetric[] = [
@@ -284,6 +299,12 @@ export default async function VisitsPage({
           ) : null}
         </form>
 
+        <p className="text-xs text-muted-foreground">
+          Showing {filteredVisits.length} of {stats.total}{' '}
+          {label.toLowerCase()}
+          {stats.total > 100 ? ', most recent 100 loaded' : ''}.
+        </p>
+
         {/* Mobile cards */}
         <div className="md:hidden">
           {filteredVisits.length === 0 ? (
@@ -319,7 +340,7 @@ export default async function VisitsPage({
                     title={clientName}
                     subtitle={formatDateTime(visit.scheduled_start)}
                     status={
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium">
                         {getStatusIcon(visit.status)}
                         {visit.status.replace('_', ' ')}
                       </span>

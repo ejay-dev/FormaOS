@@ -31,7 +31,7 @@ function FooterCTA() {
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(135deg, rgba(113,113,122,0.08) 0%, rgba(148,163,184,0.06) 50%, rgba(113,113,122,0.04) 100%)',
+            'linear-gradient(135deg, rgba(113,113,122,0.08) 0%, rgba(161,161,170,0.06) 50%, rgba(113,113,122,0.04) 100%)',
         }}
       />
       {/* Ambient glow */}
@@ -41,19 +41,19 @@ function FooterCTA() {
       />
       <div
         className="absolute -bottom-20 -right-20 w-[300px] h-[300px] rounded-full blur-[100px] pointer-events-none"
-        style={{ background: 'rgba(148,163,184,0.06)' }}
+        style={{ background: 'rgba(161,161,170,0.06)' }}
       />
 
       <div className="relative z-10 p-8 sm:p-10 lg:p-12">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400 mb-2">
+            <p className="text-[11px] font-semibold text-zinc-400 mb-2">
               Ready to evaluate?
             </p>
             <h3 className="text-2xl sm:text-3xl font-bold font-display text-white">
               See how FormaOS works for your team
             </h3>
-            <p className="mt-3 text-slate-400 max-w-lg text-sm leading-relaxed">
+            <p className="mt-3 text-zinc-400 max-w-lg text-sm leading-relaxed">
               Get a guided compliance plan scoped to your frameworks,
               evidence burden, and audit exposure.
             </p>
@@ -110,7 +110,7 @@ function FooterLinkColumn({
 }) {
   return (
     <div>
-      <h4 className="text-[11px] uppercase tracking-[0.18em] text-slate-500 font-semibold mb-4">
+      <h4 className="text-[11px] text-zinc-500 font-semibold mb-4">
         {title}
       </h4>
       <ul className="space-y-2.5">
@@ -118,7 +118,7 @@ function FooterLinkColumn({
           <li key={link.href}>
             <Link
               href={link.href}
-              className="text-[13px] text-slate-500 hover:text-white transition-colors duration-200 leading-relaxed block"
+              className="text-[13px] text-zinc-500 hover:text-white transition-colors duration-200 leading-relaxed block"
             >
               {link.label}
             </Link>
@@ -147,7 +147,7 @@ export function Footer() {
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(180deg, #0a0f1c 0%, #080c18 50%, #060a14 100%)',
+            'linear-gradient(180deg, #181a1c 0%, #141618 50%, #101112 100%)',
         }}
       />
 
@@ -178,7 +178,7 @@ export function Footer() {
               >
                 <Logo variant="wordmark" size={22} />
               </Link>
-              <p className="mt-4 text-[13px] text-slate-500 leading-relaxed max-w-[260px]">
+              <p className="mt-4 text-[13px] text-zinc-500 leading-relaxed max-w-[260px]">
                 The compliance operating system for regulated Australian
                 industries.
               </p>
@@ -192,11 +192,11 @@ export function Footer() {
                   >
                     <div className="inline-flex items-center justify-center w-5 h-5 rounded bg-white/[0.04] border border-white/[0.06]">
                       <badge.icon
-                        className="h-2.5 w-2.5 text-slate-500"
+                        className="h-2.5 w-2.5 text-zinc-500"
                         aria-hidden="true"
                       />
                     </div>
-                    <span className="text-[11px] text-slate-500">
+                    <span className="text-[11px] text-zinc-500">
                       {badge.label}
                     </span>
                   </div>
@@ -216,13 +216,13 @@ export function Footer() {
         <div className="border-t border-white/[0.06] py-6 sm:py-7">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
             {/* Left: copyright + version */}
-            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12px] text-slate-600">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12px] text-zinc-600">
               <span>&copy; {new Date().getFullYear()} FormaOS Pty Ltd</span>
-              <span className="text-slate-800">·</span>
-              <span className="text-slate-700">
+              <span className="text-zinc-800">·</span>
+              <span className="text-zinc-700">
                 {CURRENT_RELEASE_DISPLAY}
               </span>
-              <span className="text-slate-600/60 font-mono text-[11px]">
+              <span className="text-zinc-600/60 font-mono text-[11px]">
                 {CURRENT_RELEASE_TAG}
               </span>
             </div>
@@ -231,12 +231,12 @@ export function Footer() {
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
               <Link
                 href={`mailto:${brand.email.contactEmail}`}
-                className="inline-flex items-center gap-1.5 text-[12px] text-slate-600 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 text-[12px] text-zinc-600 hover:text-white transition-colors"
               >
                 <Mail className="h-3 w-3 shrink-0" aria-hidden="true" />
                 {brand.email.contactEmail}
               </Link>
-              <div className="inline-flex items-center gap-1.5 text-[12px] text-slate-600">
+              <div className="inline-flex items-center gap-1.5 text-[12px] text-zinc-600">
                 <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
                 {brand.address.locality}, {brand.address.region}, {brand.address.country}
               </div>

@@ -51,7 +51,7 @@ export function ToolsStep({ tools, onNext, onBack }: ToolsStepProps) {
       <div className="space-y-2">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1">
           <Zap className="h-3 w-3 text-muted-foreground" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          <span className="text-xs font-medium text-muted-foreground">
             Your daily toolkit
           </span>
         </div>
@@ -81,7 +81,7 @@ export function ToolsStep({ tools, onNext, onBack }: ToolsStepProps) {
             >
               {/* Highlighted badge */}
               {tool.highlight && (
-                <span className="absolute right-3 top-3 rounded-full border border-primary/40 bg-muted px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-primary">
+                <span className="absolute right-3 top-3 rounded-full border border-primary/40 bg-muted px-2 py-0.5 text-[11px] font-medium text-primary">
                   Key tool
                 </span>
               )}

@@ -14,11 +14,11 @@ export function CommandCenterMarketing({
   onPerformAction,
 }: CommandCenterMarketingProps) {
   return (
-    <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+    <section className="rounded-xl border border-border bg-card p-6">
       <div className="mb-4 flex items-center gap-2">
-        <Sparkles className="h-4 w-4 text-indigo-300" />
+        <Sparkles className="h-4 w-4 text-muted-foreground" />
         <h2 className="text-lg font-semibold text-foreground">
-          Site / Marketing Controls
+          Marketing site controls
         </h2>
       </div>
 
@@ -33,7 +33,7 @@ export function CommandCenterMarketing({
                 badgeText: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
 
@@ -47,7 +47,7 @@ export function CommandCenterMarketing({
                 headlinePrimary: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
 
@@ -61,7 +61,7 @@ export function CommandCenterMarketing({
                 headlineAccent: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
 
@@ -75,7 +75,7 @@ export function CommandCenterMarketing({
                 subheadline: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
 
@@ -89,7 +89,7 @@ export function CommandCenterMarketing({
                 primaryCtaLabel: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
         <label className="text-sm text-foreground/70">
@@ -102,7 +102,7 @@ export function CommandCenterMarketing({
                 primaryCtaHref: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
 
@@ -116,7 +116,7 @@ export function CommandCenterMarketing({
                 secondaryCtaLabel: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
         <label className="text-sm text-foreground/70">
@@ -129,7 +129,7 @@ export function CommandCenterMarketing({
                 secondaryCtaHref: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
 
@@ -143,7 +143,7 @@ export function CommandCenterMarketing({
                 themeVariant: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
         <label className="text-sm text-foreground/70">
@@ -156,7 +156,7 @@ export function CommandCenterMarketing({
                 backgroundVariant: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           />
         </label>
 
@@ -170,7 +170,7 @@ export function CommandCenterMarketing({
                 activeShowcaseModule: event.target.value,
               }))
             }
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-foreground"
+            className="mt-1 w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground"
           >
             {Object.keys(marketingRuntime.runtime.showcaseModules).map(
               (key) => (
@@ -182,12 +182,12 @@ export function CommandCenterMarketing({
           </select>
         </label>
 
-        <div className="md:col-span-2 flex flex-wrap items-center justify-end gap-2 rounded border border-slate-800 bg-slate-950/50 p-3">
+        <div className="md:col-span-2 flex flex-wrap items-center justify-end gap-2 rounded border border-border bg-background/50 p-3">
           <button
             type="button"
             disabled={!marketingDirty || pendingAction !== null}
             onClick={() => onSetMarketingForm(marketingBaseline)}
-            className="rounded border border-slate-700 px-3 py-1.5 text-xs text-foreground/90 hover:bg-slate-800 disabled:opacity-50"
+            className="rounded border border-border px-3 py-1.5 text-xs text-foreground/90 hover:bg-muted disabled:opacity-50"
           >
             Revert
           </button>
@@ -195,7 +195,7 @@ export function CommandCenterMarketing({
             type="button"
             disabled={!marketingDirty || pendingAction !== null}
             onClick={() => void onSaveMarketingForm()}
-            className="rounded bg-cyan-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-cyan-500 disabled:opacity-50"
+            className="rounded bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             Apply / Save
           </button>
@@ -203,7 +203,7 @@ export function CommandCenterMarketing({
       </div>
 
       <div className="mt-5 grid gap-3 md:grid-cols-2">
-        <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
+        <div className="rounded border border-border bg-background/50 p-3">
           <p className="text-sm text-foreground">Section visibility</p>
           <div className="mt-2 grid gap-1">
             {Object.entries(marketingRuntime.runtime.sectionVisibility).map(
@@ -237,11 +237,11 @@ export function CommandCenterMarketing({
                       },
                     );
                   }}
-                  className="flex items-center justify-between rounded border border-slate-800 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
+                  className="flex items-center justify-between rounded border border-border px-2 py-1 text-xs text-foreground/90 hover:bg-muted"
                 >
                   <span>{section}</span>
                   {visible ? (
-                    <ToggleRight className="h-3.5 w-3.5 text-emerald-400" />
+                    <ToggleRight className="h-3.5 w-3.5 text-success" />
                   ) : (
                     <ToggleLeft className="h-3.5 w-3.5 text-muted-foreground/60" />
                   )}
@@ -251,7 +251,7 @@ export function CommandCenterMarketing({
           </div>
         </div>
 
-        <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
+        <div className="rounded border border-border bg-background/50 p-3">
           <p className="text-sm text-foreground">Showcase modules</p>
           <div className="mt-2 grid gap-1">
             {Object.entries(marketingRuntime.runtime.showcaseModules).map(
@@ -285,11 +285,11 @@ export function CommandCenterMarketing({
                       },
                     );
                   }}
-                  className="flex items-center justify-between rounded border border-slate-800 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
+                  className="flex items-center justify-between rounded border border-border px-2 py-1 text-xs text-foreground/90 hover:bg-muted"
                 >
                   <span>{moduleKey}</span>
                   {enabled ? (
-                    <ToggleRight className="h-3.5 w-3.5 text-emerald-400" />
+                    <ToggleRight className="h-3.5 w-3.5 text-success" />
                   ) : (
                     <ToggleLeft className="h-3.5 w-3.5 text-muted-foreground/60" />
                   )}

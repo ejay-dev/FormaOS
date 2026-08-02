@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Organization" cards={2} tableRows={4} />;
+export default function AppSettingsOrganizationLoading() {
+  return <PageSkeleton cards={2} tableRows={4} />;
 }

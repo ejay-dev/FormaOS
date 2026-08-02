@@ -9,6 +9,10 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, ShieldCheck, AlertTriangle, CheckCircle, Clock, User, Calendar, Award } from "lucide-react";
 import { fetchSystemState } from "@/lib/system-state/server";
+import {
+  StatusBadge,
+  certificateExpiry,
+} from "@/components/compliance/StatusBadge";
 
 export const metadata = {
   title: "Certificates | FormaOS",
@@ -23,21 +27,12 @@ function formatDate(date: string | null) {
   });
 }
 
-function getExpiryStatus(expiryDate: string | null): { label: string; color: string; urgent: boolean } {
-  if (!expiryDate) return { label: "No Expiry", color: "text-muted-foreground", urgent: false };
-
-  const expiry = new Date(expiryDate);
-  const now = new Date();
-  const daysUntil = Math.ceil((expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-
-  if (daysUntil < 0) {
-    return { label: "Expired", color: "text-red-600 bg-red-500/10", urgent: true };
-  } else if (daysUntil <= 30) {
-    return { label: `${daysUntil}d`, color: "text-orange-600 bg-orange-500/10", urgent: true };
-  } else if (daysUntil <= 90) {
-    return { label: `${daysUntil}d`, color: "text-amber-600 bg-amber-500/10", urgent: false };
-  }
-  return { label: "Valid", color: "text-green-600 bg-green-500/10", urgent: false };
+function isUrgentExpiry(expiryDate: string | null): boolean {
+  if (!expiryDate) return false;
+  const daysUntil = Math.ceil(
+    (new Date(expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+  );
+  return daysUntil <= 30;
 }
 
 // Certificate types are training/qualification focused
@@ -172,7 +167,7 @@ export default async function CertificatesPage() {
 
       {/* Alert */}
       {(stats.expiringSoon > 0 || stats.expired > 0) && (
-        <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-sm text-amber-600">
+        <div className="flex items-center gap-2 rounded-lg bg-warning/10 border border-warning/20 px-3 py-2 text-sm text-warning">
           <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
           <span>
             {stats.expired > 0 && `${stats.expired} expired. `}
@@ -197,12 +192,12 @@ export default async function CertificatesPage() {
           </thead>
           <tbody className="divide-y divide-border">
             {certificates?.map((cert: Certificate) => {
-              const expiryStatus = getExpiryStatus(cert.expiry_date);
+              const urgent = isUrgentExpiry(cert.expiry_date);
               return (
                 <tr
                   key={cert.id}
                   className={`hover:bg-muted/30 transition-colors ${
-                    expiryStatus.urgent ? "bg-red-500/5" : ""
+                    urgent ? "bg-destructive/5" : ""
                   }`}
                 >
                   <td className="px-4 py-3">
@@ -234,11 +229,7 @@ export default async function CertificatesPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${expiryStatus.color}`}
-                    >
-                      {expiryStatus.label}
-                    </span>
+                    <StatusBadge {...certificateExpiry(cert.expiry_date)} />
                   </td>
                   <td className="px-4 py-3">
                     <Link

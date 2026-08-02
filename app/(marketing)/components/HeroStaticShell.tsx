@@ -48,22 +48,18 @@ export function HeroStaticShell() {
         className="pointer-events-none object-cover opacity-[0.24]"
         style={{ objectPosition: '50% 30%' }}
       />
-      {/* Static background - no animation, preserved for SEO and no-JS users */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/5 via-slate-950/25 to-slate-950/75" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-5%,transparent_55%,rgba(3,7,18,0.65)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_0%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_100%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
+      {/* Static background - no animation, preserved for SEO and no-JS users.
+          Scrim sits on the same charcoal floor SectionMedia maps photos to. */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[rgba(24,26,28,0.05)] via-[rgba(24,26,28,0.28)] to-[rgba(24,26,28,0.78)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-5%,transparent_55%,rgba(24,26,28,0.65)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_0%_50%,rgba(24,26,28,0.40),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_100%_50%,rgba(24,26,28,0.40),transparent_70%)]" />
 
       <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-12 pt-16 text-center sm:px-8 sm:pt-24 lg:px-12 lg:pt-28">
-        {/* Eyebrow, restrained typographic label flanked by hairlines,
-            no pill / icon / colour. */}
-        <div className="mb-7 flex items-center justify-center gap-4">
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
-            {heroCopy.badgeText}
-          </span>
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-        </div>
+        {/* Who this is for, stated as a sentence rather than a tracked kicker. */}
+        <p className="mb-6 text-sm text-zinc-300 sm:text-base">
+          {heroCopy.badgeText}
+        </p>
 
         {/* Primary headline - the core SEO H1 */}
         <h1 className="max-w-5xl text-[clamp(1.75rem,5vw+0.5rem,2.35rem)] font-semibold leading-[1.04] tracking-tight text-white sm:text-5xl lg:text-7xl">
@@ -75,7 +71,7 @@ export function HeroStaticShell() {
         </h1>
 
         {/* Subheadline */}
-        <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-200 sm:text-lg lg:text-xl">
+        <p className="mt-6 max-w-3xl text-base leading-relaxed text-zinc-200 sm:text-lg lg:text-xl">
           {heroCopy.subheadline}
         </p>
 
@@ -124,7 +120,7 @@ export function HeroStaticShell() {
           )}
         </div>
 
-        <p className="mt-6 text-sm text-slate-400">
+        <p className="mt-6 text-sm text-zinc-400">
           Guided assessment &middot; AU-hosted by default &middot;
           Evidence-backed workflows
         </p>

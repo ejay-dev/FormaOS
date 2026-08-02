@@ -121,7 +121,7 @@ function SecurityReviewHeroVisualInner() {
       >
         {/* ── Clipboard ──────────────────────────────────────── */}
         <motion.div
-          className="rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] w-[280px] py-5 shadow-2xl"
+          className="rounded-2xl border border-white/[0.10] bg-white/[0.04] w-[280px] py-5 shadow-2xl"
           style={{ transformStyle: 'preserve-3d' }}
           initial={animate ? { scale: 0.9, filter: 'blur(8px)', opacity: 0 } : false}
           animate={{ scale: 1, filter: 'blur(0px)', opacity: 1 }}
@@ -138,7 +138,7 @@ function SecurityReviewHeroVisualInner() {
           return (
             <motion.div
               key={i}
-              className="absolute rounded-full border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-2 py-1 flex items-center gap-1.5 shadow-lg"
+              className="absolute rounded-full border border-white/[0.10] bg-white/[0.04] px-2 py-1 flex items-center gap-1.5 shadow-lg"
               style={{
                 left: `calc(50% + ${bx}px)`,
                 top: `calc(50% + ${by}px)`,

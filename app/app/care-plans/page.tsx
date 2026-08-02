@@ -8,10 +8,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import {
   Plus,
-  FileText,
   AlertTriangle,
-  CheckCircle,
-  Clock,
   User,
   Calendar,
   Target,
@@ -19,6 +16,12 @@ import {
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { CarePlansEmptyState } from '@/components/empty-states';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
+import {
+  CARE_PLAN_STATUS_CLASSES,
+  CARE_PLAN_STATUS_LABELS,
+  normaliseCarePlanStatus,
+} from '@/components/care/care-plan-status';
 import {
   RecordCard,
   RecordList,
@@ -107,16 +110,13 @@ function getClientLabel(industry: string | null): string {
   }
 }
 
-const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  draft: { label: 'Draft', color: 'text-muted-foreground bg-muted/40' },
-  active: { label: 'Active', color: 'text-success bg-success/10' },
-  under_review: {
-    label: 'Under Review',
-    color: 'text-info bg-info/10',
-  },
-  expired: { label: 'Expired', color: 'text-destructive bg-destructive/10' },
-  archived: { label: 'Archived', color: 'text-muted-foreground bg-muted/50' },
-};
+function planStatusStyle(status: string): { label: string; color: string } {
+  const key = normaliseCarePlanStatus(status);
+  return {
+    label: CARE_PLAN_STATUS_LABELS[key],
+    color: CARE_PLAN_STATUS_CLASSES[key],
+  };
+}
 
 const PLAN_TYPE_LABELS: Record<string, string> = {
   support: 'Support Plan',
@@ -186,74 +186,63 @@ export default async function CarePlansPage() {
       }).length ?? 0,
   };
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Total', value: stats.total, sub: 'plans' },
+    {
+      label: 'Active',
+      value: stats.active,
+      sub: stats.active > 0 ? 'in effect' : 'none active',
+      tone: 'success',
+    },
+    { label: 'Drafts', value: stats.drafts, sub: 'not yet active' },
+    {
+      label: 'Review due',
+      value: stats.reviewDue,
+      sub: stats.reviewDue > 0 ? 'within 14 days' : 'none due',
+      tone: stats.reviewDue > 0 ? 'warning' : 'neutral',
+    },
+  ];
+
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title" data-testid="care-plans-title">{label}</h1>
-          <p className="page-description">
-            Manage individualised plans, goals, and review schedules
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/app/care-plans/journey"
-            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1.5 text-sm font-semibold text-primary hover:bg-primary/15 transition-colors"
-            data-testid="care-plans-journey-link"
-          >
-            <Workflow className="h-3.5 w-3.5" />
-            Journey view
-          </Link>
-          <Link
-            href="/app/care-plans/new"
-            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-            data-testid="create-care-plan-btn"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            New Plan
-          </Link>
-        </div>
-      </div>
+      <PageHero
+        eyebrow={`Care Operations · ${label}`}
+        title={label}
+        titleTestId="care-plans-title"
+        subtitle="Manage individualised plans, goals, and review schedules."
+        metrics={heroMetrics}
+        actions={
+          <>
+            <Link
+              href="/app/care-plans/journey"
+              className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50"
+              data-testid="care-plans-journey-link"
+            >
+              <Workflow className="h-3.5 w-3.5" />
+              Journey view
+            </Link>
+            <Link
+              href="/app/care-plans/new"
+              className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+              data-testid="create-care-plan-btn"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              New plan
+            </Link>
+          </>
+        }
+      />
 
       <div className="page-content space-y-4">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="metric-card metric-card-neutral">
-          <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
-          </div>
-          <p className="text-2xl font-bold tabular-nums">{stats.total}</p>
-        </div>
-        <div className="metric-card metric-card-success">
-          <div className="flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Active</p>
-          </div>
-          <p className="text-2xl font-bold tabular-nums">{stats.active}</p>
-        </div>
-        <div className="metric-card metric-card-neutral">
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Drafts</p>
-          </div>
-          <p className="text-2xl font-bold tabular-nums">{stats.drafts}</p>
-        </div>
-        <div className={`metric-card ${stats.reviewDue > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Review Due</p>
-          </div>
-          <p className="text-2xl font-bold tabular-nums">{stats.reviewDue}</p>
-        </div>
-      </div>
-
       {/* Review alert */}
       {stats.reviewDue > 0 && (
         <div className="flex items-center gap-2 rounded-lg bg-warning/10 border border-warning/20 px-3 py-2 text-sm text-warning">
           <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-          <span>{stats.reviewDue} plan(s) need review within the next 14 days.</span>
+          <span>
+            {stats.reviewDue === 1
+              ? '1 plan needs review within the next 14 days.'
+              : `${stats.reviewDue} plans need review within the next 14 days.`}
+          </span>
         </div>
       )}
 
@@ -267,8 +256,7 @@ export default async function CarePlansPage() {
           <RecordList>
             {carePlans.map((plan: CarePlan) => {
               const reviewStatus = getReviewStatus(plan.review_date);
-              const statusStyle =
-                STATUS_LABELS[plan.status] || STATUS_LABELS.draft;
+              const statusStyle = planStatusStyle(plan.status);
               const goalsCount = Array.isArray(plan.goals)
                 ? plan.goals.length
                 : 0;
@@ -283,7 +271,7 @@ export default async function CarePlansPage() {
                   subtitle={clientName}
                   status={
                     <span
-                      className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusStyle.color}`}
+                      className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium ${statusStyle.color}`}
                     >
                       {statusStyle.label}
                     </span>
@@ -346,8 +334,7 @@ export default async function CarePlansPage() {
           <tbody className="divide-y divide-border">
             {carePlans?.map((plan: CarePlan) => {
               const reviewStatus = getReviewStatus(plan.review_date);
-              const statusStyle =
-                STATUS_LABELS[plan.status] || STATUS_LABELS.draft;
+              const statusStyle = planStatusStyle(plan.status);
               const goalsCount = Array.isArray(plan.goals)
                 ? plan.goals.length
                 : 0;

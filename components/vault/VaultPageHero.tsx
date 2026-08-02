@@ -32,7 +32,7 @@ export function VaultPageHero({
 
   return (
     <PageHero
-      eyebrow="Compliance · Evidence Vault"
+      eyebrow="Compliance"
       title="Evidence Vault"
       subtitle="Encrypted repository for compliance artifacts."
       metrics={metrics}

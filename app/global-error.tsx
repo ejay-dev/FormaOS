@@ -68,22 +68,44 @@ export default function GlobalError({
                 Error ID: <code style={{ fontFamily: 'monospace' }}>{error.digest}</code>
               </p>
             )}
-            <button
-              onClick={() => reset()}
+            <div
               style={{
                 marginTop: '1.5rem',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.5rem',
-                border: 'none',
-                background: '#f4f4f5',
-                color: '#0b0c0d',
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                cursor: 'pointer',
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '0.75rem',
               }}
             >
-              Try again
-            </button>
+              <button
+                onClick={() => reset()}
+                style={{
+                  padding: '0.5rem 1rem',
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  background: '#f4f4f5',
+                  color: '#0b0c0d',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                Try again
+              </button>
+              <a
+                href="/"
+                style={{
+                  padding: '0.5rem 1rem',
+                  borderRadius: '0.5rem',
+                  border: '1px solid #27272a',
+                  color: '#9ca3af',
+                  fontSize: '0.875rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                }}
+              >
+                Back to home
+              </a>
+            </div>
           </div>
         </div>
       </body>

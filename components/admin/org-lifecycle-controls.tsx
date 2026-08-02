@@ -52,18 +52,18 @@ export function OrgLifecycleControls({
     active: {
       label: 'Active',
       className:
-        'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+        'bg-success/10 text-success',
       icon: Shield,
     },
     suspended: {
       label: 'Suspended',
       className:
-        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+        'bg-warning/10 text-warning',
       icon: ShieldOff,
     },
     retired: {
       label: 'Retired',
-      className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+      className: 'bg-destructive/10 text-destructive',
       icon: Trash2,
     },
   }[status];
@@ -86,7 +86,7 @@ export function OrgLifecycleControls({
         {status === 'active' && (
           <button
             onClick={() => setActiveDialog('suspend')}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-yellow-50 text-yellow-700 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-warning/10 text-warning hover:bg-warning/10"
             data-testid="btn-suspend"
           >
             <ShieldOff className="h-4 w-4" /> Suspend
@@ -95,7 +95,7 @@ export function OrgLifecycleControls({
         {status === 'suspended' && (
           <button
             onClick={() => setActiveDialog('restore')}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-green-50 text-green-700 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-success/10 text-success hover:bg-success/10"
             data-testid="btn-restore"
           >
             <RotateCcw className="h-4 w-4" /> Restore
@@ -104,7 +104,7 @@ export function OrgLifecycleControls({
         {status !== 'retired' && (
           <button
             onClick={() => setActiveDialog('retire')}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-destructive/10 text-destructive hover:bg-destructive/10"
             data-testid="btn-retire"
           >
             <Trash2 className="h-4 w-4" /> Retire
@@ -116,7 +116,7 @@ export function OrgLifecycleControls({
       {activeDialog && (
         <div className="mt-4 p-4 border border-border rounded-lg bg-card">
           <div className="flex items-center gap-2 mb-3">
-            <AlertTriangle className="h-5 w-5 text-yellow-500" />
+            <AlertTriangle className="h-5 w-5 text-warning" />
             <h4 className="font-medium">
               Confirm{' '}
               {activeDialog === 'suspend'
@@ -127,7 +127,7 @@ export function OrgLifecycleControls({
             </h4>
           </div>
           {activeDialog === 'retire' && (
-            <p className="text-sm text-red-600 dark:text-red-400 mb-3">
+            <p className="text-sm text-destructive mb-3">
               This action is permanent. All API keys will be revoked and users
               will lose access.
             </p>

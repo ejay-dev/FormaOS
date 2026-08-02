@@ -30,7 +30,7 @@ const challenges: UseCaseChallenge[] = [
     icon: BadgeCheck,
     title: 'Credential sprawl across systems',
     description:
-      'Licenses, clearances, and certifications are often tracked in fragmented spreadsheets and inbox workflows.',
+      'Licences, clearances, and certifications are often tracked in fragmented spreadsheets and inbox workflows.',
   },
   {
     icon: BellRing,
@@ -56,14 +56,14 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Credential intake and verification',
     description:
-      'Collect artifacts, validate completeness, and assign verification ownership in one governed workflow, from initial hire through ongoing role changes.',
+      'Collect artefacts, validate completeness, and assign verification ownership in one governed workflow, from initial hire through ongoing role changes.',
     steps: [
       'Define required credential schema by role, site, and regulatory jurisdiction (AHPRA, NDIS, SafeWork)',
-      'Capture credential artifacts: registration certificates, clearance letters, training records, and photo ID',
+      'Capture credential artefacts: registration certificates, clearance letters, training records, and photo ID',
       'Validate completeness against role-specific requirements, block assignment to regulated roles until all credentials are verified',
       'Assign named verifier for each credential with segregation of duties (verifier cannot be the credential holder)',
       'Record reviewer decision history: approved, rejected with reason, or pending further documentation',
-      'Link verified credentials to the individual\'s compliance profile with tamper-evident timestamps',
+      "Link verified credentials to the individual's compliance profile with tamper-evident timestamps",
     ],
   },
   {
@@ -85,7 +85,7 @@ const workflows: UseCaseWorkflow[] = [
       'Generate workforce readiness views with linked evidence and verification status by individual, team, site, or credential type, audit-ready at any moment.',
     steps: [
       'View live compliance posture by role, team, site, or business unit with red/amber/green status indicators',
-      'Drill into any individual\'s credential chain: artifact → verifier → decision → timestamp → linked control',
+      "Drill into any individual's credential chain: artefact → verifier → decision → timestamp → linked control",
       'Filter by credential type across the entire workforce: who holds current AHPRA, who has expired WWC, who lacks WHS induction',
       'Export audit-ready evidence packages for NDIS Commission quality reviews, AHPRA audits, or procurement assessments',
       'Generate historical compliance snapshots: prove who was credentialed at any point in time for retrospective audits',
@@ -97,7 +97,7 @@ const workflows: UseCaseWorkflow[] = [
       'Apply the same credential governance to short-term contractors, locums, and agency staff, ensuring temporary workers meet the same regulatory standards as permanent employees.',
     steps: [
       'Define contractor-specific credential requirements by engagement type: locum doctor, agency support worker, IT contractor',
-      'Capture and verify credentials before the contractor\'s first shift, block rostering until all requirements are met',
+      "Capture and verify credentials before the contractor's first shift, block rostering until all requirements are met",
       'Track agency-supplied credential evidence separately with source attribution (agency-verified vs self-declared)',
       'Set engagement-end date triggers: archive credentials, revoke system access, and generate exit compliance summary',
       'Maintain full contractor credential history for retrospective audits even after engagement ends',
@@ -108,7 +108,8 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'AHPRA & Health Practitioner Regulation',
-    description: 'Australian Health Practitioner Regulation Agency, registration, CPD, and scope-of-practice obligations',
+    description:
+      'Australian Health Practitioner Regulation Agency, registration, CPD, and scope-of-practice obligations',
     features: [
       'AHPRA registration expiry tracking by practitioner, profession, and specialty',
       'CPD hour and competency evidence capture with immutable timestamps',
@@ -118,7 +119,8 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'NDIS Worker Screening',
-    description: 'NDIS Worker Screening Check and state-based Working With Children Check requirements',
+    description:
+      'NDIS Worker Screening Check and state-based Working With Children Check requirements',
     features: [
       'NDIS Worker Screening Check status tracking per employee and contractor',
       'State-based WWC Check expiry monitoring (VIC, NSW, QLD, SA, WA, TAS)',
@@ -128,7 +130,8 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'ISO 27001 / SOC 2 Competency',
-    description: 'Information security competency and awareness requirements under Annex A.7 and SOC 2 CC1.4',
+    description:
+      'Information security competency and awareness requirements under Annex A.7 and SOC 2 CC1.4',
     features: [
       'Security awareness training completion tracking per employee and role',
       'Annual competency assessment evidence with verifier sign-off records',
@@ -138,7 +141,8 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'SafeWork & WHS Inductions',
-    description: 'Work Health and Safety induction, licensing, and high-risk work credentials',
+    description:
+      'Work Health and Safety induction, licensing, and high-risk work credentials',
     features: [
       'High-risk work licence tracking (forklift, scaffolding, crane, rigging)',
       'Site-specific WHS induction completion records with expiry dates',
@@ -151,23 +155,27 @@ const standards: UseCaseStandard[] = [
 const metrics: UseCaseMetric[] = [
   {
     value: '90/60/30',
-    label: 'Day Renewal Alerts',
-    description: 'Automated reminder cadence, no more expiry surprises for licenses and clearances.',
+    label: 'Day renewal alerts',
+    description:
+      'A configurable reminder cadence for every credential type, sent to holder and manager.',
   },
   {
-    value: '< 2 min',
-    label: 'Credential Status Check',
-    description: 'Live posture view by team, role, or individual, audit-ready at any moment.',
+    value: 'Live',
+    label: 'Posture by team or role',
+    description:
+      'Current credential status by individual, team, site, or credential type, without a report request.',
   },
   {
     value: 'Named',
-    label: 'Verifier, Always',
-    description: 'Every credential item has a documented reviewer and approval decision on record.',
+    label: 'Verifier on every credential',
+    description:
+      'Every credential item carries a documented reviewer and approval decision on record.',
   },
   {
-    value: '100%',
-    label: 'Audit Traceability',
-    description: 'Current and historical credential proof in one exportable chain, no reconstruction.',
+    value: 'Point-in-time',
+    label: 'Historical proof',
+    description:
+      'Show who was credentialed on any past date, for retrospective audits.',
   },
 ];
 
@@ -197,7 +205,7 @@ export default function WorkforceContent() {
       standards={standards}
       metrics={metrics}
       industryKey="workforce_credentials"
-      ctaTitle="Operationalize credential compliance, with zero expiry surprises"
+      ctaTitle="Operationalise credential compliance, with no expiry surprises"
       ctaDescription="Replace fragmented spreadsheets and ad-hoc reminders with a governed credential system. Named owners, automated renewal cadences, and export-ready evidence for every workforce compliance review."
       mediaSrc="/marketing-media/use-case-workforce-credentials.jpg"
     />

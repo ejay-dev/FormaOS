@@ -4,11 +4,16 @@ import { motion, useReducedMotion } from 'framer-motion';
 import type { ReactNode } from 'react';
 
 export interface TimelineStep {
-  number: string;
   title: string;
   description: string;
   visual: ReactNode;
-  gradient: string;
+  /**
+   * Accepted but not rendered. The alternating layout and the titles carry
+   * the sequence, so the pages' step numbers and their tile gradients are
+   * not published.
+   */
+  number?: string;
+  gradient?: string;
 }
 
 export interface VerticalTimelineProps {
@@ -20,7 +25,7 @@ export function VerticalTimeline({ steps }: VerticalTimelineProps) {
 
   return (
     <section className="relative py-24 lg:py-32">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#080b14] via-[#0d1117] to-[#0a0e1a]" />
+      <div className="absolute inset-0 bg-marketing-bg" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -31,9 +36,6 @@ export function VerticalTimeline({ steps }: VerticalTimelineProps) {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 lg:mb-20"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-cyan-400 mb-6">
-            How It Works
-          </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-[var(--font-display)] leading-[1.1]">
             Three Steps to Audit-Ready
           </h2>
@@ -44,7 +46,7 @@ export function VerticalTimeline({ steps }: VerticalTimelineProps) {
           {/* Connecting line */}
           <div className="hidden lg:block absolute left-[50%] top-0 bottom-0 w-px">
             <motion.div
-              className="h-full w-full bg-gradient-to-b from-zinc-600/30 via-zinc-500/20 to-zinc-600/30"
+              className="h-full w-full bg-white/[0.08]"
               initial={shouldReduceMotion ? false : { scaleY: 0 }}
               whileInView={shouldReduceMotion ? undefined : { scaleY: 1 }}
               viewport={{ once: true, margin: '-100px' }}
@@ -58,7 +60,7 @@ export function VerticalTimeline({ steps }: VerticalTimelineProps) {
               const isEven = i % 2 === 0;
               return (
                 <motion.div
-                  key={step.number}
+                  key={step.title}
                   initial={shouldReduceMotion ? false : { opacity: 0, y: 30 }}
                   whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-60px' }}
@@ -69,13 +71,6 @@ export function VerticalTimeline({ steps }: VerticalTimelineProps) {
                 >
                   {/* Text */}
                   <div className={!isEven ? 'lg:[direction:ltr]' : ''}>
-                    <div className={`inline-flex items-center gap-3 mb-4`}>
-                      <span
-                        className={`flex h-14 w-14 items-center justify-center rounded-2xl border text-2xl font-bold bg-gradient-to-br ${step.gradient}`}
-                      >
-                        {step.number}
-                      </span>
-                    </div>
                     <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3 font-[var(--font-display)]">
                       {step.title}
                     </h3>
@@ -92,8 +87,8 @@ export function VerticalTimeline({ steps }: VerticalTimelineProps) {
                   </div>
 
                   {/* Node on timeline */}
-                  <div className="hidden lg:flex absolute left-1/2 top-6 -translate-x-1/2 h-4 w-4 rounded-full border-2 border-cyan-500/40 bg-[#0d1117]">
-                    <div className="m-auto h-2 w-2 rounded-full bg-cyan-500/60" />
+                  <div className="hidden lg:flex absolute left-1/2 top-6 -translate-x-1/2 h-4 w-4 rounded-full border-2 border-white/20 bg-marketing-bg">
+                    <div className="m-auto h-2 w-2 rounded-full bg-white/40" />
                   </div>
                 </motion.div>
               );

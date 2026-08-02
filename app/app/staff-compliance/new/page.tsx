@@ -73,7 +73,7 @@ export default async function NewCredentialPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Add Credential</h1>
+          <h1 className="page-title">Add credential</h1>
           <p className="text-muted-foreground">
             Record a staff qualification or check
           </p>
@@ -98,7 +98,7 @@ export default async function NewCredentialPage() {
                 htmlFor="field-52"
                 className="block text-sm font-medium mb-1"
               >
-                Staff Member <span className="text-red-500">*</span>
+                Staff Member <span className="text-destructive">*</span>
               </label>
               <select
                 id="field-52"
@@ -119,7 +119,7 @@ export default async function NewCredentialPage() {
                 htmlFor="field-51"
                 className="block text-sm font-medium mb-1"
               >
-                Credential Type <span className="text-red-500">*</span>
+                Credential Type <span className="text-destructive">*</span>
               </label>
               <select
                 id="field-51"
@@ -142,7 +142,7 @@ export default async function NewCredentialPage() {
               htmlFor="field-50"
               className="block text-sm font-medium mb-1"
             >
-              Credential Name <span className="text-red-500">*</span>
+              Credential Name <span className="text-destructive">*</span>
             </label>
             <input
               id="field-50"

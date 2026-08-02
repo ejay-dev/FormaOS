@@ -1,11 +1,7 @@
 import Link from 'next/link';
 import { getAdminFetchConfig } from '@/app/admin/lib';
-import {
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  ShieldAlert,
-} from 'lucide-react';
+import { ArrowRight, Clock, ShieldAlert } from 'lucide-react';
+import { SecurityTabs } from '@/app/admin/components/security-tabs';
 
 type SecurityEvent = {
   id: string;
@@ -42,7 +38,7 @@ async function fetchSecurity(): Promise<SecurityData | null> {
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
   if (Number.isNaN(date.getTime())) return 'N/A';
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat('en-AU', {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
@@ -81,33 +77,51 @@ function normalizeSeverityFilter(value?: string): SeverityFilter {
 function routeLabel(route: string): string {
   switch (route) {
     case '/admin/billing':
-      return 'Billing Operations';
+      return 'Billing';
     case '/admin/trials':
-      return 'Trial Operations';
+      return 'Trials';
     case '/admin/users':
-      return 'Identity Operations';
+      return 'Users';
     case '/admin/orgs':
-      return 'Tenant Operations';
+      return 'Organizations';
     default:
-      return 'Security Operations';
+      return 'Security';
   }
 }
+
+function severityLabel(severity: string): string {
+  switch (severity) {
+    case 'high':
+      return 'High';
+    case 'medium':
+      return 'Medium';
+    default:
+      return 'Low';
+  }
+}
+
+const FILTERS: Array<{ value: SeverityFilter; label: string }> = [
+  { value: 'all', label: 'All' },
+  { value: 'high', label: 'High' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'low', label: 'Low' },
+];
 
 const playbook = [
   {
     title: 'Acknowledge and classify',
     detail:
-      'Confirm severity and assign an owner within SLA. High-severity items should be triaged immediately.',
+      'Confirm the severity is right. Anything marked high should be looked at before you close the console.',
   },
   {
     title: 'Contain and route',
     detail:
-      'Route incident to billing, trials, users, or org operations based on impact surface and event type.',
+      'Open the destination the event routes to — billing, trials, users or organizations — and make the corrective change there.',
   },
   {
     title: 'Resolve and record',
     detail:
-      'Complete mitigation action, then log resolution context in audit/admin streams for defensibility.',
+      'Finish the fix, then note what happened in the audit stream so the record stands up later.',
   },
 ] as const;
 
@@ -138,136 +152,67 @@ export default async function AdminSecurityTriagePage({
     label: routeLabel(route),
     count: filteredEvents.filter((event) => triageRoute(event) === route).length,
   }));
-  const remediationShortcuts = routingMatrix
-    .filter((item) => item.count > 0)
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 3);
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-100">
-            Security Triage Queue
-          </h1>
-          <p className="mt-2 text-sm text-slate-400">
-            Prioritized workflow for incident and risk response operations.
-          </p>
-        </div>
-        <Link
-          href="/admin/security"
-          className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/60 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-700/60"
-        >
-          Security Event Stream
-          <ArrowRight className="h-4 w-4" />
-        </Link>
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">Security</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Admin events from the last 7 days, ordered so the urgent ones are
+          dealt with first.
+        </p>
       </div>
+
+      <SecurityTabs />
 
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-lg border border-rose-800/30 bg-rose-900/10 p-4">
-          <p className="text-sm text-rose-200/80">Critical Queue</p>
-          <p className="mt-1 text-2xl font-bold text-rose-300">{high.length}</p>
-          <p className="mt-1 text-xs text-rose-200/70">Target SLA: 1 hour</p>
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4">
+          <p className="text-sm text-destructive">High severity</p>
+          <p className="mt-1 text-2xl font-bold text-destructive">
+            {high.length}
+          </p>
         </div>
-        <div className="rounded-lg border border-amber-800/30 bg-amber-900/10 p-4">
-          <p className="text-sm text-amber-200/80">High Attention Queue</p>
-          <p className="mt-1 text-2xl font-bold text-amber-300">
+        <div className="rounded-lg border border-warning/20 bg-warning/10 p-4">
+          <p className="text-sm text-warning">Medium severity</p>
+          <p className="mt-1 text-2xl font-bold text-warning">
             {medium.length}
           </p>
-          <p className="mt-1 text-xs text-amber-200/70">Target SLA: same day</p>
         </div>
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
-          <p className="text-sm text-slate-400">Playbook Steps</p>
-          <p className="mt-1 text-2xl font-bold text-slate-100">
-            {playbook.length}
+        <div className="rounded-lg border border-border bg-card p-4">
+          <p className="text-sm text-muted-foreground">All events</p>
+          <p className="mt-1 text-2xl font-bold text-foreground">
+            {events.length}
           </p>
-          <p className="mt-1 text-xs text-slate-500">Standardized response</p>
         </div>
       </div>
 
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-100">
-          Incident-to-Remediation Shortcuts
-        </h2>
-        {remediationShortcuts.length > 0 ? (
-          <div className="grid gap-3 md:grid-cols-3">
-            {remediationShortcuts.map((shortcut) => (
-              <Link
-                key={shortcut.route}
-                href={shortcut.route}
-                className="group rounded-lg border border-slate-800 bg-slate-900/60 p-4 transition-colors hover:bg-slate-800/70"
-              >
-                <p className="text-xs uppercase tracking-wider text-slate-500">
-                  {shortcut.label}
-                </p>
-                <p className="mt-1 text-2xl font-bold text-slate-100">
-                  {shortcut.count}
-                </p>
-                <p className="mt-1 text-xs text-slate-400">
-                  open routed items
-                </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-cyan-200">
-                  Open remediation queue
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                </span>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-lg border border-slate-800/60 bg-slate-900/60 px-4 py-6 text-sm text-slate-400">
-            No routed incidents for the selected filter. Adjust severity to
-            inspect additional queues.
-          </div>
-        )}
-      </section>
-
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-100">
-          Response Playbook
-        </h2>
-        <div className="grid gap-3 md:grid-cols-3">
-          {playbook.map((step, idx) => (
-            <div
-              key={step.title}
-              className="rounded-lg border border-slate-800/60 bg-slate-900/60 p-4"
-            >
-              <div className="mb-2 inline-flex items-center gap-2 rounded bg-slate-800 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-300">
-                <CheckCircle2 className="h-3 w-3" />
-                Step {idx + 1}
-              </div>
-              <p className="text-sm font-semibold text-slate-100">{step.title}</p>
-              <p className="mt-2 text-xs leading-relaxed text-slate-400">
-                {step.detail}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
+      <section className="rounded-lg border border-border bg-card p-6">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
-            <ShieldAlert className="h-5 w-5 text-amber-300" />
-            <h2 className="text-lg font-semibold text-slate-100">
-              Active Triage Items
+            <ShieldAlert className="h-5 w-5 text-muted-foreground" />
+            <h2 className="text-lg font-semibold text-foreground">
+              Events to work through
             </h2>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {(['all', 'high', 'medium', 'low'] as const).map((filter) => (
+          <div className="flex flex-wrap items-center gap-4">
+            {FILTERS.map((filter) => (
               <Link
-                key={filter}
+                key={filter.value}
                 href={
-                  filter === 'all'
+                  filter.value === 'all'
                     ? '/admin/security/triage'
-                    : `/admin/security/triage?severity=${filter}`
+                    : `/admin/security/triage?severity=${filter.value}`
                 }
-                className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider ${
-                  activeFilter === filter
-                    ? 'border-cyan-400/40 bg-cyan-500/15 text-cyan-100'
-                    : 'border-slate-600/40 bg-slate-800/40 text-slate-300 hover:bg-slate-700/50'
+                aria-current={
+                  activeFilter === filter.value ? 'true' : undefined
+                }
+                className={`text-sm transition-colors ${
+                  activeFilter === filter.value
+                    ? 'font-medium text-foreground underline underline-offset-4'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                {filter}
+                {filter.label}
               </Link>
             ))}
           </div>
@@ -278,13 +223,13 @@ export default async function AdminSecurityTriagePage({
               <Link
                 key={event.id}
                 href={triageRoute(event)}
-                className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:bg-slate-800/70"
+                className="flex items-center justify-between rounded-lg border border-border bg-surface-1 px-4 py-3 transition-colors hover:bg-muted/70"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-slate-100">
+                  <p className="truncate text-sm font-medium text-foreground">
                     {event.description}
                   </p>
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {event.event_type}
                     {event.target_type ? ` · ${event.target_type}` : ''}
                   </p>
@@ -293,23 +238,23 @@ export default async function AdminSecurityTriagePage({
                   <span
                     className={`rounded px-2 py-1 text-xs font-semibold ${
                       event.severity === 'high'
-                        ? 'bg-rose-500/15 text-rose-300'
+                        ? 'bg-destructive/10 text-destructive'
                         : event.severity === 'medium'
-                          ? 'bg-amber-500/15 text-amber-300'
-                          : 'bg-slate-500/15 text-slate-300'
+                          ? 'bg-warning/10 text-warning'
+                          : 'bg-muted text-muted-foreground'
                     }`}
                   >
-                    {event.severity.toUpperCase()}
+                    {severityLabel(event.severity)}
                   </span>
-                  <span className="hidden text-xs text-slate-500 sm:inline">
+                  <span className="hidden text-xs text-muted-foreground sm:inline">
                     {formatDate(event.timestamp)}
                   </span>
-                  <ArrowRight className="h-4 w-4 text-slate-500" />
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </div>
               </Link>
             ))
           ) : (
-            <div className="rounded-lg border border-slate-800/60 bg-slate-900/60 px-4 py-8 text-center text-slate-500">
+            <div className="rounded-lg border border-border bg-surface-1 px-4 py-8 text-center text-muted-foreground">
               <Clock className="mx-auto mb-2 h-6 w-6 opacity-40" />
               No {activeFilter === 'all' ? '' : `${activeFilter} `}triage items
               in the last 7 days.
@@ -318,31 +263,51 @@ export default async function AdminSecurityTriagePage({
         </div>
       </section>
 
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-100">
-          Routing Matrix
+      <section className="rounded-lg border border-border bg-card p-6">
+        <h2 className="mb-1 text-lg font-semibold text-foreground">
+          Where these events route
         </h2>
+        <p className="mb-4 text-xs text-muted-foreground">
+          Routing is inferred from the event type. Ambiguous events land under
+          Security — open them from the audit trail and act manually.
+        </p>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
           {routingMatrix.map((item) => (
             <Link
               key={item.route}
               href={item.route}
-              className="rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:bg-slate-800/70"
+              className="rounded-lg border border-border bg-surface-1 px-4 py-3 transition-colors hover:bg-muted/70"
             >
-              <p className="text-xs uppercase tracking-wider text-slate-500">
-                {item.label}
+              <p className="text-xs text-muted-foreground">{item.label}</p>
+              <p className="mt-2 text-2xl font-bold text-foreground">
+                {item.count}
               </p>
-              <p className="mt-2 text-2xl font-bold text-slate-100">{item.count}</p>
-              <p className="text-xs text-slate-500">items routed</p>
+              <p className="text-xs text-muted-foreground">events routed</p>
             </Link>
           ))}
         </div>
       </section>
 
-      <div className="rounded-lg border border-blue-800/30 bg-blue-900/10 p-4 text-xs text-blue-100/80">
-        Triage routing is based on admin event type metadata. For ambiguous
-        events, route manually via Security Event Stream and record final owner.
-      </div>
+      <section className="rounded-lg border border-border bg-card p-6">
+        <h2 className="mb-4 text-lg font-semibold text-foreground">
+          How to work an incident
+        </h2>
+        <div className="grid gap-3 md:grid-cols-3">
+          {playbook.map((step) => (
+            <div
+              key={step.title}
+              className="rounded-lg border border-border bg-surface-1 p-4"
+            >
+              <p className="text-sm font-semibold text-foreground">
+                {step.title}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                {step.detail}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

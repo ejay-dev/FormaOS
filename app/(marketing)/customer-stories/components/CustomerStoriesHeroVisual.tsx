@@ -12,9 +12,9 @@ const CARDS = [
     rotate: 0,
     yOffset: 0,
     blur: 0,
-    accent: 'slate-300',
-    accentColor: 'rgb(203 213 225)',
-    metric: '47% faster',
+    accent: 'zinc-300',
+    accentColor: 'rgb(212 212 216)',
+    metric: 'Evidence chain',
     lines: 2,
     showLogo: true,
   },
@@ -23,9 +23,9 @@ const CARDS = [
     rotate: 2,
     yOffset: 16,
     blur: 1,
-    accent: 'slate-400',
-    accentColor: 'rgb(148 163 184)',
-    metric: '3× ROI',
+    accent: 'zinc-400',
+    accentColor: 'rgb(161 161 170)',
+    metric: 'Named owners',
     lines: 1,
     showLogo: true,
   },
@@ -34,8 +34,8 @@ const CARDS = [
     rotate: 4,
     yOffset: 32,
     blur: 2,
-    accent: 'slate-500',
-    accentColor: 'rgb(100 116 139)',
+    accent: 'zinc-500',
+    accentColor: 'rgb(113 113 122)',
     metric: 'Audit-ready',
     lines: 0,
     showLogo: true,
@@ -69,7 +69,7 @@ function CustomerStoriesHeroVisualInner() {
           .map((card, i) => (
             <div
               key={i}
-              className="absolute rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] w-[240px] h-[160px]"
+              className="absolute rounded-2xl border border-white/[0.10] bg-gradient-to-br from-white/[0.08] to-white/[0.02] w-[240px] h-[160px]"
               style={{
                 transform: `translateZ(${card.z}px) rotate(${card.rotate}deg)`,
                 top: `${50 + card.yOffset}px`,
@@ -114,7 +114,7 @@ function CustomerStoriesHeroVisualInner() {
               return (
                 <motion.div
                   key={idx}
-                  className="absolute rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] w-[240px] h-[160px] shadow-lg"
+                  className="absolute rounded-2xl border border-white/[0.10] bg-gradient-to-br from-white/[0.08] to-white/[0.02] w-[240px] h-[160px] shadow-lg"
                   style={{
                     transformStyle: 'preserve-3d',
                     filter: card.blur ? `blur(${card.blur}px)` : undefined,
@@ -163,11 +163,11 @@ interface CardProps {
 
 function CardContent({ card }: CardProps) {
   const pillBg =
-    card.accent === 'slate-300'
-      ? 'bg-white/[0.08] text-slate-200'
-      : card.accent === 'slate-400'
-        ? 'bg-white/[0.06] text-slate-300'
-        : 'bg-white/[0.05] text-slate-400';
+    card.accent === 'zinc-300'
+      ? 'bg-white/[0.08] text-zinc-200'
+      : card.accent === 'zinc-400'
+        ? 'bg-white/[0.06] text-zinc-300'
+        : 'bg-white/[0.05] text-zinc-400';
 
   return (
     <div className="p-4 h-full flex flex-col justify-between">

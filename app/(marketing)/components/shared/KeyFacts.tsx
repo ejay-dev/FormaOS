@@ -35,10 +35,10 @@ export function KeyFacts({
       aria-labelledby="key-facts-heading"
       className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10"
     >
-      <div className="rounded-2xl border border-white/[0.08] bg-slate-950/80 p-6 backdrop-blur-md sm:p-8">
+      <div className="rounded-2xl border border-white/[0.08] bg-zinc-950/80 p-6 sm:p-8">
         <div className="flex items-start gap-3">
           <CheckCircle2
-            className="h-5 w-5 flex-shrink-0 text-slate-400 mt-1"
+            className="h-5 w-5 flex-shrink-0 text-zinc-400 mt-1"
             aria-hidden="true"
           />
           <div>
@@ -48,7 +48,7 @@ export function KeyFacts({
             >
               {title}
             </h2>
-            <p className="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed">
+            <p className="mt-2 text-sm sm:text-base text-zinc-300 leading-relaxed">
               {summary}
             </p>
           </div>
@@ -59,7 +59,7 @@ export function KeyFacts({
               <dt className="text-sm font-semibold text-white shrink-0">
                 {fact.label}:
               </dt>
-              <dd className="text-sm text-slate-300 leading-relaxed">
+              <dd className="text-sm text-zinc-300 leading-relaxed">
                 {fact.value}
               </dd>
             </div>

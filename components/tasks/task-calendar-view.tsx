@@ -11,11 +11,14 @@ interface Task {
   status: string;
 }
 
+// Same four severity steps as SeverityBadge, as dots. The chip prints the
+// task title, and the dot carries a title attribute naming the priority, so
+// colour is never the only signal.
 const PRIORITY_DOT: Record<string, string> = {
-  critical: 'bg-red-500',
-  high: 'bg-orange-500',
-  medium: 'bg-yellow-500',
-  low: 'bg-gray-400',
+  critical: 'bg-destructive',
+  high: 'bg-destructive/60',
+  medium: 'bg-warning',
+  low: 'bg-muted-foreground/50',
 };
 
 export function TaskCalendarView({ tasks }: { tasks: Task[] }) {
@@ -111,6 +114,7 @@ export function TaskCalendarView({ tasks }: { tasks: Task[] }) {
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${PRIORITY_DOT[task.priority] || PRIORITY_DOT.medium}`}
+                        title={`${task.priority} priority`}
                       />
                       <span className="text-[10px] text-foreground truncate">
                         {task.title}

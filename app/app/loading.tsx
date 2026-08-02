@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function AppLoading() {
-  return <PageSkeleton title="Dashboard" cards={4} tableRows={4} />;
+export default function AppSegmentLoading() {
+  return <PageSkeleton cards={4} tableRows={4} />;
 }

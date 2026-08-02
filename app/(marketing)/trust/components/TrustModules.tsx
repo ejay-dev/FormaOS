@@ -27,33 +27,14 @@ const navCards = [
     icon: CheckCircle2,
     title: 'Compare Platforms',
     description:
-      'Compare FormaOS against Ideagen Policy Logic, Riskware, 6clicks, and HealthMetrics. Evaluate the operational execution difference for AU care, healthcare, and regulated industries.',
+      'Compare FormaOS against Ideagen CompliSpace, Riskware, 6clicks, and HealthMetrics. Evaluate the operational execution difference for AU care, healthcare, and regulated industries.',
     linkText: 'See comparisons',
-  },
-  {
-    href: '/trust/packet',
-    icon: FileLock2,
-    title: 'Download Trust Packet',
-    description:
-      'Vendor trust packet covering architecture, encryption, identity governance, data handling, and review expectations in a downloadable PDF.',
-    linkText: 'Download PDF',
-  },
-  {
-    href: '/trust/vendor-assurance',
-    icon: ShieldCheck,
-    title: 'Vendor Assurance',
-    description:
-      'DPA, vendor assurance questionnaire, SLA review materials, and current assessment artifacts for legal, risk, and procurement review.',
-    linkText: 'View process',
   },
 ] as const;
 
+// The audit-chain module that used to sit here repeated AuditChainProof
+// higher up the page word for word. One explanation, one place.
 const assuranceModules = [
-  {
-    title: 'Cryptographic audit chain',
-    detail:
-      "Each org's audit log is HMAC-chained row-by-row and the chain top is submitted daily at 05:30 UTC to Sigstore Rekor, the Linux Foundation transparency log used for signed open-source releases. Append-only is enforced at the database layer by an immutability trigger and RLS deny policies, not application code. An auditor can verify the timestamp of any event without trusting us.",
-  },
   {
     title: 'Live compliance posture',
     detail:
@@ -75,7 +56,7 @@ export function TrustModules() {
   return (
     <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
       {/* Trust center navigation cards */}
-      <SectionChoreography pattern="alternating" stagger={0.05} className="grid gap-4 lg:grid-cols-4">
+      <SectionChoreography pattern="alternating" stagger={0.05} className="grid gap-4 lg:grid-cols-3">
           {navCards.map((card) => {
             const Icon = card.icon;
             return (
@@ -85,7 +66,7 @@ export function TrustModules() {
                 >
                   <Link
                     href={card.href}
-                    className="group flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                    className="group flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
                   >
                     <div className="mb-4 inline-flex rounded-lg border border-white/[0.1] bg-white/[0.06] p-2">
                       <Icon className="h-5 w-5 text-slate-300" />
@@ -106,20 +87,23 @@ export function TrustModules() {
           })}
       </SectionChoreography>
 
-      {/* Assurance module cards */}
-      <SectionChoreography pattern="alternating" stagger={0.05} className="mt-10 grid gap-4 lg:grid-cols-3">
-        {assuranceModules.map((mod) => (
-            <article key={mod.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
-              <div className="mb-4 inline-flex rounded-lg border border-white/[0.1] bg-white/[0.06] p-2">
-                <FileLock2 className="h-5 w-5 text-slate-300" />
-              </div>
-              <h2 className="text-lg font-semibold text-white">{mod.title}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-slate-300">
+      <div className="mt-12 border-t border-white/[0.08] pt-8">
+        <h2 className="text-lg font-semibold text-white">
+          What the Trust Center supports during a review
+        </h2>
+        <div className="mt-5 grid gap-8 md:grid-cols-3">
+          {assuranceModules.map((mod) => (
+            <div key={mod.title}>
+              <h3 className="text-sm font-semibold text-slate-100">
+                {mod.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-400">
                 {mod.detail}
               </p>
-            </article>
-        ))}
-      </SectionChoreography>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

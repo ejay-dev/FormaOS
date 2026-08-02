@@ -131,12 +131,12 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
         </div>
         <div>
           <div className="flex items-center gap-3">
-            <h3 className="text-lg font-black text-foreground tracking-tight">
-              Multi-Factor Authentication
+            <h3 className="text-lg font-semibold text-foreground tracking-tight">
+              Multi-factor authentication
             </h3>
             {required && (
-              <span className="rounded-full border border-warning/40 bg-warning/10 px-2.5 py-1 text-xs font-black uppercase tracking-widest text-warning">
-                Required
+              <span className="rounded-full border border-warning/40 bg-warning/10 px-2.5 py-1 text-xs font-medium text-warning">
+                Required for your role
               </span>
             )}
           </div>
@@ -229,16 +229,16 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               <div className="h-40 w-40 rounded-xl border border-border bg-white p-3">
                 <img src={qrCode} alt="MFA QR Code" className="h-full w-full" />
               </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
                 <QrCode className="h-3 w-3" />
-                Scan with Authenticator
+                Scan with your authenticator app
               </div>
             </div>
             <div className="space-y-4">
               <div className="rounded-lg border border-border bg-surface-2 px-4 py-3 text-xs text-foreground/70">
                 <div className="flex items-center gap-2 font-semibold text-foreground/90">
                   <KeyRound className="h-3 w-3" />
-                  Backup Codes
+                  Backup codes
                 </div>
                 <p className="mt-2 text-[11px] text-muted-foreground">
                   Store these codes safely. Each code can be used once.
@@ -251,10 +251,14 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="field-226" className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  Verification Code
+                <label
+                  htmlFor="mfa-verification-code"
+                  className="block text-sm font-medium text-foreground"
+                >
+                  Verification code
                 </label>
                 <input
+                  id="mfa-verification-code"
                   value={token}
                   onChange={(event) => setToken(event.target.value)}
                   placeholder="123456"

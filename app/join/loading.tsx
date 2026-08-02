@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Join" />;
+export default function JoinLoading() {
+  return <PageSkeleton title="Join an organisation" cards={0} tableRows={5} />;
 }

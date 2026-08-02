@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -109,25 +109,21 @@ export default function CustomerStoriesContent() {
         <ImmersiveHero
           theme="customer-stories"
           visualContent={<CustomerStoriesHeroVisual />}
-          badge={{
-            icon: <ShieldCheck className="w-4 h-4" />,
-            text: 'Proof in Practice',
-          }}
           headline={
             <>
-              Use Case Scenarios from
+              Use case scenarios from
               <br />
-              <span className="text-foreground">Regulated Industries</span>
+              <span className="text-foreground">regulated industries</span>
             </>
           }
           subheadline="Illustrative scenarios showing how FormaOS lands in regulated industries, not anonymised customer histories. Real deployments discussed during evaluation."
           primaryCta={{
-            href: demoHref('customer_stories_hero'),
-            label: PUBLIC_CTA_LABELS.bookDemo,
-          }}
-          secondaryCta={{
             href: compliancePlanHref('customer_stories_hero'),
             label: PUBLIC_CTA_LABELS.compliancePlan,
+          }}
+          secondaryCta={{
+            href: demoHref('customer_stories_hero'),
+            label: PUBLIC_CTA_LABELS.bookDemo,
           }}
         />
       </div>
@@ -151,30 +147,30 @@ export default function CustomerStoriesContent() {
               >
                 <h2 className="text-lg font-semibold text-white">{s.title}</h2>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[11px] text-slate-400">
+                  <span className="inline-flex items-center rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[11px] text-zinc-400">
                     {s.context}
                   </span>
                 </div>
                 <div className="mt-2">
-                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-0.5 text-[11px] font-medium text-slate-300">
+                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-0.5 text-[11px] font-medium text-zinc-300">
                     {s.framework}
                   </span>
                 </div>
-                <div className="mt-4 text-sm leading-relaxed text-slate-300">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <div className="mt-4 text-sm leading-relaxed text-zinc-300">
+                  <div className="text-xs font-semibold text-zinc-400">
                     Situation
                   </div>
                   <p className="mt-2">{s.situation}</p>
                 </div>
 
                 <div className="mt-5">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  <div className="text-xs font-semibold text-zinc-400">
                     Outcomes
                   </div>
-                  <ul className="mt-2 space-y-2 text-sm text-slate-300">
+                  <ul className="mt-2 space-y-2 text-sm text-zinc-300">
                     {s.outcome.map((o) => (
                       <li key={o} className="flex items-start gap-2">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-300" />
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-success" />
                         <span>{o}</span>
                       </li>
                     ))}
@@ -201,13 +197,13 @@ export default function CustomerStoriesContent() {
       <DeferredSection minHeight={160}>
         <section className="relative mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 lg:p-10">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-white">
                     Want a buyer-ready proof walkthrough?
                   </h3>
-                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300">
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-300">
                     We can walk your team through security, posture reporting,
                     and evidence defensibility using your evaluation criteria.
                   </p>
@@ -225,126 +221,37 @@ export default function CustomerStoriesContent() {
         </section>
       </DeferredSection>
 
-      {/* ROI Proof: Worked Example */}
-      <DeferredSection minHeight={500}>
-        <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+      {/* Closing CTA. The worked-effort table that used to sit here quoted
+          hour savings ("~326 hrs per quarter") against an invented provider,
+          on a page that has no deployments behind it. */}
+      <DeferredSection minHeight={200}>
+        <section className="relative mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
-                The four workflows worth measuring
+                Measure it against your own operation
               </h3>
-              <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
-                This is a worksheet, not a result. It assumes a multi-site NDIS
-                provider with about 400 staff, three full-time compliance people
-                and four audit cycles a year. During an evaluation each row gets
-                replaced with your own figures, so the difference is measured
-                rather than asserted.
-              </p>
-
-              {/* Worked example table */}
-              <div className="mt-6 rounded-xl border border-white/[0.08] overflow-x-auto">
-                <table className="w-full min-w-[560px] text-sm">
-                  <thead>
-                    <tr className="border-b border-white/[0.06] bg-white/[0.03]">
-                      <th className="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                        Workflow
-                      </th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-rose-400">
-                        Assumed manual effort
-                      </th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-emerald-400">
-                        Target with FormaOS
-                      </th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-white">
-                        Difference to verify
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-slate-300">
-                    <tr className="border-b border-white/[0.04]">
-                      <td className="py-2.5 px-4">Audit preparation</td>
-                      <td className="py-2.5 px-4 text-center">
-                        3 weeks (120 hrs)
-                      </td>
-                      <td className="py-2.5 px-4 text-center">4 hours</td>
-                      <td className="py-2.5 px-4 text-center font-semibold text-white">
-                        116 hrs
-                      </td>
-                    </tr>
-                    <tr className="border-b border-white/[0.04] bg-white/[0.01]">
-                      <td className="py-2.5 px-4">
-                        Evidence collection & verification
-                      </td>
-                      <td className="py-2.5 px-4 text-center">
-                        40 hrs / month
-                      </td>
-                      <td className="py-2.5 px-4 text-center">8 hrs / month</td>
-                      <td className="py-2.5 px-4 text-center font-semibold text-white">
-                        96 hrs / quarter
-                      </td>
-                    </tr>
-                    <tr className="border-b border-white/[0.04]">
-                      <td className="py-2.5 px-4">
-                        Credential & register tracking
-                      </td>
-                      <td className="py-2.5 px-4 text-center">
-                        20 hrs / month
-                      </td>
-                      <td className="py-2.5 px-4 text-center">2 hrs / month</td>
-                      <td className="py-2.5 px-4 text-center font-semibold text-white">
-                        54 hrs / quarter
-                      </td>
-                    </tr>
-                    <tr className="border-b border-white/[0.04] bg-white/[0.01]">
-                      <td className="py-2.5 px-4">
-                        Incident response documentation
-                      </td>
-                      <td className="py-2.5 px-4 text-center">
-                        3 days per incident
-                      </td>
-                      <td className="py-2.5 px-4 text-center">
-                        4 hours per incident
-                      </td>
-                      <td className="py-2.5 px-4 text-center font-semibold text-white">
-                        ~60 hrs / quarter
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr className="bg-white/[0.03]">
-                      <td
-                        className="py-3 px-4 font-semibold text-white"
-                        colSpan={3}
-                      >
-                        Hours to measure per quarter
-                      </td>
-                      <td className="py-3 px-4 text-center font-bold text-white">
-                        ~326 hrs
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-
-              <p className="mt-4 text-xs leading-relaxed text-slate-500">
-                No deployment sits behind these figures. They are starting
-                assumptions to test against your own operation, line by line,
-                and none of them belongs in a business case until it has been.
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-300">
+                Audit preparation, evidence collection, credential tracking and
+                incident documentation are the four workflows worth timing. A
+                compliance plan works through them with your figures, your
+                frameworks and your sites, so the difference is measured rather
+                than asserted.
               </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  href={compliancePlanHref('customer_stories_worksheet')}
+                  href={compliancePlanHref('customer_stories_final')}
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground text-background px-6 py-3 text-sm font-semibold shadow-lg transition hover:opacity-90"
                 >
                   {PUBLIC_CTA_LABELS.compliancePlan}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  href="/trust"
+                  href={demoHref('customer_stories_final')}
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/[0.04] px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
                 >
-                  Trust Center
+                  {PUBLIC_CTA_LABELS.bookDemo}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

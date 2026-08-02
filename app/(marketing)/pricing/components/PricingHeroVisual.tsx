@@ -36,7 +36,7 @@ const TIERS: TierCard[] = [
     tiltIntensity: 2,
     blur: 2,
     isCenter: false,
-    accentColor: 'text-slate-400/70',
+    accentColor: 'text-zinc-400/70',
     borderColor: 'border-white/10',
     glowColor: '',
     features: [
@@ -55,9 +55,9 @@ const TIERS: TierCard[] = [
     tiltIntensity: 4,
     blur: 0,
     isCenter: true,
-    accentColor: 'text-slate-200',
+    accentColor: 'text-zinc-200',
     borderColor: 'border-white/25',
-    glowColor: '0 0 40px rgba(148,163,184,0.18), 0 0 80px rgba(148,163,184,0.08)',
+    glowColor: '0 0 40px rgba(161,161,170,0.18), 0 0 80px rgba(161,161,170,0.08)',
     features: [
       { label: 'Full framework map', width: '82%' },
       { label: 'Evidence automation', width: '68%' },
@@ -75,7 +75,7 @@ const TIERS: TierCard[] = [
     tiltIntensity: 3,
     blur: 1,
     isCenter: false,
-    accentColor: 'text-slate-400/70',
+    accentColor: 'text-zinc-400/70',
     borderColor: 'border-white/10',
     glowColor: '',
     features: [
@@ -107,7 +107,7 @@ function PricingHeroVisualInner() {
           {TIERS.map((card) => (
             <div
               key={card.tier}
-              className={`absolute rounded-2xl p-5 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border ${card.borderColor}`}
+              className={`absolute rounded-2xl p-5 bg-gradient-to-br from-white/[0.08] to-white/[0.02] border ${card.borderColor}`}
               style={{
                 width: card.isCenter ? 180 : 160,
                 height: card.isCenter ? 240 : 210,
@@ -136,7 +136,7 @@ function PricingHeroVisualInner() {
           animate={{ opacity: [0.12, 0.25, 0.12], scale: [1, 1.06, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <div className="w-full h-full rounded-3xl bg-slate-400/20 blur-3xl" />
+          <div className="w-full h-full rounded-3xl bg-zinc-400/20 blur-3xl" />
         </motion.div>
 
         {/* 3D perspective container */}
@@ -199,7 +199,7 @@ function TierCardVisual({
       } : { duration: 0 }}
     >
       <div
-        className={`w-full h-full rounded-2xl p-5 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border ${card.borderColor} flex flex-col`}
+        className={`w-full h-full rounded-2xl p-5 bg-gradient-to-br from-white/[0.08] to-white/[0.02] border ${card.borderColor} flex flex-col`}
         style={{ boxShadow: card.glowColor || undefined }}
       >
         {/* Tier badge */}

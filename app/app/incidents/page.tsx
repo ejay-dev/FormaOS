@@ -17,11 +17,14 @@ import {
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
+import { SeverityBadge } from '@/components/care/severity-badge';
 import {
   RecordCard,
   RecordList,
   EmptyRecordState,
 } from '@/components/mobile/record-card';
+
+const INCIDENTS_PAGE_SIZE = 100;
 
 function formatDate(date: string | null) {
   if (!date) return '-';
@@ -32,19 +35,6 @@ function formatDate(date: string | null) {
     hour: '2-digit',
     minute: '2-digit',
   });
-}
-
-function getSeverityColor(severity: string) {
-  switch (severity) {
-    case 'critical':
-      return 'bg-destructive/10 text-destructive border-destructive/20';
-    case 'high':
-      return 'bg-warning/10 text-warning border-warning/20';
-    case 'medium':
-      return 'bg-warning/10 text-warning border-warning/20';
-    default:
-      return 'bg-success/10 text-success border-success/20';
-  }
 }
 
 export default async function IncidentsPage({
@@ -70,11 +60,26 @@ export default async function IncidentsPage({
   const { organization } = systemState;
   const supabase = await createSupabaseServerClient();
 
-  // Fetch incidents with client info
-  const { data: incidents, error } = await supabase
-    .from('org_incidents')
-    .select(
-      `
+  // Hero metrics are org-wide counts, deliberately independent of the
+  // filters and of the row window below.
+  const orgIncidents = () =>
+    supabase
+      .from('org_incidents')
+      .select('id', { count: 'exact', head: true })
+      .eq('organization_id', organization.id);
+
+  const [
+    { data: incidents, error },
+    { count: totalCount },
+    { count: openCount },
+    { count: resolvedCount },
+    { count: criticalCount },
+    { count: followUpCount },
+  ] = await Promise.all([
+    supabase
+      .from('org_incidents')
+      .select(
+        `
       id,
       severity,
       status,
@@ -91,10 +96,16 @@ export default async function IncidentsPage({
         full_name
       )
     `,
-    )
-    .eq('organization_id', organization.id)
-    .order('occurred_at', { ascending: false })
-    .limit(100);
+      )
+      .eq('organization_id', organization.id)
+      .order('occurred_at', { ascending: false })
+      .limit(INCIDENTS_PAGE_SIZE),
+    orgIncidents(),
+    orgIncidents().eq('status', 'open'),
+    orgIncidents().eq('status', 'resolved'),
+    orgIncidents().in('severity', ['critical', 'high']),
+    orgIncidents().eq('follow_up_required', true).is('resolved_at', null),
+  ]);
 
   if (error) {
     console.error('[IncidentsPage] Error fetching incidents:', error);
@@ -126,20 +137,15 @@ export default async function IncidentsPage({
   });
 
   const stats = {
-    total: filteredIncidents.length,
-    open: filteredIncidents.filter((i: Incident) => i.status === 'open').length,
-    resolved: filteredIncidents.filter((i: Incident) => i.status === 'resolved')
-      .length,
-    critical: filteredIncidents.filter(
-      (i: Incident) => i.severity === 'critical' || i.severity === 'high',
-    ).length,
-    pendingFollowUp: filteredIncidents.filter(
-      (i: Incident) => i.follow_up_required && !i.resolved_at,
-    ).length,
+    total: totalCount ?? 0,
+    open: openCount ?? 0,
+    resolved: resolvedCount ?? 0,
+    critical: criticalCount ?? 0,
+    pendingFollowUp: followUpCount ?? 0,
   };
 
   const heroMetrics: PageHeroMetric[] = [
-    { label: 'Total', value: stats.total, sub: 'incidents' },
+    { label: 'Total', value: stats.total, sub: 'incidents on record' },
     {
       label: 'Open',
       value: stats.open,
@@ -153,9 +159,9 @@ export default async function IncidentsPage({
       tone: 'success',
     },
     {
-      label: 'Critical',
+      label: 'Critical or high',
       value: stats.critical,
-      sub: stats.critical > 0 ? 'high severity' : 'none critical',
+      sub: stats.critical > 0 ? 'by severity' : 'none recorded',
       tone: stats.critical > 0 ? 'danger' : 'neutral',
     },
     {
@@ -259,6 +265,14 @@ export default async function IncidentsPage({
           ) : null}
         </form>
 
+        <p className="text-xs text-muted-foreground">
+          Showing {filteredIncidents.length} of {stats.total} incidents
+          {stats.total > INCIDENTS_PAGE_SIZE
+            ? `, newest ${INCIDENTS_PAGE_SIZE} loaded`
+            : ''}
+          .
+        </p>
+
         {/* Mobile cards */}
         <div className="md:hidden">
           {filteredIncidents.length === 0 ? (
@@ -281,13 +295,7 @@ export default async function IncidentsPage({
                     }
                     subtitle={clientName ?? formatDate(incident.occurred_at)}
                     status={
-                      <span
-                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${getSeverityColor(
-                          incident.severity,
-                        )}`}
-                      >
-                        {incident.severity}
-                      </span>
+                      <SeverityBadge level={incident.severity} size="sm" />
                     }
                     meta={[
                       {
@@ -376,13 +384,7 @@ export default async function IncidentsPage({
                       className="hover:bg-muted/30 transition-colors"
                     >
                       <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium border ${getSeverityColor(
-                            incident.severity,
-                          )}`}
-                        >
-                          {incident.severity}
-                        </span>
+                        <SeverityBadge level={incident.severity} />
                       </td>
                       <td className="px-4 py-3">
                         <span className="text-sm capitalize">

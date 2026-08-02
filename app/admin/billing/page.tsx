@@ -36,12 +36,12 @@ function formatDate(value?: string | null) {
 function getStatusIcon(status?: string | null) {
   switch (status?.toLowerCase()) {
     case 'active':
-      return <span className="text-emerald-400">●</span>;
+      return <span className="text-success">●</span>;
     case 'trialing':
-      return <span className="text-amber-400">●</span>;
+      return <span className="text-warning">●</span>;
     case 'past_due':
     case 'payment_failed':
-      return <span className="text-red-400">●</span>;
+      return <span className="text-destructive">●</span>;
     default:
       return <span className="text-muted-foreground">●</span>;
   }
@@ -144,28 +144,28 @@ export default async function AdminBillingPage({
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Active Subscriptions</p>
+              <p className="text-sm text-muted-foreground">Active subscriptions</p>
               <p className="text-2xl font-bold text-foreground">{activeCount}</p>
             </div>
-            <CreditCard className="h-6 w-6 text-emerald-500/50" />
+            <CreditCard className="h-6 w-6 text-muted-foreground" />
           </div>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Active Trials</p>
+              <p className="text-sm text-muted-foreground">Active trials</p>
               <p className="text-2xl font-bold text-foreground">{trialsCount}</p>
             </div>
-            <Calendar className="h-6 w-6 text-amber-500/50" />
+            <Calendar className="h-6 w-6 text-muted-foreground" />
           </div>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Payment Issues</p>
+              <p className="text-sm text-muted-foreground">Payment issues</p>
               <p className="text-2xl font-bold text-foreground">{failedCount}</p>
             </div>
-            <AlertCircle className="h-6 w-6 text-red-500/50" />
+            <AlertCircle className="h-6 w-6 text-muted-foreground" />
           </div>
         </div>
       </div>
@@ -240,7 +240,7 @@ export default async function AdminBillingPage({
                         Next renewal: {formatDate(row.current_period_end)}
                       </p>
                       {Number(row.payment_failures ?? 0) > 0 ? (
-                        <p className="text-[11px] text-red-300">
+                        <p className="text-[11px] text-destructive">
                           Payment failures: {row.payment_failures}
                         </p>
                       ) : null}

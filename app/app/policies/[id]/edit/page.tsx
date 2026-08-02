@@ -60,12 +60,12 @@ export default async function EditPolicyPage({
       </div>
 
       {!canEdit && (
-        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+        <div className="rounded-lg border border-warning/20 bg-warning/10 px-4 py-3 text-sm text-warning">
           <div className="flex items-start gap-3">
             <Lock className="mt-0.5 h-4 w-4" />
             <div>
               <p className="font-semibold">Editing is not available</p>
-              <p className="mt-1 text-xs text-amber-200">
+              <p className="mt-1 text-xs text-warning/80">
                 {locked
                   ? 'This policy is in a controlled lifecycle state. Create a new draft version before making changes.'
                   : 'Your current role can view this policy but cannot edit it.'}

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { OutcomeJourneyPage } from '../components/outcome-journey-page';
 import { siteUrl } from '@/lib/seo';
+import { CLAIM_PHRASES } from '@/lib/marketing/claims';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Operate Compliance',
@@ -29,19 +30,19 @@ export const metadata: Metadata = {
 export default function OperatePage() {
   return (
     <OutcomeJourneyPage
-      badge="Outcome Journey · Operate"
-      title="Operate Compliance as a Live System, Not a Quarterly Event"
+      badge="Third of four: Operate"
+      title="Operate compliance as a live system, not a quarterly event"
       description="Run controls as daily operations with workflows, ownership, and signals that keep teams ahead of drift."
-      proofLabel="Operating signal"
-      proofValue="Owned execution"
+      proofLabel="Checked against your own data"
+      proofValue={CLAIM_PHRASES.automatedChecks}
       proofNote="Designed for teams that need recurring control work, clear escalation paths, and evidence captured at the point of completion."
       workflow={[
-        'Operationalize controls into recurring tasks',
+        'Turn controls into recurring tasks',
         'Assign owners and due-date accountability',
         'Monitor completion and evidence health',
         'Escalate workflow exceptions in real time',
       ]}
-      pillarsEyebrow="Operate In FormaOS"
+      pillarsEyebrow="Operate in FormaOS"
       pillarsTitle="Turn policy intent into day-to-day execution"
       pillarsDescription="Operate is the layer where compliance stops being a quarterly clean-up exercise and becomes owned work across teams."
       pillars={[
@@ -65,6 +66,13 @@ export default function OperatePage() {
             'Keep proof attached to the work itself so operational follow-through becomes review-ready history.',
           href: '/prove',
           cta: 'See how proof works',
+        },
+        {
+          title: 'Next: Govern',
+          detail:
+            'These four pages read in order: evaluate, prove, operate, govern. Govern covers what leadership sees once the work is running.',
+          href: '/govern',
+          cta: 'Read Govern',
         },
       ]}
       trustArtifacts={[

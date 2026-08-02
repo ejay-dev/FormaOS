@@ -85,7 +85,7 @@ function BlogHero() {
           </span>
         </>
       }
-      subheadline="Expert perspectives on compliance management, regulatory technology, and building operational excellence in regulated industries."
+      subheadline="Regulatory explainers for Australian providers, NDIS, aged care, AHPRA, NQF, WHS and AFS licence obligations, alongside how the platform is built."
       extras={<BlogHeroExtras />}
       primaryCta={{ href: '/blog#featured', label: 'Read Featured Article' }}
     />
@@ -117,11 +117,11 @@ function FeaturedPost() {
                 <div className="relative w-full lg:w-1/2 aspect-video rounded-2xl overflow-hidden border border-white/5 bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent">
                   <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-transparent" />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+                    <div className="p-8 rounded-2xl bg-white/5 border border-white/10">
                       <FeaturedIcon className="w-16 h-16 text-slate-300" />
                     </div>
                   </div>
-                  <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/40 backdrop-blur-sm px-3 py-1 text-xs text-white/80 border border-white/10">
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-xs text-white/80 border border-white/10">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Featured article</span>
                   </div>
@@ -222,7 +222,7 @@ function CategoryFilter({
           range={[0.04, 0.34]}
           className="max-w-xl mx-auto"
         >
-          <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-gray-900/60 border border-white/10 text-slate-300 focus-within:border-white/30 focus-within:ring-2 focus-within:ring-white/10 transition">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-white/[0.04] border border-white/10 text-slate-300 focus-within:border-white/30 focus-within:ring-2 focus-within:ring-white/10 transition">
             <Search className="w-4 h-4 text-slate-400" />
             <input
               value={searchQuery}
@@ -267,17 +267,13 @@ function BlogCard({ post }: { post: (typeof blogPosts)[0] }) {
         <div className="relative mb-5 h-28 w-full rounded-xl overflow-hidden border border-white/5 bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent group-hover:from-white/[0.1] transition-all duration-500">
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 group-hover:bg-white/10 transition-all duration-500">
+            <div className="p-4 rounded-xl bg-white/5 border border-white/10 group-hover:bg-white/10 transition-all duration-500">
               <Icon className="w-8 h-8 text-slate-300 group-hover:text-slate-200 transition-colors" />
             </div>
           </div>
         </div>
 
-        {/* Icon header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
-            <Icon className="w-5 h-5 text-slate-300" />
-          </div>
+        <div className="mb-4 flex items-center justify-end">
           <span className="px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-slate-400 text-xs">
             {post.category}
           </span>
@@ -363,69 +359,13 @@ function BlogGrid({
           >
             <button
               onClick={onLoadMore}
-              className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-white font-medium hover:border-white/25 hover:bg-white/[0.08] transition-all"
+              className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 text-white font-medium hover:border-white/25 hover:bg-white/[0.08] transition-all"
             >
               <span>Load More Articles</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </ScrollReveal>
         ) : null}
-      </div>
-    </section>
-  );
-}
-
-// ============================================================================
-// NEWSLETTER CTA
-// ============================================================================
-
-function NewsletterCTA() {
-  return (
-    <section className="mk-section relative">
-      <div className="relative max-w-4xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-          <div className="relative p-10 rounded-3xl bg-white/[0.03] border border-white/5 shadow-2xl shadow-black/30">
-            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-
-            <div className="text-center">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                Stay Informed
-              </p>
-
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                Subscribe to Our Newsletter
-              </h2>
-              <p className="text-slate-400 mb-8 max-w-xl mx-auto">
-                Get the latest insights on compliance management, regulatory
-                updates, and product news delivered to your inbox.
-              </p>
-
-              <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-5 py-3 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all"
-                />
-                <motion.button
-                  type="submit"
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: '0 0 40px rgba(148, 163, 184, 0.25)',
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-6 py-3 rounded-full bg-foreground text-background font-semibold flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-all"
-                >
-                  <span>Subscribe</span>
-                  <ArrowRight className="w-4 h-4" />
-                </motion.button>
-              </form>
-
-              <p className="text-xs text-slate-500 mt-4">
-                No spam. Unsubscribe anytime.
-              </p>
-            </div>
-          </div>
-        </ScrollReveal>
       </div>
     </section>
   );
@@ -492,12 +432,6 @@ export default function BlogPageContent() {
           hasMore={hasMore}
           onLoadMore={() => setVisibleCount((count) => count + 6)}
         />
-      </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-      <DeferredSection minHeight={200}>
-        <NewsletterCTA />
       </DeferredSection>
     </MarketingPageShell>
   );

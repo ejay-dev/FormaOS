@@ -1,686 +1,340 @@
-'use client';
-
-import { useRef, useState } from 'react';
-import type { LucideIcon } from 'lucide-react';
-import {
-  FileText,
-  Shield,
-  User,
-  Ban,
-  Database,
-  Lock,
-  Server,
-  CreditCard,
-  Copyright,
-  XCircle,
-  Scale,
-  AlertTriangle,
-  Gavel,
-  Mail,
-  ChevronDown,
-  ArrowRight,
-} from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { duration } from '@/config/motion';
-import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { DeferredSection } from '../../components/shared';
+import Link from 'next/link';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 
-// ============================================================================
-// HERO SECTION - Synced with Home Page Design
-// ============================================================================
-
-function TermsHero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
-
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
-
-  return (
-    <section
-      ref={containerRef}
-      className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-24"
-    >
-      {/* Premium Background Effects - Cinematic Gradient Layers (Home Page Pattern) */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Primary gradient orb - top left */}
-        <motion.div
-          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-white/[0.04] rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.4, 0.3],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        {/* Secondary gradient orb - bottom right */}
-        <motion.div
-          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-slate-500/15 via-slate-400/10 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.2, 0.3, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
-        />
-        {/* Tertiary accent - center glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-zinc-700/5 to-transparent rounded-full" />
-      </div>
-
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <div className="flex flex-col items-center text-center">
-          <motion.div style={{ opacity, scale, y }}>
-            {/* Badge - Home Page Style */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slow, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-500/10 border border-slate-500/30 mb-8 backdrop-blur-sm"
-            >
-              <FileText className="w-4 h-4 text-slate-400" />
-              <span className="text-sm text-slate-400 font-medium tracking-wide">
-                Legal
-              </span>
-            </motion.div>
-
-            {/* Headline - Enterprise Typography Scale */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.3 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-            >
-              Terms & <span className="text-foreground">Conditions</span>
-            </motion.h1>
-
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.5 }}
-              className="text-lg sm:text-xl text-slate-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
-            >
-              The framework for responsible platform usage, data integrity, and
-              shared accountability between FormaOS and your organization.
-            </motion.p>
-
-            {/* Effective Date Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.6 }}
-              className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600"
-            >
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                Effective: January 16, 2026
-              </span>
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
-                Last Updated: January 16, 2026
-              </span>
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================================================================
-// TABLE OF CONTENTS - Glassmorphism Card
-// ============================================================================
+const EFFECTIVE_DATE = '16 January 2026';
 
 const sections = [
-  { id: 'acceptance', title: '1. Acceptance of Terms', icon: FileText },
-  { id: 'description', title: '2. Description of Services', icon: Server },
-  {
-    id: 'eligibility',
-    title: '3. Eligibility & Account Responsibility',
-    icon: User,
-  },
-  { id: 'acceptable-use', title: '4. Acceptable Use', icon: Ban },
-  {
-    id: 'data-ownership',
-    title: '5. Data Ownership & Customer Content',
-    icon: Database,
-  },
-  { id: 'confidentiality', title: '6. Confidentiality', icon: Lock },
-  { id: 'security', title: '7. Security & Compliance', icon: Shield },
-  { id: 'availability', title: '8. Service Availability', icon: Server },
-  { id: 'fees', title: '9. Fees & Subscriptions', icon: CreditCard },
-  { id: 'ip', title: '10. Intellectual Property', icon: Copyright },
-  { id: 'termination', title: '11. Termination', icon: XCircle },
-  { id: 'liability', title: '12. Limitation of Liability', icon: Scale },
-  { id: 'indemnification', title: '13. Indemnification', icon: AlertTriangle },
-  { id: 'governing-law', title: '14. Governing Law', icon: Gavel },
-  { id: 'contact', title: '15. Contact', icon: Mail },
+  { id: 'acceptance', title: 'Acceptance of terms' },
+  { id: 'description', title: 'Description of services' },
+  { id: 'eligibility', title: 'Eligibility and account responsibility' },
+  { id: 'acceptable-use', title: 'Acceptable use' },
+  { id: 'data-ownership', title: 'Data ownership and customer content' },
+  { id: 'confidentiality', title: 'Confidentiality' },
+  { id: 'security', title: 'Security and compliance' },
+  { id: 'availability', title: 'Service availability' },
+  { id: 'fees', title: 'Fees and subscriptions' },
+  { id: 'ip', title: 'Intellectual property' },
+  { id: 'termination', title: 'Termination' },
+  { id: 'liability', title: 'Limitation of liability' },
+  { id: 'indemnification', title: 'Indemnification' },
+  { id: 'governing-law', title: 'Governing law' },
+  { id: 'contact', title: 'Contact' },
 ];
 
-function TableOfContents() {
-  const [isOpen, setIsOpen] = useState(true);
-
-  return (
-    <section className="relative py-16 bg-[#0a0f1c]">
-      {/* Ambient background glow */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-slate-500/5 blur-3xl"
-          animate={{
-            x: [0, 30, 0],
-            y: [0, 20, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
-      <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="blurIn">
-          <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-slate-500/20 transition-all shadow-2xl shadow-black/30">
-            {/* Top accent line */}
-            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-slate-400/30 to-transparent" />
-
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="w-full flex items-center justify-between text-left group"
-            >
-              <h2 className="text-xl font-semibold text-white flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-slate-400" />
-                Table of Contents
-              </h2>
-              <motion.div
-                animate={{ rotate: isOpen ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
-                className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors"
-              >
-                <ChevronDown className="w-5 h-5 text-slate-400" />
-              </motion.div>
-            </button>
-
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                transition={{ duration: duration.normal }}
-                className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"
-              >
-                {sections.map((section, index) => (
-                  <motion.a
-                    key={section.id}
-                    href={`#${section.id}`}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.03 }}
-                    className="group flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-slate-500/10 flex items-center justify-center group-hover:bg-slate-500/20 transition-colors">
-                      <section.icon className="w-4 h-4 text-slate-400" />
-                    </div>
-                    <span className="text-sm group-hover:translate-x-1 transition-transform duration-300">
-                      {section.title}
-                    </span>
-                  </motion.a>
-                ))}
-              </motion.div>
-            )}
-          </div>
-        </ScrollReveal>
-      </div>
-    </section>
-  );
-}
-
-// ============================================================================
-// TERMS SECTIONS - Home Page Container Style
-// ============================================================================
-
-type TermsSectionProps = {
-  id: string;
-  number: string;
-  title: string;
-  icon: LucideIcon;
-  children: React.ReactNode;
-  delay?: number;
-};
-
-function TermsSection({
+function Clause({
   id,
-  number,
   title,
-  icon: Icon,
   children,
-}: TermsSectionProps) {
+}: {
+  id: string;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
-    <ScrollReveal variant="fadeUp" className="scroll-mt-24">
-      <div id={id}>
-        {/* Section Card - Glassmorphism */}
-        <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-slate-500/20 transition-all duration-500 group">
-          {/* Hover glow effect */}
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-500/0 to-slate-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-slate-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-          <div className="relative">
-            {/* Section Header */}
-            <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                <Icon className="w-6 h-6 text-slate-400" />
-              </div>
-              <div>
-                <span className="text-sm text-slate-400 font-medium">
-                  Section {number}
-                </span>
-                <h3 className="text-xl font-semibold text-white">{title}</h3>
-              </div>
-            </div>
-
-            {/* Section Content */}
-            <div className="text-slate-400 leading-relaxed space-y-4 pl-16">
-              {children}
-            </div>
-          </div>
-        </div>
-      </div>
-    </ScrollReveal>
-  );
-}
-
-function TermsContent() {
-  return (
-    <section className="relative py-16 ">
-      {/* Animated background gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-slate-500/5 blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-white/[0.04] blur-3xl"
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
-      <div className="relative max-w-5xl mx-auto px-6 lg:px-12 space-y-8">
-        <TermsSection
-          id="acceptance"
-          number="1"
-          title="Acceptance of Terms"
-          icon={FileText}
-        >
-          <p>
-            By accessing or using the FormaOS platform, website, or related
-            services (&quot;Services&quot;), you agree to be bound by these
-            Terms &amp; Conditions. If you do not agree, you may not access or
-            use the Services.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="description"
-          number="2"
-          title="Description of Services"
-          icon={Server}
-          delay={0.05}
-        >
-          <p>
-            FormaOS provides an enterprise compliance operating system designed
-            to help organizations model governance, manage controls, track
-            actions, and generate audit-ready evidence.
-          </p>
-          <p>
-            All services are provided subject to these Terms and applicable
-            laws.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="eligibility"
-          number="3"
-          title="Eligibility & Account Responsibility"
-          icon={User}
-          delay={0.1}
-        >
-          <p>You must:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Be authorized to act on behalf of your organization</li>
-            <li>Provide accurate and current information</li>
-            <li>Maintain the security of your credentials</li>
-          </ul>
-          <p>
-            You are responsible for all activity occurring under your account.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="acceptable-use"
-          number="4"
-          title="Acceptable Use"
-          icon={Ban}
-          delay={0.15}
-        >
-          <p>You agree not to:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>
-              Use the platform for unlawful, fraudulent, or unauthorized
-              purposes
-            </li>
-            <li>Interfere with or disrupt system integrity or performance</li>
-            <li>Reverse engineer, scrape, or exploit the platform</li>
-            <li>Upload malicious code or harmful data</li>
-          </ul>
-          <p>
-            We reserve the right to suspend or terminate access for violations.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="data-ownership"
-          number="5"
-          title="Data Ownership & Customer Content"
-          icon={Database}
-          delay={0.2}
-        >
-          <p>
-            You retain ownership of all data you upload (&quot;Customer
-            Data&quot;).
-          </p>
-          <p>By using FormaOS, you grant us a limited license to:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>
-              Process, store, and display your data solely to provide the
-              Services
-            </li>
-            <li>Maintain system backups and operational continuity</li>
-          </ul>
-          <p className="font-medium text-white">
-            We do not sell or claim ownership over your data.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="confidentiality"
-          number="6"
-          title="Confidentiality"
-          icon={Lock}
-          delay={0.25}
-        >
-          <p>
-            Each party agrees to protect confidential information disclosed in
-            the course of using the Services, including business data, technical
-            architecture, and proprietary workflows.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="security"
-          number="7"
-          title="Security & Compliance"
-          icon={Shield}
-          delay={0.3}
-        >
-          <p>FormaOS is built for regulated environments. We implement:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Encryption in transit and at rest</li>
-            <li>Role-based access control</li>
-            <li>Audit logging and integrity safeguards</li>
-          </ul>
-          <p>
-            However, you acknowledge that no system can guarantee absolute
-            security.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="availability"
-          number="8"
-          title="Service Availability"
-          icon={Server}
-          delay={0.35}
-        >
-          <p>
-            We aim to maintain high system uptime but do not guarantee
-            uninterrupted availability. Maintenance, updates, or unforeseen
-            technical events may temporarily impact access.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="fees"
-          number="9"
-          title="Fees & Subscriptions"
-          icon={CreditCard}
-          delay={0.4}
-        >
-          <p>Where applicable:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Subscription fees are billed in advance</li>
-            <li>Payments are non-refundable unless required by law</li>
-            <li>Pricing and features may change with notice</li>
-          </ul>
-        </TermsSection>
-
-        <TermsSection
-          id="ip"
-          number="10"
-          title="Intellectual Property"
-          icon={Copyright}
-          delay={0.45}
-        >
-          <p>
-            All FormaOS software, designs, branding, and proprietary processes
-            are owned by FormaOS.
-          </p>
-          <p>
-            You may not copy, modify, distribute, or create derivative works
-            without written permission.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="termination"
-          number="11"
-          title="Termination"
-          icon={XCircle}
-          delay={0.5}
-        >
-          <p>We may suspend or terminate access if:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Terms are violated</li>
-            <li>Required payments are not made</li>
-            <li>Use creates legal or operational risk</li>
-          </ul>
-          <p>
-            Upon termination, your access will cease and data may be deleted in
-            accordance with our data retention policies.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="liability"
-          number="12"
-          title="Limitation of Liability"
-          icon={Scale}
-          delay={0.55}
-        >
-          <p>To the maximum extent permitted by law:</p>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10">
-            <p className="text-white">
-              FormaOS is not liable for indirect, incidental, or consequential
-              damages, including business interruption, data loss, or regulatory
-              penalties arising from use of the Services.
-            </p>
-          </div>
-        </TermsSection>
-
-        <TermsSection
-          id="indemnification"
-          number="13"
-          title="Indemnification"
-          icon={AlertTriangle}
-          delay={0.6}
-        >
-          <p>
-            You agree to indemnify and hold harmless FormaOS from claims arising
-            from:
-          </p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Your use of the Services</li>
-            <li>Violation of laws or third-party rights</li>
-            <li>Uploaded data or operational decisions</li>
-          </ul>
-        </TermsSection>
-
-        <TermsSection
-          id="governing-law"
-          number="14"
-          title="Governing Law"
-          icon={Gavel}
-          delay={0.65}
-        >
-          <p>These Terms are governed by the laws of Australia.</p>
-          <p>
-            Disputes shall be subject to the exclusive jurisdiction of
-            Australian courts.
-          </p>
-        </TermsSection>
-
-        <TermsSection
-          id="contact"
-          number="15"
-          title="Contact"
-          icon={Mail}
-          delay={0.7}
-        >
-          <p>For legal inquiries:</p>
-          <div className="flex flex-col gap-3 mt-4">
-            <motion.a
-              href="mailto:support@formaos.com.au"
-              whileHover={{ scale: 1.02, x: 5 }}
-              className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors group"
-            >
-              <Mail className="w-4 h-4" />
-              <span className="group-hover:underline decoration-slate-400/50 underline-offset-4">
-                support@formaos.com.au
-              </span>
-            </motion.a>
-            <motion.a
-              href="tel:+61469715062"
-              whileHover={{ scale: 1.02, x: 5 }}
-              className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors group"
-            >
-              📞{' '}
-              <span className="group-hover:underline decoration-slate-400/50 underline-offset-4">
-                +61 469 715 062
-              </span>
-            </motion.a>
-          </div>
-        </TermsSection>
+    <section id={id} className="scroll-mt-28">
+      <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+      <div className="mt-3 space-y-4 text-[15px] leading-7 text-muted-foreground">
+        {children}
       </div>
     </section>
   );
 }
-
-// ============================================================================
-// CTA SECTION - Home Page Style
-// ============================================================================
-
-function TermsCTA() {
-  return (
-    <section className="relative py-24 ">
-      {/* Background effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-slate-500/5 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
-      <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="scaleUp">
-          <div className="relative p-6 sm:p-8 md:p-10 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-slate-500/20 transition-all duration-500 shadow-2xl shadow-black/30">
-            {/* Top accent line */}
-            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-slate-400/40 to-transparent" />
-
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-500/10 border border-slate-500/20 text-slate-400 text-xs font-medium mb-4">
-                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                  Questions about our terms?
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                  Need clarification on our Terms?
-                </h2>
-                <p className="text-slate-400 leading-relaxed">
-                  Contact our team for any questions regarding platform usage,
-                  data handling, or compliance requirements.
-                </p>
-              </div>
-              <motion.a
-                href="/contact"
-                whileHover={{
-                  scale: 1.05,
-                }}
-                whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full bg-foreground text-background font-semibold text-lg flex items-center gap-3 shadow-lg hover:opacity-90 transition-all whitespace-nowrap"
-              >
-                <span>Contact Us</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </motion.a>
-            </div>
-          </div>
-        </ScrollReveal>
-      </div>
-    </section>
-  );
-}
-
-// ============================================================================
-// MAIN EXPORT
-// ============================================================================
 
 export default function TermsPageContentSync() {
   return (
-    <MarketingPageShell className="bg-[#0a0f1c]">
-      <TermsHero />
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+    <MarketingPageShell>
+      <div className="mx-auto max-w-6xl px-6 pt-28 pb-24">
+        <header className="max-w-3xl border-b border-border pb-8">
+          <p className="text-sm text-muted-foreground">
+            <Link href="/legal" className="hover:underline">
+              Legal
+            </Link>
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Terms and Conditions
+          </h1>
+          <p className="mt-4 text-[15px] leading-7 text-muted-foreground">
+            These terms govern access to the FormaOS platform, operated by
+            FormaOS Pty Ltd. Where you have signed a separate agreement with us,
+            that agreement prevails over anything on this page.
+          </p>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Effective {EFFECTIVE_DATE} · Last updated {EFFECTIVE_DATE}
+          </p>
+        </header>
+
+        <div className="mt-10 gap-12 lg:flex">
+          <nav
+            aria-label="Contents"
+            className="mb-10 shrink-0 lg:sticky lg:top-28 lg:mb-0 lg:h-fit lg:w-64 print:hidden"
+          >
+            <p className="text-sm font-medium text-foreground">Contents</p>
+            <ol className="mt-3 space-y-2 text-sm text-muted-foreground">
+              {sections.map((section) => (
+                <li key={section.id}>
+                  <a
+                    href={`#${section.id}`}
+                    className="hover:text-foreground hover:underline underline-offset-4"
+                  >
+                    {section.title}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+
+          <div className="max-w-[68ch] space-y-10">
+            <Clause id="acceptance" title="Acceptance of terms">
+              <p>
+                By accessing or using the FormaOS platform, website, or related
+                services (the Services), you agree to be bound by these terms. If
+                you do not agree, you may not access or use the Services. If you
+                accept these terms on behalf of an organisation, you confirm you
+                are authorised to bind that organisation.
+              </p>
+            </Clause>
+
+            <Clause id="description" title="Description of services">
+              <p>
+                FormaOS is a compliance operating system. It is used to model
+                governance frameworks, manage controls, assign and track
+                operational work, and produce audit-ready evidence. Features
+                available to you depend on your plan and any executed order
+                form.
+              </p>
+              <p>
+                We may change, add, or withdraw features. Where a change
+                materially reduces functionality you rely on, we will give
+                reasonable notice.
+              </p>
+            </Clause>
+
+            <Clause
+              id="eligibility"
+              title="Eligibility and account responsibility"
+            >
+              <p>You must:</p>
+              <ul className="list-disc space-y-2 pl-6">
+                <li>be authorised to act on behalf of your organisation</li>
+                <li>provide accurate and current account information</li>
+                <li>keep credentials and multi-factor devices secure</li>
+              </ul>
+              <p>
+                You are responsible for all activity under your account,
+                including the actions of users you invite. Tell us promptly if
+                you suspect unauthorised access.
+              </p>
+            </Clause>
+
+            <Clause id="acceptable-use" title="Acceptable use">
+              <p>You agree not to:</p>
+              <ul className="list-disc space-y-2 pl-6">
+                <li>
+                  use the platform for unlawful, fraudulent, or unauthorised
+                  purposes
+                </li>
+                <li>interfere with system integrity, security, or performance</li>
+                <li>reverse engineer, scrape, or resell the platform</li>
+                <li>upload malicious code or knowingly harmful data</li>
+              </ul>
+              <p>
+                We may suspend access where use creates a security, legal, or
+                operational risk. Where practical, we will contact you before
+                suspending.
+              </p>
+            </Clause>
+
+            <Clause
+              id="data-ownership"
+              title="Data ownership and customer content"
+            >
+              <p>
+                You retain ownership of all data you upload (Customer Data). You
+                grant us a limited licence to process, store, and display that
+                data for the sole purpose of providing the Services, and to
+                maintain backups and operational continuity.
+              </p>
+              <p>
+                We do not sell Customer Data and we do not claim ownership of
+                it. Processing terms, including the roles of controller and
+                processor, are set out in the{' '}
+                <Link href="/trust/dpa" className="text-primary hover:underline">
+                  Data Processing Agreement
+                </Link>
+                . The third parties that process data on our behalf are listed
+                on the{' '}
+                <Link
+                  href="/trust/subprocessors"
+                  className="text-primary hover:underline"
+                >
+                  sub-processors page
+                </Link>
+                .
+              </p>
+            </Clause>
+
+            <Clause id="confidentiality" title="Confidentiality">
+              <p>
+                Each party will protect confidential information disclosed by
+                the other, including business data, technical architecture, and
+                proprietary workflows, and will use it only to perform its
+                obligations. This obligation survives termination.
+              </p>
+            </Clause>
+
+            <Clause id="security" title="Security and compliance">
+              <p>FormaOS is built for regulated environments. We implement:</p>
+              <ul className="list-disc space-y-2 pl-6">
+                <li>AES-256 encryption at rest and TLS 1.3 in transit</li>
+                <li>
+                  tenant isolation enforced by database row-level security
+                </li>
+                <li>role-based access control and multi-factor authentication</li>
+                <li>append-only, tamper-evident audit logging</li>
+              </ul>
+              <p>
+                Our security posture is documented at{' '}
+                <Link href="/security" className="text-primary hover:underline">
+                  formaos.com.au/security
+                </Link>
+                , and incident handling, including notification, is described in
+                the{' '}
+                <Link
+                  href="/trust/incident-response"
+                  className="text-primary hover:underline"
+                >
+                  incident response document
+                </Link>
+                . No system can guarantee absolute security, and nothing here is
+                a warranty that a security incident will not occur.
+              </p>
+            </Clause>
+
+            <Clause id="availability" title="Service availability">
+              <p>
+                We aim for high availability but do not guarantee uninterrupted
+                access. Maintenance, updates, and upstream provider events may
+                affect the Services. Availability expectations that apply to
+                your plan are described on the{' '}
+                <Link href="/trust/sla" className="text-primary hover:underline">
+                  service level page
+                </Link>
+                , and contractual commitments, where they exist, sit in your
+                executed agreement.
+              </p>
+            </Clause>
+
+            <Clause id="fees" title="Fees and subscriptions">
+              <p>Where fees apply:</p>
+              <ul className="list-disc space-y-2 pl-6">
+                <li>subscription fees are billed in advance</li>
+                <li>payments are non-refundable unless required by law</li>
+                <li>pricing and plan inclusions may change with notice</li>
+              </ul>
+              <p>
+                Nothing in these terms limits your rights under the Australian
+                Consumer Law.
+              </p>
+            </Clause>
+
+            <Clause id="ip" title="Intellectual property">
+              <p>
+                All FormaOS software, designs, branding, framework mappings, and
+                proprietary processes remain owned by FormaOS Pty Ltd. You may
+                not copy, modify, distribute, or create derivative works without
+                written permission. Feedback you send us may be used to improve
+                the product without obligation to you.
+              </p>
+            </Clause>
+
+            <Clause id="termination" title="Termination">
+              <p>We may suspend or terminate access if:</p>
+              <ul className="list-disc space-y-2 pl-6">
+                <li>these terms are breached</li>
+                <li>required payments are not made</li>
+                <li>continued use creates legal or operational risk</li>
+              </ul>
+              <p>
+                On termination, access ceases. You can export compliance data,
+                evidence, and audit records before your export window closes;
+                deletion timing and written confirmation follow your executed
+                agreement and the retention terms in the Data Processing
+                Agreement.
+              </p>
+            </Clause>
+
+            <Clause id="liability" title="Limitation of liability">
+              <p>
+                To the maximum extent permitted by law, FormaOS is not liable
+                for indirect, incidental, or consequential loss, including
+                business interruption, loss of data, or regulatory penalties
+                arising from use of the Services. FormaOS does not provide legal
+                or regulatory advice, and use of the platform does not guarantee
+                a compliance or audit outcome.
+              </p>
+              <p>
+                Some rights and remedies under the Australian Consumer Law
+                cannot be excluded. Where they apply, this clause is read
+                subject to them.
+              </p>
+            </Clause>
+
+            <Clause id="indemnification" title="Indemnification">
+              <p>
+                You agree to indemnify FormaOS against claims arising from your
+                use of the Services, your breach of law or third-party rights,
+                and the data or operational decisions you record in the
+                platform.
+              </p>
+            </Clause>
+
+            <Clause id="governing-law" title="Governing law">
+              <p>
+                These terms are governed by the laws of Australia. Disputes are
+                subject to the exclusive jurisdiction of Australian courts.
+              </p>
+            </Clause>
+
+            <Clause id="contact" title="Contact">
+              <p>
+                For legal enquiries, contact{' '}
+                <a
+                  href="mailto:support@formaos.com.au"
+                  className="text-primary hover:underline"
+                >
+                  support@formaos.com.au
+                </a>{' '}
+                or call{' '}
+                <a
+                  href="tel:+61469715062"
+                  className="text-primary hover:underline"
+                >
+                  +61 469 715 062
+                </a>
+                .
+              </p>
+              <p>
+                Related documents:{' '}
+                <Link
+                  href="/legal/privacy"
+                  className="text-primary hover:underline"
+                >
+                  Privacy Policy
+                </Link>
+                ,{' '}
+                <Link href="/trust/dpa" className="text-primary hover:underline">
+                  Data Processing Agreement
+                </Link>
+                , and the{' '}
+                <Link href="/trust" className="text-primary hover:underline">
+                  Trust Center
+                </Link>
+                .
+              </p>
+            </Clause>
+          </div>
+        </div>
       </div>
-      <DeferredSection minHeight={260}>
-        <TableOfContents />
-      </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-      <DeferredSection minHeight={1600}>
-        <TermsContent />
-      </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-      <DeferredSection minHeight={300}>
-        <TermsCTA />
-      </DeferredSection>
     </MarketingPageShell>
   );
 }

@@ -52,25 +52,25 @@ function getExpiryStatus(expiryDate: string | null): {
   if (daysUntil < 0) {
     return {
       label: 'Expired',
-      color: 'text-red-600 bg-red-500/10',
+      color: 'text-destructive bg-destructive/10',
       urgent: true,
     };
   } else if (daysUntil <= 30) {
     return {
       label: `${daysUntil}d`,
-      color: 'text-orange-600 bg-orange-500/10',
+      color: 'text-destructive bg-destructive/10',
       urgent: true,
     };
   } else if (daysUntil <= 90) {
     return {
       label: `${daysUntil}d`,
-      color: 'text-amber-600 bg-amber-500/10',
+      color: 'text-warning bg-warning/10',
       urgent: false,
     };
   }
   return {
     label: 'Valid',
-    color: 'text-green-600 bg-green-500/10',
+    color: 'text-success bg-success/10',
     urgent: false,
   };
 }
@@ -265,7 +265,7 @@ export default async function StaffCompliancePage() {
       <div className="page-content space-y-4">
         {/* Alert for expiring/expired */}
         {(stats.expiringSoon > 0 || stats.expired > 0) && (
-          <div className="flex items-center gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
+          <div className="flex items-center gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
             <span>
               {stats.expired > 0 && `${stats.expired} expired. `}
@@ -296,7 +296,7 @@ export default async function StaffCompliancePage() {
                   subtitle={staffName}
                   status={
                     <span
-                      className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${expiryStatus.color}`}
+                      className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium ${expiryStatus.color}`}
                     >
                       {expiryStatus.label}
                     </span>
@@ -324,8 +324,8 @@ export default async function StaffCompliancePage() {
                         <span
                           className={
                             evidenceCount > 0
-                              ? 'text-emerald-500'
-                              : 'text-amber-500'
+                              ? 'text-success'
+                              : 'text-warning'
                           }
                         >
                           {evidenceCount} file{evidenceCount === 1 ? '' : 's'}
@@ -386,7 +386,7 @@ export default async function StaffCompliancePage() {
                       <tr
                         key={credential.id}
                         className={`hover:bg-muted/30 transition-colors ${
-                          expiryStatus.urgent ? 'bg-red-500/5' : ''
+                          expiryStatus.urgent ? 'bg-destructive/5' : ''
                         }`}
                       >
                         <td className="px-4 py-3">
@@ -437,8 +437,8 @@ export default async function StaffCompliancePage() {
                           <span
                             className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
                               evidenceCount > 0
-                                ? 'bg-emerald-500/10 text-emerald-600'
-                                : 'bg-amber-500/10 text-amber-600'
+                                ? 'bg-success/10 text-success'
+                                : 'bg-warning/10 text-warning'
                             }`}
                           >
                             {evidenceCount} file{evidenceCount === 1 ? '' : 's'}

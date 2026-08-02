@@ -9,7 +9,7 @@ export default function Image() {
   return new ImageResponse(
     <div
       style={{
-        background: '#0a0f1c',
+        background: '#1C1E1F',
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -40,7 +40,7 @@ export default function Image() {
             justifyContent: 'center',
           }}
         >
-          <div style={{ color: '#0a0f1c', fontSize: 22, fontWeight: 900 }}>
+          <div style={{ color: '#1C1E1F', fontSize: 22, fontWeight: 900 }}>
             F
           </div>
         </div>

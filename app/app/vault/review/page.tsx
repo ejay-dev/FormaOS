@@ -133,54 +133,53 @@ export default function CredentialReviewPage() {
   }
 
   return (
-    <div className="space-y-8 pb-12 animate-in fade-in duration-500">
+    <div className="flex flex-col h-full">
       <CredentialInspectorModal
         isOpen={!!selectedDoc}
         onClose={handleCloseModal}
         credential={selectedDoc}
+        staffName={
+          selectedDoc ? (identities[selectedDoc.user_id]?.name ?? null) : null
+        }
       />
 
-      <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">
-            Verification Queue
-          </h1>
-          <p className="text-muted-foreground font-medium mt-1 tracking-tight">
-            Audit and approve employee professional credentials for
-            organizational compliance.
+          <h1 className="page-title">Verification queue</h1>
+          <p className="page-description">
+            Review and approve staff credentials before they count as evidence.
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-surface-2 px-4 py-2 rounded-full border border-edge-2 shadow-sm">
-          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            {filteredDocs.length} Items Awaiting Review
-          </span>
-        </div>
-      </header>
+        <span className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-xs text-muted-foreground">
+          <Clock className="h-3.5 w-3.5" />
+          {filteredDocs.length} awaiting review
+        </span>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 bg-surface-1 p-2 rounded-2xl border border-edge-2 shadow-sm">
+      <div className="page-content space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <input
-              type="search"
+            type="search"
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search by staff name or document type"
             aria-label="Search documents"
-            className="w-full pl-12 pr-4 py-2.5 text-sm font-medium outline-none bg-transparent"
-              enterKeyHint="search"
-              autoCapitalize="off"
-              autoCorrect="off"
-              spellCheck={false}
-            />
+            className="h-9 w-full rounded-md border border-border bg-background pl-9 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            enterKeyHint="search"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+          />
         </div>
         <select
           value={docFilter}
           onChange={(event) => setDocFilter(event.target.value)}
           aria-label="Filter by document type"
-          className="h-10 rounded-xl border border-edge-2 bg-surface-1 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
+          className="h-9 rounded-md border border-border bg-background px-2 text-xs text-foreground"
         >
-          <option value={ALL_FILTER}>All Types</option>
+          <option value={ALL_FILTER}>All types</option>
           {documentTypes.map((type) => (
             <option key={type} value={type}>
               {type}
@@ -190,111 +189,83 @@ export default function CredentialReviewPage() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
           {error}
         </div>
       ) : null}
 
       {loading ? (
-        <div className="py-24 text-center animate-pulse">
-          <p className="text-sm text-muted-foreground">
-            Loading verification queue…
-          </p>
+        <div className="py-12 text-center">
+          <p className="text-sm text-muted-foreground">Loading…</p>
         </div>
       ) : filteredDocs.length === 0 ? (
-        <div className="bg-surface-1 border border-edge-2 rounded-[2.5rem] p-24 text-center shadow-sm">
-          <div className="h-20 w-20 bg-success/10 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-success/20 shadow-inner">
-            <CheckCircle2 className="h-10 w-10 text-success" />
-          </div>
-          <h3 className="text-xl font-black text-foreground tracking-tight">
-            Vault Fully Verified
-          </h3>
-          <p className="text-sm text-muted-foreground mt-2 font-medium">
-            All staff credentials have been audited and secured.
+        <div className="rounded-lg border border-dashed border-border p-10 text-center">
+          <CheckCircle2 className="mx-auto h-8 w-8 text-success opacity-70" />
+          <p className="mt-3 text-sm font-medium text-foreground">
+            All credentials reviewed
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            New submissions appear here for review.
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-2">
           {filteredDocs.map((doc) => (
             <div
               key={doc.id}
-              className="group bg-surface-1 border border-edge-2 rounded-[2.5rem] p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-sm hover:border-border transition-all duration-300"
+              className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-muted/30 md:flex-row md:items-center md:justify-between"
             >
-              <div className="flex items-center gap-5">
-                <div className="h-16 w-16 rounded-[1.25rem] bg-surface-2 border border-edge-2 flex items-center justify-center text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-500">
-                  <FileText className="h-7 w-7" />
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-muted-foreground">
+                  <FileText className="h-4 w-4" />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-black text-foreground tracking-tight">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-medium text-foreground">
                       {doc.document_type ?? 'Document'}
                     </p>
-                    <span className="px-2 py-0.5 bg-surface-2 text-muted-foreground rounded-md text-xs font-medium border border-edge-2">
+                    <span className="text-sm text-muted-foreground">
                       {identities[doc.user_id]?.name ?? 'Unknown member'}
                     </span>
                   </div>
-                  <div className="flex items-center gap-4 mt-2">
-                    <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      <Calendar className="h-3.5 w-3.5" />
-                      Expires: {doc.expiry_date || 'Continuous'}
-                    </div>
-                    <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                      <Activity className="h-3.5 w-3.5" />
-                      Submitted: {new Date(doc.created_at).toLocaleDateString()}
-                    </div>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1.5">
+                      <Calendar className="h-3 w-3" />
+                      Expires{' '}
+                      {doc.expiry_date
+                        ? new Date(doc.expiry_date).toLocaleDateString()
+                        : 'no expiry'}
+                    </span>
+                    <span>
+                      Submitted{' '}
+                      {new Date(doc.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setSelectedDoc(doc)}
-                  className="flex items-center gap-2 px-8 py-4 bg-surface-2 text-foreground rounded-2xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
-                >
-                  <Eye className="h-4 w-4" />
-                  Inspect & Verify
-                  <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
+              <button
+                onClick={() => setSelectedDoc(doc)}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              >
+                <Eye className="h-3.5 w-3.5" />
+                Inspect and verify
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
             </div>
           ))}
         </div>
       )}
 
-      <div className="bg-card rounded-[2.5rem] p-10 text-foreground flex flex-col md:flex-row md:items-center md:justify-between gap-8 shadow-2xl relative overflow-hidden border border-edge-2">
-        <div className="flex items-start gap-6 relative z-10">
-          <div className="h-12 w-12 rounded-2xl bg-surface-2 flex items-center justify-center text-muted-foreground border border-edge-2">
-            <ShieldCheck className="h-6 w-6" />
-          </div>
-          <div className="max-w-xl">
-            <h4 className="text-sm font-black uppercase tracking-wider text-foreground">
-              Non-Repudiation Policy
-            </h4>
-            <p className="text-xs text-muted-foreground mt-3 leading-relaxed font-medium uppercase tracking-wider">
-              By verifying a document, you confirm visual inspection against
-              staff data. This action is permanently tethered to your session
-              audit trail.
-            </p>
-          </div>
-        </div>
+      <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-4">
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">
+          Verifying a document confirms you checked it against the staff
+          record. The verification is recorded in the audit trail under your
+          name.
+        </p>
+      </div>
       </div>
     </div>
-  );
-}
-
-function Activity({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-    </svg>
   );
 }

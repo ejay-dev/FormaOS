@@ -13,6 +13,7 @@ import {
   ClipboardList,
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components/ui/breadcrumbs';
+import { severityLabel } from '@/components/care/severity-badge';
 import { normalizeRole } from '@/app/app/actions/rbac';
 import {
   createProgressNote,
@@ -268,11 +269,10 @@ export default async function PatientDetailPage({
       />
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-            {patient.full_name}
-          </h1>
+          <h1 className="page-title text-foreground">{patient.full_name}</h1>
           <p className="text-sm text-muted-foreground">
-            Care status {patient.care_status} • Risk {patient.risk_level}
+            <span className="capitalize">{patient.care_status}</span> ·{' '}
+            {severityLabel(patient.risk_level)} risk
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -318,7 +318,7 @@ export default async function PatientDetailPage({
           </div>
           <div className="mt-4 grid gap-4 md:grid-cols-2 text-sm text-foreground/70">
             <div>
-              <div className="text-xs uppercase tracking-widest text-muted-foreground/60">
+              <div className="text-xs font-medium text-muted-foreground">
                 External ID
               </div>
               <div className="text-foreground">
@@ -326,7 +326,7 @@ export default async function PatientDetailPage({
               </div>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-widest text-muted-foreground/60">
+              <div className="text-xs font-medium text-muted-foreground">
                 Date of Birth
               </div>
               <div className="text-foreground">
@@ -334,13 +334,13 @@ export default async function PatientDetailPage({
               </div>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-widest text-muted-foreground/60">
+              <div className="text-xs font-medium text-muted-foreground">
                 Care Status
               </div>
               <div className="text-foreground">{patient.care_status}</div>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-widest text-muted-foreground/60">
+              <div className="text-xs font-medium text-muted-foreground">
                 Risk Level
               </div>
               <div className="text-foreground">{patient.risk_level}</div>
@@ -358,12 +358,13 @@ export default async function PatientDetailPage({
               <input type="hidden" name="patientId" value={patient.id} />
               <div className="md:col-span-2">
                 <label
-                  htmlFor="field-205"
-                  className="text-xs uppercase tracking-widest text-muted-foreground/60"
+                  htmlFor="patient-full-name"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   Full Name
                 </label>
                 <input
+                  id="patient-full-name"
                   name="fullName"
                   defaultValue={patient.full_name}
                   className="mt-2 w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -371,12 +372,13 @@ export default async function PatientDetailPage({
               </div>
               <div>
                 <label
-                  htmlFor="field-204"
-                  className="text-xs uppercase tracking-widest text-muted-foreground/60"
+                  htmlFor="patient-care-status"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   Status
                 </label>
                 <select
+                  id="patient-care-status"
                   name="careStatus"
                   defaultValue={patient.care_status}
                   className="mt-2 w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -388,12 +390,13 @@ export default async function PatientDetailPage({
               </div>
               <div>
                 <label
-                  htmlFor="field-203"
-                  className="text-xs uppercase tracking-widest text-muted-foreground/60"
+                  htmlFor="patient-risk-level"
+                  className="text-xs font-medium text-muted-foreground"
                 >
                   Risk
                 </label>
                 <select
+                  id="patient-risk-level"
                   name="riskLevel"
                   defaultValue={patient.risk_level}
                   className="mt-2 w-full rounded-xl border border-edge-2 bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -433,7 +436,7 @@ export default async function PatientDetailPage({
           <div className="mt-4 space-y-3 text-xs text-foreground/70">
             {activeShift ? (
               <div className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3">
-                <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                <div className="text-xs font-medium text-muted-foreground">
                   Active
                 </div>
                 <div className="text-sm text-foreground">
@@ -483,7 +486,7 @@ export default async function PatientDetailPage({
                   key={shift.id}
                   className="rounded-xl border border-edge-2 bg-surface-1 px-3 py-2"
                 >
-                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                  <div className="text-xs font-medium text-muted-foreground">
                     {shift.status}
                   </div>
                   <div className="text-xs text-foreground/70">
@@ -548,7 +551,7 @@ export default async function PatientDetailPage({
                   key={note.id}
                   className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
-                  <div className="flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground">
+                  <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                     <span>{note.status_tag}</span>
                     <span>{fmtDate(note.created_at)}</span>
                   </div>
@@ -640,7 +643,7 @@ export default async function PatientDetailPage({
                   key={incident.id}
                   className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
-                  <div className="flex items-center justify-between text-xs uppercase tracking-widest text-muted-foreground">
+                  <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                     <span>{incident.severity}</span>
                     <span>{incident.status}</span>
                   </div>
@@ -734,7 +737,7 @@ export default async function PatientDetailPage({
               >
                 <div className="flex items-center justify-between text-sm text-foreground">
                   <span className="font-semibold">{task.title}</span>
-                  <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                  <span className="text-xs font-medium text-muted-foreground">
                     {task.status}
                   </span>
                 </div>
@@ -799,7 +802,7 @@ export default async function PatientDetailPage({
                       <span className="font-semibold">
                         {plan.title ?? 'Untitled plan'}
                       </span>
-                      <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                      <span className="text-xs font-medium text-muted-foreground">
                         {plan.status}
                       </span>
                     </div>
@@ -835,7 +838,7 @@ export default async function PatientDetailPage({
               >
                 <div className="flex items-center justify-between text-sm text-foreground">
                   <span className="font-semibold">{item.file_name}</span>
-                  <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                  <span className="text-xs font-medium text-muted-foreground">
                     {item.verification_status || 'pending'}
                   </span>
                 </div>

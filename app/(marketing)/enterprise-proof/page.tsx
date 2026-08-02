@@ -103,8 +103,8 @@ export default function EnterpriseProofPage() {
         bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<ShieldCheck className="h-8 w-8 text-slate-300" />}
-            color="148,163,184"
+            icon={<ShieldCheck className="h-8 w-8 text-zinc-300" />}
+            color="161,161,170"
           />
         }
       />
@@ -122,7 +122,7 @@ export default function EnterpriseProofPage() {
             return (
               <div
                 key={area.title}
-                className="rounded-2xl border border-border bg-slate-950/60 p-6"
+                className="rounded-2xl border border-border bg-zinc-950/60 p-6"
               >
                 <div className="mb-4 flex items-center gap-2">
                   <Icon className="h-4 w-4 text-primary" />
@@ -142,7 +142,7 @@ export default function EnterpriseProofPage() {
       </div>
 
       <div className="relative isolate overflow-hidden mx-auto max-w-5xl px-6 pb-24">
-        <div className="rounded-2xl border border-border bg-slate-950/60 p-8">
+        <div className="rounded-2xl border border-border bg-zinc-950/60 p-8">
           <h2 className="text-xl font-semibold text-foreground">
             Fast Buyer Validation Path
           </h2>

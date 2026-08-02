@@ -24,7 +24,6 @@ import {
   InteractiveDashboard,
   BeforeAfterSection,
   FrameworkExplorer,
-  VerticalTimeline,
   HeroStatsBar,
   CompareTable,
   SeeItInAction,
@@ -33,6 +32,16 @@ import {
   DemoNotificationTimeline,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
+import { PUBLIC_PRICING_TIERS, priceLabelFor } from '@/lib/marketing/pricing';
+
+/* The comparison row reads the entry plan from the public pricing tiers so it
+   cannot drift from /pricing. */
+const foundationTier = PUBLIC_PRICING_TIERS.find(
+  (tier) => tier.id === 'foundation',
+);
+const ENTRY_PRICE = foundationTier
+  ? `from ${priceLabelFor(foundationTier)}/mo`
+  : 'See pricing';
 
 /* ── Interactive Dashboard visual ────────────────────── */
 
@@ -126,7 +135,7 @@ function NDISDashboardVisual() {
             expiry: '01 Feb 2026',
           },
           expandedContent: {
-            label: 'Worker Details, ACTION REQUIRED',
+            label: 'Worker Details: action required',
             items: [
               { key: 'State', value: 'SA' },
               { key: 'Check Type', value: 'NDIS Worker Screening' },
@@ -189,9 +198,7 @@ function FeatureVisual({
   return (
     <div className="p-5 space-y-3">
       <div>
-        <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-          {label}
-        </div>
+        <div className="text-xs font-medium text-slate-400">{label}</div>
         <div className="mt-0.5 text-[9px] text-slate-600">
           Illustrative · sample data
         </div>
@@ -209,10 +216,10 @@ function FeatureVisual({
                 <span
                   className={`h-2 w-2 rounded-full ${
                     r.status === 'green'
-                      ? 'bg-emerald-500'
+                      ? 'bg-success'
                       : r.status === 'amber'
-                        ? 'bg-amber-500'
-                        : 'bg-red-500'
+                        ? 'bg-warning'
+                        : 'bg-destructive'
                   }`}
                 />
               )}
@@ -237,47 +244,39 @@ export default function NDISProvidersContent() {
           scrim="center"
         />
         <IndustryHero
-        eyebrow="NDIS Commission Aligned Framework"
-        headline={
-          <>
-            Stop Dreading
-            <br />
-            <span className="text-foreground">
-              Unannounced NDIS Audits
-            </span>
-          </>
-        }
-        subheadline="The NDIS Commission can visit without notice. FormaOS maintains your evidence chain continuously, defensible every day, not only during audits."
-        primaryCta={{
-          label: PUBLIC_CTA_LABELS.compliancePlan,
-          href: compliancePlanHref('ndis_providers'),
-        }}
-        secondaryCta={{
-          label: PUBLIC_CTA_LABELS.seeDemo,
-          href: demoHref('ndis_providers'),
-        }}
-        trustSignals={[
-          'AU-hosted by default',
-          'Assessment-led onboarding',
-          'Compliance plan scoped by framework',
-          'NDIS Commission aligned',
-        ]}
-        dashboardVisual={<NDISDashboardVisual />}
-        statsBar={
-          <HeroStatsBar
-            stats={[
-              '400+ NDIS obligations mapped',
-              'SIRS notification in 24hr',
-              'Worker screening automated',
-              'AU-hosted',
-            ]}
-          />
-        }
-        jurisdictionBadges={[
-          { label: 'NDIS Practice Standards' },
-          { label: 'NDIS Commission' },
-          { label: 'SIRS Reportable Incidents' },
-        ]}
+          headline={
+            <>
+              Ready for the visit
+              <br />
+              you didn&apos;t <span className="mk-accent">schedule</span>
+            </>
+          }
+          subheadline="The NDIS Commission can visit without notice. FormaOS maintains your evidence chain continuously, defensible every day, not only during audits."
+          primaryCta={{
+            label: PUBLIC_CTA_LABELS.compliancePlan,
+            href: compliancePlanHref('ndis_providers'),
+          }}
+          secondaryCta={{
+            label: PUBLIC_CTA_LABELS.seeDemo,
+            href: demoHref('ndis_providers'),
+          }}
+          trustSignals={[
+            'AU-hosted by default',
+            'Assessment-led onboarding',
+            'Compliance plan scoped by framework',
+            'NDIS Commission aligned',
+          ]}
+          dashboardVisual={<NDISDashboardVisual />}
+          statsBar={
+            <HeroStatsBar
+              stats={[
+                '400+ NDIS obligations mapped',
+                'SIRS notification in 24hr',
+                'Worker screening automated',
+                'AU-hosted',
+              ]}
+            />
+          }
         />
       </div>
 
@@ -286,87 +285,19 @@ export default function NDISProvidersContent() {
       </div>
 
       <BeforeAfterSection
-        headline="The NDIS Compliance Gap"
-        subheadline="The difference between scrambling and being audit-ready."
+        headline="A priority reportable incident starts a 24-hour clock"
+        subheadline="Where your evidence sits when that clock starts decides how the rest of the week goes."
         without={[
-          'NDIS Commission arrives unannounced, evidence scattered across shared drives, email, and spreadsheets',
-          'Worker screening check expired 67 days ago, discovered only when Commission requests the register',
           'Priority reportable incident not notified within 24 hours, enforcement action exposure',
           'Restrictive practice without current behaviour support plan, no documented authorisation on file',
+          'Worker screening check expired 67 days ago, discovered only when the Commission requests the register',
+          'NDIS Commission arrives unannounced, evidence scattered across shared drives, email, and spreadsheets',
         ]}
         withFormaOS={[
-          'Continuous evidence chain across all 8 Practice Standards, audit-ready export in one click',
-          'Automatic screening expiry alerts at 90, 60, and 30 days, zero workers operating without clearance',
           'SIRS notification workflow with 24-hour countdown timer and Commission submission tracking',
           'Restrictive practices register linked to behaviour support plans with authorisation documentation',
-        ]}
-      />
-
-      <CompareTable
-        headline="FormaOS vs. The Status Quo"
-        description="See how purpose-built NDIS compliance software compares."
-        col2Label="Care Software"
-        rows={[
-          {
-            feature: 'NDIS Practice Standards pre-built',
-            spreadsheets: 'no',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Worker screening tracking',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'SIRS notification workflow',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Regulator-ready export',
-            spreadsheets: 'no',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Named ownership per obligation',
-            spreadsheets: 'no',
-            genericGrc: 'yes',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Immutable evidence chain',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'AU data residency',
-            spreadsheets: 'no',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Restrictive practices register',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Onboarding time',
-            spreadsheets: 'Weeks',
-            genericGrc: 'Days',
-            formaos: 'Hours',
-          },
-          {
-            feature: 'Price',
-            spreadsheets: 'Hidden',
-            genericGrc: '$$$+',
-            formaos: 'from $297/mo',
-          },
+          'Automatic screening expiry alerts at 90, 60, and 30 days, zero workers operating without clearance',
+          'Continuous evidence chain across all 8 Practice Standards, audit-ready export in one click',
         ]}
       />
 
@@ -375,8 +306,8 @@ export default function NDISProvidersContent() {
       </div>
 
       <FrameworkExplorer
-        headline="Every NDIS Framework. Pre-Built."
-        description="FormaOS ships with every major NDIS regulatory framework pre-loaded. Your obligations are mapped from day one, no manual setup required."
+        headline="Practice Standards, SIRS and worker screening, already mapped"
+        description="Select your registration groups and the obligation register is live. Nothing to build, nothing to transcribe from a regulator PDF."
         frameworks={[
           {
             id: 'practice-standards',
@@ -384,16 +315,6 @@ export default function NDISProvidersContent() {
             body: 'NDIS Quality and Safeguards Commission',
             updated: '2025-10-15',
             obligationCount: '400+',
-            categories: [
-              { name: 'Rights and Responsibilities', pct: 98 },
-              { name: 'Governance and Operational Management', pct: 96 },
-              { name: 'Provision of Supports', pct: 95 },
-              { name: 'Support Provision Environment', pct: 100 },
-              { name: 'Verification Module', pct: 94 },
-              { name: 'Specialist Disability Accommodation', pct: 92 },
-              { name: 'Early Childhood Supports', pct: 97 },
-              { name: 'Behaviour Support', pct: 93 },
-            ],
             requirements: [
               'Rights and Responsibilities',
               'Governance and Operational Management',
@@ -409,16 +330,6 @@ export default function NDISProvidersContent() {
             body: 'Aged Care Quality and Safety Commission',
             updated: '2025-12-01',
             obligationCount: '200+',
-            categories: [
-              { name: 'Consumer dignity and choice', pct: 97 },
-              { name: 'Ongoing assessment and planning', pct: 95 },
-              { name: 'Personal and clinical care', pct: 94 },
-              { name: 'Services and supports for daily living', pct: 96 },
-              { name: 'Organisation service environment', pct: 100 },
-              { name: 'Feedback and complaints', pct: 98 },
-              { name: 'Human resources', pct: 93 },
-              { name: 'Organisational governance', pct: 99 },
-            ],
             requirements: [
               'Consumer dignity and choice',
               'Ongoing assessment and planning',
@@ -436,13 +347,6 @@ export default function NDISProvidersContent() {
             body: 'NDIS Quality and Safeguards Commission',
             updated: '2025-09-01',
             obligationCount: '50+',
-            categories: [
-              { name: 'Respect for individual rights', pct: 100 },
-              { name: 'Privacy and confidentiality', pct: 98 },
-              { name: 'Safe and competent supports', pct: 96 },
-              { name: 'Integrity and honesty', pct: 100 },
-              { name: 'Violence and abuse prevention', pct: 97 },
-            ],
             requirements: [
               'Acting with respect for individual rights',
               'Respecting privacy and confidentiality',
@@ -453,16 +357,10 @@ export default function NDISProvidersContent() {
           },
           {
             id: 'sirs',
-            name: 'SIRS, Serious Incident Response Scheme',
+            name: 'SIRS: Serious Incident Response Scheme',
             body: 'NDIS Quality and Safeguards Commission',
             updated: '2026-01-10',
             obligationCount: '80+',
-            categories: [
-              { name: 'Priority reportable incidents (24hrs)', pct: 100 },
-              { name: 'Standard reportable incidents (5 days)', pct: 96 },
-              { name: 'Investigation and root cause analysis', pct: 94 },
-              { name: 'Corrective action and closure', pct: 98 },
-            ],
             requirements: [
               'Priority reportable incident notification (24hrs)',
               'Standard reportable incident notification (5 business days)',
@@ -476,12 +374,6 @@ export default function NDISProvidersContent() {
             body: 'State and Territory Screening Units',
             updated: '2025-11-20',
             obligationCount: '40+',
-            categories: [
-              { name: 'NDIS Worker Screening Check by state', pct: 100 },
-              { name: 'Working With Children Check', pct: 98 },
-              { name: 'National Police Check validation', pct: 96 },
-              { name: 'Continuous monitoring', pct: 95 },
-            ],
             requirements: [
               'NDIS Worker Screening Check by state',
               'Working With Children Check requirements',
@@ -496,115 +388,9 @@ export default function NDISProvidersContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <VerticalTimeline
-        steps={[
-          {
-            number: '01',
-            title: 'Connect Your NDIS Obligations',
-            description:
-              'FormaOS ships with NDIS Practice Standards, SIRS requirements, and worker screening rules pre-built. Select your registration groups and your obligation register is live in minutes.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
-            visual: (
-              <FeatureVisual
-                label="Framework Activation"
-                rows={[
-                  {
-                    k: 'NDIS Practice Standards (8 Modules)',
-                    v: 'Activated',
-                    status: 'green',
-                  },
-                  {
-                    k: 'SIRS, Incident Response Scheme',
-                    v: 'Activated',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Worker Screening Requirements',
-                    v: 'Activated',
-                    status: 'green',
-                  },
-                  {
-                    k: 'NDIS Code of Conduct',
-                    v: 'Activated',
-                    status: 'green',
-                  },
-                ]}
-              />
-            ),
-          },
-          {
-            number: '02',
-            title: 'Map Evidence to Every Standard',
-            description:
-              'Upload policies, worker credentials, incident records. FormaOS links each document to specific Practice Standards and SIRS requirements, building continuous evidence chains.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
-            visual: (
-              <FeatureVisual
-                label="Evidence Mapping"
-                rows={[
-                  {
-                    k: 'Module 1: Rights & Responsibilities',
-                    v: '38 evidence items',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Module 2: Governance',
-                    v: '25 evidence items',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Worker Screening Register',
-                    v: '5 workers linked',
-                    status: 'amber',
-                  },
-                  {
-                    k: 'Module 3: Provision of Supports',
-                    v: '22 evidence items',
-                    status: 'green',
-                  },
-                ]}
-              />
-            ),
-          },
-          {
-            number: '03',
-            title: 'Stay Audit-Ready Every Day',
-            description:
-              'Automated alerts for every screening expiry, incident deadline, and evidence gap. When the Commission arrives unannounced, your evidence pack is one click away.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
-            visual: (
-              <FeatureVisual
-                label="Readiness Score"
-                rows={[
-                  {
-                    k: 'Overall Practice Standards',
-                    v: '96%',
-                    status: 'green',
-                  },
-                  { k: 'Worker Screening Current', v: '4/5', status: 'amber' },
-                  { k: 'SIRS Compliance', v: '100%', status: 'green' },
-                  {
-                    k: 'Evidence Pack Status',
-                    v: 'Ready to export',
-                    status: 'green',
-                  },
-                ]}
-              />
-            ),
-          },
-        ]}
-      />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
       <IndustryFeatures
-        headline="Purpose-Built for NDIS Providers"
-        subheadline="Every feature designed around real NDIS compliance workflows, not generic task management."
+        headline="Built around the registers you already have to keep"
+        subheadline="Worker screening, SIRS, restrictive practices, participant records. The same registers, kept continuously instead of rebuilt before an audit."
         features={[
           {
             title: 'Worker Screening Dashboard',
@@ -708,8 +494,8 @@ export default function NDISProvidersContent() {
             ],
             visual: (
               <div className="p-5 space-y-3">
-                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Incident Pipeline
+                <div className="text-xs font-medium text-slate-400">
+                  Incident pipeline
                 </div>
                 {[
                   'Reported',
@@ -718,22 +504,18 @@ export default function NDISProvidersContent() {
                   'Closed',
                 ].map((stage, i) => (
                   <div key={stage} className="flex items-center gap-3">
-                    <div
-                      className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
-                        i < 3
-                          ? 'bg-white/[0.12] text-white border border-white/20'
-                          : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
+                    <span
+                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                        i < 3 ? 'bg-success' : 'bg-white/20'
                       }`}
-                    >
-                      {i + 1}
-                    </div>
+                    />
                     <span
                       className={`text-xs ${i < 3 ? 'text-white' : 'text-slate-500'}`}
                     >
                       {stage}
                     </span>
                     {i < 3 && (
-                      <span className="text-[10px] text-emerald-500 ml-auto">
+                      <span className="text-[10px] text-success ml-auto">
                         Complete
                       </span>
                     )}
@@ -790,6 +572,49 @@ export default function NDISProvidersContent() {
       <SeeItInAction
         tabs={[
           {
+            id: 'notifications',
+            label: 'SIRS Timeline',
+            icon: <Bell className="h-4 w-4" />,
+            content: (
+              <DemoNotificationTimeline
+                steps={[
+                  {
+                    time: 'T+0:00',
+                    label: 'Incident reported by support worker on site',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+1:00',
+                    label:
+                      'Incident classified as priority reportable, 24hr clock starts',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+4:00',
+                    label:
+                      'Investigation commenced, witness statements collected',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+18:00',
+                    label: 'Commission notification drafted, 6hrs remaining',
+                    status: 'active',
+                  },
+                  {
+                    time: 'T+24:00',
+                    label: 'Commission notification submitted before deadline',
+                    status: 'pending',
+                  },
+                  {
+                    time: 'T+5d',
+                    label: 'Investigation closed, corrective actions assigned',
+                    status: 'pending',
+                  },
+                ]}
+              />
+            ),
+          },
+          {
             id: 'dashboard',
             label: 'NDIS Dashboard',
             icon: <Monitor className="h-4 w-4" />,
@@ -813,7 +638,7 @@ export default function NDISProvidersContent() {
                     status: 'amber',
                   },
                   {
-                    label: 'SIRS, Open Incidents',
+                    label: 'SIRS: open incidents',
                     value: '1 priority',
                     status: 'amber',
                   },
@@ -863,49 +688,6 @@ export default function NDISProvidersContent() {
               />
             ),
           },
-          {
-            id: 'notifications',
-            label: 'SIRS Timeline',
-            icon: <Bell className="h-4 w-4" />,
-            content: (
-              <DemoNotificationTimeline
-                steps={[
-                  {
-                    time: 'T+0:00',
-                    label: 'Incident reported by support worker on site',
-                    status: 'complete',
-                  },
-                  {
-                    time: 'T+1:00',
-                    label:
-                      'Incident classified as priority reportable, 24hr clock starts',
-                    status: 'complete',
-                  },
-                  {
-                    time: 'T+4:00',
-                    label:
-                      'Investigation commenced, witness statements collected',
-                    status: 'complete',
-                  },
-                  {
-                    time: 'T+18:00',
-                    label: 'Commission notification drafted, 6hrs remaining',
-                    status: 'active',
-                  },
-                  {
-                    time: 'T+24:00',
-                    label: 'Commission notification submitted before deadline',
-                    status: 'pending',
-                  },
-                  {
-                    time: 'T+5d',
-                    label: 'Investigation closed, corrective actions assigned',
-                    status: 'pending',
-                  },
-                ]}
-              />
-            ),
-          },
         ]}
       />
 
@@ -915,26 +697,26 @@ export default function NDISProvidersContent() {
 
       <SocialProof
         metricsBanner={[
-          '206+ tables with row-level security',
+          'All 8 Practice Standards modules pre-built',
+          'SIRS 24-hour and 5-business-day timers built in',
           'AU-hosted by default, data never leaves Australia',
-          'Zero evidence gaps at audit, immutable chain',
-          'SOC 2 compliance in progress',
+          'Immutable, timestamped evidence chain',
         ]}
         trustCards={[
           {
-            persona: 'NDIS Registered Provider, 50+ participants',
-            need: 'Worker screening compliance across 3 sites with zero manual tracking',
+            persona: 'A registered provider across three sites',
+            need: 'Worker screening compliance at every site without manual tracking',
             delivers:
               'Automated expiry alerts, SIRS notification workflows, audit-ready export for every unannounced visit',
           },
           {
-            persona: 'NDIS Plan Manager, 200+ participants',
+            persona: 'A plan management team',
             need: 'Evidence chain integrity for Practice Standards across all 8 modules',
             delivers:
               'Pre-built Practice Standards framework, immutable evidence chain, one-click audit evidence pack',
           },
           {
-            persona: 'Disability Services Group, multi-state operations',
+            persona: 'A disability services group operating in several states',
             need: 'State-specific worker screening requirements tracked centrally',
             delivers:
               'Per-state screening rules, centralised dashboard, credential expiry countdown with escalation paths',
@@ -954,12 +736,73 @@ export default function NDISProvidersContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <div className="relative isolate overflow-hidden">
-        <IndustryCTA
-          industry="NDIS"
-          urgencyCallout="The NDIS Commission can visit without notice. Is your evidence chain current right now?"
-        />
-      </div>
+      <CompareTable
+        headline="Compared with spreadsheets and care software"
+        description="Care software runs your service. Neither it nor a spreadsheet was built to hold the evidence the Commission asks for."
+        col2Label="Care Software"
+        rows={[
+          {
+            feature: 'NDIS Practice Standards pre-built',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Worker screening tracking',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'SIRS notification workflow',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Regulator-ready export',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Named ownership per obligation',
+            spreadsheets: 'no',
+            genericGrc: 'yes',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Immutable evidence chain',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'AU data residency',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Restrictive practices register',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Onboarding time',
+            spreadsheets: 'Weeks',
+            genericGrc: 'Days',
+            formaos: 'Hours',
+          },
+          {
+            feature: 'Price',
+            spreadsheets: 'Hidden',
+            genericGrc: '$$$+',
+            formaos: ENTRY_PRICE,
+          },
+        ]}
+      />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -1012,6 +855,14 @@ export default function NDISProvidersContent() {
           },
         ]}
       />
+
+      <div className="relative isolate overflow-hidden">
+        <IndustryCTA
+          industry="NDIS"
+          urgencyCallout="The NDIS Commission can visit without notice. Is your evidence chain current right now?"
+        />
+      </div>
+
       <RelatedIndustries currentSlug="ndis-providers" />
     </MarketingPageShell>
   );

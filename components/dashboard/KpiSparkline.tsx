@@ -177,7 +177,7 @@ export function RiskHeatmapCell({ label, pressure, grade }: RiskCellProps) {
         </span>
       </div>
       <div className="mt-3 flex items-baseline gap-1">
-        <span className="font-mono text-2xl font-bold text-foreground tabular-nums">
+        <span className="text-2xl font-bold text-foreground tabular-nums">
           {pct}
         </span>
         <span className="text-xs text-muted-foreground">/ 100</span>

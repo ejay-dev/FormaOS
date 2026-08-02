@@ -7,7 +7,6 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionMedia } from '@/components/marketing/SectionMedia';
-import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection, MarketingPageShell } from '.';
 import {
   compliancePlanHref,
@@ -97,7 +96,7 @@ export function SeoLandingTemplate({
 
       {/* Long-form intro */}
       <section className="relative mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="space-y-6 text-base leading-relaxed text-slate-300">
+        <div className="space-y-6 text-base leading-relaxed text-zinc-300">
           {introParagraphs.map((p, i) => (
             <ScrollReveal key={i} variant="fadeUp" range={[0, 0.3 + i * 0.05]}>
               <p>{p}</p>
@@ -115,16 +114,16 @@ export function SeoLandingTemplate({
             <ScrollReveal key={section.heading} variant="fadeUp" range={[0, 0.3 + idx * 0.05]}>
               <div className="mb-12 max-w-4xl mx-auto">
                 <h2 className="text-2xl font-bold text-white sm:text-3xl">{section.heading}</h2>
-                <div className="mt-4 space-y-4 text-base leading-relaxed text-slate-300">
+                <div className="mt-4 space-y-4 text-base leading-relaxed text-zinc-300">
                   {section.paragraphs.map((p, i) => (
                     <p key={i}>{p}</p>
                   ))}
                 </div>
                 {section.bullets && section.bullets.length > 0 && (
-                  <ul className="mt-5 space-y-2 text-sm text-slate-300">
+                  <ul className="mt-5 space-y-2 text-sm text-zinc-300">
                     {section.bullets.map((b) => (
                       <li key={b} className="flex items-start gap-2">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-zinc-400" />
                         <span>{b}</span>
                       </li>
                     ))}
@@ -152,26 +151,24 @@ export function SeoLandingTemplate({
                 variant={idx % 2 === 0 ? 'splitLeft' : 'splitRight'}
                 range={[0, 0.3 + idx * 0.04]}
               >
-                <HoverLift>
-                  <GlassCard intensity="normal" className="h-full p-6">
-                    <h3 className="text-lg font-semibold text-white">{section.heading}</h3>
-                    <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-300">
-                      {section.paragraphs.map((p, i) => (
-                        <p key={i}>{p}</p>
+                <div className="h-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
+                  <h3 className="text-lg font-semibold text-white">{section.heading}</h3>
+                  <div className="mt-3 space-y-3 text-sm leading-relaxed text-zinc-300">
+                    {section.paragraphs.map((p, i) => (
+                      <p key={i}>{p}</p>
+                    ))}
+                  </div>
+                  {section.bullets && section.bullets.length > 0 && (
+                    <ul className="mt-4 space-y-2 text-sm text-zinc-300">
+                      {section.bullets.map((b) => (
+                        <li key={b} className="flex items-start gap-2">
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-zinc-400" />
+                          <span>{b}</span>
+                        </li>
                       ))}
-                    </div>
-                    {section.bullets && section.bullets.length > 0 && (
-                      <ul className="mt-4 space-y-2 text-sm text-slate-300">
-                        {section.bullets.map((b) => (
-                          <li key={b} className="flex items-start gap-2">
-                            <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
-                            <span>{b}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </GlassCard>
-                </HoverLift>
+                    </ul>
+                  )}
+                </div>
               </ScrollReveal>
             ))}
           </div>
@@ -201,7 +198,7 @@ export function SeoLandingTemplate({
                 </span>
                 <div className="mt-3 grid grid-cols-2 gap-3">
                   <div>
-                    <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    <span className="block text-[10px] font-semibold text-zinc-500">
                       FormaOS
                     </span>
                     <span className="mt-1 block text-[13px] leading-snug text-white">
@@ -209,10 +206,10 @@ export function SeoLandingTemplate({
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    <span className="block text-[10px] font-semibold text-zinc-500">
                       {comparison.traditionalLabel}
                     </span>
-                    <span className="mt-1 block text-[13px] leading-snug text-slate-400">
+                    <span className="mt-1 block text-[13px] leading-snug text-zinc-400">
                       {row.traditional}
                     </span>
                   </div>
@@ -222,13 +219,13 @@ export function SeoLandingTemplate({
           </div>
 
           <div className="mt-8 hidden overflow-x-auto sm:block">
-            <GlassCard intensity="normal" className="p-0 overflow-hidden">
+            <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
               <table className="w-full text-sm text-left">
                 <thead>
                   <tr className="border-b border-white/10">
-                    <th className="px-6 py-4 text-slate-400 font-medium">Feature</th>
+                    <th className="px-6 py-4 text-zinc-400 font-medium">Feature</th>
                     <th className="px-6 py-4 text-white font-semibold">FormaOS</th>
-                    <th className="px-6 py-4 text-slate-400 font-medium">{comparison.traditionalLabel}</th>
+                    <th className="px-6 py-4 text-zinc-400 font-medium">{comparison.traditionalLabel}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -239,12 +236,12 @@ export function SeoLandingTemplate({
                     >
                       <td className="px-6 py-4 text-white font-medium">{row.feature}</td>
                       <td className="px-6 py-4 text-white">{row.formaos}</td>
-                      <td className="px-6 py-4 text-slate-400">{row.traditional}</td>
+                      <td className="px-6 py-4 text-zinc-400">{row.traditional}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </GlassCard>
+            </div>
           </div>
         </section>
       </DeferredSection>
@@ -258,10 +255,10 @@ export function SeoLandingTemplate({
           <div className="mt-8 space-y-6">
             {faq.map((item, idx) => (
               <ScrollReveal key={item.question} variant="fadeUp" range={[0, 0.25 + idx * 0.04]}>
-                <GlassCard intensity="subtle" className="p-6">
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
                   <h3 className="text-lg font-semibold text-white">{item.question}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-300">{item.answer}</p>
-                </GlassCard>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-300">{item.answer}</p>
+                </div>
               </ScrollReveal>
             ))}
           </div>
@@ -276,17 +273,17 @@ export function SeoLandingTemplate({
           <SectionHeader alignment="left" title="Explore more" />
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {relatedLinks.map((link) => (
-              <HoverLift key={link.href}>
-                <Link href={link.href} className="block h-full">
-                  <GlassCard intensity="normal" className="h-full p-5">
-                    <h4 className="text-sm font-semibold text-white">{link.label}</h4>
-                    <p className="mt-2 text-xs text-slate-400">{link.description}</p>
-                    <span className="mt-3 inline-flex items-center gap-1 text-xs text-slate-400">
-                      Learn more <ArrowRight className="h-3 w-3" />
-                    </span>
-                  </GlassCard>
-                </Link>
-              </HoverLift>
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block h-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors hover:border-white/20"
+              >
+                <h4 className="text-sm font-semibold text-white">{link.label}</h4>
+                <p className="mt-2 text-xs text-zinc-400">{link.description}</p>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs text-zinc-400">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </span>
+              </Link>
             ))}
           </div>
         </section>
@@ -296,9 +293,9 @@ export function SeoLandingTemplate({
 
       {/* Final CTA */}
       <section className="relative isolate overflow-hidden mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
-        <GlassCard intensity="intense" glow className="p-8 text-center sm:p-10">
+        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 text-center sm:p-10">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">{ctaTitle}</h2>
-          <p className="mx-auto mt-4 max-w-3xl text-slate-300">{ctaDescription}</p>
+          <p className="mx-auto mt-4 max-w-3xl text-zinc-300">{ctaDescription}</p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href={compliancePlanHref('seo_landing_final')}
@@ -314,7 +311,7 @@ export function SeoLandingTemplate({
               {PUBLIC_CTA_LABELS.bookDemo}
             </Link>
           </div>
-        </GlassCard>
+        </div>
       </section>
     </MarketingPageShell>
   );

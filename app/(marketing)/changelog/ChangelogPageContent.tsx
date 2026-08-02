@@ -2263,7 +2263,7 @@ function TagBadge({ tag }: { tag: ChangeTag }) {
   const Icon = config.icon;
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${config.bg} ${config.border} ${config.text}`}
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${config.bg} ${config.border} ${config.text}`}
     >
       <Icon className="w-2.5 h-2.5" />
       {config.label}
@@ -2455,13 +2455,13 @@ function ReleaseCard({
                     {release.codename}
                   </span>
                   {isLatest && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-300">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border border-white/15 bg-white/[0.06] text-slate-300">
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-slate-400" />
                       Latest
                     </span>
                   )}
                   {release.isMajor && !isLatest && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-300">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border border-white/15 bg-white/[0.06] text-slate-300">
                       <Star className="w-2.5 h-2.5" />
                       Major
                     </span>
@@ -2546,7 +2546,7 @@ function YearDivider({ year }: { year: string }) {
         <Star className="w-2 h-2 text-slate-300" />
       </div>
       <div className="h-px flex-1 bg-gradient-to-r from-white/25 via-white/10 to-transparent" />
-      <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+      <span className="text-sm font-bold text-slate-400">
         {year}
       </span>
       <div className="h-px flex-1 bg-gradient-to-l from-white/25 via-white/10 to-transparent" />
@@ -2671,9 +2671,6 @@ function ReleaseTimelineVisual() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Release Cadence
-            </p>
             <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-5">
               Shipping{' '}
               <span className="text-foreground">
@@ -2772,7 +2769,7 @@ function ReleaseTimelineVisual() {
                         <div
                           className="absolute -top-20 left-1/2 -translate-x-1/2 z-30 pointer-events-none
                           opacity-0 group-hover:opacity-100 transition-opacity duration-200
-                          whitespace-nowrap px-3.5 py-2.5 rounded-xl border border-white/[0.1] bg-slate-900/95 backdrop-blur-sm shadow-2xl"
+                          whitespace-nowrap px-3.5 py-2.5 rounded-xl border border-white/[0.1] bg-slate-900/95 shadow-2xl"
                         >
                           <div className="text-xs font-bold text-white">
                             {d.version}{' '}
@@ -2780,7 +2777,7 @@ function ReleaseTimelineVisual() {
                               &ldquo;{d.codename}&rdquo;
                             </span>
                             {d.isMajor && (
-                              <span className="ml-1.5 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-300">
+                              <span className="ml-1.5 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-semibold border border-white/15 bg-white/[0.06] text-slate-300">
                                 Major
                               </span>
                             )}
@@ -2957,9 +2954,6 @@ function TagBreakdownSection() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              By Category
-            </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Change{' '}
               <span className="text-foreground">
@@ -3042,9 +3036,6 @@ function VersionHistoryTable() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Version History
-            </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Complete{' '}
               <span className="text-foreground">
@@ -3057,16 +3048,16 @@ function VersionHistoryTable() {
             <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
               {/* Table header */}
               <div className="grid grid-cols-[1fr,auto,auto,auto] gap-4 px-5 py-3 border-b border-white/[0.06] bg-white/[0.02]">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-slate-500">
                   Version
                 </span>
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider hidden sm:block">
+                <span className="text-xs font-semibold text-slate-500 hidden sm:block">
                   Date
                 </span>
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-slate-500">
                   Changes
                 </span>
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider hidden sm:block">
+                <span className="text-xs font-semibold text-slate-500 hidden sm:block">
                   Type
                 </span>
               </div>
@@ -3099,12 +3090,12 @@ function VersionHistoryTable() {
                   </span>
                   <span className="hidden sm:block">
                     {release.isMajor ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-200">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border border-white/15 bg-white/[0.06] text-slate-200">
                         <Rocket className="w-2.5 h-2.5" />
                         Major
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/[0.08] bg-white/[0.03] text-slate-400">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border border-white/[0.08] bg-white/[0.03] text-slate-400">
                         <Package className="w-2.5 h-2.5" />
                         Minor
                       </span>
@@ -3207,9 +3198,6 @@ function MilestonesSection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Key Milestones
-            </p>
             <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
               The journey from{' '}
               <span className="text-foreground">
@@ -3268,7 +3256,7 @@ function MilestonesSection() {
                             </div>
                             <div>
                               <span
-                                className="text-xs font-bold uppercase tracking-wider"
+                                className="text-xs font-semibold"
                                 style={{ color: `rgba(${ms.accentRgb}, 0.6)` }}
                               >
                                 {ms.date}
@@ -3352,9 +3340,6 @@ function SubscribeCTA() {
 
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Stay Updated
-                </p>
                 <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                   Never miss a{' '}
                   <span className="text-foreground">
@@ -3444,19 +3429,6 @@ function ChangelogHero() {
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
         className="relative z-10 mx-auto max-w-5xl px-6 lg:px-8 py-32 sm:py-40 text-center"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="mb-8 flex items-center justify-center gap-4"
-        >
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
-            Changelog
-          </span>
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-        </motion.div>
-
         {/* Audit 2026-05-24: H1 + intro <p> were wrapped in motion.* with
          * opacity 0 initial, which made LCP fall back to the cookie-banner
          * text and pushed /changelog Lighthouse perf to 65 (LCP 8.0 s).

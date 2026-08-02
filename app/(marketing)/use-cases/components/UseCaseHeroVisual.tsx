@@ -24,8 +24,8 @@ const STEP_RADIUS = 150;
 /**
  * UseCaseHeroVisual
  * ─────────────────
- * Large glass tile with use-case icon + floating workflow step badges.
- * Connecting lines from badges to center.
+ * Central icon tile with floating workflow step badges and connecting
+ * lines back to the centre.
  */
 function UseCaseHeroVisualInner({ icon, steps }: UseCaseHeroVisualProps) {
   const shouldReduceMotion = useReducedMotion();
@@ -41,7 +41,7 @@ function UseCaseHeroVisualInner({ icon, steps }: UseCaseHeroVisualProps) {
     return (
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
         <div className="hidden lg:flex items-center justify-center relative w-[450px] h-[350px]">
-          <div className="w-[120px] h-[120px] rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] flex items-center justify-center">
+          <div className="w-[120px] h-[120px] rounded-2xl border border-white/[0.10] bg-white/[0.04] flex items-center justify-center">
             {icon}
           </div>
         </div>
@@ -52,7 +52,10 @@ function UseCaseHeroVisualInner({ icon, steps }: UseCaseHeroVisualProps) {
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
       <div className="hidden lg:flex items-center justify-center relative w-[450px] h-[350px] xl:w-[500px] xl:h-[380px]">
-        <div style={{ perspective: 800, transformStyle: 'preserve-3d' }} className="relative w-full h-full">
+        <div
+          style={{ perspective: 800, transformStyle: 'preserve-3d' }}
+          className="relative w-full h-full"
+        >
           <motion.div
             style={{
               ...(cursor.isActive ? { rotateX: tiltX, rotateY: tiltY } : {}),
@@ -61,7 +64,10 @@ function UseCaseHeroVisualInner({ icon, steps }: UseCaseHeroVisualProps) {
             className="absolute inset-0"
           >
             {/* Connecting lines SVG */}
-            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 500 380">
+            <svg
+              className="absolute inset-0 w-full h-full"
+              viewBox="0 0 500 380"
+            >
               {visibleSteps.map((_, i) => {
                 const pos = STEP_POSITIONS[i];
                 const rad = (pos.angle * Math.PI) / 180;
@@ -79,7 +85,15 @@ function UseCaseHeroVisualInner({ icon, steps }: UseCaseHeroVisualProps) {
                     strokeDasharray="4 6"
                     initial={sa ? { pathLength: 0, opacity: 0 } : undefined}
                     animate={{ pathLength: 1, opacity: 1 }}
-                    transition={sa ? { duration: 0.8, delay: 0.6 + i * 0.15, ease: signatureEase } : undefined}
+                    transition={
+                      sa
+                        ? {
+                            duration: 0.8,
+                            delay: 0.6 + i * 0.15,
+                            ease: signatureEase,
+                          }
+                        : undefined
+                    }
                   />
                 );
               })}
@@ -90,15 +104,17 @@ function UseCaseHeroVisualInner({ icon, steps }: UseCaseHeroVisualProps) {
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
               initial={sa ? { opacity: 0, scale: 0.8 } : false}
               animate={{ opacity: 1, scale: 1 }}
-              transition={sa ? { duration: duration.slower, delay: 0.2, ease: signatureEase } : { duration: 0 }}
+              transition={
+                sa
+                  ? {
+                      duration: duration.slower,
+                      delay: 0.2,
+                      ease: signatureEase,
+                    }
+                  : { duration: 0 }
+              }
             >
-              {/* Glow */}
-              <motion.div
-                className="absolute -inset-6 rounded-3xl bg-slate-400/10 blur-2xl"
-                animate={sa ? { opacity: [0.15, 0.3, 0.15], scale: [1, 1.05, 1] } : undefined}
-                transition={sa ? { duration: 4, repeat: Infinity, ease: 'easeInOut' } : undefined}
-              />
-              <div className="relative w-[120px] h-[120px] rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] flex items-center justify-center">
+              <div className="relative w-[120px] h-[120px] rounded-2xl border border-white/[0.10] bg-white/[0.04] flex items-center justify-center">
                 {icon}
               </div>
             </motion.div>
@@ -124,15 +140,36 @@ function UseCaseHeroVisualInner({ icon, steps }: UseCaseHeroVisualProps) {
                   }}
                   initial={sa ? { opacity: 0, scale: 0.8 } : false}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={sa ? { duration: 0.6, delay: 0.5 + i * 0.15, ease: signatureEase } : { duration: 0 }}
+                  transition={
+                    sa
+                      ? {
+                          duration: 0.6,
+                          delay: 0.5 + i * 0.15,
+                          ease: signatureEase,
+                        }
+                      : { duration: 0 }
+                  }
                 >
                   <motion.div
                     animate={sa ? { y: [0, -4 - i * 0.5, 0] } : undefined}
-                    transition={sa ? { duration: 4 + i * 0.5, repeat: Infinity, ease: 'easeInOut' } : undefined}
+                    transition={
+                      sa
+                        ? {
+                            duration: 4 + i * 0.5,
+                            repeat: Infinity,
+                            ease: 'easeInOut',
+                          }
+                        : undefined
+                    }
                   >
-                    <div className="px-3 py-1.5 rounded-xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] flex items-center gap-2 whitespace-nowrap">
-                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: pos.color }} />
-                      <span className="text-[10px] text-white/50 font-medium">{step}</span>
+                    <div className="px-3 py-1.5 rounded-xl border border-white/[0.10] bg-white/[0.04] flex items-center gap-2 whitespace-nowrap">
+                      <div
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundColor: pos.color }}
+                      />
+                      <span className="text-[10px] text-white/50 font-medium">
+                        {step}
+                      </span>
                     </div>
                   </motion.div>
                 </motion.div>

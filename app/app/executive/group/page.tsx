@@ -81,7 +81,7 @@ export default async function GroupRollupPage() {
           </div>
           <div className="border border-border rounded-lg p-4 bg-card">
             <div className="flex items-center gap-2 text-sm mb-1">
-              <AlertTriangle className="h-4 w-4 text-yellow-600" /> Incidents
+              <AlertTriangle className="h-4 w-4 text-warning" /> Incidents
               (30d)
             </div>
             <p className="text-2xl font-bold">

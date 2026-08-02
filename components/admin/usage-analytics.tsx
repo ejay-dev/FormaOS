@@ -19,11 +19,10 @@ interface ChurnOrg {
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
-  critical: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
-  high: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300',
-  medium:
-    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300',
-  low: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
+  critical: 'bg-destructive/10 text-destructive',
+  high: 'bg-warning/20 text-warning',
+  medium: 'bg-warning/10 text-warning',
+  low: 'bg-muted text-muted-foreground',
 };
 
 const SIGNAL_ICONS: Record<string, typeof AlertTriangle> = {
@@ -35,12 +34,10 @@ const SIGNAL_ICONS: Record<string, typeof AlertTriangle> = {
 
 function getRiskBadge(score: number) {
   if (score >= 70)
-    return 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300';
-  if (score >= 40)
-    return 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300';
-  if (score >= 20)
-    return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300';
-  return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300';
+    return 'bg-destructive/10 text-destructive';
+  if (score >= 40) return 'bg-warning/20 text-warning';
+  if (score >= 20) return 'bg-warning/10 text-warning';
+  return 'bg-success/10 text-success';
 }
 
 export function ChurnRiskPanel({ orgs }: { orgs: ChurnOrg[] }) {
@@ -148,7 +145,7 @@ export function TrialFunnel({ data }: { data: TrialFunnelData }) {
               <span className="text-xs text-muted-foreground">
                 {stage.value} ({conversionRate}%)
                 {i > 0 && dropOff > 0 && (
-                  <span className="text-red-500 ml-1">-{dropOff}</span>
+                  <span className="text-destructive ml-1">-{dropOff}</span>
                 )}
               </span>
             </div>

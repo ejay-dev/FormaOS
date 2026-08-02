@@ -219,7 +219,7 @@ export default async function StaffDashboardPage() {
                   className="flex items-center justify-between rounded-xl border border-edge-2 bg-surface-1 px-4 py-3 text-sm text-foreground hover:bg-surface-2"
                 >
                   <span>{patient.full_name}</span>
-                  <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                  <span className="text-xs capitalize text-muted-foreground">
                     {patient.care_status}
                   </span>
                 </Link>
@@ -242,7 +242,7 @@ export default async function StaffDashboardPage() {
                   key={note.id}
                   className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
-                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                  <div className="text-xs capitalize text-muted-foreground">
                     {note.status_tag}
                   </div>
                   <div className="text-xs text-foreground/70">
@@ -270,7 +270,7 @@ export default async function StaffDashboardPage() {
                   key={incident.id}
                   className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
-                  <div className="text-xs uppercase tracking-widest text-destructive">
+                  <div className="text-xs capitalize text-destructive">
                     {incident.severity}
                   </div>
                   <div className="text-xs text-foreground/70">
@@ -296,7 +296,7 @@ export default async function StaffDashboardPage() {
                   key={shift.id}
                   className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
-                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                  <div className="text-xs capitalize text-muted-foreground">
                     {shift.status}
                   </div>
                   <div className="text-xs text-foreground/70">

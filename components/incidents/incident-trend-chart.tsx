@@ -31,7 +31,7 @@ export function IncidentTrendChart({
           >
             <span className="text-[10px] text-muted-foreground">{d.count}</span>
             <div
-              className="w-full bg-blue-500 dark:bg-blue-400 rounded-t-sm min-h-[2px]"
+              className="w-full bg-primary rounded-t-sm min-h-[2px]"
               style={{ height: `${(d.count / max) * 100}%` }}
             />
             <span className="text-[9px] text-muted-foreground truncate max-w-full">

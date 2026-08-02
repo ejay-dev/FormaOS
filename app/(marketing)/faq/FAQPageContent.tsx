@@ -14,6 +14,7 @@ import {
   Sparkles,
   Building2,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
@@ -31,10 +32,21 @@ import {
 import { brand } from '@/config/brand';
 
 // ============================================================================
-// FAQ DATA, Enterprise-Grade Content
+// FAQ DATA
 // ============================================================================
 
-const faqCategories = [
+type FAQCategoryData = {
+  id: string;
+  title: string;
+  icon: LucideIcon;
+  color: string;
+  questions: { q: string; a: string }[];
+  // Security and procurement detail is answered once, on the canonical page.
+  // This page links there instead of publishing a second wording.
+  crossLink?: { href: string; label: string; detail: string };
+};
+
+const faqCategories: FAQCategoryData[] = [
   {
     id: 'product',
     title: 'Product & Platform',
@@ -70,26 +82,24 @@ const faqCategories = [
     color: 'purple',
     questions: [
       {
-        q: 'Is FormaOS SOC 2 aligned?',
-        a: 'FormaOS is built with SOC 2-aligned controls across the Common Criteria, Availability, and Confidentiality trust service categories. We implement AES-256 encryption, identity governance, tamper-evident audit logs, and structured incident response procedures aligned with the framework. Our security review packet, covering architecture, controls, and data handling, is available for enterprise procurement and security teams on request.',
-      },
-      {
-        q: 'How is data encrypted?',
-        a: 'Primary platform data is encrypted at rest using AES-256 and in transit using TLS 1.3. Encryption key management follows enterprise cloud-provider best practices, and encryption controls are documented in our security review packet.',
-      },
-      {
-        q: 'Does FormaOS support SSO and MFA?',
-        a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. MFA policy enforcement is supported across supported identity flows, and session duration controls plus access governance policies are configurable at the organizational level. Additional identity-lifecycle requirements are reviewed during enterprise deployment.',
-      },
-      {
         q: 'Where is data stored and what residency options exist?',
-        a: 'FormaOS is AU-hosted by default, designed for Australian-regulated organizations. Additional residency and cross-border handling requirements are reviewed during procurement. A Data Processing Agreement (DPA) is available for enterprise review, covering privacy and transfer considerations relevant to your deployment.',
+        a: 'FormaOS is AU-hosted by default, built for Australian-regulated organizations. Additional residency and cross-border handling requirements are reviewed during procurement, and a Data Processing Agreement covering privacy and transfer considerations is published in the Trust Center.',
       },
       {
         q: 'How do you handle data privacy and the Australian Privacy Principles?',
-        a: 'FormaOS is built with privacy-by-design principles aligned with the Australian Privacy Principles (APPs) under the Privacy Act 1988. We collect only the data necessary to operate the platform, provide full organizational data control, and never sell customer data to third parties. APP-aligned data handling documentation, breach response workflows, and our DPA are available for privacy and legal review.',
+        a: 'FormaOS is built to the Australian Privacy Principles under the Privacy Act 1988. We collect only what is needed to operate the platform, your organization keeps control of its own data, and we never sell it. The Privacy Policy sets out collection, retention, breach notification, and how to exercise your rights.',
+      },
+      {
+        q: 'Is FormaOS SOC 2 certified?',
+        a: 'No. FormaOS is aligned to SOC 2 controls, meaning controls are modelled and evidence can be produced, but certified would require an independent audit of FormaOS as a vendor. We keep that distinction explicit. Our infrastructure providers maintain their own SOC 2 reports, and those can be provided during review.',
       },
     ],
+    crossLink: {
+      href: '/security-review/faq',
+      label: 'Security Review FAQ',
+      detail:
+        'Encryption, tenant isolation, SSO and SCIM, MFA, hosting, backups, exports, and the capabilities we do not have, answered for security reviewers.',
+    },
   },
   {
     id: 'evidence',
@@ -198,6 +208,12 @@ const faqCategories = [
         a: 'FormaOS uses independent security review processes and documents its vulnerability disclosure and remediation approach. Current assessment artifacts may be shared with enterprise buyers during security review when available and appropriate.',
       },
     ],
+    crossLink: {
+      href: '/trust/procurement',
+      label: 'Procurement',
+      detail:
+        'How a review runs: what you receive, how long it takes, DPA signing, and what happens next.',
+    },
   },
   {
     id: 'support',
@@ -385,6 +401,21 @@ function FAQCategory({ category }: { category: (typeof faqCategories)[0] }) {
             />
           ))}
         </div>
+
+        {category.crossLink ? (
+          <div className="mt-6 border-t border-white/5 pt-5">
+            <Link
+              href={category.crossLink.href}
+              className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-slate-200 transition-colors"
+            >
+              {category.crossLink.label}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            <p className="mt-1.5 text-sm text-slate-400 leading-relaxed">
+              {category.crossLink.detail}
+            </p>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -431,8 +462,8 @@ function FAQCTA() {
                 Still have questions?
               </h2>
               <p className="text-slate-400 mb-8 max-w-xl mx-auto">
-                Our team is ready to help. Contact us for personalized answers
-                or schedule a demo to see FormaOS in action.
+                Send your question through and you will get a direct answer, or
+                book a walkthrough of the platform against your own frameworks.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -450,7 +481,7 @@ function FAQCTA() {
 
                 <Link
                   href={compliancePlanHref('faq_final')}
-                  className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-white/40 hover:bg-white/[0.08] transition-all"
+                  className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 text-white font-semibold text-lg flex items-center gap-3 hover:border-white/40 hover:bg-white/[0.08] transition-all"
                 >
                   <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -470,7 +501,7 @@ function FAQCTA() {
 
 export default function FAQPageContent() {
   return (
-    <MarketingPageShell className="bg-[#0a0f1c]">
+    <MarketingPageShell>
       <FAQHero />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />

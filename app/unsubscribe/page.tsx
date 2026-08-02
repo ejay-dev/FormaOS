@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 
 import { brand } from '@/config/brand';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { verifyUnsubscribeToken } from '@/lib/email/unsubscribe-token';
+import { unsubscribeUserFromAllEmail } from '@/lib/email/unsubscribe';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,20 +26,12 @@ async function unsubscribeAction(formData: FormData) {
     redirect('/unsubscribe');
   }
 
-  const admin = createSupabaseAdminClient();
-  const { error } = await admin.from('email_preferences').upsert(
-    {
-      user_id: payload.userId,
-      unsubscribed_all: true,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: 'user_id' },
-  );
+  const { ok } = await unsubscribeUserFromAllEmail(payload.userId);
 
   redirect(
-    error
-      ? `/unsubscribe?status=failed&token=${encodeURIComponent(submittedToken)}`
-      : '/unsubscribe?status=done',
+    ok
+      ? '/unsubscribe?status=done'
+      : `/unsubscribe?status=failed&token=${encodeURIComponent(submittedToken)}`,
   );
 }
 

@@ -37,7 +37,7 @@ export function StartHereCard({ state }: StartHereCardProps) {
             <ListChecks className="h-5 w-5 text-foreground/80" />
           </div>
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <p className="text-xs font-medium text-muted-foreground">
               Start here
             </p>
             <h2 className="text-lg font-semibold text-foreground">
@@ -179,7 +179,7 @@ function StepRow({
               Step {index}
             </span>
             {isNext && (
-              <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+              <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-medium text-primary">
                 Next
               </span>
             )}

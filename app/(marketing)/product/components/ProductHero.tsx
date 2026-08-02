@@ -44,9 +44,9 @@ export function ProductHero() {
                 initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.2 } : { duration: 0 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-500/10 border border-slate-500/30 mb-8 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-500/10 border border-zinc-500/30 mb-8"
               >
-                <span className="text-sm text-slate-300 font-medium tracking-wide">
+                <span className="text-sm text-zinc-300 font-medium tracking-wide">
                   Compliance Operating System
                 </span>
               </motion.div>
@@ -96,15 +96,15 @@ export function ProductHero() {
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
                     Structured Controls
                   </span>
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
                     Owned Actions
                   </span>
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
                     Live Evidence
                   </span>
                 </div>

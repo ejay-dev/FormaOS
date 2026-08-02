@@ -25,7 +25,6 @@ const industries = [
       'NDIS Commission Reportable Incidents',
       'NDIS Worker Screening + SIRS',
     ],
-    color: 'pink',
     gradient: 'from-zinc-700/20 to-zinc-700/10',
     border: 'border-zinc-600/20',
     hoverBorder: 'hover:border-white/20',
@@ -43,7 +42,6 @@ const industries = [
       'Restrictive Practices Register & Reviews',
       'Reportable Incidents + Worker Screening',
     ],
-    color: 'teal',
     gradient: 'from-zinc-700/20 to-zinc-700/10',
     border: 'border-zinc-600/20',
     hoverBorder: 'hover:border-white/20',
@@ -61,7 +59,6 @@ const industries = [
       'NSQHS Standards (8/8 covered)',
       'RACGP Accreditation & Privacy Act NDB',
     ],
-    color: 'blue',
     gradient: 'from-zinc-700/20 to-zinc-700/10',
     border: 'border-zinc-600/20',
     hoverBorder: 'hover:border-white/20',
@@ -79,7 +76,6 @@ const industries = [
       'AML/CTF Risk Control Mapping',
       'Internal Audit + Board Reporting',
     ],
-    color: 'green',
     gradient: 'from-zinc-700/20 to-zinc-700/10',
     border: 'border-zinc-600/20',
     hoverBorder: 'hover:border-white/20',
@@ -97,7 +93,6 @@ const industries = [
       'Contractor Licence Verification',
       'Multi-site Incident Reporting',
     ],
-    color: 'orange',
     gradient: 'from-zinc-700/20 to-zinc-700/10',
     border: 'border-zinc-600/20',
     hoverBorder: 'hover:border-white/20',
@@ -115,7 +110,6 @@ const industries = [
       'Child Safety Compliance Workflows',
       'Staff Credential & WWC Tracking',
     ],
-    color: 'purple',
     gradient: 'from-zinc-700/20 to-zinc-700/10',
     border: 'border-zinc-600/20',
     hoverBorder: 'hover:border-white/20',
@@ -127,11 +121,7 @@ const industries = [
 /* ------------------------------------------------------------------ */
 /*  IndustryCard, the whole card routes to the industry page          */
 /* ------------------------------------------------------------------ */
-function IndustryCard({
-  industry,
-}: {
-  industry: (typeof industries)[number];
-}) {
+function IndustryCard({ industry }: { industry: (typeof industries)[number] }) {
   const Icon = industry.icon;
 
   return (
@@ -147,7 +137,9 @@ function IndustryCard({
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <div className={`flex-shrink-0 w-2.5 h-2.5 rounded-full ${industry.dotColor}`} />
+            <div
+              className={`flex-shrink-0 w-2.5 h-2.5 rounded-full ${industry.dotColor}`}
+            />
             <h4 className="font-bold text-lg mb-1 text-white">
               {industry.title}
             </h4>
@@ -169,9 +161,7 @@ function IndustryCard({
             key={feature}
             className="flex items-center gap-2 text-xs text-slate-500"
           >
-            <div
-              className={`w-1.5 h-1.5 ${industry.dotColor} rounded-full`}
-            />
+            <div className={`w-1.5 h-1.5 ${industry.dotColor} rounded-full`} />
             <span>{feature}</span>
           </div>
         ))}
@@ -188,29 +178,24 @@ export function IndustryVerticals() {
     <section className="relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
-          <div className="text-center mb-16">
-            <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                Example Verticals
-              </p>
-            </ScrollReveal>
-
+          <div className="mb-16 max-w-2xl">
             <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight mb-6 text-white">
-              Compliance Infrastructure
-              <span className="text-foreground">
-                {' '}
-                Across Industries
-              </span>
+              Six regulators, six pre-built framework sets
             </h2>
 
-            <p className="text-lg text-slate-400 max-w-3xl mx-auto">
-              Pre-built frameworks tailored to specific regulatory environments
+            <p className="text-lg text-slate-400">
+              Each vertical ships with the obligations, registers and reporting
+              its regulator actually asks for.
             </p>
           </div>
         </ScrollReveal>
 
         {/* Industries Grid */}
-        <SectionChoreography pattern="stagger-wave" stagger={0.05} className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <SectionChoreography
+          pattern="stagger-wave"
+          stagger={0.05}
+          className="grid md:grid-cols-2 xl:grid-cols-3 gap-6"
+        >
           {industries.map((industry) => (
             <IndustryCard key={industry.title} industry={industry} />
           ))}

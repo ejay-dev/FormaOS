@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { OrgChart } from '@/components/team/org-chart';
+import { getOrgMemberIdentities } from '@/lib/team/member-identity';
 import { Network, Users, UserCheck } from 'lucide-react';
 
 export const metadata = { title: 'Org Chart | FormaOS' };
@@ -57,22 +58,18 @@ export default async function OrgChartPage() {
 
   const db = await createSupabaseServerClient();
 
-  const [{ data: teams }, { data: members }, { data: profiles }] =
-    await Promise.all([
-      db
-        .from('team_groups')
-        .select('*')
-        .eq('org_id', state.organization.id)
-        .order('name'),
-      db
-        .from('team_members')
-        .select('team_id, user_id')
-        .eq('org_id', state.organization.id),
-      db
-        .from('org_members')
-        .select('user_id, display_name')
-        .eq('org_id', state.organization.id),
-    ]);
+  const [{ data: teams }, { data: members }, identities] = await Promise.all([
+    db
+      .from('team_groups')
+      .select('*')
+      .eq('org_id', state.organization.id)
+      .order('name'),
+    db
+      .from('team_members')
+      .select('team_id, user_id')
+      .eq('org_id', state.organization.id),
+    getOrgMemberIdentities(),
+  ]);
 
   const memberCounts: Record<string, number> = {};
   for (const m of members || []) {
@@ -80,8 +77,8 @@ export default async function OrgChartPage() {
   }
 
   const leadNames: Record<string, string> = {};
-  for (const p of profiles || []) {
-    leadNames[p.user_id] = p.display_name || 'Unknown';
+  for (const [userId, identity] of Object.entries(identities)) {
+    if (identity?.name) leadNames[userId] = identity.name;
   }
 
   const tree = buildTree((teams || []) as TeamRow[], memberCounts, leadNames);

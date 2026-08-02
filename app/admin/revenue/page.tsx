@@ -66,11 +66,11 @@ export default async function AdminRevenuePage() {
       </div>
 
       {/* MRR Highlight */}
-      <div className="rounded-lg border border-emerald-800/30 bg-gradient-to-br from-emerald-900/20 to-card p-8">
+      <div className="rounded-lg border border-border bg-card p-8">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              MRR (from DB)
+              Monthly recurring revenue
             </p>
             <p className="mt-4 text-4xl font-bold text-foreground">
               {formatMoney(data.mrrCents ?? 0)}
@@ -79,14 +79,14 @@ export default async function AdminRevenuePage() {
               {totalSubs} active subscription{totalSubs !== 1 ? 's' : ''}
             </p>
           </div>
-          <DollarSign className="h-12 w-12 text-emerald-500/20" />
+          <DollarSign className="h-12 w-12 text-muted-foreground/40" />
         </div>
       </div>
 
       {/* Plan Breakdown */}
       <div>
         <h2 className="text-lg font-semibold text-foreground mb-4">
-          Revenue by Plan
+          Revenue by plan
         </h2>
         {planMetrics.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-3">
@@ -97,7 +97,7 @@ export default async function AdminRevenuePage() {
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground uppercase">
+                    <p className="text-xs font-medium text-muted-foreground">
                       {plan.key}
                     </p>
                     <p className="mt-3 text-2xl font-bold text-foreground">
@@ -107,7 +107,7 @@ export default async function AdminRevenuePage() {
                       subscriptions
                     </p>
                     {plan.priceCents > 0 ? (
-                      <p className="mt-3 text-sm font-semibold text-emerald-400">
+                      <p className="mt-3 text-sm font-semibold text-success">
                         {formatMoney(plan.revenue)}
                       </p>
                     ) : (
@@ -148,7 +148,7 @@ export default async function AdminRevenuePage() {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Failed Payments</span>
             <span
-              className={`font-semibold ${data.failedPayments > 0 ? 'text-red-400' : 'text-foreground'}`}
+              className={`font-semibold ${data.failedPayments > 0 ? 'text-destructive' : 'text-foreground'}`}
             >
               {data.failedPayments}
             </span>
@@ -157,7 +157,7 @@ export default async function AdminRevenuePage() {
             <span className="text-muted-foreground">
               Monthly Recurring Revenue
             </span>
-            <span className="font-semibold text-emerald-400">
+            <span className="font-semibold text-success">
               {formatMoney(data.mrrCents ?? 0)}
             </span>
           </div>

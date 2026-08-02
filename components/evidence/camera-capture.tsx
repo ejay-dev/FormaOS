@@ -139,10 +139,10 @@ export function CameraCapture({ onCapture, onCancel }: CameraCaptureProps) {
               type="button"
               onClick={takePhoto}
               aria-label="Take photo"
-              className="p-4 rounded-full bg-white hover:bg-gray-100 border-2 border-gray-300"
+              className="p-4 rounded-full border-2 border-border bg-background hover:bg-muted"
               data-testid="btn-capture"
             >
-              <Camera className="h-6 w-6 text-gray-700" aria-hidden="true" />
+              <Camera className="h-6 w-6 text-foreground" aria-hidden="true" />
             </button>
             <button
               type="button"

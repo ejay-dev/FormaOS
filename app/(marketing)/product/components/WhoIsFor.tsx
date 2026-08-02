@@ -80,7 +80,7 @@ export function WhoIsFor() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="text-center mb-12">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <p className="mb-4 text-xs font-semibold text-zinc-500">
               Who FormaOS Is For
             </p>
 
@@ -90,7 +90,7 @@ export function WhoIsFor() {
                 can't afford to guess
               </span>
             </h2>
-            <p className="mt-4 text-slate-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+            <p className="mt-4 text-zinc-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
               Every role in a regulated organization has a stake in compliance.
               FormaOS gives each of them what they need.
             </p>
@@ -113,16 +113,16 @@ export function WhoIsFor() {
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/0 group-hover:via-white/15 to-transparent transition-all duration-500" />
 
                 <div className="inline-flex items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.05] p-2.5 mb-3">
-                  <Icon className="w-4 h-4 text-slate-300" />
+                  <Icon className="w-4 h-4 text-zinc-300" />
                 </div>
 
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                <div className="text-[10px] font-bold text-zinc-500 mb-1.5">
                   {audience.role}
                 </div>
-                <p className="text-sm text-slate-300 leading-snug mb-2">
+                <p className="text-sm text-zinc-300 leading-snug mb-2">
                   {audience.label}
                 </p>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-zinc-600 leading-relaxed">
                   {audience.detail}
                 </p>
               </motion.div>

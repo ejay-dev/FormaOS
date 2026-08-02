@@ -22,13 +22,15 @@ export function IncidentHeatmap({
 
   const max = Math.max(...grid.flat(), 1);
 
+  // Single-hue sequential ramp: more incidents in a slot reads as more
+  // destructive, and each cell carries its count in the title attribute.
   function cellColor(count: number): string {
     if (count === 0) return 'bg-muted';
     const intensity = count / max;
-    if (intensity > 0.75) return 'bg-red-500';
-    if (intensity > 0.5) return 'bg-orange-400';
-    if (intensity > 0.25) return 'bg-yellow-400';
-    return 'bg-green-300 dark:bg-green-700';
+    if (intensity > 0.75) return 'bg-destructive';
+    if (intensity > 0.5) return 'bg-destructive/70';
+    if (intensity > 0.25) return 'bg-destructive/45';
+    return 'bg-destructive/20';
   }
 
   return (
@@ -74,10 +76,10 @@ export function IncidentHeatmap({
       <div className="flex items-center gap-2 mt-2 text-[10px] text-muted-foreground">
         <span>Less</span>
         <div className="h-3 w-3 rounded-sm bg-muted" />
-        <div className="h-3 w-3 rounded-sm bg-green-300 dark:bg-green-700" />
-        <div className="h-3 w-3 rounded-sm bg-yellow-400" />
-        <div className="h-3 w-3 rounded-sm bg-orange-400" />
-        <div className="h-3 w-3 rounded-sm bg-red-500" />
+        <div className="h-3 w-3 rounded-sm bg-destructive/20" />
+        <div className="h-3 w-3 rounded-sm bg-destructive/45" />
+        <div className="h-3 w-3 rounded-sm bg-destructive/70" />
+        <div className="h-3 w-3 rounded-sm bg-destructive" />
         <span>More</span>
       </div>
     </div>

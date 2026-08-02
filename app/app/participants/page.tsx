@@ -13,6 +13,11 @@ import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
 import { buildOrSearch } from '@/lib/utils/postgrest-search';
 import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 import {
+  SeverityBadge,
+  severityLabel,
+  severityTextClass,
+} from '@/components/care/severity-badge';
+import {
   RecordCard,
   RecordList,
 } from '@/components/mobile/record-card';
@@ -144,18 +149,32 @@ export default async function ParticipantsPage({
   }).catch(() => {});
 
   type Participant = NonNullable<typeof participants>[number];
+
+  // Hero metrics count the whole organisation, not the current page or the
+  // active filters — otherwise 'Total' reports the page size.
+  const orgParticipants = () =>
+    supabase
+      .from('org_patients')
+      .select('id', { count: 'exact', head: true })
+      .eq('organization_id', orgId);
+
+  const [
+    { count: totalCount },
+    { count: activeCount },
+    { count: highRiskCount },
+    { count: emergencyCount },
+  ] = await Promise.all([
+    orgParticipants(),
+    orgParticipants().eq('care_status', 'active'),
+    orgParticipants().in('risk_level', ['high', 'critical']),
+    orgParticipants().eq('emergency_flag', true),
+  ]);
+
   const stats = {
-    total: participants?.length ?? 0,
-    active:
-      participants?.filter((p: Participant) => p.care_status === 'active')
-        .length ?? 0,
-    highRisk:
-      participants?.filter(
-        (p: Participant) =>
-          p.risk_level === 'high' || p.risk_level === 'critical',
-      ).length ?? 0,
-    emergency:
-      participants?.filter((p: Participant) => p.emergency_flag).length ?? 0,
+    total: totalCount ?? 0,
+    active: activeCount ?? 0,
+    highRisk: highRiskCount ?? 0,
+    emergency: emergencyCount ?? 0,
   };
 
   const heroMetrics: PageHeroMetric[] = [
@@ -254,6 +273,12 @@ export default async function ParticipantsPage({
           ) : null}
         </form>
 
+        <p className="text-xs text-muted-foreground">
+          Showing {participants?.length ?? 0} of {stats.total}{' '}
+          {labels.plural.toLowerCase()}
+          {page > 1 ? ` · page ${page}` : ''}.
+        </p>
+
         {/* Mobile cards */}
         <div className="md:hidden">
           {participants && participants.length > 0 ? (
@@ -269,22 +294,26 @@ export default async function ParticipantsPage({
                       <span className="flex items-center gap-2">
                         {participant.emergency_flag && (
                           <span
-                            className="flex h-2 w-2 rounded-full bg-red-500"
+                            className="flex h-2 w-2 rounded-full bg-destructive"
                             aria-label="Emergency flag"
                           />
                         )}
                         {participant.full_name}
                       </span>
                     }
-                    subtitle={participant.preferred_name ?? undefined}
+                    subtitle={
+                      participant.preferred_name
+                        ? `Prefers ${participant.preferred_name}`
+                        : undefined
+                    }
                     status={
                       <span
-                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                        className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium capitalize ${
                           participant.care_status === 'active'
-                            ? 'bg-green-500/10 text-green-600'
+                            ? 'bg-success/10 text-success'
                             : participant.care_status === 'paused'
-                              ? 'bg-amber-500/10 text-amber-600'
-                              : 'bg-gray-500/10 text-gray-600'
+                              ? 'bg-warning/10 text-warning'
+                              : 'bg-muted text-muted-foreground'
                         }`}
                       >
                         {participant.care_status}
@@ -295,16 +324,11 @@ export default async function ParticipantsPage({
                         label: 'Risk',
                         value: (
                           <span
-                            className={
-                              participant.risk_level === 'critical' ||
-                              participant.risk_level === 'high'
-                                ? 'text-rose-500'
-                                : participant.risk_level === 'medium'
-                                  ? 'text-amber-500'
-                                  : 'text-foreground/85'
-                            }
+                            className={severityTextClass(
+                              participant.risk_level,
+                            )}
                           >
-                            {participant.risk_level}
+                            {severityLabel(participant.risk_level)}
                           </span>
                         ),
                       },
@@ -313,16 +337,18 @@ export default async function ParticipantsPage({
                             {
                               label: 'ID',
                               value: (
-                                <span className="font-mono">{idValue}</span>
+                                <span className="tabular-nums">{idValue}</span>
                               ),
                             },
                           ]
                         : []),
-                      ...(participant.funding_source
+                      ...(participant.funding_type
                         ? [
                             {
                               label: 'Funding',
-                              value: participant.funding_source,
+                              value: String(
+                                participant.funding_type,
+                              ).toUpperCase(),
                             },
                           ]
                         : []),
@@ -376,8 +402,8 @@ export default async function ParticipantsPage({
                         <div className="flex items-center gap-3">
                           {participant.emergency_flag && (
                             <span
-                              className="flex h-2 w-2 rounded-full bg-red-500"
-                              title="Emergency Flag"
+                              className="flex h-2 w-2 rounded-full bg-destructive"
+                              title="Emergency flag"
                             />
                           )}
                           <div>
@@ -386,14 +412,14 @@ export default async function ParticipantsPage({
                             </p>
                             {participant.preferred_name && (
                               <p className="text-sm text-muted-foreground">
-                                ({participant.preferred_name})
+                                Prefers {participant.preferred_name}
                               </p>
                             )}
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-3 hidden md:table-cell">
-                        <span className="text-sm font-mono text-muted-foreground">
+                        <span className="text-sm tabular-nums text-muted-foreground">
                           {participant.external_id ||
                             participant.ndis_number ||
                             '-'}
@@ -401,31 +427,19 @@ export default async function ParticipantsPage({
                       </td>
                       <td className="px-4 py-3 hidden lg:table-cell">
                         <span
-                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium capitalize ${
                             participant.care_status === 'active'
-                              ? 'bg-green-500/10 text-green-600'
+                              ? 'bg-success/10 text-success'
                               : participant.care_status === 'paused'
-                                ? 'bg-amber-500/10 text-amber-600'
-                                : 'bg-gray-500/10 text-gray-600'
+                                ? 'bg-warning/10 text-warning'
+                                : 'bg-muted text-muted-foreground'
                           }`}
                         >
                           {participant.care_status}
                         </span>
                       </td>
                       <td className="px-4 py-3 hidden lg:table-cell">
-                        <span
-                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                            participant.risk_level === 'critical'
-                              ? 'bg-red-500/10 text-red-600'
-                              : participant.risk_level === 'high'
-                                ? 'bg-orange-500/10 text-orange-600'
-                                : participant.risk_level === 'medium'
-                                  ? 'bg-amber-500/10 text-amber-600'
-                                  : 'bg-green-500/10 text-green-600'
-                          }`}
-                        >
-                          {participant.risk_level}
-                        </span>
+                        <SeverityBadge level={participant.risk_level} />
                       </td>
                       <td className="px-4 py-3 hidden xl:table-cell">
                         <span className="text-sm text-muted-foreground">

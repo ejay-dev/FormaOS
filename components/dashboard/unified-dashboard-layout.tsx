@@ -51,7 +51,7 @@ export function DashboardSectionCard({
     <div
       className={`rounded-lg border p-4 transition-all ${
         locked
-          ? 'border-slate-700/50 bg-slate-900/30 opacity-50'
+          ? 'border-border bg-muted/30 opacity-50'
           : 'border-border bg-card'
       }`}
     >

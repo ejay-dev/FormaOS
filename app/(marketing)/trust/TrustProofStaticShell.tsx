@@ -28,44 +28,43 @@ const TRUST_AREAS = [
 export function TrustProofStaticShell() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-sm sm:p-10">
+      <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 sm:p-10">
         <div className="max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            Procurement Snapshot
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Core trust answers available in the first render
+          <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            The answers security reviewers ask first
           </h2>
           <p className="mt-4 text-sm leading-7 text-slate-300 sm:text-base">
-            This static layer exposes the answers enterprise buyers usually ask
-            first, while the interactive trust center still handles the deeper
-            walkthrough below.
+            Identity, data handling, and evidence integrity, summarised here and
+            documented in full further down the page.
           </p>
         </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+        <dl className="mt-8 divide-y divide-white/[0.08] border-t border-white/[0.08]">
           {TRUST_AREAS.map((area) => (
-            <article
+            <div
               key={area.title}
-              className="rounded-2xl border border-white/10 bg-slate-950/45 p-6"
+              className="grid gap-3 py-6 sm:grid-cols-[minmax(0,15rem)_1fr] sm:gap-8"
             >
-              <div className="inline-flex rounded-xl border border-white/[0.1] bg-white/[0.06] p-3">
-                <area.icon className="h-5 w-5 text-slate-300" aria-hidden="true" />
-              </div>
-              <h3 className="mt-4 text-xl font-semibold text-white">
-                {area.title}
-              </h3>
-              <p className="mt-3 text-sm leading-7 text-slate-300">
-                {area.detail}
-              </p>
-              <ul className="mt-4 space-y-2 text-sm text-slate-200">
-                {area.bullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
-                ))}
-              </ul>
-            </article>
+              <dt className="flex items-start gap-3">
+                <area.icon
+                  className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-400"
+                  aria-hidden="true"
+                />
+                <span className="text-lg font-semibold text-white">
+                  {area.title}
+                </span>
+              </dt>
+              <dd>
+                <p className="text-sm leading-7 text-slate-300">
+                  {area.detail}
+                </p>
+                <p className="mt-2 text-sm text-slate-400">
+                  {area.bullets.join(' · ')}
+                </p>
+              </dd>
+            </div>
           ))}
-        </div>
+        </dl>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link

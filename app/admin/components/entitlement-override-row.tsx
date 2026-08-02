@@ -90,7 +90,7 @@ export function EntitlementOverrideRow({
           {loading ? 'Saving…' : 'Save'}
         </button>
       </div>
-      {error ? <p className="mt-2 text-[11px] text-rose-300">{error}</p> : null}
+      {error ? <p className="mt-2 text-[11px] text-destructive">{error}</p> : null}
     </div>
   );
 }

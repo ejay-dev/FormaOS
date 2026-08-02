@@ -94,7 +94,7 @@ export function WorkflowDetailClient({
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Workflow Detail
           </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
+          <h1 className="page-title mt-3 text-foreground">
             {currentWorkflow.name}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {
   Shield,
   Heart,
+  Brain,
   DollarSign,
   GraduationCap,
   HardHat,
@@ -21,6 +22,13 @@ const industries = [
     name: 'Healthcare',
     description: 'AHPRA tracking, NSQHS accreditation, clinical governance',
     icon: Heart,
+  },
+  {
+    slug: 'mental-health-compliance',
+    name: 'Mental Health',
+    description:
+      'NSMHS standards, restrictive practices, reportable incidents',
+    icon: Brain,
   },
   {
     slug: 'financial-services-compliance',
@@ -56,20 +64,20 @@ export function RelatedIndustries({ currentSlug }: RelatedIndustriesProps) {
           Also see FormaOS for
         </h2>
         <p className="text-slate-400 text-center mb-8">
-          Pre-built compliance frameworks for every regulated Australian
-          industry
+          Framework packs built for the obligations each of these sectors
+          works to.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {related.map((industry) => {
             const Icon = industry.icon;
             return (
               <Link
                 key={industry.slug}
                 href={`/${industry.slug}`}
-                className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-cyan-500/30 hover:bg-white/10"
+                className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-white/25 hover:bg-white/10"
               >
-                <Icon className="h-6 w-6 text-cyan-400 mb-3" />
-                <h3 className="text-sm font-semibold text-white mb-1 group-hover:text-cyan-300 transition-colors">
+                <Icon className="h-6 w-6 text-slate-400 mb-3" />
+                <h3 className="text-sm font-semibold text-white mb-1">
                   {industry.name}
                 </h3>
                 <p className="text-xs text-slate-400 leading-relaxed">

@@ -94,7 +94,7 @@ export function ComplianceChart({ data, benchmark = 85 }: ComplianceChartProps) 
               return (
                 <div className="rounded-xl border border-border bg-popover px-3 py-2 shadow-xl">
                   <p className="text-xs font-bold text-foreground">{label}</p>
-                  <p className="text-sm font-black text-foreground">
+                  <p className="text-sm font-semibold text-foreground">
                     {value}%
                   </p>
                   <p className="text-[11px] text-muted-foreground">

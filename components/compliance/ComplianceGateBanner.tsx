@@ -32,11 +32,11 @@ export default function ComplianceGateBanner({
 
   return (
     <div
-      className={`rounded-lg border border-rose-700 bg-rose-900 px-4 py-3 ${compact ? 'text-xs' : 'text-sm'}`}
+      className={`rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-3 ${compact ? 'text-xs' : 'text-sm'}`}
     >
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center rounded bg-rose-800 text-rose-200 border border-rose-700">
+          <div className="flex h-9 w-9 items-center justify-center rounded border border-destructive/20 bg-destructive/10 text-destructive">
             <AlertTriangle className="h-5 w-5" />
           </div>
         </div>
@@ -44,10 +44,10 @@ export default function ComplianceGateBanner({
         <div className="min-w-0">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="font-semibold text-rose-100">
+              <div className="font-semibold text-foreground">
                 {title ?? 'Action blocked by compliance gate'}
               </div>
-              <div className="text-rose-200 text-xs mt-1">
+              <div className="mt-1 text-xs text-muted-foreground">
                 {blocks.length} unresolved requirement
                 {blocks.length > 1 ? 's' : ''} — action prevented until
                 addressed.
@@ -57,10 +57,10 @@ export default function ComplianceGateBanner({
             <div className="shrink-0">
               <Link
                 href={resolvePath}
-                className="inline-flex items-center gap-2 rounded-md bg-destructive/20 px-3 py-1 text-xs font-semibold text-rose-200 hover:bg-destructive/30"
+                className="inline-flex items-center gap-2 rounded-md border border-destructive/20 bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive hover:bg-destructive/20"
               >
                 Resolve requirements
-                <ShieldCheck className="h-4 w-4 text-rose-300" />
+                <ShieldCheck className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -68,16 +68,16 @@ export default function ComplianceGateBanner({
           <ul className="mt-3 space-y-2 max-w-xl">
             {blocks.slice(0, 6).map((b) => (
               <li key={b.id} className="flex items-start gap-2">
-                <span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded bg-rose-800 text-rose-300 border border-rose-700">
+                <span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded border border-destructive/20 bg-destructive/10 text-destructive">
                   <XCircle className="h-3 w-3" />
                 </span>
-                <div className="text-rose-100">
+                <div className="text-foreground">
                   <div className="font-medium">
                     {b.reason ||
                       (b.metadata && String(b.metadata.message || '')) ||
                       b.gate_key}
                   </div>
-                  <div className="text-rose-200 text-xs">
+                  <div className="text-xs text-muted-foreground">
                     {b.created_at
                       ? new Date(b.created_at).toLocaleString()
                       : ''}

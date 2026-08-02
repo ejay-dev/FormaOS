@@ -12,6 +12,10 @@ import {
   User,
 } from 'lucide-react';
 import { EntityEvidencePanel } from '@/components/compliance/EntityEvidencePanel';
+import {
+  getOrgMemberIdentities,
+  type MemberIdentityMap,
+} from '@/lib/team/member-identity';
 
 function formatDate(value: string | null | undefined): string {
   if (!value) return 'N/A';
@@ -36,6 +40,7 @@ type CredentialRow = {
   expiry_date: string | null;
   status: string;
   verified_at: string | null;
+  verified_by: string | null;
   notes: string | null;
   created_at: string;
   staff: { id: string; email: string | null } | null;
@@ -71,6 +76,7 @@ export default async function StaffCredentialDetailPage({
       expiry_date,
       status,
       verified_at,
+      verified_by,
       notes,
       created_at,
       user_id
@@ -111,12 +117,23 @@ export default async function StaffCredentialDetailPage({
     await verifyStaffCredential(credential.id);
   };
   const actorRole = String(systemState.role);
-  const canVerify =
-    credential.status !== 'verified' &&
-    (actorRole === 'owner' ||
-      actorRole === 'admin' ||
-      actorRole === 'compliance_officer') &&
-    (evidenceCount ?? 0) > 0;
+  const isVerified = credential.status === 'verified';
+  const hasVerifierRole =
+    actorRole === 'owner' ||
+    actorRole === 'admin' ||
+    actorRole === 'compliance_officer';
+  const canVerify = !isVerified && hasVerifierRole && (evidenceCount ?? 0) > 0;
+
+  const identities: MemberIdentityMap = isVerified
+    ? await getOrgMemberIdentities()
+    : {};
+  const verifierName = credential.verified_by
+    ? (identities[credential.verified_by]?.name ?? 'a team member')
+    : 'a team member';
+
+  const blockedReason = !hasVerifierRole
+    ? 'Only an owner, admin, or compliance officer can verify a credential.'
+    : 'Attach at least one evidence file — the certificate or renewal proof — before this credential can be verified.';
 
   return (
     <div className="space-y-6">
@@ -128,9 +145,7 @@ export default async function StaffCredentialDetailPage({
           <ArrowLeft className="h-4 w-4" />
           Back to staff compliance
         </Link>
-        <h1 className="text-3xl font-bold tracking-tight">
-          {credential.credential_name}
-        </h1>
+        <h1 className="page-title">{credential.credential_name}</h1>
         <p className="text-sm text-muted-foreground">
           Credential record and verification controls.
         </p>
@@ -141,7 +156,7 @@ export default async function StaffCredentialDetailPage({
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Status
           </p>
-          <p className="mt-1 text-2xl font-black capitalize">
+          <p className="mt-1 text-2xl font-semibold capitalize">
             {credential.status}
           </p>
         </div>
@@ -221,36 +236,47 @@ export default async function StaffCredentialDetailPage({
         emptyState="Attach the certificate, renewal proof, or background-check letter for this credential."
       />
 
-      {canVerify ? (
-        <section className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-5">
-          <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-emerald-200">
+      {isVerified ? (
+        <section className="rounded-xl border border-success/30 bg-success/10 p-5">
+          <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-success">
+            <BadgeCheck className="h-4 w-4" />
+            Verified
+          </h2>
+          <p className="mt-2 text-sm text-foreground">
+            Verified by {verifierName}
+            {credential.verified_at
+              ? ` on ${formatDate(credential.verified_at)}`
+              : ''}
+            .
+          </p>
+        </section>
+      ) : canVerify ? (
+        <section className="rounded-xl border border-border bg-card p-5">
+          <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             <BadgeCheck className="h-4 w-4" />
             Verification
           </h2>
-          <p className="mt-2 text-sm text-emerald-100">
+          <p className="mt-2 text-sm text-foreground">
             Confirm this credential as verified after reviewing evidence and
             validity.
           </p>
           <form action={verifyAction} className="mt-4">
             <button
               type="submit"
-              className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-foreground hover:bg-emerald-400 transition-colors"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               <BadgeCheck className="h-4 w-4" />
-              Mark Verified
+              Mark verified
             </button>
           </form>
         </section>
       ) : (
-        <section className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-100">
-          <div className="inline-flex items-center gap-2 text-sm font-semibold">
+        <section className="rounded-xl border border-warning/30 bg-warning/10 p-4">
+          <div className="inline-flex items-center gap-2 text-sm font-semibold text-warning">
             <ShieldAlert className="h-4 w-4" />
-            Verification locked
+            Not yet verifiable
           </div>
-          <p className="mt-1 text-xs text-amber-200">
-            Verification requires an owner, admin, or compliance officer,
-            an unverified credential, and at least one attached evidence file.
-          </p>
+          <p className="mt-1 text-xs text-foreground">{blockedReason}</p>
         </section>
       )}
 

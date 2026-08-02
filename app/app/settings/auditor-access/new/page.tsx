@@ -165,7 +165,7 @@ export default async function NewAuditorAccessPage({
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-6">
+    <div className="mx-auto w-full max-w-5xl space-y-6 pb-16">
       <div className="flex items-center gap-3">
         <Link
           href="/app/settings/auditor-access"
@@ -174,7 +174,7 @@ export default async function NewAuditorAccessPage({
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Grant Auditor Access</h1>
+          <h1 className="text-2xl font-bold">Grant auditor access</h1>
           <p className="text-sm text-muted-foreground">
             Issue a time-limited, read-only link to an external auditor
           </p>
@@ -189,7 +189,7 @@ export default async function NewAuditorAccessPage({
 
       <form
         action={grantAccess}
-        className="space-y-4 rounded-lg border border-border bg-card p-5"
+        className="max-w-2xl space-y-4 rounded-lg border border-border bg-card p-5"
       >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
@@ -259,7 +259,7 @@ export default async function NewAuditorAccessPage({
             type="submit"
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            Issue Access Token
+            Grant access
           </button>
         </div>
       </form>

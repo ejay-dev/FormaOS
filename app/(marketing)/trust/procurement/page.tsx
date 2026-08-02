@@ -9,12 +9,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Procurement FAQ',
   description:
-    'Procurement and security review FAQ for enterprise buyers evaluating FormaOS. Architecture, hosting, identity, encryption, and audit posture.',
+    'How a FormaOS security review runs: what you receive, how long it takes, DPA signing, and what teams stand up during early evaluation.',
   alternates: { canonical: `${siteUrl}/trust/procurement` },
   openGraph: {
     title: 'FormaOS | Procurement FAQ',
     description:
-      'Procurement and security review FAQ for enterprise buyers evaluating FormaOS. Architecture, hosting, identity, encryption, and audit posture.',
+      'How a FormaOS security review runs: what you receive, how long it takes, DPA signing, and what teams stand up during early evaluation.',
     type: 'website',
     url: `${siteUrl}/trust/procurement`,
   },
@@ -22,69 +22,71 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | Procurement FAQ',
     description:
-      'Procurement and security review FAQ for enterprise buyers evaluating FormaOS. Architecture, hosting, identity, encryption, and audit posture.',
+      'How a FormaOS security review runs: what you receive, how long it takes, DPA signing, and what teams stand up during early evaluation.',
   },
 };
 
+// Technical and security answers are not duplicated here. They live on
+// /security-review/faq, which is the single source; divergent answers to the
+// same question are exactly what a vendor-risk process is built to catch.
 const faqs = [
   {
-    question: 'What compliance frameworks does FormaOS support?',
+    question: 'What do we receive when a review starts?',
     answer:
-      'FormaOS supports ISO 27001, SOC 2, GDPR, HIPAA, PCI DSS, NIST CSF, and CIS Controls. Each pack includes mapped controls, evidence requirements, and audit-ready reporting outputs.',
-  },
-  {
-    question: 'Where is customer data stored?',
-    answer:
-      'Customer data is hosted in Australia by default (AU region). Additional residency or transfer requirements are reviewed during procurement. Data is encrypted at rest (AES-256) and in transit (TLS 1.3). A full subprocessor list with hosting regions is available at formaos.com.au/trust/subprocessors.',
-  },
-  {
-    question: 'Do you have a SOC 2 report?',
-    answer:
-      'FormaOS is built on infrastructure providers that maintain their own SOC 2 reports (for example, hosting). FormaOS provides a security packet describing our application controls and data handling. If you require vendor assessment material beyond public positioning, we can discuss current third-party review artifacts during procurement when available and appropriate.',
-  },
-  {
-    question: 'Can we sign a DPA?',
-    answer:
-      'Yes. We provide a standard Data Processing Agreement that covers GDPR and Australian Privacy Act requirements. Enterprise customers can request a countersigned copy via our contact page.',
-  },
-  {
-    question: 'What are your data retention policies?',
-    answer:
-      'Retention periods are configurable and can be tailored to your regulatory obligations. Compliance data, evidence artifacts, and audit trail records are exportable in portable formats such as CSV, JSON, and ZIP. Export windows and deletion timing are handled under your plan and commercial agreement.',
-  },
-  {
-    question: 'Do you support SSO/SAML?',
-    answer:
-      'Google OAuth is available for all plans. Enterprise plans can enable SAML SSO (metadata-based configuration, SP metadata + ACS endpoints, and signed assertion validation).',
-  },
-  {
-    question: 'How do you handle security incidents?',
-    answer:
-      'We follow a documented incident response process and notify customers in accordance with contract terms and applicable law. We provide impact assessments, mitigation actions, and post-incident learnings where appropriate.',
-  },
-  {
-    question: 'What is your uptime SLA?',
-    answer:
-      'Enterprise agreements can include documented availability expectations, incident handling, maintenance communications, and escalation paths in the executed MSA/SOW. Foundation and Growth operate with published support expectations under a best-effort model.',
+      'The Trust Packet: a security overview, architecture and data-handling description, framework control mappings, policy summaries, and the DPA. It is written so your reviewers can start from current material rather than a blank questionnaire.',
   },
   {
     question: 'How long does security review take?',
     answer:
-      'Security review timelines depend on the scope of your questionnaire, legal process, and requested artifacts. We provide a pre-built Trust Packet with security overview, compliance mappings, and policy summaries to help teams start from current materials.',
+      'It depends on the scope of your questionnaire, your legal process, and the artifacts you request. Sending your questionnaire early, with the sections you consider blocking marked, is the fastest path.',
+  },
+  {
+    question: 'Can we sign a DPA?',
+    answer:
+      'Yes. A standard Data Processing Agreement covering GDPR and Australian Privacy Act requirements is published in the Trust Center, and a countersigned copy can be requested for your records.',
+  },
+  {
+    question: 'Who do we talk to, and what happens next?',
+    answer:
+      'Requests go through the contact form with the security review option selected. You get a direct reply, the Trust Packet, and a scoping conversation about frameworks, sites, and the teams involved before anything commercial is proposed.',
   },
   {
     question: 'What can teams usually stand up during early evaluation?',
     answer:
-      'During early evaluation, teams can usually enable a primary framework, map existing evidence to controls, generate a posture snapshot, and review export-ready evidence packages. The exact pace depends on implementation scope and the quality of source material.',
+      'Enable a primary framework, map existing evidence to controls, generate a posture snapshot, and review export-ready evidence packages. The pace depends on implementation scope and the quality of the source material you bring.',
   },
 ];
+
+const technicalAnswers = [
+  {
+    href: '/security-review/faq',
+    label: 'Security Review FAQ',
+    detail:
+      'SSO and SCIM, MFA, tenant isolation, encryption, SOC 2 position, hosting, backups, exports, and the capabilities we do not have.',
+  },
+  {
+    href: '/trust/data-handling',
+    label: 'Data handling',
+    detail: 'Storage, encryption, isolation, audit integrity, retention, and deletion.',
+  },
+  {
+    href: '/trust/sla',
+    label: 'Service levels',
+    detail: 'Availability expectations and support commitments by plan.',
+  },
+  {
+    href: '/trust/incident-response',
+    label: 'Incident response',
+    detail: 'Detection, containment, severity classification, and disclosure.',
+  },
+] as const;
 
 export default function ProcurementFAQPage() {
   return (
     <MarketingPageShell>
       <CompactHero
         title="Procurement"
-        description="Common questions from procurement, security, and legal teams evaluating FormaOS."
+        description="How a review runs with us: what you receive, who you talk to, and what happens next. Technical answers live in the Security Review FAQ."
         topColor="slate"
         bottomColor="slate"
         visualContent={
@@ -95,6 +97,33 @@ export default function ProcurementFAQPage() {
         }
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
+        <section className="mb-10 rounded-2xl border border-border bg-card p-6">
+          <h2 className="text-lg font-semibold text-foreground">
+            Security and technical questions are answered in one place
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+            This page covers how a review runs with us. Every technical answer
+            lives in the documents below, so procurement and security teams are
+            quoting the same wording.
+          </p>
+          <ul className="mt-5 space-y-3">
+            {technicalAnswers.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  {item.label}
+                </Link>
+                <p className="text-sm text-muted-foreground">{item.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <h2 className="mb-4 text-lg font-semibold text-foreground">
+          How the review process works
+        </h2>
         <div className="space-y-6">
           {faqs.map((faq, i) => (
             <details

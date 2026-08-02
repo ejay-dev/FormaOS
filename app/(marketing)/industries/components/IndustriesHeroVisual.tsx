@@ -30,13 +30,23 @@ const SECTORS: Sector[] = [
     name: 'Government',
     angle: 90, // bottom
     iconColor: 'rgba(113,113,122,0.8)',
-    iconPaths: ['M3 21h18', 'M5 21V7l7-4 7 4v14', 'M9 21v-6h6v6', 'M9 10h1', 'M14 10h1'],
+    iconPaths: [
+      'M3 21h18',
+      'M5 21V7l7-4 7 4v14',
+      'M9 21v-6h6v6',
+      'M9 10h1',
+      'M14 10h1',
+    ],
   },
   {
     name: 'Education',
     angle: 180, // left
     iconColor: 'rgba(100,116,139,0.8)',
-    iconPaths: ['M22 10l-10-5L2 10l10 5 10-5z', 'M6 12v5c0 0 2.5 3 6 3s6-3 6-3v-5', 'M22 10v6'],
+    iconPaths: [
+      'M22 10l-10-5L2 10l10 5 10-5z',
+      'M6 12v5c0 0 2.5 3 6 3s6-3 6-3v-5',
+      'M22 10v6',
+    ],
   },
 ];
 
@@ -46,8 +56,8 @@ const TILE_SIZE = 130; // px
 /**
  * IndustriesHeroVisual
  * ────────────────────
- * Four sector glass tiles arranged on a flat ring. Static, restrained , 
- * no auto-rotation, cursor tilt, or pulsing glow.
+ * Four sector tiles arranged on a flat ring. Static: no auto-rotation,
+ * cursor tilt, or pulsing glow.
  */
 function IndustriesHeroVisualInner() {
   return (
@@ -74,7 +84,7 @@ function IndustriesHeroVisualInner() {
           return (
             <div
               key={sector.name}
-              className="absolute rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] flex flex-col items-center justify-center gap-2"
+              className="absolute rounded-2xl border border-white/[0.10] bg-white/[0.04] flex flex-col items-center justify-center gap-2"
               style={{
                 width: TILE_SIZE,
                 height: TILE_SIZE,
@@ -83,7 +93,7 @@ function IndustriesHeroVisualInner() {
               }}
             >
               <SectorIcon sector={sector} />
-              <span className="text-[10px] font-medium text-white/55 tracking-wider uppercase">
+              <span className="text-[11px] font-medium text-white/60">
                 {sector.name}
               </span>
             </div>

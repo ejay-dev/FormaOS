@@ -36,6 +36,12 @@ import {
   type CareSupport,
 } from '@/lib/care-plans/normalize';
 import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
+import { ConfirmActionButton } from '@/components/care/confirm-action-button';
+import {
+  CARE_PLAN_STATUS_CLASSES,
+  CARE_PLAN_STATUS_LABELS,
+  normaliseCarePlanStatus,
+} from '@/components/care/care-plan-status';
 
 export const metadata = { title: 'Care Plan Detail | FormaOS' };
 export const dynamic = 'force-dynamic';
@@ -189,14 +195,7 @@ export default async function CarePlanDetailPage({
         .limit(5)
     : { data: [] };
 
-  const statusColors: Record<string, string> = {
-    draft: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-    active: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-    review:
-      'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-    completed: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-    archived: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
-  };
+  const planStatus = normaliseCarePlanStatus(plan.status);
 
   const addGoal = addGoalAction.bind(null, id);
   const setGoalStatus = updateGoalStatusAction.bind(null, id);
@@ -227,13 +226,13 @@ export default async function CarePlanDetailPage({
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold" data-testid="care-plan-title">
+            <h1 className="page-title" data-testid="care-plan-title">
               {plan.title ?? 'Care Plan'}
             </h1>
             <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[plan.status] ?? statusColors.draft}`}
+              className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${CARE_PLAN_STATUS_CLASSES[planStatus]}`}
             >
-              {plan.status}
+              {CARE_PLAN_STATUS_LABELS[planStatus]}
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -260,14 +259,14 @@ export default async function CarePlanDetailPage({
         <span className="text-sm font-medium text-muted-foreground">
           Transition:
         </span>
-        {plan.status === 'draft' && (
+        {planStatus === 'draft' && (
           <StatusButton label="Activate" target="active" action={transitionPlan} />
         )}
-        {plan.status === 'active' && (
+        {planStatus === 'active' && (
           <>
             <StatusButton
-              label="Mark for Review"
-              target="review"
+              label="Mark for review"
+              target="under_review"
               action={transitionPlan}
             />
             <StatusButton
@@ -277,7 +276,7 @@ export default async function CarePlanDetailPage({
             />
           </>
         )}
-        {(plan.status === 'review' || plan.status === 'under_review') && (
+        {planStatus === 'under_review' && (
           <>
             <StatusButton
               label="Re-activate"
@@ -291,7 +290,7 @@ export default async function CarePlanDetailPage({
             />
           </>
         )}
-        {(plan.status === 'active' || plan.status === 'completed') && (
+        {(planStatus === 'active' || planStatus === 'completed') && (
           <StatusButton
             label="Archive"
             target="archived"
@@ -400,7 +399,7 @@ export default async function CarePlanDetailPage({
 
                     <div className="mt-2 h-1.5 w-full rounded-full bg-muted overflow-hidden">
                       <div
-                        className={`h-full rounded-full ${goal.status === 'achieved' ? 'bg-green-500' : 'bg-primary'}`}
+                        className={`h-full rounded-full ${goal.status === 'achieved' ? 'bg-success' : 'bg-primary'}`}
                         style={{ width: `${goal.progress_percentage}%` }}
                       />
                     </div>
@@ -428,20 +427,17 @@ export default async function CarePlanDetailPage({
                           Update
                         </button>
                       </form>
-                      <form action={removeGoal}>
-                        <input
-                          type="hidden"
-                          name="goal_id"
-                          value={goal.id}
-                        />
-                        <button
-                          type="submit"
-                          className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1 rounded-md border border-red-200 px-2 py-1 text-xs text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
-                          aria-label={`Delete goal ${goal.title}`}
-                        >
-                          <Trash2 className="h-3 w-3" /> Delete
-                        </button>
-                      </form>
+                      <ConfirmActionButton
+                        action={removeGoal}
+                        fields={{ goal_id: goal.id }}
+                        label="Delete"
+                        ariaLabel={`Delete goal ${goal.title}`}
+                        icon={<Trash2 className="h-3 w-3" />}
+                        className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1 rounded-md border border-destructive/30 px-2 py-1 text-xs text-destructive hover:bg-destructive/10"
+                        title="Delete this goal?"
+                        description={`"${goal.title}" and its linked supports will be removed from the plan. This cannot be undone.`}
+                        confirmLabel="Delete goal"
+                      />
                     </div>
 
                     {/* Edit goal (title, description, target date) */}
@@ -561,19 +557,17 @@ export default async function CarePlanDetailPage({
                                   Update
                                 </button>
                               </form>
-                              <form action={removeSupport}>
-                                <input
-                                  type="hidden"
-                                  name="support_id"
-                                  value={support.id}
-                                />
-                                <button
-                                  type="submit"
-                                  className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1 rounded-md border border-red-200 px-2 py-0.5 text-xs text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
-                                >
-                                  <Trash2 className="h-3 w-3" /> Remove
-                                </button>
-                              </form>
+                              <ConfirmActionButton
+                                action={removeSupport}
+                                fields={{ support_id: support.id }}
+                                label="Remove"
+                                ariaLabel={`Remove support ${support.description}`}
+                                icon={<Trash2 className="h-3 w-3" />}
+                                className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1 rounded-md border border-destructive/30 px-2 py-0.5 text-xs text-destructive hover:bg-destructive/10"
+                                title="Remove this support?"
+                                description={`"${support.description}" will be removed from this goal. This cannot be undone.`}
+                                confirmLabel="Remove support"
+                              />
                             </div>
                           </div>
                         ))}
@@ -860,14 +854,12 @@ function GoalStatusBadge({ status }: { status: GoalStatus }) {
     },
     in_progress: {
       label: 'In progress',
-      className:
-        'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
+      className: 'bg-info/10 text-info',
       Icon: Clock3,
     },
     achieved: {
       label: 'Achieved',
-      className:
-        'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
+      className: 'bg-success/10 text-success',
       Icon: CheckCircle2,
     },
   };
@@ -889,13 +881,11 @@ function SupportStatusBadge({ status }: { status: SupportStatus }) {
     },
     in_progress: {
       label: 'In progress',
-      className:
-        'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
+      className: 'bg-info/10 text-info',
     },
     completed: {
       label: 'Completed',
-      className:
-        'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
+      className: 'bg-success/10 text-success',
     },
   };
   const { label, className } = config[status];
@@ -926,7 +916,7 @@ function StatusButton({
         type="submit"
         className={`rounded-md px-3 py-1 text-xs font-medium ${
           variant === 'danger'
-            ? 'border border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950'
+            ? 'border border-destructive/30 text-destructive hover:bg-destructive/10'
             : 'border border-border hover:bg-muted'
         }`}
       >

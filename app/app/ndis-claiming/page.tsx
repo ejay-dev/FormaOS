@@ -8,22 +8,14 @@ import {
   RecordList,
   EmptyRecordState,
 } from '@/components/mobile/record-card';
-import {
-  DollarSign,
-  FileCheck,
-  Clock,
-  XCircle,
-  Download,
-  RefreshCw,
-  CheckCircle2,
-  Send,
-} from 'lucide-react';
+import { Download, RefreshCw, CheckCircle2, Send } from 'lucide-react';
 import {
   markDraftsReady,
   markSubmitted,
   markPaid,
   rejectClaim,
 } from './actions';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 const NOTICE_MESSAGES: Record<string, string> = {
   marked_ready: 'Validated drafts and moved the eligible ones to Ready.',
@@ -121,25 +113,77 @@ export default async function NdisClaimingPage({
   const hasDrafts = items.some((i) => i.status === 'draft');
 
   const statusColors: Record<string, string> = {
-    draft: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-    ready: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-    submitted:
-      'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-    paid: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
-    rejected: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+    draft: 'bg-muted text-muted-foreground',
+    ready: 'bg-info/10 text-info',
+    submitted: 'bg-warning/10 text-warning',
+    paid: 'bg-success/10 text-success',
+    rejected: 'bg-destructive/10 text-destructive',
   };
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Draft', value: `$${totalDraft.toFixed(2)}`, sub: 'not validated' },
+    {
+      label: 'Ready',
+      value: `$${totalReady.toFixed(2)}`,
+      sub: totalReady > 0 ? 'ready to export' : 'nothing ready',
+    },
+    {
+      label: 'Submitted',
+      value: `$${totalSubmitted.toFixed(2)}`,
+      sub: 'awaiting payment',
+      tone: totalSubmitted > 0 ? 'warning' : 'neutral',
+    },
+    { label: 'Paid', value: `$${totalPaid.toFixed(2)}`, tone: 'success' },
+    {
+      label: 'Rejected',
+      value: `$${totalRejected.toFixed(2)}`,
+      sub: totalRejected > 0 ? 'needs rework' : 'none rejected',
+      tone: totalRejected > 0 ? 'danger' : 'neutral',
+    },
+  ];
+
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-6">
+    <div className="flex flex-col h-full">
+      <PageHero
+        eyebrow="Care Operations · NDIS claiming"
+        title="NDIS Claiming"
+        subtitle="Generate claims from completed visits, validate, and export for the NDIS portal."
+        metrics={heroMetrics}
+        actions={
+          <>
+            <form action="/api/ndis-claiming/generate" method="POST">
+              <button className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50">
+                <RefreshCw className="h-3.5 w-3.5" /> Generate from visits
+              </button>
+            </form>
+            {hasDrafts && (
+              <form action={markDraftsReady}>
+                <button className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Validate and mark
+                  ready
+                </button>
+              </form>
+            )}
+            <Link
+              href="/api/ndis-claiming/export"
+              className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+            >
+              <Download className="h-3.5 w-3.5" /> Export ready claims
+            </Link>
+          </>
+        }
+      />
+
+      <div className="page-content space-y-6">
       {(generatedCount > 0 || failedCount > 0) && (
-        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
+        <div className="rounded-lg border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
           Generated {generatedCount} claim item{generatedCount === 1 ? '' : 's'}
           {failedCount > 0 ? `, ${failedCount} failed` : ''}.
         </div>
       )}
 
       {noticeCode && (
-        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
+        <div className="rounded-lg border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
           {NOTICE_MESSAGES[noticeCode] ?? 'Done.'}
           {noticeCode === 'marked_ready' && noticeInvalid > 0
             ? ` ${noticeInvalid} item${noticeInvalid === 1 ? '' : 's'} failed validation and stayed in Draft.`
@@ -148,7 +192,7 @@ export default async function NdisClaimingPage({
       )}
 
       {errorCode && (
-        <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300">
+        <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {ERROR_MESSAGES[errorCode] ??
             'The NDIS claiming action could not be completed. Please try again.'}
           {errorCode === 'validation_failed' && exportInvalid > 0
@@ -156,70 +200,6 @@ export default async function NdisClaimingPage({
             : ''}
         </div>
       )}
-
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">NDIS Claiming</h1>
-          <p className="text-sm text-muted-foreground">
-            Generate claims from completed visits, validate, and export for the
-            NDIS portal.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <form action="/api/ndis-claiming/generate" method="POST">
-            <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted">
-              <RefreshCw className="h-4 w-4" /> Generate from Visits
-            </button>
-          </form>
-          {hasDrafts && (
-            <form action={markDraftsReady}>
-              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted">
-                <CheckCircle2 className="h-4 w-4" /> Validate &amp; Mark Ready
-              </button>
-            </form>
-          )}
-          <Link
-            href="/api/ndis-claiming/export"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground hover:bg-primary/90"
-          >
-            <Download className="h-4 w-4" /> Export Ready Claims
-          </Link>
-        </div>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-        <SummaryCard
-          icon={Clock}
-          label="Draft"
-          amount={totalDraft}
-          color="text-gray-500"
-        />
-        <SummaryCard
-          icon={FileCheck}
-          label="Ready"
-          amount={totalReady}
-          color="text-blue-500"
-        />
-        <SummaryCard
-          icon={DollarSign}
-          label="Submitted"
-          amount={totalSubmitted}
-          color="text-yellow-500"
-        />
-        <SummaryCard
-          icon={DollarSign}
-          label="Paid"
-          amount={totalPaid}
-          color="text-green-500"
-        />
-        <SummaryCard
-          icon={XCircle}
-          label="Rejected"
-          amount={totalRejected}
-          color="text-red-500"
-        />
-      </div>
 
       {/* Line Items — mobile card list (md:hidden) */}
       <section className="md:hidden space-y-3">
@@ -369,6 +349,7 @@ export default async function NdisClaimingPage({
           </table>
         </div>
       </div>
+      </div>
     </div>
   );
 }
@@ -414,7 +395,7 @@ function RowActions({
               aria-label="Payment reference"
               className="w-28 rounded border border-border bg-background px-2 py-1 text-xs"
             />
-            <button className="rounded bg-green-600 px-2 py-1 text-xs font-medium text-white hover:bg-green-700">
+            <button className="rounded border border-success/40 bg-success/10 px-2 py-1 text-xs font-medium text-success hover:bg-success/15">
               Paid
             </button>
           </form>
@@ -427,7 +408,7 @@ function RowActions({
               aria-label="Rejection reason"
               className="w-28 rounded border border-border bg-background px-2 py-1 text-xs"
             />
-            <button className="rounded border border-rose-400 px-2 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950">
+            <button className="rounded border border-destructive/40 px-2 py-1 text-xs font-medium text-destructive hover:bg-destructive/10">
               Reject
             </button>
           </form>
@@ -442,7 +423,7 @@ function RowActions({
     case 'rejected':
       return (
         <span
-          className="text-xs text-rose-600"
+          className="text-xs text-destructive"
           title={item.rejection_reason ?? undefined}
         >
           {item.rejection_reason
@@ -458,24 +439,4 @@ function RowActions({
         </span>
       );
   }
-}
-
-function SummaryCard({
-  icon: Icon,
-  label,
-  amount,
-  color,
-}: {
-  icon: typeof DollarSign;
-  label: string;
-  amount: number;
-  color: string;
-}) {
-  return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <Icon className={`h-5 w-5 ${color}`} />
-      <p className="mt-2 text-xl font-semibold">${amount.toFixed(2)}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
-    </div>
-  );
 }

@@ -40,9 +40,15 @@ const TRUST_SUBPAGES = [
   },
   {
     href: '/trust/procurement',
-    title: 'Procurement FAQ',
+    title: 'Procurement',
     description:
-      'Architecture, hosting, identity, encryption, and audit posture for buyers.',
+      'How a review runs: what you receive, how long it takes, and what happens next.',
+  },
+  {
+    href: '/security-review/faq',
+    title: 'Security Review FAQ',
+    description:
+      'Identity, encryption, isolation, hosting, and the capabilities we do not have.',
   },
   {
     href: '/trust/packet',
@@ -73,17 +79,20 @@ export function TrustSubpagesIndex() {
           </p>
         </div>
 
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Plain document list rather than another card grid: this is an
+            index, and a reviewer scanning for one filename reads a list
+            faster than eight tiles. */}
+        <ul className="grid grid-cols-1 gap-x-12 border-t border-white/[0.08] sm:grid-cols-2">
           {TRUST_SUBPAGES.map((item) => (
-            <li key={item.href}>
+            <li key={item.href} className="border-b border-white/[0.08]">
               <Link
                 href={item.href}
-                className="block h-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                className="group block py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               >
-                <h3 className="text-base font-semibold text-white">
+                <h3 className="text-base font-semibold text-white group-hover:underline underline-offset-4">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+                <p className="mt-1 text-sm text-slate-400 leading-relaxed">
                   {item.description}
                 </p>
               </Link>

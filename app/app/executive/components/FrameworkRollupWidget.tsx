@@ -87,7 +87,7 @@ function FrameworkCard({ framework }: { framework: FrameworkRollupItem }) {
     <div className="rounded-xl border border-edge-2 bg-surface-1 p-4 hover:bg-surface-2 transition-colors">
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+          <div className="text-sm font-medium text-muted-foreground">
             {framework.code}
           </div>
           <div className="text-sm text-foreground/70 mt-0.5 line-clamp-1">{framework.title}</div>

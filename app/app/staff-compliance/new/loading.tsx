@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="New" cards={2} tableRows={4} />;
+export default function AppStaffComplianceNewLoading() {
+  return <PageSkeleton title="Add credential" cards={2} tableRows={0} />;
 }

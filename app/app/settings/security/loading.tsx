@@ -2,14 +2,19 @@ import { Skeleton, SkeletonCard } from '@/components/ui/skeleton';
 
 export default function SecuritySettingsLoading() {
   return (
-    <div className="space-y-8 pb-24 max-w-5xl animate-in fade-in duration-300">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Loading security settings"
+      className="space-y-8 pb-24 max-w-5xl animate-in fade-in duration-300"
+    >
       <header className="flex flex-col gap-3">
         <Skeleton className="h-4 w-28" />
         <div className="flex items-start gap-4">
           <Skeleton className="h-10 w-10 rounded-xl" />
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight text-foreground/70">
-              Security Controls
+              Security controls
             </h1>
             <Skeleton className="h-4 w-80" />
           </div>
@@ -31,6 +36,8 @@ export default function SecuritySettingsLoading() {
         <Skeleton className="h-5 w-48" />
         <Skeleton className="h-32 w-full rounded-2xl" />
       </div>
+
+      <span className="sr-only">Loading content, please wait.</span>
     </div>
   );
 }

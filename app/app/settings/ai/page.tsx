@@ -1,16 +1,40 @@
 import { redirect } from 'next/navigation';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { Cpu, RefreshCw, ToggleLeft, Database } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { AiUsageDashboard } from '@/components/ai-assistant/AiUsageDashboard';
+import {
+  SettingsPageHeader,
+  SettingsPageShell,
+} from '@/components/settings/settings-page-header';
+import { entitlementName } from '@/lib/billing/entitlement-labels';
 import { isAIConfigured } from '@/lib/ai/streaming';
 
-export const metadata = { title: 'AI Settings | FormaOS' };
+export const metadata = { title: 'AI assistant | Settings | FormaOS' };
+
+const CAPABILITIES = [
+  {
+    label: 'Assistant',
+    description: 'Ask questions about your controls, policies, and evidence.',
+  },
+  {
+    label: 'Evidence analysis',
+    description: 'Summarises uploaded evidence against the control it supports.',
+  },
+  {
+    label: 'Gap analysis',
+    description: 'Points out controls with thin or missing coverage.',
+  },
+];
 
 export default async function AiSettingsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ error?: string; reindexed?: string; reindexErrors?: string }>;
+  searchParams?: Promise<{
+    error?: string;
+    reindexed?: string;
+    reindexErrors?: string;
+  }>;
 }) {
   const state = await fetchSystemState();
   if (!state) redirect('/auth/signin');
@@ -27,8 +51,8 @@ export default async function AiSettingsPage({
   const aiEntitled = entitlement?.enabled === true;
   const canManageAi = state.role === 'owner' || state.role === 'admin';
   const reindexDisabled = !aiConfigured || !aiEntitled || !canManageAi;
+  const aiAvailable = aiConfigured && aiEntitled;
 
-  // Fetch index stats
   const { data: indexStats } = await db
     .from('ai_index_status')
     .select('source_type, status')
@@ -46,75 +70,87 @@ export default async function AiSettingsPage({
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 p-6">
-      <div>
-        <h1 className="text-2xl font-bold">AI Settings</h1>
-        <p className="text-muted-foreground">
-          Manage AI features, usage, and document indexing.
-        </p>
-      </div>
+    <SettingsPageShell>
+      <SettingsPageHeader
+        title="AI assistant"
+        description="What the assistant can do in this workspace, and which documents it has indexed."
+      />
 
       {notices.error || notices.reindexed ? (
         <div
-          className={`rounded-lg border px-4 py-3 text-sm ${
+          className={`rounded-md border px-4 py-3 text-sm ${
             notices.error
               ? 'border-destructive/40 bg-destructive/10 text-destructive'
-              : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+              : 'border-success/30 bg-success/10 text-success'
           }`}
         >
           {notices.error
-            ? notices.error.replaceAll('_', ' ')
-            : `Reindexed ${notices.reindexed} documents with ${notices.reindexErrors ?? 0} errors.`}
+            ? 'Reindexing could not be started. Try again in a few minutes.'
+            : `Reindexed ${notices.reindexed} document${notices.reindexed === '1' ? '' : 's'}, ${notices.reindexErrors ?? 0} failed.`}
         </div>
       ) : null}
 
-      {!aiConfigured || !aiEntitled ? (
-        <section className="rounded-lg border border-amber-400/30 bg-amber-500/10 p-4 text-sm text-amber-200">
+      {!aiAvailable ? (
+        <section className="rounded-md border border-warning/30 bg-warning/10 p-4 text-sm text-warning">
           {!aiConfigured
-            ? 'AI runtime is not configured. Add OPENAI_API_KEY before enabling assistant features.'
-            : 'AI assistant is disabled for this workspace plan.'}
+            ? 'AI features are not set up for this workspace yet. Contact support and we will switch them on.'
+            : `${entitlementName('ai_assistant')} is not included in your current plan.`}
         </section>
       ) : null}
 
-      {/* Usage Dashboard */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Usage Overview</h2>
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-foreground">
+          What the assistant can do
+        </h2>
+        <div className="divide-y divide-border rounded-lg border border-border bg-card">
+          {CAPABILITIES.map((capability) => (
+            <div
+              key={capability.label}
+              className="flex items-start justify-between gap-4 px-4 py-3"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-foreground">
+                  {capability.label}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {capability.description}
+                </p>
+              </div>
+              <span
+                className={`shrink-0 text-sm ${
+                  aiAvailable ? 'text-success' : 'text-muted-foreground'
+                }`}
+              >
+                {aiAvailable ? 'Available' : 'Not available'}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-foreground">Usage</h2>
         <AiUsageDashboard />
       </section>
 
-      {/* Indexing Status */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Document Indexing</h2>
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-foreground">
+          Document indexing
+        </h2>
         <div className="grid gap-4 sm:grid-cols-4">
+          <IndexStatCard label="Documents" value={totalCount} />
+          <IndexStatCard label="Indexed" value={indexedCount} />
+          <IndexStatCard label="Pending" value={pendingCount} />
           <IndexStatCard
-            icon={Database}
-            label="Total Documents"
-            value={totalCount}
-          />
-          <IndexStatCard
-            icon={Cpu}
-            label="Indexed"
-            value={indexedCount}
-            color="text-green-500"
-          />
-          <IndexStatCard
-            icon={RefreshCw}
-            label="Pending"
-            value={pendingCount}
-            color="text-yellow-500"
-          />
-          <IndexStatCard
-            icon={ToggleLeft}
             label="Failed"
             value={failedCount}
-            color="text-red-500"
+            tone={failedCount > 0 ? 'destructive' : undefined}
           />
         </div>
 
-        {/* Per-type breakdown */}
         <div className="rounded-lg border border-border bg-card">
           <div className="border-b border-border px-4 py-3">
-            <h3 className="text-sm font-medium">Index by Type</h3>
+            <h3 className="text-sm font-medium">Indexed by type</h3>
           </div>
           <div className="divide-y divide-border">
             {Object.entries(typeCounts).map(([type, count]) => (
@@ -138,7 +174,6 @@ export default async function AiSettingsPage({
           </div>
         </div>
 
-        {/* Reindex Button */}
         <form action="/api/v1/ai/reindex" method="POST">
           <button
             type="submit"
@@ -146,80 +181,33 @@ export default async function AiSettingsPage({
             className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             <RefreshCw className="h-4 w-4" />
-            Reindex All Documents
+            Reindex all documents
           </button>
         </form>
       </section>
-
-      {/* AI Features Toggle */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Features</h2>
-        <div className="rounded-lg border border-border bg-card divide-y divide-border">
-          <FeatureStatus
-            label="AI Assistant"
-            description="Enable the AI compliance assistant for your organization."
-            enabled={aiConfigured && aiEntitled}
-          />
-          <FeatureStatus
-            label="Auto Evidence Analysis"
-            description="Available when AI is configured and the workspace has AI access."
-            enabled={aiConfigured && aiEntitled}
-          />
-          <FeatureStatus
-            label="AI Gap Analysis"
-            description="AI-powered compliance gap identification and recommendations."
-            enabled={aiConfigured && aiEntitled}
-          />
-        </div>
-      </section>
-    </div>
+    </SettingsPageShell>
   );
 }
 
 function IndexStatCard({
-  icon: Icon,
   label,
   value,
-  color,
+  tone,
 }: {
-  icon: typeof Database;
   label: string;
   value: number;
-  color?: string;
+  tone?: 'destructive';
 }) {
   return (
     <div className="rounded-lg border border-border bg-card p-4">
-      <Icon className={`h-5 w-5 ${color ?? 'text-muted-foreground'}`} />
-      <p className="mt-2 text-2xl font-semibold">{value}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
-    </div>
-  );
-}
-
-function FeatureStatus({
-  label,
-  description,
-  enabled,
-}: {
-  label: string;
-  description: string;
-  enabled: boolean;
-}) {
-  return (
-    <div className="flex items-center justify-between px-4 py-3">
-      <div>
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </div>
-      <span
-        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-          enabled
-            ? 'bg-emerald-500/10 text-emerald-400'
-            : 'bg-muted text-muted-foreground'
+      <p
+        className={`text-2xl font-semibold ${
+          tone === 'destructive' ? 'text-destructive' : 'text-foreground'
         }`}
       >
-        {enabled ? 'Enabled' : 'Unavailable'}
-      </span>
+        {value}
+      </p>
+      <p className="mt-1 text-sm text-muted-foreground">{label}</p>
     </div>
   );
 }

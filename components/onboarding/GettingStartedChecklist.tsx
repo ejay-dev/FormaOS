@@ -186,7 +186,7 @@ export function GettingStartedChecklist({
             {/* Deliberately "milestones", not "getting started" — the first-5
                 guided actions are StartHereCard's job; this list owns the
                 longer activation arc. */}
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <p className="text-xs font-medium text-muted-foreground">
               {industry ? 'Industry Onboarding' : 'Activation'}
             </p>
             <h3 className="text-lg font-semibold text-foreground">

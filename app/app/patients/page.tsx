@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Users, AlertTriangle, Plus } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { SubmitButton } from '@/components/ui/submit-button';
+import { severityLabel } from '@/components/care/severity-badge';
 
 type PatientRow = {
   id: string;
@@ -45,9 +46,7 @@ export default async function PatientsPage() {
     <div className="space-y-8 pb-12">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-            Patients & Clients
-          </h1>
+          <h1 className="page-title text-foreground">Patients &amp; clients</h1>
           <p className="text-sm text-muted-foreground">
             Track care status, risks, and documentation.
           </p>
@@ -107,8 +106,10 @@ export default async function PatientsPage() {
                     </span>
                   ) : null}
                 </div>
-                <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                  {patient.care_status} • {patient.risk_level}
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="capitalize">{patient.care_status}</span>
+                  <span aria-hidden>·</span>
+                  <span>{severityLabel(patient.risk_level)} risk</span>
                 </div>
               </Link>
             ))

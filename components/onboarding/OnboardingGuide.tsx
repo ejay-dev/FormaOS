@@ -70,7 +70,7 @@ export function OnboardingGuide() {
             <Compass className="h-4 w-4 text-primary" aria-hidden />
           </div>
           <div className="flex-1">
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+            <p className="text-xs font-medium text-primary">
               Onboarding in progress
             </p>
             <p className="mt-1 text-sm font-medium text-foreground">

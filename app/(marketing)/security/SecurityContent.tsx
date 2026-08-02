@@ -155,21 +155,15 @@ function LightCard({
   );
 }
 
-/* ─── Restrained section header, plain centered label, no pill / icon ─── */
 function SectionLabelHeader({
-  label,
   title,
   subtitle,
 }: {
-  label: string;
   title: React.ReactNode;
   subtitle?: string;
 }) {
   return (
     <div className="mb-12 lg:mb-16 flex flex-col items-center text-center">
-      <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-        {label}
-      </p>
       <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight max-w-4xl leading-[1.1]">
         {title}
       </h2>
@@ -182,24 +176,16 @@ function SectionLabelHeader({
   );
 }
 
-/* ─── Editorial header variant, left-aligned hairline + label rule ─── */
+/* ─── Left-aligned editorial header ─── */
 function SectionRuleHeader({
-  label,
   title,
   subtitle,
 }: {
-  label: string;
   title: React.ReactNode;
   subtitle?: string;
 }) {
   return (
     <div className="mb-12 lg:mb-16 max-w-3xl">
-      <div className="mb-4 flex items-center gap-3">
-        <span className="h-px w-8 bg-white/25" />
-        <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-          {label}
-        </span>
-      </div>
       <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight leading-[1.1]">
         {title}
       </h2>
@@ -217,7 +203,6 @@ export function SecuritySafeguards() {
     <LightSection className="py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         <SectionRuleHeader
-          label="Security Safeguards"
           title={
             <>
               Built for organizations
@@ -261,7 +246,6 @@ export function SecurityArchitectureLayers() {
     <LightSection className="py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         <SectionLabelHeader
-          label="Security Architecture"
           title={
             <>
               Defense in depth
@@ -306,7 +290,6 @@ export function SecurityEvidenceChain() {
     <LightSection className="py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
         <SectionRuleHeader
-          label="Evidence Chain"
           title={
             <>
               Every action traced{' '}

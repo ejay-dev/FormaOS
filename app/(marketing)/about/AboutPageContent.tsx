@@ -19,7 +19,6 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import dynamic from 'next/dynamic';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
-import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
@@ -38,40 +37,13 @@ const DemoAuditTrailCard = dynamic(
   { ssr: false },
 );
 
-function AboutHeroGlobeVisual() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 hidden lg:block"
-    >
-      <div className="pointer-events-auto absolute right-[clamp(1.25rem,3vw,4rem)] top-[62%] -translate-y-1/2">
-        <div className="relative h-[560px] w-[560px] xl:h-[700px] xl:w-[700px]">
-          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(148,163,184,0.12)_0%,rgba(148,163,184,0.04)_50%,transparent_74%)]" />
-          <InteractiveGlobe
-            size={700}
-            className="h-full w-full opacity-82"
-            autoRotateSpeed={0.0016}
-            dotColor="rgba(203,213,225, ALPHA)"
-            arcColor="rgba(148,163,184, 0.35)"
-            markerColor="rgba(226,232,240, 0.95)"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
-
+/* No hero badge and no globe: this is a one-person product built in
+   Adelaide for Australian providers, and a rotating world map said the
+   opposite. The founder story carries the page instead. */
 function AboutHero() {
   return (
     <ImmersiveHero
       theme="about"
-      visualContent={<AboutHeroGlobeVisual />}
-      visualInteractive
-      badge={{
-        icon: <Users className="w-4 h-4 text-slate-400" />,
-        text: 'About FormaOS · Building since 2022 · Adelaide, Australia',
-        colorClass: 'slate',
-      }}
       headline={
         <>
           Compliance infrastructure
@@ -79,9 +51,12 @@ function AboutHero() {
           <span className="text-foreground">built for accountability</span>
         </>
       }
-      subheadline="Built for regulated teams where compliance failure has real consequences, and leadership needs more than a spreadsheet to prove control."
-      primaryCta={{ href: '/our-story', label: 'Read Our Story' }}
-      secondaryCta={{ href: '/product', label: 'See How It Works' }}
+      subheadline="Written in Adelaide since 2022, for regulated teams who need more than a spreadsheet to prove they are in control."
+      primaryCta={{
+        href: compliancePlanHref('about_hero'),
+        label: PUBLIC_CTA_LABELS.compliancePlan,
+      }}
+      secondaryCta={{ href: '/product', label: 'See how it works' }}
     />
   );
 }
@@ -91,13 +66,13 @@ const values = [
     icon: Eye,
     title: 'Transparency over promises',
     detail:
-      'We make security review material available early in evaluation. Our architecture, encryption, and operating controls are documented clearly, and any restricted artifacts are handled deliberately rather than oversold in public copy.',
+      'Security review material is available early in evaluation. The architecture, encryption, and operating controls are documented plainly, and anything restricted is handled deliberately rather than oversold in public copy.',
   },
   {
     icon: Layers,
     title: 'Infrastructure over features',
     detail:
-      'We build compliance infrastructure, not a feature checklist. Every capability connects to the operating model: controls link to evidence, evidence links to owners, owners link to audit trails.',
+      'This is compliance infrastructure, not a feature checklist. Every capability connects to the operating model: controls link to evidence, evidence links to owners, owners link to audit trails.',
   },
   {
     icon: Zap,
@@ -109,7 +84,7 @@ const values = [
     icon: Award,
     title: 'Accountability over aspiration',
     detail:
-      'We build for organizations where compliance failure has real consequences, sanctions, registration loss, enforcement actions. Our platform is designed for the teams regulators hold accountable.',
+      'FormaOS is built for organisations where compliance failure has real consequences: sanctions, registration loss, enforcement action. It is designed for the teams regulators hold accountable.',
   },
 ] as const;
 
@@ -168,15 +143,15 @@ export default function AboutPageContent() {
                       <h3 className="text-xl font-bold text-white">
                         Ejaz Hussain
                       </h3>
-                      <p className="mt-1 text-sm text-slate-400">
+                      <p className="mt-1 text-sm text-zinc-400">
                         Founder &amp; Chief Engineer
                       </p>
-                      <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                        Adelaide · Building FormaOS since 2022
+                      <p className="mt-2 text-xs text-zinc-500">
+                        Adelaide · building FormaOS since 2022
                       </p>
                     </div>
 
-                    <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
+                    <div className="space-y-4 text-sm text-zinc-300 leading-relaxed">
                       <p>
                         FormaOS is my first project in compliance
                         infrastructure. I&apos;ve been writing it from Adelaide
@@ -246,10 +221,10 @@ export default function AboutPageContent() {
               className="text-center mb-12"
             >
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                Why FormaOS Exists
+                Why FormaOS exists
               </h2>
-              <p className="text-slate-400 max-w-2xl mx-auto">
-                Regulated organizations face a structural gap: governance
+              <p className="text-zinc-400 max-w-2xl mx-auto">
+                Regulated organisations face a structural gap: governance
                 requirements that grow faster than the tools available to meet
                 them.
               </p>
@@ -262,38 +237,38 @@ export default function AboutPageContent() {
             >
               <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-white/20 transition-all duration-300">
                 <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center mb-4 sm:mb-6">
-                  <Target className="h-6 w-6 text-slate-300" />
+                  <Target className="h-6 w-6 text-zinc-300" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Mission</h3>
-                <p className="text-slate-400 leading-relaxed text-sm">
-                  Deliver operational clarity for regulated industries by
-                  connecting controls, evidence, and accountability in a single
-                  compliance operating system.
+                <h3 className="text-xl font-bold text-white mb-3">The goal</h3>
+                <p className="text-zinc-400 leading-relaxed text-sm">
+                  Operational clarity for regulated industries: controls,
+                  evidence, and accountability connected in one compliance
+                  operating system.
                 </p>
               </div>
 
               <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-white/20 transition-all duration-300">
                 <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center mb-6">
-                  <Lightbulb className="h-6 w-6 text-slate-300" />
+                  <Lightbulb className="h-6 w-6 text-zinc-300" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
                   Why it matters
                 </h3>
-                <p className="text-slate-400 leading-relaxed text-sm">
+                <p className="text-zinc-400 leading-relaxed text-sm">
                   Regulators expect defensible evidence, not just documentation.
                   FormaOS provides the audit trail and proof required to protect
-                  leadership teams and their organizations.
+                  leadership teams and their organisations.
                 </p>
               </div>
 
               <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-white/20 transition-all duration-300">
                 <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center mb-6">
-                  <AlertTriangle className="h-6 w-6 text-slate-300" />
+                  <AlertTriangle className="h-6 w-6 text-zinc-300" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
-                  The problem we solve
+                  The problem it solves
                 </h3>
-                <p className="text-slate-400 leading-relaxed text-sm">
+                <p className="text-zinc-400 leading-relaxed text-sm">
                   Compliance teams are stuck managing obligations across
                   spreadsheets, shared drives, and disconnected tools, with no
                   single source of truth when auditors arrive.
@@ -302,15 +277,15 @@ export default function AboutPageContent() {
 
               <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-white/20 transition-all duration-300">
                 <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center mb-6">
-                  <Shield className="h-6 w-6 text-slate-300" />
+                  <Shield className="h-6 w-6 text-zinc-300" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
-                  Our commitment
+                  The commitment
                 </h3>
-                <p className="text-slate-400 leading-relaxed text-sm">
-                  FormaOS is built for the organizations where compliance
-                  failure has real consequences, clinical, financial,
-                  reputational. We take that accountability seriously.
+                <p className="text-zinc-400 leading-relaxed text-sm">
+                  FormaOS is built for the organisations where compliance
+                  failure has real consequences: clinical, financial,
+                  reputational. That accountability sets the bar for what ships.
                 </p>
               </div>
             </SectionChoreography>
@@ -332,11 +307,11 @@ export default function AboutPageContent() {
               className="text-center mb-12"
             >
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                What We Stand For
+                What this is built on
               </h2>
-              <p className="text-slate-400 max-w-2xl mx-auto">
-                These aren&apos;t aspirational values on a poster. They&apos;re
-                engineering decisions that shape every feature we ship.
+              <p className="text-zinc-400 max-w-2xl mx-auto">
+                These are not aspirational values on a poster. They are the
+                engineering decisions that shape what ships.
               </p>
             </ScrollReveal>
 
@@ -354,13 +329,13 @@ export default function AboutPageContent() {
                   >
                     <div className="flex items-start gap-4">
                       <div className="rounded-lg border border-white/10 bg-white/[0.05] p-2.5 shrink-0">
-                        <Icon className="w-5 h-5 text-slate-300" />
+                        <Icon className="w-5 h-5 text-zinc-300" />
                       </div>
                       <div>
                         <h3 className="text-base font-semibold text-white mb-2">
                           {value.title}
                         </h3>
-                        <p className="text-sm text-slate-400 leading-relaxed">
+                        <p className="text-sm text-zinc-400 leading-relaxed">
                           {value.detail}
                         </p>
                       </div>
@@ -389,7 +364,7 @@ export default function AboutPageContent() {
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
                 What ships today
               </h2>
-              <p className="text-slate-400 max-w-xl mx-auto text-sm">
+              <p className="text-zinc-400 max-w-xl mx-auto text-sm">
                 Counts from the running product, not customer outcomes. There
                 are no deployments to report yet, and every number here can be
                 checked in the product during evaluation.
@@ -434,7 +409,7 @@ export default function AboutPageContent() {
                   <div className="text-sm font-semibold text-white mb-2">
                     {label}
                   </div>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs text-zinc-400 leading-relaxed">
                     {detail}
                   </p>
                 </div>
@@ -458,11 +433,11 @@ export default function AboutPageContent() {
               className="text-center mb-10"
             >
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-                Who We Serve
+                Who it is built for
               </h2>
-              <p className="text-slate-400 max-w-xl mx-auto text-sm">
-                FormaOS is purpose-built for organizations operating in
-                regulated environments where accountability is mandatory, not
+              <p className="text-zinc-400 max-w-xl mx-auto text-sm">
+                FormaOS is built for organisations operating in regulated
+                environments where accountability is mandatory, not
                 aspirational.
               </p>
             </ScrollReveal>
@@ -522,18 +497,16 @@ export default function AboutPageContent() {
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className="rounded-lg border border-white/10 bg-white/[0.05] p-2.5">
-                      <Icon className="w-4 h-4 text-slate-300" />
+                      <Icon className="w-4 h-4 text-zinc-300" />
                     </div>
                     <h3 className="text-sm font-semibold text-white">
                       {label}
                     </h3>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed mb-2">
+                  <p className="text-xs text-zinc-300 leading-relaxed mb-2">
                     {detail}
                   </p>
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
-                    {regulators}
-                  </p>
+                  <p className="text-xs text-zinc-500">{regulators}</p>
                 </div>
               ))}
             </SectionChoreography>
@@ -557,7 +530,7 @@ export default function AboutPageContent() {
               <h3 className="text-xl font-bold text-white mb-2">
                 The audit trail never lies
               </h3>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-zinc-400">
                 Every action timestamped, attributed to a role, and preserved,
                 exactly as regulators expect. Illustrative sample.
               </p>
@@ -627,17 +600,13 @@ export default function AboutPageContent() {
               <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-10">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">
-                      Ready to evaluate?
-                    </div>
                     <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
                       See the compliance operating system in action
                     </h2>
-                    <p className="text-slate-400 leading-relaxed">
-                      We work with regulated operators who need certainty,
-                      defensible evidence, and the operational infrastructure to
-                      prove it. Request a scoped compliance plan and evaluate
-                      FormaOS against your operating requirements.
+                    <p className="text-zinc-400 leading-relaxed">
+                      Request a scoped compliance plan and evaluate FormaOS
+                      against your own operating requirements: your frameworks,
+                      your controls, your evidence.
                     </p>
                   </div>
                   <motion.a

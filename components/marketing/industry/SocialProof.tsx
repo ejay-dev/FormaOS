@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { Building2, Target, Sparkles } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 /**
@@ -26,8 +26,8 @@ export function SocialProof({ metricsBanner, trustCards, regulatoryBodies }: Soc
 
   return (
     <section className="relative py-24 lg:py-32">
-      <div className="absolute inset-0 bg-[#080b14]" />
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+      <div className="absolute inset-0 bg-marketing-bg" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Metrics banner */}
@@ -66,10 +66,10 @@ export function SocialProof({ metricsBanner, trustCards, regulatoryBodies }: Soc
               whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-30px' }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-cyan-500/20 transition-colors"
+              className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-white/[0.14] transition-colors"
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-500/20 bg-cyan-500/10 text-cyan-400">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.04] text-slate-400">
                   <Building2 className="h-4 w-4" />
                 </div>
                 <span className="text-sm font-semibold text-white">{card.persona}</span>
@@ -77,15 +77,14 @@ export function SocialProof({ metricsBanner, trustCards, regulatoryBodies }: Soc
 
               <div className="space-y-3">
                 <div>
-                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-slate-600 mb-1">
-                    <Target className="h-3 w-3" /> What this kind of
-                    organisation needs
+                  <div className="text-[13px] text-slate-500 mb-1">
+                    What this kind of organisation needs
                   </div>
                   <p className="text-sm text-slate-400 leading-relaxed">{card.need}</p>
                 </div>
                 <div>
-                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-cyan-600 mb-1">
-                    <Sparkles className="h-3 w-3" /> What FormaOS delivers
+                  <div className="text-[13px] text-slate-500 mb-1">
+                    What FormaOS delivers
                   </div>
                   <p className="text-sm text-slate-300 leading-relaxed">{card.delivers}</p>
                 </div>
@@ -102,7 +101,7 @@ export function SocialProof({ metricsBanner, trustCards, regulatoryBodies }: Soc
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <p className="text-xs uppercase tracking-wider text-slate-600 mb-6">
+          <p className="text-sm text-slate-500 mb-6">
             Built for frameworks governed by
           </p>
           <div className="flex flex-wrap items-center justify-center gap-8">

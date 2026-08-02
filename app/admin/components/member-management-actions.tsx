@@ -93,12 +93,12 @@ export function MemberManagementActions({ orgId, userId, currentRole }: Props) {
           type="button"
           onClick={() => void removeMember()}
           disabled={loading !== null}
-          className="rounded border border-rose-500/30 px-2 py-1 text-xs text-rose-300 hover:bg-rose-500/10 disabled:opacity-50"
+          className="rounded border border-destructive/20 px-2 py-1 text-xs text-destructive hover:bg-destructive/10 disabled:opacity-50"
         >
           {loading === 'remove' ? 'Removing…' : 'Remove'}
         </button>
       </div>
-      {error ? <p className="text-[11px] text-rose-300">{error}</p> : null}
+      {error ? <p className="text-[11px] text-destructive">{error}</p> : null}
     </div>
   );
 }

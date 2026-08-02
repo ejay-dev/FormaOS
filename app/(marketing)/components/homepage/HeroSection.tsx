@@ -155,7 +155,7 @@ export function HeroSection() {
       <AuroraBackground className="absolute inset-0" />
 
       {/* Vignette layers for text legibility */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/5 via-slate-950/25 to-slate-950/75" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-zinc-950/5 via-zinc-950/25 to-zinc-950/75" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-5%,transparent_55%,rgba(3,7,18,0.65)_100%)]" />
       {/* Side vignette for widescreen depth */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_0%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
@@ -170,13 +170,11 @@ export function HeroSection() {
               ? { duration: duration.slow, delay: 0.12 }
               : { duration: 0 }
           }
-          className="mb-7 flex items-center justify-center gap-4"
+          className="mb-6"
         >
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
+          <p className="text-sm text-zinc-300 sm:text-base">
             {heroCopy.badgeText}
-          </span>
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
+          </p>
         </motion.div>
 
         <motion.h1
@@ -202,7 +200,7 @@ export function HeroSection() {
               ? { duration: duration.slower, delay: 0.36 }
               : { duration: 0 }
           }
-          className="mt-6 max-w-3xl text-base leading-relaxed text-slate-200 sm:text-lg lg:text-xl"
+          className="mt-6 max-w-3xl text-base leading-relaxed text-zinc-200 sm:text-lg lg:text-xl"
         >
           {heroCopy.subheadline}
         </motion.p>
@@ -255,7 +253,7 @@ export function HeroSection() {
               ? { duration: duration.slower, delay: 0.62 }
               : { duration: 0 }
           }
-          className="mt-6 text-sm text-slate-400"
+          className="mt-6 text-sm text-zinc-400"
         >
           Guided assessment &middot; AU-hosted by default &middot; Evidence-backed workflows
         </motion.p>

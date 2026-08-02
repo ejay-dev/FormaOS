@@ -123,7 +123,7 @@ const STATUS_CONFIG: Record<CheckStatus, { icon: typeof CheckCircle2; color: str
 const SEVERITY_STYLES: Record<Severity, string> = {
   critical: 'bg-destructive/20 text-destructive border border-destructive/30',
   high: 'bg-warning/20 text-warning border border-warning/30',
-  medium: 'bg-warning/20 text-warning border border-warning/30',
+  medium: 'bg-warning/10 text-warning border border-warning/20',
   low: 'bg-muted text-muted-foreground border border-border',
   info: 'bg-info/20 text-info border border-info/30',
 };
@@ -205,7 +205,7 @@ function ScopeSelector({
 }) {
   return (
     <div>
-      <span className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+      <span className="block text-xs font-semibold text-muted-foreground mb-3">
         Audit Scope
       </span>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
@@ -360,7 +360,7 @@ function CheckRow({ check }: { check: CheckResult }) {
       >
         <StatusIcon className={`h-4 w-4 flex-shrink-0 ${statusCfg.color}`} />
         <span
-          className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider flex-shrink-0 ${SEVERITY_STYLES[check.severity]}`}
+          className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold flex-shrink-0 ${SEVERITY_STYLES[check.severity]}`}
         >
           {check.severity}
         </span>
@@ -486,7 +486,7 @@ function CategoryBreakdown({ checks }: { checks: CheckResult[] }) {
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+      <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
         <FileSearch className="h-4 w-4" />
         Category Breakdown
       </h3>
@@ -541,7 +541,7 @@ function RecentRuns({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+        <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
           <RefreshCw className="h-4 w-4" />
           Recent Runs
         </h3>

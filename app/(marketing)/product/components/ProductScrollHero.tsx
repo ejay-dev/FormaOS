@@ -58,7 +58,7 @@ function ProductHeroExtras() {
         {COVERAGE.map((item) => (
           <div
             key={item.label}
-            className="rounded-xl border border-white/[0.1] bg-slate-950/55 px-3.5 py-3 text-left"
+            className="rounded-xl border border-white/[0.1] bg-zinc-950/55 px-3.5 py-3 text-left"
           >
             <p className="text-2xl font-semibold leading-none text-white">
               {item.value}
@@ -66,7 +66,7 @@ function ProductHeroExtras() {
             <p className="mt-1.5 text-sm font-semibold text-white">
               {item.label}
             </p>
-            <p className="mt-1 text-[11px] text-slate-400">{item.detail}</p>
+            <p className="mt-1 text-[11px] text-zinc-400">{item.detail}</p>
           </div>
         ))}
       </div>
@@ -80,12 +80,12 @@ function ProductHeroExtras() {
               className="rounded-xl border border-white/[0.09] bg-white/[0.03] px-4 py-3.5 text-left"
             >
               <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.05]">
-                <Icon className="h-4 w-4 text-slate-300" />
+                <Icon className="h-4 w-4 text-zinc-300" />
               </div>
               <p className="text-sm font-semibold text-white">
                 {capability.title}
               </p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-300">
+              <p className="mt-1 text-xs leading-relaxed text-zinc-300">
                 {capability.detail}
               </p>
             </div>
@@ -94,10 +94,10 @@ function ProductHeroExtras() {
       </div>
 
       <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
-        <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">
+        <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] font-semibold text-zinc-300">
           {FRAMEWORKS.map((framework) => (
             <span key={framework} className="inline-flex items-center gap-1">
-              <CheckCircle className="h-3 w-3 text-slate-400" />
+              <CheckCircle className="h-3 w-3 text-zinc-400" />
               {framework}
             </span>
           ))}

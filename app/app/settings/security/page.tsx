@@ -1,11 +1,14 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { MFAEnrollment } from '@/components/settings/mfa-enrollment';
 import { SetPasswordForm } from '@/components/settings/set-password-form';
+import {
+  SettingsPageHeader,
+  SettingsPageShell,
+} from '@/components/settings/settings-page-header';
+import { entitlementName } from '@/lib/billing/entitlement-labels';
 import { roleRequiresMFA } from '@/lib/security/mfa-enforcement';
-import { ShieldCheck } from 'lucide-react';
 import { SsoConfigPanel } from '@/components/settings/sso-config';
 import { DirectorySyncPanel } from '@/components/settings/directory-sync';
 import { getOrgSsoConfig } from '@/lib/sso/org-sso';
@@ -82,37 +85,20 @@ export default async function SecuritySettingsPage() {
   const ssoDisabledReason = !canManageSecurity
     ? 'Only workspace owners and admins can manage SSO.'
     : ssoEntitlement?.enabled !== true
-      ? 'SAML SSO requires the sso_saml Enterprise entitlement.'
+      ? `${entitlementName('sso_saml')} is available on the Enterprise plan. Upgrade to connect your identity provider.`
       : null;
   const directoryDisabledReason = !canManageSecurity
     ? 'Only workspace owners and admins can manage directory sync.'
     : directoryEntitlement?.enabled !== true
-      ? 'Directory sync requires the directory_sync Enterprise entitlement.'
+      ? `${entitlementName('directory_sync')} is available on the Enterprise plan. Upgrade to keep members in step with your directory.`
       : null;
 
   return (
-    <div className="space-y-8 pb-24 max-w-5xl animate-in fade-in duration-700">
-      <header className="flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-300 flex items-center justify-center">
-            <ShieldCheck className="h-5 w-5" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">
-              Security Controls
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Configure enterprise authentication and access protections.
-            </p>
-          </div>
-        </div>
-        <Link
-          href="/app/settings"
-          className="text-xs font-semibold text-muted-foreground hover:text-foreground/90"
-        >
-          ← Back to Settings
-        </Link>
-      </header>
+    <SettingsPageShell>
+      <SettingsPageHeader
+        title="Security"
+        description="Passwords, multi-factor authentication, single sign-on, and directory sync."
+      />
 
       <SetPasswordForm hasPassword={hasPassword} />
 
@@ -148,6 +134,6 @@ export default async function SecuritySettingsPage() {
           disabledReason={directoryDisabledReason}
         />
       ) : null}
-    </div>
+    </SettingsPageShell>
   );
 }

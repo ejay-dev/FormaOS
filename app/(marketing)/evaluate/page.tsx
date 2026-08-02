@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { OutcomeJourneyPage } from '../components/outcome-journey-page';
 import { siteUrl } from '@/lib/seo';
+import { CLAIM_PHRASES } from '@/lib/marketing/claims';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Evaluate Compliance',
@@ -29,19 +30,19 @@ export const metadata: Metadata = {
 export default function EvaluatePage() {
   return (
     <OutcomeJourneyPage
-      badge="Outcome Journey · Evaluate"
-      title="Evaluate Compliance Exposure Before It Becomes Audit Risk"
+      badge="First of four: Evaluate"
+      title="Evaluate compliance exposure before it becomes audit risk"
       description="Map obligations to live controls, identify evidence gaps, and surface readiness blockers before auditors or customers find them."
-      proofLabel="Evaluation signal"
-      proofValue="Earlier gap detection"
-      proofNote="Best for teams mapping obligations, spotting weak controls, and prioritizing remediation before formal review cycles begin."
+      proofLabel="Framework coverage"
+      proofValue={CLAIM_PHRASES.frameworks}
+      proofNote="Best for teams mapping obligations, spotting weak controls, and prioritising remediation before formal review cycles begin."
       workflow={[
         'Map frameworks to active controls',
         'Run evidence completeness scans',
         'Score critical control coverage',
         'Queue remediation priorities',
       ]}
-      pillarsEyebrow="Evaluate In FormaOS"
+      pillarsEyebrow="Evaluate in FormaOS"
       pillarsTitle="Find weak spots before the review starts"
       pillarsDescription="Evaluate gives teams a practical way to connect obligations, control coverage, and evidence health before a customer, auditor, or regulator asks."
       pillars={[
@@ -65,6 +66,13 @@ export default function EvaluatePage() {
             'Spot missing records and remediation priorities before gaps become high-friction review issues.',
           href: '/audit-evidence-management',
           cta: 'Explore evidence readiness',
+        },
+        {
+          title: 'Next: Prove',
+          detail:
+            'These four pages read in order: evaluate, prove, operate, govern. Prove covers what happens once you know where the gaps are.',
+          href: '/prove',
+          cta: 'Read Prove',
         },
       ]}
       trustArtifacts={[

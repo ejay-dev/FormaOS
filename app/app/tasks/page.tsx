@@ -17,9 +17,10 @@ import { EvidenceButton } from '@/components/tasks/evidence-button';
 import { createTask } from '@/app/app/actions/tasks';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { redirect } from 'next/navigation';
-import { normalizeTaskPriority, taskPriorityLabel } from '@/lib/tasks/priority';
+import { normalizeTaskPriority } from '@/lib/tasks/priority';
 import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
 import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
+import { SeverityBadge } from '@/components/care/severity-badge';
 
 type TaskRow = {
   id: string;
@@ -202,13 +203,13 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               >
                 <div className="space-y-1.5">
                   <label
-                    htmlFor="field-216"
+                    htmlFor="task-title"
                     className="text-xs font-medium text-muted-foreground"
                   >
                     Title
                   </label>
                   <input
-                    id="field-216"
+                    id="task-title"
                     name="title"
                     required
                     placeholder="e.g. Verify staff credential renewal"
@@ -218,13 +219,13 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                 <div className="grid gap-3 grid-cols-2">
                   <div className="space-y-1.5">
                     <label
-                      htmlFor="field-215"
+                      htmlFor="task-priority"
                       className="text-xs font-medium text-muted-foreground"
                     >
                       Priority
                     </label>
                     <select
-                      id="field-215"
+                      id="task-priority"
                       name="priority"
                       defaultValue="medium"
                       className="w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
@@ -236,7 +237,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                   </div>
                   <div className="space-y-1.5">
                     <label
-                      htmlFor="field-214"
+                      htmlFor="task-due-date"
                       className="text-xs font-medium text-muted-foreground"
                     >
                       Due date
@@ -244,9 +245,9 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                     <div className="relative">
                       <Calendar className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                       <input
+                        id="task-due-date"
                         type="date"
                         name="dueDate"
-                        aria-label="Due date"
                         className="w-full rounded-md border border-border bg-background pl-8 pr-2 py-1.5 text-sm"
                       />
                     </div>
@@ -254,7 +255,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                 </div>
                 <div className="space-y-1.5">
                   <label
-                    htmlFor="field-213"
+                    htmlFor="task-recurrence-days"
                     className="text-xs font-medium text-muted-foreground"
                   >
                     Recurrence (days)
@@ -262,11 +263,11 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                   <div className="relative">
                     <RefreshCcw className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                     <input
+                      id="task-recurrence-days"
                       type="number"
                       name="recurrenceDays"
                       min={0}
                       placeholder="0"
-                      aria-label="Recurrence days"
                       className="w-full rounded-md border border-border bg-background pl-8 pr-2 py-1.5 text-sm"
                     />
                   </div>
@@ -366,7 +367,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                   >
                     <td className="px-4 py-3">
                       {task.status === 'completed' ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                        <CheckCircle2 className="h-4 w-4 text-success" />
                       ) : (
                         <Circle className="h-4 w-4 text-muted-foreground" />
                       )}
@@ -393,17 +394,10 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                     </td>
 
                     <td className="px-4 py-3">
-                      <span
-                        className={`status-pill ${
-                          normalizeTaskPriority(task.priority) === 'critical'
-                            ? 'status-pill-red'
-                            : normalizeTaskPriority(task.priority) === 'high'
-                              ? 'status-pill-amber'
-                              : 'status-pill-blue'
-                        }`}
-                      >
-                        {taskPriorityLabel(task.priority)}
-                      </span>
+                      <SeverityBadge
+                        level={normalizeTaskPriority(task.priority)}
+                        size="sm"
+                      />
                     </td>
 
                     <td className="px-4 py-3">

@@ -309,9 +309,9 @@ export function UploadArtifactModal({
           <div className="space-y-2">
             <label
               htmlFor="field-104"
-              className="text-xs font-bold uppercase text-muted-foreground tracking-widest ml-1"
+              className="text-sm font-medium text-muted-foreground"
             >
-              Artifact Label
+              Artifact label
             </label>
             <input
               id="field-104"
@@ -326,7 +326,7 @@ export function UploadArtifactModal({
             <div className="space-y-2">
               <label
                 htmlFor="vault-link-policy"
-                className="text-xs font-bold uppercase text-muted-foreground tracking-widest ml-1"
+                className="text-sm font-medium text-muted-foreground"
               >
                 Link to policy (optional)
               </label>

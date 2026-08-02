@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { GripVertical, User, Calendar, AlertTriangle } from 'lucide-react';
+import { SeverityBadge } from '@/components/care/severity-badge';
 
 interface Task {
   id: string;
@@ -20,20 +21,12 @@ interface Props {
 }
 
 const COLUMN_CONFIG: { key: string; label: string; color: string }[] = [
-  { key: 'todo', label: 'To Do', color: 'border-t-gray-400' },
-  { key: 'in_progress', label: 'In Progress', color: 'border-t-blue-500' },
-  { key: 'in_review', label: 'In Review', color: 'border-t-yellow-500' },
-  { key: 'done', label: 'Done', color: 'border-t-green-500' },
-  { key: 'blocked', label: 'Blocked', color: 'border-t-red-500' },
+  { key: 'todo', label: 'To do', color: 'border-t-border' },
+  { key: 'in_progress', label: 'In progress', color: 'border-t-info' },
+  { key: 'in_review', label: 'In review', color: 'border-t-warning' },
+  { key: 'done', label: 'Done', color: 'border-t-success' },
+  { key: 'blocked', label: 'Blocked', color: 'border-t-destructive' },
 ];
-
-const PRIORITY_BADGE: Record<string, string> = {
-  critical: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
-  high: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300',
-  medium:
-    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300',
-  low: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-};
 
 export function KanbanBoard({
   columns,
@@ -127,11 +120,7 @@ export function KanbanBoard({
                       {task.title}
                     </p>
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
-                      <span
-                        className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${PRIORITY_BADGE[task.priority] || PRIORITY_BADGE.medium}`}
-                      >
-                        {task.priority}
-                      </span>
+                      <SeverityBadge level={task.priority} size="sm" />
                       {task.assignee_id && (
                         <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
                           <User className="h-3 w-3" />
@@ -139,14 +128,15 @@ export function KanbanBoard({
                       )}
                       {task.due_date && (
                         <span
-                          className={`inline-flex items-center gap-1 text-[10px] ${isOverdue(task.due_date) ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'}`}
+                          className={`inline-flex items-center gap-1 text-[10px] ${isOverdue(task.due_date) ? 'text-destructive' : 'text-muted-foreground'}`}
                         >
                           <Calendar className="h-3 w-3" />
                           {new Date(task.due_date).toLocaleDateString()}
+                          {isOverdue(task.due_date) ? ' overdue' : ''}
                         </span>
                       )}
                       {col.key === 'blocked' && (
-                        <span className="inline-flex items-center gap-1 text-[10px] text-red-600">
+                        <span className="inline-flex items-center gap-1 text-[10px] text-destructive">
                           <AlertTriangle className="h-3 w-3" />
                           Blocked
                         </span>

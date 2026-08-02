@@ -37,7 +37,7 @@ export default async function NewIncidentPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Report Incident</h1>
+          <h1 className="page-title">Report incident</h1>
           <p className="text-muted-foreground">
             Log a new incident for tracking and follow-up
           </p>
@@ -62,7 +62,7 @@ export default async function NewIncidentPage() {
                 htmlFor="field-16"
                 className="block text-sm font-medium mb-1"
               >
-                Incident Type <span className="text-red-500">*</span>
+                Incident Type <span className="text-destructive">*</span>
               </label>
               <select
                 id="field-16"
@@ -86,7 +86,7 @@ export default async function NewIncidentPage() {
                 htmlFor="field-15"
                 className="block text-sm font-medium mb-1"
               >
-                Severity <span className="text-red-500">*</span>
+                Severity <span className="text-destructive">*</span>
               </label>
               <select
                 id="field-15"
@@ -128,7 +128,7 @@ export default async function NewIncidentPage() {
                 htmlFor="field-13"
                 className="block text-sm font-medium mb-1"
               >
-                Date & Time Occurred <span className="text-red-500">*</span>
+                Date & Time Occurred <span className="text-destructive">*</span>
               </label>
               <input
                 id="field-13"
@@ -162,7 +162,7 @@ export default async function NewIncidentPage() {
               htmlFor="field-11"
               className="block text-sm font-medium mb-1"
             >
-              Description <span className="text-red-500">*</span>
+              Description <span className="text-destructive">*</span>
             </label>
             <textarea
               id="field-11"

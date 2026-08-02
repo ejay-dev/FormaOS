@@ -21,7 +21,7 @@ const CHAPTER_MARKERS = [
 ] as const;
 
 const GLASS =
-  'rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02]';
+  'rounded-2xl border border-white/[0.10] bg-white/[0.04]';
 
 function DocsHeroVisualInner() {
   const shouldReduceMotion = useReducedMotion();

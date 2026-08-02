@@ -30,7 +30,7 @@ const challenges: UseCaseChallenge[] = [
     icon: AlertTriangle,
     title: 'Inconsistent intake and severity triage',
     description:
-      'Incident quality varies across teams, making prioritization and escalation unreliable.',
+      'Incident quality varies across teams, making prioritisation and escalation unreliable.',
   },
   {
     icon: Clock3,
@@ -56,7 +56,7 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Intake and risk classification',
     description:
-      'Route incidents through standardized intake, severity assignment, and escalation paths, with structured context capture from the first moment.',
+      'Route incidents through standardised intake, severity assignment, and escalation paths, with structured context capture from the first moment.',
     steps: [
       'Capture who, what, when, where, and affected-party context at intake using structured forms',
       'Apply severity classification rules: critical (immediate regulator notification), high (24-hour SLA), medium, low',
@@ -82,7 +82,7 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Closure and audit package',
     description:
-      'Finalize incidents with multi-party sign-off, lessons-learned capture, and export-ready reporting for auditors, regulators, and governance teams.',
+      'Finalise incidents with multi-party sign-off, lessons-learned capture, and export-ready reporting for auditors, regulators, and governance teams.',
     steps: [
       'Record resolution outcomes with verifier sign-off and segregation of duties enforcement',
       'Capture lessons learned and link to policy or procedure updates triggered by the incident',
@@ -108,7 +108,8 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'ISO 27001 / SOC 2',
-    description: 'Information security incident management, Annex A.16 and SOC 2 CC7/CC8 controls',
+    description:
+      'Information security incident management, Annex A.16 and SOC 2 CC7/CC8 controls',
     features: [
       'Structured incident response aligned to Annex A.16.1 requirements',
       'Corrective-action ownership with Annex A.16.1.5 root-cause analysis',
@@ -118,7 +119,8 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'WHS Act & SafeWork',
-    description: 'Work Health and Safety Act 2011, notifiable incident and SafeWork reporting obligations',
+    description:
+      'Work Health and Safety Act 2011, notifiable incident and SafeWork reporting obligations',
     features: [
       'Notifiable incident classification per WHS Act s35-37 (death, serious injury, dangerous incident)',
       'SafeWork notification evidence with timestamps and decision records',
@@ -128,7 +130,8 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'NDIS / SIRS',
-    description: 'NDIS Serious Incident Response Scheme, reportable incident obligations under the NDIS Commission',
+    description:
+      'NDIS Serious Incident Response Scheme, reportable incident obligations under the NDIS Commission',
     features: [
       'SIRS reportable incident intake aligned to NDIS (Incident Management and Reportable Incidents) Rules 2018',
       'Severity classification and 24-hour / 5-day notification workflow',
@@ -138,7 +141,8 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'ASIC / APRA',
-    description: 'Financial services incident reporting, ASIC breach reporting and APRA CPS 234 obligations',
+    description:
+      'Financial services incident reporting, ASIC breach reporting and APRA CPS 234 obligations',
     features: [
       'ASIC reportable situation classification and notification timelines',
       'APRA CPS 234 material information security incident reporting',
@@ -150,24 +154,28 @@ const standards: UseCaseStandard[] = [
 
 const metrics: UseCaseMetric[] = [
   {
-    value: '< 4 hr',
-    label: 'Triage to Owner',
-    description: 'High-severity incidents routed to a named, accountable owner within hours of intake.',
+    value: 'Named owner',
+    label: 'On every incident',
+    description:
+      'Severity classification routes each incident to an accountable lead, and the assignment is recorded.',
   },
   {
-    value: '100%',
-    label: 'Action Traceability',
-    description: 'Every corrective action has a named owner, due date, and verified closure evidence.',
+    value: 'Owner and date',
+    label: 'On every corrective action',
+    description:
+      'Actions cannot be closed without closure evidence attached to the originating control gap.',
   },
   {
     value: 'Export-ready',
-    label: 'Evidence Chain',
-    description: 'Regulator and customer evidence packages generated without manual timeline reconstruction.',
+    label: 'Evidence chain',
+    description:
+      'Regulator and customer evidence packages generated without manual timeline reconstruction.',
   },
   {
-    value: '< 30 min',
-    label: 'Regulator Response',
-    description: 'Incident chronology with full approval and decision history exported on demand.',
+    value: 'One chronology',
+    label: 'Intake to closure',
+    description:
+      'Decisions, approvals and timestamps export together, so nothing is reassembled after the fact.',
   },
 ];
 

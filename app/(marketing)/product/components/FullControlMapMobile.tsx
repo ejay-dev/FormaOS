@@ -99,7 +99,7 @@ export function FullControlMapMobile() {
   return (
     <div className="sm:hidden">
       {/* Coverage summary */}
-      <div className="grid grid-cols-3 divide-x divide-white/[0.08] rounded-2xl border border-white/[0.08] bg-slate-950/60">
+      <div className="grid grid-cols-3 divide-x divide-white/[0.08] rounded-2xl border border-white/[0.08] bg-zinc-950/60">
         {[
           { label: 'Frameworks', value: String(brand.frameworks.count) },
           { label: 'Controls', value: `${brand.frameworks.controlCount}+` },
@@ -109,14 +109,14 @@ export function FullControlMapMobile() {
             <div className="font-display text-2xl font-bold tracking-tight text-white">
               {s.value}
             </div>
-            <div className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-slate-500">
+            <div className="mt-0.5 text-[10px] text-zinc-500">
               {s.label}
             </div>
           </div>
         ))}
       </div>
 
-      <p className="mt-4 text-[13px] leading-relaxed text-slate-400">
+      <p className="mt-4 text-[13px] leading-relaxed text-zinc-400">
         Map a control once. It satisfies the obligation in every framework
         that shares it. Tap a shared control to trace its frameworks.
       </p>
@@ -141,12 +141,12 @@ export function FullControlMapMobile() {
                   <span className="text-sm font-semibold text-white">
                     {ob.label}
                   </span>
-                  <span className="text-[11px] tabular-nums text-slate-500">
+                  <span className="text-[11px] tabular-nums text-zinc-500">
                     {ob.frameworks.length} frameworks
                   </span>
                 </span>
                 <ChevronDown
-                  className={`h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                  className={`h-4 w-4 shrink-0 text-zinc-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
                   aria-hidden="true"
                 />
               </button>
@@ -161,14 +161,14 @@ export function FullControlMapMobile() {
                     className="overflow-hidden"
                   >
                     <div className="border-t border-white/[0.06] px-4 pb-4 pt-3">
-                      <p className="text-[13px] leading-relaxed text-slate-400">
+                      <p className="text-[13px] leading-relaxed text-zinc-400">
                         {ob.desc}
                       </p>
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         {ob.frameworks.map((fw) => (
                           <span
                             key={fw}
-                            className="rounded-lg border border-white/[0.1] bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-slate-200"
+                            className="rounded-lg border border-white/[0.1] bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-zinc-200"
                           >
                             {FRAMEWORK_LABELS[fw]}
                           </span>

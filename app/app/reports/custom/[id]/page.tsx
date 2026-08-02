@@ -269,7 +269,7 @@ export default async function CustomReportDetailPage({
           className={`rounded-lg border px-4 py-3 text-sm ${
             notices.error
               ? 'border-destructive/40 bg-destructive/5 text-destructive'
-              : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+              : 'border-success/20 bg-success/10 text-success'
           }`}
         >
           {notices.error

@@ -80,7 +80,7 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-border bg-card p-5">
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+          <div className="text-sm font-medium text-muted-foreground">
             Plan
           </div>
           <div className="mt-2 text-lg font-semibold text-foreground">
@@ -91,7 +91,7 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
           </div>
         </div>
         <div className="rounded-2xl border border-border bg-card p-5">
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+          <div className="text-sm font-medium text-muted-foreground">
             Subscription
           </div>
           <div className="mt-2 text-lg font-semibold text-foreground">
@@ -106,8 +106,8 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
           </div>
         </div>
         <div className="rounded-2xl border border-border bg-card p-5">
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-            Active Sessions
+          <div className="text-sm font-medium text-muted-foreground">
+            Active sessions
           </div>
           <div className="mt-2 text-lg font-semibold text-foreground">
             {sessions.length}
@@ -117,8 +117,8 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
           </div>
         </div>
         <div className="rounded-2xl border border-border bg-card p-5">
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-            Lifecycle / Health
+          <div className="text-sm font-medium text-muted-foreground">
+            Lifecycle and health
           </div>
           <div className="mt-2 text-lg font-semibold text-foreground">
             {organization.lifecycle_status ?? 'active'} /{' '}
@@ -155,7 +155,7 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
 
             <div className="mt-4 grid gap-3 md:grid-cols-3">
               <div className="rounded-xl border border-border bg-background p-4">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground">
                   Activation
                 </p>
                 <p className="mt-2 text-2xl font-semibold text-foreground">
@@ -166,8 +166,8 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
                 </p>
               </div>
               <div className="rounded-xl border border-border bg-background p-4">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  Billing Risk
+                <p className="text-xs font-medium text-muted-foreground">
+                  Billing risk
                 </p>
                 <p className="mt-2 text-2xl font-semibold text-foreground">
                   {customerHealth?.billingRisk?.level ?? 'low'}
@@ -178,8 +178,8 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
                 </p>
               </div>
               <div className="rounded-xl border border-border bg-background p-4">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  Health Score
+                <p className="text-xs font-medium text-muted-foreground">
+                  Health score
                 </p>
                 <p className="mt-2 text-2xl font-semibold text-foreground">
                   {customerHealth?.healthScore?.score ?? 'N/A'}
@@ -249,7 +249,7 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
             </div>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full text-left text-sm text-muted-foreground">
-                <thead className="text-xs uppercase text-muted-foreground">
+                <thead className="text-xs font-semibold text-muted-foreground">
                   <tr>
                     <th className="py-2">Email</th>
                     <th className="py-2">Role</th>

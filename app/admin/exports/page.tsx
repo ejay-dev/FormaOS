@@ -67,7 +67,7 @@ export default async function AdminExportsPage() {
                   <tr key={job.id} className="hover:bg-muted">
                     <td className="px-6 py-4">
                       <div className="font-medium">{job.label}</div>
-                      <div className="text-[10px] text-muted-foreground uppercase">
+                      <div className="text-[10px] text-muted-foreground">
                         {job.type}
                       </div>
                     </td>

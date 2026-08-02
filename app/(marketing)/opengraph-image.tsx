@@ -23,7 +23,7 @@ export default function Image() {
         overflow: 'hidden',
       }}
     >
-      {/* Background accent orbs */}
+      {/* One faint lift behind the headline so the card is not a flat rectangle */}
       <div
         style={{
           position: 'absolute',
@@ -33,19 +33,7 @@ export default function Image() {
           height: 500,
           borderRadius: '50%',
           background:
-            'radial-gradient(circle, rgba(148,163,184,0.10) 0%, transparent 65%)',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: 100,
-          bottom: -120,
-          width: 400,
-          height: 400,
-          borderRadius: '50%',
-          background:
-            'radial-gradient(circle, rgba(148,163,184,0.06) 0%, transparent 65%)',
+            'radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 65%)',
         }}
       />
 

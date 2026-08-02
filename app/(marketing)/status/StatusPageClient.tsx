@@ -31,12 +31,12 @@ const POLL_INTERVAL_MS = 30_000;
 function statusColour(status: string): string {
   switch (status) {
     case 'healthy':
-      return 'bg-emerald-500';
+      return 'bg-success';
     case 'degraded':
-      return 'bg-amber-500';
+      return 'bg-warning';
     case 'unhealthy':
     case 'error':
-      return 'bg-red-500';
+      return 'bg-destructive';
     default:
       return 'bg-muted-foreground/50';
   }
@@ -134,7 +134,7 @@ export default function StatusPageClient() {
       </section>
 
       {error && (
-        <p className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <p className="mt-6 rounded-xl border border-border bg-card px-4 py-3 text-sm text-destructive">
           /api/health request failed: {error}
         </p>
       )}
@@ -157,7 +157,7 @@ export default function StatusPageClient() {
                   {s.key}
                 </div>
                 {s.error && (
-                  <div className="mt-1 text-xs text-red-300">{s.error}</div>
+                  <div className="mt-1 text-xs text-destructive">{s.error}</div>
                 )}
               </div>
               <div className="flex items-center gap-4 text-xs text-muted-foreground">

@@ -62,7 +62,7 @@ export default function VendorAssurancePage() {
 
               <div className="mt-5 grid gap-4 md:grid-cols-3">
                 <div className="rounded-xl border border-border bg-background/40 p-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <div className="text-xs font-semibold text-muted-foreground">
                     Scope
                   </div>
                   <ul className="mt-2 space-y-2 text-sm text-foreground/90">
@@ -73,7 +73,7 @@ export default function VendorAssurancePage() {
                   </ul>
                 </div>
                 <div className="rounded-xl border border-border bg-background/40 p-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <div className="text-xs font-semibold text-muted-foreground">
                     Cadence
                   </div>
                   <ul className="mt-2 space-y-2 text-sm text-foreground/90">
@@ -86,7 +86,7 @@ export default function VendorAssurancePage() {
                   </ul>
                 </div>
                 <div className="rounded-xl border border-border bg-background/40 p-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <div className="text-xs font-semibold text-muted-foreground">
                     Artifacts Available
                   </div>
                   <ul className="mt-2 space-y-2 text-sm text-foreground/90">

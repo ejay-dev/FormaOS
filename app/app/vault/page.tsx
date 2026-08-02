@@ -19,6 +19,10 @@ import {
   RecordList,
   EmptyRecordState,
 } from '@/components/mobile/record-card';
+import {
+  StatusBadge,
+  evidenceStatus,
+} from '@/components/compliance/StatusBadge';
 
 type ArtifactRow = {
   id: string;
@@ -35,6 +39,7 @@ type ArtifactRow = {
   file_path?: string | null;
   task_id?: string | null;
   policy_id?: string | null;
+  control_id?: string | null;
   task?: { title?: string | null } | null;
   policy?: { title?: string | null } | null;
 };
@@ -60,6 +65,8 @@ type VaultPageProps = {
   searchParams?: Promise<{
     q?: string | string[];
     status?: string | string[];
+    control?: string | string[];
+    task?: string | string[];
   }>;
 };
 
@@ -78,7 +85,11 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
     statusFilterRaw === 'pending' || statusFilterRaw === 'verified'
       ? statusFilterRaw
       : 'all';
-  const hasFilters = Boolean(searchQuery || statusFilter !== 'all');
+  const controlId = parseSingleValue(resolvedSearchParams.control).trim();
+  const taskId = parseSingleValue(resolvedSearchParams.task).trim();
+  const hasFilters = Boolean(
+    searchQuery || statusFilter !== 'all' || controlId || taskId,
+  );
 
   const systemState = await fetchSystemState();
   if (!systemState) {
@@ -145,6 +156,39 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
     ]),
   );
 
+  // Remediation links (evidence gaps, reports) arrive with the control or
+  // task they came from. Name it so the user knows what they are attaching to.
+  const [{ data: focusControl }, { data: focusTask }] = await Promise.all([
+    controlId
+      ? supabase
+          .from('org_controls')
+          .select('id, code, title')
+          .eq('organization_id', orgId)
+          .eq('id', controlId)
+          .maybeSingle()
+      : Promise.resolve({
+          data: null as { id: string; code: string; title: string } | null,
+        }),
+    taskId
+      ? supabase
+          .from('org_tasks')
+          .select('id, title')
+          .eq('organization_id', orgId)
+          .eq('id', taskId)
+          .maybeSingle()
+      : Promise.resolve({
+          data: null as { id: string; title: string | null } | null,
+        }),
+  ]);
+
+  const focusLabel = controlId
+    ? focusControl
+      ? `${focusControl.code} · ${focusControl.title}`
+      : 'this control'
+    : taskId
+      ? (focusTask?.title ?? 'this obligation')
+      : null;
+
   const allArtifacts: ArtifactRow[] = baseArtifacts.map((artifact) => ({
     ...artifact,
     task:
@@ -161,6 +205,9 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
       statusFilter === 'all' ||
       getVerificationStatus(artifact) === statusFilter;
     if (!statusMatches) return false;
+
+    if (controlId && artifact.control_id !== controlId) return false;
+    if (taskId && artifact.task_id !== taskId) return false;
 
     if (!searchQuery) return true;
 
@@ -210,11 +257,33 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
       />
 
       <div className="page-content space-y-4">
+        {focusLabel ? (
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2">
+            <p className="text-sm text-foreground">
+              Showing evidence linked to{' '}
+              <span className="font-medium">{focusLabel}</span>.
+              {filteredArtifacts.length === 0
+                ? ' Nothing is attached yet — upload an artifact to close the gap.'
+                : ''}
+            </p>
+            <Link
+              href="/app/vault"
+              className="text-xs font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+            >
+              Show all evidence
+            </Link>
+          </div>
+        ) : null}
+
         {/* Search / Filter bar */}
         <form
           method="get"
           className="flex items-center gap-2 sticky top-0 z-10 bg-background/95 backdrop-blur py-1"
         >
+          {controlId ? (
+            <input type="hidden" name="control" value={controlId} />
+          ) : null}
+          {taskId ? <input type="hidden" name="task" value={taskId} /> : null}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
@@ -272,10 +341,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                     title={getFileName(item)}
                     subtitle={`${getFileType(item)} · ${getFileSizeKB(item)} KB`}
                     status={
-                      <span className="inline-flex items-center gap-1 rounded-full bg-warning/10 text-warning px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
-                        <Clock className="h-3 w-3" />
-                        Pending
-                      </span>
+<StatusBadge {...evidenceStatus('pending')} icon={Clock} />
                     }
                     meta={[
                       {
@@ -378,19 +444,20 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                                   reason,
                                 );
                               }}
-                              className="flex items-center gap-1"
+                              className="flex items-center gap-1.5"
                             >
                               <input
                                 name="reason"
-                                placeholder="Reason"
-                                className="h-7 w-24 rounded border border-border bg-background px-2 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                placeholder="What did you check?"
+                                aria-label={`Verification note for ${getFileName(item)}`}
+                                className="h-7 w-48 rounded border border-border bg-background px-2 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                 required
                               />
                               <button
                                 type="submit"
-                                className="h-7 px-2 rounded bg-success/10 text-success text-xs font-medium hover:bg-success/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                className="h-7 shrink-0 rounded bg-success/10 px-2 text-xs font-medium text-success hover:bg-success/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                               >
-                                <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                                <CheckCircle2 className="mr-1 inline h-3 w-3" />
                                 Verify
                               </button>
                             </form>
@@ -427,10 +494,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                     title={getFileName(item)}
                     subtitle={`${getFileType(item)} · ${getFileSizeKB(item)} KB`}
                     status={
-                      <span className="inline-flex items-center gap-1 rounded-full bg-success/10 text-success px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
-                        <ShieldCheck className="h-3 w-3" />
-                        Verified
-                      </span>
+<StatusBadge {...evidenceStatus('verified')} icon={ShieldCheck} />
                     }
                     meta={[
                       {
@@ -475,7 +539,12 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                     <tr>
                       <th className="px-3 py-2 font-medium">Artifact</th>
                       <th className="px-3 py-2 font-medium">Context</th>
-                      <th className="px-3 py-2 font-medium">AI Quality</th>
+                      <th
+                        className="px-3 py-2 font-medium"
+                        title="Automated readability and completeness score, 0–100"
+                      >
+                        Quality score
+                      </th>
                       <th className="px-3 py-2 font-medium">Verification</th>
                       <th className="px-3 py-2 text-right font-medium">
                         Action
@@ -488,19 +557,19 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                         key={item.id}
                         className="group hover:bg-surface-1 transition-colors"
                       >
-                        <td className="px-8 py-4">
-                          <div className="flex items-center gap-3">
-                            <FileText className="h-4 w-4 text-success" />
-                            <span className="text-xs font-bold text-foreground">
+                        <td className="px-3 py-2">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-3.5 w-3.5 shrink-0 text-success" />
+                            <span className="font-medium truncate max-w-[220px]">
                               {getFileName(item)}
                             </span>
                           </div>
-                          <p className="text-xs text-muted-foreground font-bold uppercase tracking-tight mt-1">
-                            {getFileType(item)} • {getFileSizeKB(item)} KB
+                          <p className="mt-0.5 text-xs text-muted-foreground">
+                            {getFileType(item)} · {getFileSizeKB(item)} KB
                           </p>
                         </td>
 
-                        <td className="px-8 py-4 text-xs text-muted-foreground">
+                        <td className="px-3 py-2 text-xs text-muted-foreground">
                           {item.task_id && item.task?.title ? (
                             <Link
                               href="/app/compliance"
@@ -520,31 +589,25 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                           )}
                         </td>
 
-                        <td className="px-8 py-4">
+                        <td className="px-3 py-2">
                           {item.quality_score != null ? (
                             <div className="flex items-center gap-2">
-                              <div
-                                className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold tabular-nums ${
-                                  item.quality_score >= 70
-                                    ? 'bg-success/10 text-success'
-                                    : item.quality_score >= 50
-                                      ? 'bg-warning/10 text-warning'
-                                      : 'bg-destructive/10 text-destructive'
-                                }`}
-                              >
-                                {item.quality_score}
-                              </div>
                               <span
-                                className={`text-[9px] font-bold uppercase ${
-                                  item.risk_flag === 'low'
+                                className={`tabular-nums font-medium ${
+                                  item.quality_score >= 70
                                     ? 'text-success'
-                                    : item.risk_flag === 'medium'
+                                    : item.quality_score >= 50
                                       ? 'text-warning'
                                       : 'text-destructive'
                                 }`}
                               >
-                                {item.risk_flag || 'N/A'}
+                                {item.quality_score}
                               </span>
+                              {item.risk_flag ? (
+                                <span className="text-xs text-muted-foreground">
+                                  {item.risk_flag} risk
+                                </span>
+                              ) : null}
                             </div>
                           ) : (
                             <span className="text-xs text-muted-foreground/60">
@@ -553,31 +616,24 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                           )}
                         </td>
 
-                        <td className="px-8 py-4">
+                        <td className="px-3 py-2">
                           <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded-full bg-success/10 flex items-center justify-center text-success">
-                              <ShieldCheck className="h-3 w-3" />
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="text-xs font-bold text-foreground">
-                                Verified
-                              </span>
-                              <span className="text-[9px] font-mono text-muted-foreground">
-                                {item.verified_at
+                            <StatusBadge {...evidenceStatus('verified')} />
+                            <span className="text-xs text-muted-foreground">
+                              {item.verified_at
+                                ? new Date(
+                                    item.verified_at,
+                                  ).toLocaleDateString()
+                                : item.created_at
                                   ? new Date(
-                                      item.verified_at,
+                                      item.created_at,
                                     ).toLocaleDateString()
-                                  : item.created_at
-                                    ? new Date(
-                                        item.created_at,
-                                      ).toLocaleDateString()
-                                    : 'N/A'}
-                              </span>
-                            </div>
+                                  : '—'}
+                            </span>
                           </div>
                         </td>
 
-                        <td className="px-8 py-4 text-right">
+                        <td className="px-3 py-2 text-right">
                           <EvidenceFileActions
                             filePath={item.file_path ?? null}
                             evidenceId={item.id}

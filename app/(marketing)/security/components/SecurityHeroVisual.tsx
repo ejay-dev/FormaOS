@@ -128,7 +128,7 @@ function SecurityHeroVisualInner() {
 
         {/* ── Vault door ── */}
         <motion.div
-          className="absolute rounded-3xl bg-gradient-to-b from-slate-500/40 via-slate-600/50 to-slate-700/40 backdrop-blur-sm"
+          className="absolute rounded-3xl bg-gradient-to-b from-slate-500/40 via-slate-600/50 to-slate-700/40"
           style={{
             width: VAULT_SIZE,
             height: VAULT_SIZE,

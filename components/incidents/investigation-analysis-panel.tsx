@@ -63,7 +63,7 @@ export function InvestigationAnalysisPanel({
         <p className="text-xs text-muted-foreground">Saving analysis…</p>
       )}
       {saved && !isPending && (
-        <p className="text-xs text-emerald-500">Analysis saved.</p>
+        <p className="text-xs text-success">Analysis saved.</p>
       )}
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>

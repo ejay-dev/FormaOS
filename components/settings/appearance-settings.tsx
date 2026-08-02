@@ -3,6 +3,7 @@
 import { Monitor } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { saveThemePreference } from '@/app/app/actions/theme';
+import { SaveStatus, useSaveStatus } from '@/components/settings/save-status';
 import {
   useFormaTheme,
   THEME_IDS,
@@ -17,34 +18,44 @@ import {
 export function AppearanceSettings() {
   const { themeId, setThemeWithMode, isSystemMode } = useFormaTheme();
   const [mounted, setMounted] = useState(false);
+  const save = useSaveStatus();
 
   useEffect(() => setMounted(true), []);
 
   const selectTheme = useCallback(
     (newTheme: ThemeId | 'system') => {
       setThemeWithMode(newTheme);
-      if (newTheme !== 'system') saveThemePreference(newTheme).catch(() => {});
+      if (newTheme === 'system') {
+        save.markSaved();
+        return;
+      }
+      save.markSaving();
+      saveThemePreference(newTheme)
+        .then(() => save.markSaved())
+        .catch(() =>
+          save.markError('Your theme could not be saved to your account.'),
+        );
     },
-    [setThemeWithMode],
+    [setThemeWithMode, save],
   );
 
   if (!mounted) {
     return (
-      <div className="bg-card border border-border rounded-[2.5rem] p-10 shadow-sm space-y-6 animate-pulse">
+      <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6 animate-pulse">
         <div className="h-6 w-40 bg-muted rounded" />
-        <div className="h-32 bg-muted rounded-2xl" />
+        <div className="h-32 bg-muted rounded-lg" />
       </div>
     );
   }
 
   return (
-    <div className="bg-card border border-border rounded-[2.5rem] p-10 shadow-sm space-y-8">
+    <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-8">
       <div className="flex items-center gap-4">
-        <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+        <div className="h-12 w-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
           <Monitor className="h-6 w-6" />
         </div>
         <div>
-          <h3 className="text-lg font-black text-foreground tracking-tight">
+          <h3 className="text-lg font-semibold text-foreground tracking-tight">
             Appearance
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -66,7 +77,7 @@ export function AppearanceSettings() {
           <div
             className="h-20 rounded-xl mb-3 overflow-hidden border border-border/50"
             style={{
-              backgroundImage: 'linear-gradient(to right, #0a101f, #f8fafc)',
+              backgroundImage: 'linear-gradient(to right, #1C1E1F, #FFFFFF)',
             }}
           >
             <div className="h-full flex items-center justify-center">
@@ -178,9 +189,17 @@ export function AppearanceSettings() {
         })}
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        Your preference is saved automatically and persists across sessions.
-      </p>
+      <div className="flex items-center gap-3">
+        <p className="text-xs text-muted-foreground">
+          Saved as soon as you choose, and applied on every device you sign in
+          from.
+        </p>
+        <SaveStatus
+          state={save.state}
+          errorMessage={save.errorMessage}
+          className="text-xs"
+        />
+      </div>
     </div>
   );
 }

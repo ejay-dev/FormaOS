@@ -308,14 +308,14 @@ function ContactHero() {
       className="contact-hero--focused"
       theme="contact"
       badge={{
-        icon: <Mail className="w-4 h-4 text-slate-300" />,
+        icon: <Mail className="w-4 h-4 text-zinc-300" />,
         text: copy.badge,
         colorClass: 'slate',
       }}
       headline={copy.headline}
       subheadline={copy.subheadline}
       extras={
-        <p className="text-base text-slate-500 max-w-2xl mx-auto text-center">
+        <p className="text-base text-zinc-500 max-w-2xl mx-auto text-center">
           {copy.intro}
         </p>
       }
@@ -351,12 +351,12 @@ function ContactInformation() {
           <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
             <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/10">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
-                <Mail className="w-8 h-8 text-slate-300" />
+                <Mail className="w-8 h-8 text-zinc-300" />
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Email</h3>
               <a
                 href="mailto:support@formaos.com.au"
-                className="text-slate-300 hover:text-white transition-colors"
+                className="text-zinc-300 hover:text-white transition-colors"
               >
                 support@formaos.com.au
               </a>
@@ -367,12 +367,12 @@ function ContactInformation() {
           <ScrollReveal variant="perspectiveUp" range={[0.04, 0.34]}>
             <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/10">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
-                <Phone className="w-8 h-8 text-slate-300" />
+                <Phone className="w-8 h-8 text-zinc-300" />
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Phone</h3>
               <a
                 href="tel:+61469715062"
-                className="text-slate-300 hover:text-white transition-colors"
+                className="text-zinc-300 hover:text-white transition-colors"
               >
                 +61 469 715 062
               </a>
@@ -383,13 +383,13 @@ function ContactInformation() {
           <ScrollReveal variant="depthSlide" range={[0.08, 0.38]}>
             <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/10">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
-                <Clock className="w-8 h-8 text-slate-300" />
+                <Clock className="w-8 h-8 text-zinc-300" />
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">
                 Availability
               </h3>
-              <p className="text-slate-400">Monday, Friday</p>
-              <p className="text-slate-400">9:00 AM, 6:00 PM (AEST)</p>
+              <p className="text-zinc-400">Monday, Friday</p>
+              <p className="text-zinc-400">9:00 AM, 6:00 PM (AEST)</p>
             </div>
           </ScrollReveal>
         </div>
@@ -519,7 +519,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             {copy.formTitle}
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
             {copy.formBody} A FormaOS specialist will respond promptly.
           </p>
         </ScrollReveal>
@@ -538,13 +538,13 @@ function ContactForm({ submitAction }: ContactFormProps) {
 
               <div className="grid grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:grid-cols-3">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                  <p className="text-[11px] font-semibold text-zinc-400">
                     Inquiry path
                   </p>
                   <p className="mt-2 text-sm text-white capitalize">{intent}</p>
                 </div>
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                  <p className="text-[11px] font-semibold text-zinc-400">
                     Plan in view
                   </p>
                   <p className="mt-2 text-sm text-white">
@@ -552,7 +552,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                  <p className="text-[11px] font-semibold text-zinc-400">
                     Source
                   </p>
                   <p className="mt-2 text-sm text-white">
@@ -566,7 +566,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-slate-300 mb-2"
+                    className="block text-sm font-medium text-zinc-300 mb-2"
                   >
                     Full Name *
                   </label>
@@ -600,7 +600,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-slate-300 mb-2"
+                    className="block text-sm font-medium text-zinc-300 mb-2"
                   >
                     Work Email *
                   </label>
@@ -639,7 +639,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="organization"
-                    className="block text-sm font-medium text-slate-300 mb-2"
+                    className="block text-sm font-medium text-zinc-300 mb-2"
                   >
                     Organization *
                   </label>
@@ -676,7 +676,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="industry"
-                    className="block text-sm font-medium text-slate-300 mb-2"
+                    className="block text-sm font-medium text-zinc-300 mb-2"
                   >
                     Industry
                   </label>
@@ -685,25 +685,25 @@ function ContactForm({ submitAction }: ContactFormProps) {
                     name="industry"
                     className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all"
                   >
-                    <option value="" className="bg-[#0a0f1c]">
+                    <option value="" className="bg-[#181a1c]">
                       Select industry
                     </option>
-                    <option value="healthcare" className="bg-[#0a0f1c]">
+                    <option value="healthcare" className="bg-[#181a1c]">
                       Healthcare
                     </option>
-                    <option value="ndis" className="bg-[#0a0f1c]">
+                    <option value="ndis" className="bg-[#181a1c]">
                       NDIS
                     </option>
-                    <option value="finance" className="bg-[#0a0f1c]">
+                    <option value="finance" className="bg-[#181a1c]">
                       Finance
                     </option>
-                    <option value="education" className="bg-[#0a0f1c]">
+                    <option value="education" className="bg-[#181a1c]">
                       Education
                     </option>
-                    <option value="government" className="bg-[#0a0f1c]">
+                    <option value="government" className="bg-[#181a1c]">
                       Government
                     </option>
-                    <option value="other" className="bg-[#0a0f1c]">
+                    <option value="other" className="bg-[#181a1c]">
                       Other
                     </option>
                   </select>
@@ -711,7 +711,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="primaryNeed"
-                    className="block text-sm font-medium text-slate-300 mb-2"
+                    className="block text-sm font-medium text-zinc-300 mb-2"
                   >
                     Primary Need
                   </label>
@@ -721,22 +721,22 @@ function ContactForm({ submitAction }: ContactFormProps) {
                     defaultValue={defaultPrimaryNeedForIntent(intent)}
                     className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all"
                   >
-                    <option value="" className="bg-[#0a0f1c]">
+                    <option value="" className="bg-[#181a1c]">
                       Select focus
                     </option>
-                    <option value="plan_fit" className="bg-[#0a0f1c]">
+                    <option value="plan_fit" className="bg-[#181a1c]">
                       Plan fit and pricing
                     </option>
-                    <option value="enterprise_rollout" className="bg-[#0a0f1c]">
+                    <option value="enterprise_rollout" className="bg-[#181a1c]">
                       Enterprise rollout
                     </option>
-                    <option value="security_review" className="bg-[#0a0f1c]">
+                    <option value="security_review" className="bg-[#181a1c]">
                       Security or procurement review
                     </option>
-                    <option value="migration" className="bg-[#0a0f1c]">
+                    <option value="migration" className="bg-[#181a1c]">
                       Migration and implementation
                     </option>
-                    <option value="general" className="bg-[#0a0f1c]">
+                    <option value="general" className="bg-[#181a1c]">
                       General inquiry
                     </option>
                   </select>
@@ -746,7 +746,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
               <div>
                 <label
                   htmlFor="timeline"
-                  className="block text-sm font-medium text-slate-300 mb-2"
+                  className="block text-sm font-medium text-zinc-300 mb-2"
                 >
                   Desired Timeline
                 </label>
@@ -755,19 +755,19 @@ function ContactForm({ submitAction }: ContactFormProps) {
                   name="timeline"
                   className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all"
                 >
-                  <option value="" className="bg-[#0a0f1c]">
+                  <option value="" className="bg-[#181a1c]">
                     Select timeline
                   </option>
-                  <option value="this_month" className="bg-[#0a0f1c]">
+                  <option value="this_month" className="bg-[#181a1c]">
                     This month
                   </option>
-                  <option value="this_quarter" className="bg-[#0a0f1c]">
+                  <option value="this_quarter" className="bg-[#181a1c]">
                     This quarter
                   </option>
-                  <option value="next_quarter" className="bg-[#0a0f1c]">
+                  <option value="next_quarter" className="bg-[#181a1c]">
                     Next quarter
                   </option>
-                  <option value="researching" className="bg-[#0a0f1c]">
+                  <option value="researching" className="bg-[#181a1c]">
                     Still researching
                   </option>
                 </select>
@@ -777,7 +777,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-sm font-medium text-slate-300 mb-2"
+                  className="block text-sm font-medium text-zinc-300 mb-2"
                 >
                   Message
                 </label>
@@ -813,7 +813,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 px-6 rounded-lg bg-white hover:bg-slate-100 disabled:bg-white/50 text-slate-900 font-medium transition-all duration-300 flex items-center justify-center gap-2"
+                className="w-full py-4 px-6 rounded-lg bg-white hover:bg-zinc-100 disabled:bg-white/50 text-zinc-900 font-medium transition-all duration-300 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -837,7 +837,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
               </button>
 
               {/* Trust Note */}
-              <p className="text-center text-sm text-slate-500">
+              <p className="text-center text-sm text-zinc-500">
                 Your information is handled securely and never shared.
               </p>
             </form>
@@ -888,7 +888,7 @@ function EnterpriseInquiries() {
         <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
           <div className="text-center p-6 sm:p-8 md:p-12 rounded-2xl bg-white/[0.04] border border-white/15">
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
-              <Building2 className="w-8 h-8 text-slate-300" />
+              <Building2 className="w-8 h-8 text-zinc-300" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
               {intent === 'procurement' || intent === 'security-review'
@@ -897,7 +897,7 @@ function EnterpriseInquiries() {
                   ? 'Proof Pack and Case Study Requests'
                   : 'Enterprise and Partnership Requests'}
             </h2>
-            <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg text-zinc-400 mb-8 max-w-2xl mx-auto">
               {intent === 'procurement' || intent === 'security-review'
                 ? 'If your review already needs direct coordination with legal, security, or procurement stakeholders, email us directly.'
                 : intent === 'case-study'
@@ -906,7 +906,7 @@ function EnterpriseInquiries() {
             </p>
             <a
               href="mailto:support@formaos.com.au"
-              className="inline-flex items-center gap-2 text-slate-300 hover:text-white font-medium text-lg transition-colors"
+              className="inline-flex items-center gap-2 text-zinc-300 hover:text-white font-medium text-lg transition-colors"
             >
               <Mail className="w-5 h-5" />
               support@formaos.com.au
@@ -932,12 +932,12 @@ function SecurityTrust() {
           className="text-center"
         >
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
-            <Shield className="w-8 h-8 text-slate-300" />
+            <Shield className="w-8 h-8 text-zinc-300" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Secure by Design
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
             All communications are handled in line with our security and privacy
             standards. FormaOS is built for regulated environments where
             confidentiality, data integrity, and auditability are essential.
@@ -968,14 +968,14 @@ function ClosingCTA() {
             </span>
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-400 mb-8 sm:mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-zinc-400 mb-8 sm:mb-12 max-w-2xl mx-auto">
             {copy.closingBody}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="#demo-form"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-medium transition-all duration-300 w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white hover:bg-zinc-100 text-zinc-900 font-medium transition-all duration-300 w-full sm:w-auto justify-center"
             >
               {copy.submitLabel}
               <ArrowRight className="w-4 h-4" />

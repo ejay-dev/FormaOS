@@ -63,7 +63,7 @@ export default async function NewPolicyPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="title">
-              Policy title <span className="text-red-500">*</span>
+              Policy title <span className="text-destructive">*</span>
             </label>
             <input
               id="title"
@@ -141,7 +141,7 @@ export default async function NewPolicyPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="content">
-              Content <span className="text-red-500">*</span>
+              Content <span className="text-destructive">*</span>
             </label>
             <textarea
               id="content"

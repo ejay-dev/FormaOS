@@ -5,11 +5,12 @@ interface MTTRChartProps {
   title?: string;
 }
 
+// Same four severity steps as SeverityBadge, as bar fills.
 const SEVERITY_COLORS: Record<string, string> = {
-  critical: 'bg-red-500',
-  high: 'bg-orange-500',
-  medium: 'bg-yellow-500',
-  low: 'bg-blue-500',
+  critical: 'bg-destructive',
+  high: 'bg-destructive/60',
+  medium: 'bg-warning',
+  low: 'bg-muted-foreground/50',
 };
 
 export function MTTRChart({
@@ -37,7 +38,7 @@ export function MTTRChart({
       <h3 className="text-sm font-medium mb-3">{title}</h3>
       <div className="space-y-3">
         {sorted.map(([severity, hours]) => {
-          const color = SEVERITY_COLORS[severity] ?? 'bg-gray-500';
+          const color = SEVERITY_COLORS[severity] ?? 'bg-muted-foreground/50';
           return (
             <div key={severity}>
               <div className="flex justify-between text-xs mb-0.5">

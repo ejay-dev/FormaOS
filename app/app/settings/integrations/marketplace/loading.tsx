@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Marketplace" cards={2} tableRows={4} />;
+export default function AppSettingsIntegrationsMarketplaceLoading() {
+  return <PageSkeleton title="Integration marketplace" cards={2} tableRows={4} />;
 }

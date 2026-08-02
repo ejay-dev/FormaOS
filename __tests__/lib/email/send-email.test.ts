@@ -187,9 +187,14 @@ describe('lib/email/send-email', () => {
   });
 
   describe('sendEmail — preference opt-out', () => {
-    it('blocks email when user has unsubscribed_all', async () => {
+    // These previously asserted against unsubscribed_all / welcome_emails /
+    // invitation_emails / alert_emails. None of those are columns on
+    // email_preferences, so the mocks described a table that does not exist
+    // and the suite passed while the opt-out did nothing in production. The
+    // real columns are `enabled` and `enabled_events`.
+    it('blocks email when the user has turned email off', async () => {
       mockMaybeSingle.mockResolvedValue({
-        data: { unsubscribed_all: true },
+        data: { enabled: false },
         error: null,
       });
 
@@ -203,9 +208,9 @@ describe('lib/email/send-email', () => {
       expect(result.error).toBe('OPTED_OUT');
     });
 
-    it('blocks when welcome_emails is false', async () => {
+    it('blocks a type the user has excluded from enabled_events', async () => {
       mockMaybeSingle.mockResolvedValue({
-        data: { unsubscribed_all: false, welcome_emails: false },
+        data: { enabled: true, enabled_events: ['invite', 'alert'] },
         error: null,
       });
 
@@ -218,9 +223,9 @@ describe('lib/email/send-email', () => {
       expect(result.success).toBe(false);
     });
 
-    it('blocks when invitation_emails is false', async () => {
+    it('blocks an invite when enabled_events omits it', async () => {
       mockMaybeSingle.mockResolvedValue({
-        data: { unsubscribed_all: false, invitation_emails: false },
+        data: { enabled: true, enabled_events: ['welcome'] },
         error: null,
       });
 
@@ -236,9 +241,9 @@ describe('lib/email/send-email', () => {
       expect(result.success).toBe(false);
     });
 
-    it('blocks when alert_emails is false', async () => {
+    it('blocks an alert when enabled_events omits it', async () => {
       mockMaybeSingle.mockResolvedValue({
-        data: { unsubscribed_all: false, alert_emails: false },
+        data: { enabled: true, enabled_events: ['welcome'] },
         error: null,
       });
 

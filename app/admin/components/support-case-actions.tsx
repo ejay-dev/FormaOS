@@ -75,7 +75,7 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
         onClick={() => setExpanded(true)}
         className={cn(
           "inline-flex items-center gap-1 rounded-md border border-edge-2 px-2 py-1",
-          "text-[11px] font-semibold text-slate-300 hover:bg-surface-1 transition-all",
+          "text-[11px] font-semibold text-muted-foreground hover:bg-surface-1 transition-all",
           "active:scale-95"
         )}
       >
@@ -92,7 +92,7 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
         onChange={(e) => setStatus(e.target.value)}
         disabled={loading}
         className={cn(
-          "rounded-md border border-edge-2 bg-slate-900 px-2 py-1 text-xs text-slate-200",
+          "rounded-md border border-edge-2 bg-card px-2 py-1 text-xs text-foreground",
           "disabled:opacity-50"
         )}
       >
@@ -108,8 +108,8 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
         onChange={(e) => setAssignedTo(e.target.value)}
         disabled={loading}
         className={cn(
-          "rounded-md border border-edge-2 bg-slate-900 px-2 py-1 text-xs text-slate-200",
-          "placeholder:text-slate-500 disabled:opacity-50"
+          "rounded-md border border-edge-2 bg-card px-2 py-1 text-xs text-foreground",
+          "placeholder:text-muted-foreground disabled:opacity-50"
         )}
       />
 
@@ -120,8 +120,8 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
         disabled={loading}
         rows={2}
         className={cn(
-          "rounded-md border border-edge-2 bg-slate-900 px-2 py-1 text-xs text-slate-200",
-          "placeholder:text-slate-500 disabled:opacity-50 resize-none"
+          "rounded-md border border-edge-2 bg-card px-2 py-1 text-xs text-foreground",
+          "placeholder:text-muted-foreground disabled:opacity-50 resize-none"
         )}
       />
 
@@ -130,8 +130,8 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
           onClick={handleUpdate}
           disabled={loading}
           className={cn(
-            "flex items-center gap-1 rounded-md border border-emerald-400/30 px-2 py-1",
-            "text-[11px] font-semibold text-emerald-300 hover:bg-emerald-500/20 transition-all",
+            "flex items-center gap-1 rounded-md border border-success/20 px-2 py-1",
+            "text-[11px] font-semibold text-success hover:bg-success/10 transition-all",
             "disabled:opacity-50 active:scale-95"
           )}
         >
@@ -143,7 +143,7 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
           disabled={loading}
           className={cn(
             "flex items-center gap-1 rounded-md border border-edge-2 px-2 py-1",
-            "text-[11px] font-semibold text-slate-400 hover:bg-surface-1 transition-all",
+            "text-[11px] font-semibold text-muted-foreground hover:bg-surface-1 transition-all",
             "disabled:opacity-50 active:scale-95"
           )}
         >

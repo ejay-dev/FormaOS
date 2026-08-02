@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { brand } from '@/config/brand';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { after } from 'next/server';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { Building2, ShieldCheck } from 'lucide-react';
@@ -42,7 +43,6 @@ import {
   onFrameworksProvisioned,
 } from '@/lib/automation/integration';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
-import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import { OnboardingStepTracker } from '@/components/onboarding/onboarding-step-tracker';
 import { logActivity as logProductActivity } from '@/lib/activity/feed';
 import { authLogger } from '@/lib/observability/structured-logger';
@@ -65,11 +65,29 @@ const PLAN_CHOICES = [
   PLAN_CATALOG.enterprise,
 ];
 
-const ONBOARDING_MILESTONES = [
-  { id: 'foundation', label: 'Foundation', steps: [1, 2, 3] },
-  { id: 'operating-model', label: 'Operating Model', steps: [4, 5] },
-  { id: 'activation', label: 'Activation', steps: [6, 7] },
-];
+/**
+ * Keys are the `error` query value each server action redirects with, so a
+ * failed step explains what to change instead of one generic message.
+ */
+const ONBOARDING_ERROR_MESSAGES: Record<string, string> = {
+  'organisation-name':
+    'Enter an organisation name between 2 and 100 characters, starting and ending with a letter or number.',
+  'team-size': 'Choose how many people work in your organisation.',
+  plan: 'Choose a plan to continue.',
+  industry: 'Choose the industry you operate in.',
+  role: 'Choose how you will use FormaOS.',
+  frameworks: 'Choose at least one standard that applies to your work.',
+  'invite-emails':
+    'One or more addresses could not be read. Check them, or skip this step and invite people later.',
+  'invite-delivery':
+    'We could not send every invitation. Check the addresses and try again, or skip this step and invite people later from Settings.',
+  permission:
+    'Your account cannot change this setting. Ask an owner or admin in your organisation to finish setup.',
+  'first-action': 'Choose what you want to do first.',
+};
+
+const ONBOARDING_ERROR_FALLBACK =
+  'That step could not be saved. Check the details and try again.';
 
 type OnboardingStatusRow = {
   organization_id: string;
@@ -93,7 +111,7 @@ function handleOnboardingActionFailure(
   }
 
   console.error(`[onboarding] ${actionName} failed`, error);
-  redirect(`/onboarding?step=${step}&error=1`);
+  redirect(`/onboarding?step=${step}&error=unexpected`);
 }
 
 function normalizeFrameworks(input: unknown): string[] {
@@ -380,19 +398,23 @@ async function saveOrgDetails(formData: FormData) {
     const planCandidate = planInput || orgRecord?.plan_key || '';
     const planCheck = validatePlan(planCandidate);
 
-    if (!nameCheck.valid || !teamCheck.valid) {
-      redirect('/onboarding?step=2&error=1');
+    if (!nameCheck.valid) {
+      redirect('/onboarding?step=2&error=organisation-name');
+    }
+
+    if (!teamCheck.valid) {
+      redirect('/onboarding?step=2&error=team-size');
     }
 
     if (!planCheck.valid) {
-      redirect('/onboarding?step=2&error=1');
+      redirect('/onboarding?step=2&error=plan');
     }
 
     const sanitizedName = sanitizeOrganizationName(nameRaw);
     const resolvedPlan = resolvePlanKey(planCandidate);
 
     if (!resolvedPlan) {
-      redirect('/onboarding?step=2&error=1');
+      redirect('/onboarding?step=2&error=plan');
     }
 
     await admin
@@ -423,11 +445,11 @@ async function saveIndustrySelection(formData: FormData) {
 
     const validation = validateIndustry(industry);
     if (!validation.valid) {
-      redirect('/onboarding?step=3&error=1');
+      redirect('/onboarding?step=3&error=industry');
     }
 
     if (!canProvision) {
-      redirect('/onboarding?step=3&error=1');
+      redirect('/onboarding?step=3&error=permission');
     }
 
     await admin.from('organizations').update({ industry }).eq('id', orgId);
@@ -463,7 +485,7 @@ async function saveRoleSelection(formData: FormData) {
       orgRecord?.frameworks,
     );
     if (!outcome) {
-      redirect('/onboarding?step=4&error=1');
+      redirect('/onboarding?step=4&error=role');
     }
 
     const { error: roleUpdateError } = await supabase
@@ -527,11 +549,11 @@ async function saveFrameworkSelection(formData: FormData) {
     const orgIndustry = (orgRecord as { industry?: string | null } | null)?.industry ?? null;
     const validation = validateFrameworks(frameworks, orgIndustry);
     if (!validation.valid) {
-      redirect('/onboarding?step=5&error=1');
+      redirect('/onboarding?step=5&error=frameworks');
     }
 
     if (!canProvision) {
-      redirect('/onboarding?step=5&error=1');
+      redirect('/onboarding?step=5&error=permission');
     }
 
     const { error: frameworkUpdateError } = await supabase
@@ -641,7 +663,7 @@ async function saveInvites(formData: FormData) {
     const validation = validateInviteEmails(inviteEmails);
 
     if (!validation.valid) {
-      redirect('/onboarding?step=6&error=1');
+      redirect('/onboarding?step=6&error=invite-emails');
     }
 
     if (validation.validEmails.length > 0) {
@@ -711,7 +733,7 @@ async function saveInvites(formData: FormData) {
           inviteCount: validation.validEmails.length,
           failedInvites,
         });
-        redirect('/onboarding?step=6&error=1');
+        redirect('/onboarding?step=6&error=invite-delivery');
       }
     }
 
@@ -719,6 +741,17 @@ async function saveInvites(formData: FormData) {
     redirect('/onboarding?step=7');
   } catch (error) {
     handleOnboardingActionFailure('saveInvites', 6, error);
+  }
+}
+
+async function skipInvites() {
+  'use server';
+  try {
+    const { orgId } = await getOrgContext();
+    await markStepComplete(orgId, 6, 7);
+    redirect('/onboarding?step=7');
+  } catch (error) {
+    handleOnboardingActionFailure('skipInvites', 6, error);
   }
 }
 
@@ -730,7 +763,7 @@ async function completeFirstAction(formData: FormData) {
     const action = (formData.get('firstAction') as string | null) ?? '';
 
     if (!action) {
-      redirect('/onboarding?step=7&error=1');
+      redirect('/onboarding?step=7&error=first-action');
     }
 
     if (action === 'create_task') {
@@ -927,7 +960,10 @@ export default async function OnboardingPage({
     redirect(`/onboarding?step=${status.current_step}`);
   }
 
-  const errorState = Boolean(resolvedSearchParams?.error);
+  const errorCode = resolvedSearchParams?.error ?? '';
+  const errorMessage = errorCode
+    ? (ONBOARDING_ERROR_MESSAGES[errorCode] ?? ONBOARDING_ERROR_FALLBACK)
+    : null;
   const fastTrack = resolvedSearchParams?.fast_track === '1';
   const persona = resolvedSearchParams?.persona ?? '';
   const isReadOnlyPersona = isReadOnlyPersonaRole(role, persona);
@@ -945,7 +981,6 @@ export default async function OnboardingPage({
 
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] font-sans">
-      <EnterpriseTrustStrip surface="onboarding" />
       <OnboardingStepTracker step={safeStep} totalSteps={TOTAL_STEPS} />
       <div className="flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-2xl">
@@ -956,49 +991,32 @@ export default async function OnboardingPage({
               <div className="h-14 w-14 rounded-2xl bg-[hsl(var(--card))] text-foreground flex items-center justify-center mb-6 shadow-xl mx-auto md:mx-0">
                 <Building2 className="h-7 w-7" />
               </div>
-              <h1 className="text-3xl font-black text-foreground tracking-tight">
-                FormaOS onboarding
+              <h1 className="text-3xl font-semibold text-foreground tracking-tight">
+                Set up your workspace
               </h1>
               <p className="text-muted-foreground mt-2 font-medium leading-relaxed text-sm tabular-nums">
                 Step {safeStep} of {TOTAL_STEPS} · {planLabel}
               </p>
-              <div className="mt-5 space-y-3">
+              <div className="mt-5">
                 <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
                   <div
                     className="h-full rounded-full bg-foreground"
                     style={{ width: `${completedRatio}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  {ONBOARDING_MILESTONES.map((milestone) => {
-                    const isComplete = Math.max(...milestone.steps) < safeStep;
-                    const isActive = milestone.steps.includes(safeStep);
-                    return (
-                      <div
-                        key={milestone.id}
-                        className={`rounded-full border px-2 py-1 text-center ${
-                          isActive
-                            ? 'border-primary bg-primary/10 text-foreground'
-                            : isComplete
-                              ? 'border-success/20 bg-success/10 text-success'
-                              : 'border-edge-2 bg-surface-1'
-                        }`}
-                      >
-                        {milestone.label}
-                      </div>
-                    );
-                  })}
-                </div>
               </div>
-              {errorState ? (
-                <div className="mt-4 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-xs text-destructive">
-                  Please complete the required fields before continuing.
+              {errorMessage ? (
+                <div
+                  role="alert"
+                  className="mt-4 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+                >
+                  {errorMessage}
                 </div>
               ) : null}
               {fastTrack ? (
-                <div className="mt-4 rounded-xl border border-border bg-surface-2 px-4 py-3 text-xs text-muted-foreground">
-                  Fast-track enabled for this persona. Core governance defaults
-                  are pre-configured so you can reach first proof faster.
+                <div className="mt-4 rounded-xl border border-border bg-surface-2 px-4 py-3 text-sm text-muted-foreground">
+                  We have set up sensible defaults for your role, so there is
+                  less to fill in here.
                 </div>
               ) : null}
             </div>
@@ -1013,8 +1031,9 @@ export default async function OnboardingPage({
                         Welcome to FormaOS.
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">
-                        We will capture your organization details and configure
-                        the compliance engine to match your obligations.
+                        The next few questions set up your organisation and the
+                        standards you have to meet. It takes about three
+                        minutes, and you can change any of it later.
                       </p>
                     </div>
                   </div>
@@ -1029,30 +1048,28 @@ export default async function OnboardingPage({
                 className="space-y-8"
                 data-testid="onboarding-step-org"
               >
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <label
-                    htmlFor="field-221"
-                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
+                    htmlFor="organization-name"
+                    className="block text-sm font-medium text-foreground"
                   >
-                    Organization name
+                    Organisation name
                   </label>
                   <input
                     required
+                    id="organization-name"
                     name="organizationName"
                     defaultValue={orgRecord?.name ?? ''}
-                    placeholder="e.g. Acme Corp"
+                    placeholder="e.g. Northwind Support Services"
                     data-testid="organization-name"
                     className="w-full p-4 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] focus:bg-surface-1 focus:outline-white/20 text-sm font-semibold transition-all shadow-inner"
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <label
-                    htmlFor="field-220"
-                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
-                  >
-                    Team size
-                  </label>
+                <fieldset className="space-y-3">
+                  <legend className="text-sm font-medium text-foreground">
+                    How many people work here?
+                  </legend>
                   <div className="grid gap-3 md:grid-cols-2">
                     {TEAM_SIZE_OPTIONS.map((option) => (
                       <label
@@ -1072,15 +1089,12 @@ export default async function OnboardingPage({
                       </label>
                     ))}
                   </div>
-                </div>
+                </fieldset>
 
-                <div className="space-y-3">
-                  <label
-                    htmlFor="field-219"
-                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
-                  >
+                <fieldset className="space-y-3">
+                  <legend className="text-sm font-medium text-foreground">
                     Plan
-                  </label>
+                  </legend>
                   <div className="grid gap-3 md:grid-cols-3">
                     {PLAN_CHOICES.map((option) => (
                       <label
@@ -1107,7 +1121,7 @@ export default async function OnboardingPage({
                       </label>
                     ))}
                   </div>
-                </div>
+                </fieldset>
 
                 <SubmitButton loadingText="Saving...">Continue</SubmitButton>
               </form>
@@ -1119,13 +1133,10 @@ export default async function OnboardingPage({
                 className="space-y-8"
                 data-testid="onboarding-step-industry"
               >
-                <div className="space-y-3">
-                  <label
-                    htmlFor="field-218"
-                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
-                  >
-                    Industry
-                  </label>
+                <fieldset className="space-y-3">
+                  <legend className="text-sm font-medium text-foreground">
+                    What kind of work do you do?
+                  </legend>
                   <div className="grid gap-3 md:grid-cols-2">
                     {INDUSTRY_OPTIONS.map((option) => (
                       <label
@@ -1145,8 +1156,8 @@ export default async function OnboardingPage({
                       </label>
                     ))}
                   </div>
-                </div>
-                <SubmitButton loadingText="Configuring industry...">
+                </fieldset>
+                <SubmitButton loadingText="Setting up...">
                   Continue
                 </SubmitButton>
               </form>
@@ -1158,10 +1169,10 @@ export default async function OnboardingPage({
                 className="space-y-8"
                 data-testid="onboarding-step-role"
               >
-                <div className="space-y-3">
-                  <div className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1">
-                    Choose your onboarding persona
-                  </div>
+                <fieldset className="space-y-3">
+                  <legend className="text-sm font-medium text-foreground">
+                    How will you use FormaOS?
+                  </legend>
                   <div className="grid gap-3 md:grid-cols-2">
                     {ROLE_OPTIONS.map((option) => (
                       <label
@@ -1185,26 +1196,24 @@ export default async function OnboardingPage({
                             {option.description}
                           </div>
                           <span
-                            className={`inline-flex rounded border px-2 py-0.5 text-[10px] uppercase tracking-wider ${
+                            className={`block text-xs ${
                               option.journey === 'full'
-                                ? 'border-primary bg-primary/10 text-foreground'
-                                : 'border-border bg-surface-2 text-muted-foreground'
+                                ? 'text-foreground'
+                                : 'text-muted-foreground'
                             }`}
                           >
                             {option.journey === 'full'
-                              ? 'Full setup'
+                              ? 'Sets up everything'
                               : option.journey === 'read-only'
-                                ? 'Read-only fast track'
-                                : 'Execution fast track'}
+                                ? 'View only, nothing to configure'
+                                : 'Shorter setup'}
                           </span>
                         </div>
                       </label>
                     ))}
                   </div>
-                </div>
-                <SubmitButton loadingText="Setting role...">
-                  Continue
-                </SubmitButton>
+                </fieldset>
+                <SubmitButton loadingText="Saving...">Continue</SubmitButton>
               </form>
             ) : null}
 
@@ -1214,10 +1223,10 @@ export default async function OnboardingPage({
                 className="space-y-8"
                 data-testid="onboarding-step-frameworks"
               >
-                <div className="space-y-3">
-                  <div className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1">
-                    Compliance frameworks (select at least one)
-                  </div>
+                <fieldset className="space-y-3">
+                  <legend className="text-sm font-medium text-foreground">
+                    Which standards do you have to meet? Choose at least one.
+                  </legend>
                   <div className="grid gap-3 md:grid-cols-2">
                     {frameworkOptionsForIndustry(
                       (orgRecord as { industry?: string | null } | null)?.industry ?? null,
@@ -1243,8 +1252,8 @@ export default async function OnboardingPage({
                       );
                     })}
                   </div>
-                </div>
-                <SubmitButton loadingText="Configuring frameworks...">
+                </fieldset>
+                <SubmitButton loadingText="Setting up your controls...">
                   Continue
                 </SubmitButton>
               </form>
@@ -1258,12 +1267,16 @@ export default async function OnboardingPage({
               >
                 <div className="space-y-3">
                   <label
-                    htmlFor="field-217"
-                    className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
+                    htmlFor="invite-emails"
+                    className="block text-sm font-medium text-foreground"
                   >
-                    Invite teammates (optional)
+                    Invite the people you work with
                   </label>
+                  <p className="text-sm text-muted-foreground">
+                    Optional. You can also invite people later from Settings.
+                  </p>
                   <textarea
+                    id="invite-emails"
                     name="inviteEmails"
                     rows={4}
                     placeholder="Add emails separated by commas or new lines"
@@ -1271,9 +1284,20 @@ export default async function OnboardingPage({
                     className="w-full p-4 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] text-sm font-semibold text-foreground"
                   />
                 </div>
-                <SubmitButton loadingText="Sending invites...">
-                  Continue
-                </SubmitButton>
+                <div className="space-y-3">
+                  <SubmitButton loadingText="Sending invites...">
+                    Send invitations
+                  </SubmitButton>
+                  <button
+                    type="submit"
+                    formAction={skipInvites}
+                    formNoValidate
+                    data-testid="skip-invites"
+                    className="w-full rounded-2xl px-8 py-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    Skip for now
+                  </button>
+                </div>
               </form>
             ) : null}
 
@@ -1283,15 +1307,15 @@ export default async function OnboardingPage({
                 className="space-y-8"
                 data-testid="onboarding-step-first-action"
               >
-                <div className="space-y-3">
-                  <div className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em] ml-1">
-                    First system action
-                  </div>
+                <fieldset className="space-y-3">
+                  <legend className="text-sm font-medium text-foreground">
+                    What do you want to do first?
+                  </legend>
                   {isReadOnlyPersona ? (
-                    <div className="rounded-xl border border-border bg-surface-2 px-4 py-3 text-xs text-muted-foreground">
-                      Read-only persona detected. Choose a review-first action
-                      to enter the workspace safely.
-                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Your access is view only, so the options here do not
+                      change anything in your workspace.
+                    </p>
                   ) : null}
                   <div className="space-y-3">
                     {!isReadOnlyPersona ? (
@@ -1305,7 +1329,7 @@ export default async function OnboardingPage({
                           defaultChecked={firstActionDefault === 'create_task'}
                           required
                         />
-                        <span>Create a kickoff compliance task</span>
+                        <span>Create your first compliance task</span>
                       </label>
                     ) : null}
                     {!isReadOnlyPersona ? (
@@ -1320,7 +1344,7 @@ export default async function OnboardingPage({
                             firstActionDefault === 'upload_evidence'
                           }
                         />
-                        <span>Prepare an evidence upload task</span>
+                        <span>Set up a task to upload your first evidence</span>
                       </label>
                     ) : null}
                     <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground">
@@ -1333,7 +1357,7 @@ export default async function OnboardingPage({
                         defaultChecked={firstActionDefault === 'run_evaluation'}
                         required={isReadOnlyPersona}
                       />
-                      <span>Run the first compliance evaluation</span>
+                      <span>Run your first check against those standards</span>
                     </label>
                     {isReadOnlyPersona ? (
                       <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground">
@@ -1347,22 +1371,30 @@ export default async function OnboardingPage({
                             firstActionDefault === 'review_dashboard'
                           }
                         />
-                        <span>Open readiness dashboard and review posture</span>
+                        <span>Open the dashboard and review where you sit</span>
                       </label>
                     ) : null}
                   </div>
-                </div>
+                </fieldset>
                 <SubmitButton loadingText="Completing setup...">
                   Complete setup
                 </SubmitButton>
               </form>
             ) : null}
 
-            <div className="mt-10 pt-8 border-t border-edge-2 flex items-center gap-3 text-muted-foreground">
-              <ShieldCheck className="h-5 w-5" />
-              <p className="text-[10px] font-black uppercase tracking-widest">
-                Onboarding progress stored securely
-              </p>
+            <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-edge-2 pt-8 text-sm text-muted-foreground">
+              {safeStep > 1 ? (
+                <Link
+                  href={`/onboarding?step=${safeStep - 1}`}
+                  data-testid="onboarding-back"
+                  className="font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  Back
+                </Link>
+              ) : (
+                <span aria-hidden="true" />
+              )}
+              <p>Your answers are saved as you go.</p>
             </div>
           </div>
         </div>

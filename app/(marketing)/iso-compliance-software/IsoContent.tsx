@@ -18,16 +18,16 @@ export default function IsoContent() {
       }
       subheadline="Map ISO 27001 Annex A controls to live workflows and keep your ISMS audit-ready year-round."
       introParagraphs={[
-        'ISO 27001 certification signals to customers, partners, and regulators that your organization takes information security seriously. But maintaining that certification is where most teams struggle. The gap between passing an audit and actually operating a mature ISMS is where risk lives.',
+        'ISO 27001 certification signals to customers, partners, and regulators that your organisation takes information security seriously. But maintaining that certification is where most teams struggle. The gap between passing an audit and actually operating a mature ISMS is where risk lives.',
         'Traditional approaches rely on spreadsheets, shared drives, and annual evidence-gathering sprints. Controls exist on paper but aren\'t connected to the people and processes that execute them. When the auditor arrives, teams scramble to reconstruct evidence from scattered systems.',
-        'FormaOS closes that gap by turning ISO 27001 requirements into executable operational workflows. Every Annex A control is mapped to an owner, a process, and an evidence requirement. Compliance isn\'t something you prepare for, it\'s something your organization does naturally as part of daily operations.',
-        'The result: less audit preparation time, stronger security posture, and a living ISMS that actually reflects how your organization manages information security risks.',
+        'FormaOS closes that gap by turning ISO 27001 requirements into executable operational workflows. Every Annex A control is mapped to an owner, a process, and an evidence requirement. Compliance isn\'t something you prepare for, it\'s something your organisation does naturally as part of daily operations.',
+        'The result: less audit preparation time, stronger security posture, and a living ISMS that actually reflects how your organisation manages information security risks.',
       ]}
       problemSections={[
         {
           heading: 'The hidden cost of spreadsheet-driven ISO compliance',
           paragraphs: [
-            'Many organizations begin their ISO 27001 journey with spreadsheets and document repositories. Initial certification is achievable with manual effort. But the real challenge emerges during surveillance audits and recertification cycles.',
+            'Many organisations start ISO 27001 with spreadsheets and document repositories. Initial certification is achievable with manual effort. But the real challenge emerges during surveillance audits and recertification cycles.',
             'Without operational infrastructure, teams face predictable failure patterns:',
           ],
           bullets: [
@@ -41,7 +41,7 @@ export default function IsoContent() {
         {
           heading: 'Why periodic compliance creates security blind spots',
           paragraphs: [
-            'When ISO compliance operates on a periodic cycle, annual reviews, quarterly evidence collection, pre-audit preparation sprints, your organization develops blind spots between those cycles. Controls that look good on paper may not be executed consistently. Evidence requirements that changed aren\'t captured until someone notices during audit prep.',
+            'When ISO compliance operates on a periodic cycle, annual reviews, quarterly evidence collection, pre-audit preparation sprints, your organisation develops blind spots between those cycles. Controls that look good on paper may not be executed consistently. Evidence requirements that changed aren\'t captured until someone notices during audit prep.',
             'This periodic approach also creates unnecessary stress and cost. Teams context-switch from their regular work to "compliance mode" multiple times per year, disrupting operations and consuming resources that could be better deployed on actual security improvements.',
           ],
         },
@@ -53,7 +53,7 @@ export default function IsoContent() {
             'FormaOS maps every Annex A control to internal policies, operational processes, and evidence requirements. Controls aren\'t just documented, they\'re connected to the workflows that execute them.',
           ],
           bullets: [
-            'Full Annex A 2022 control catalog with applicability tracking',
+            'Full Annex A 2022 control catalogue with applicability tracking',
             'Map controls to policies, processes, and responsible owners',
             'Track implementation status and maturity per control',
             'Generate Statement of Applicability from live operational data',
@@ -111,7 +111,7 @@ export default function IsoContent() {
         ],
       }}
       faq={[
-        { question: 'Does FormaOS support ISO 27001:2022?', answer: 'Yes. FormaOS maps controls directly to Annex A requirements from the 2022 revision, including the new organizational, people, physical, and technological control categories.' },
+        { question: 'Does FormaOS support ISO 27001:2022?', answer: 'Yes. FormaOS maps controls directly to Annex A requirements from the 2022 revision, including the new organisational, people, physical, and technological control categories.' },
         { question: 'Can FormaOS help with ISO certification?', answer: 'FormaOS provides the operational infrastructure to maintain continuous compliance, control ownership, evidence capture, and audit trail generation, that auditors require during certification and surveillance audits.' },
         { question: 'How does FormaOS handle the Statement of Applicability?', answer: 'FormaOS lets you define which Annex A controls are applicable, map them to internal policies and controls, and track evidence against each. This creates a living Statement of Applicability backed by real operational data.' },
         { question: 'Can we manage multiple ISO frameworks simultaneously?', answer: 'Yes. FormaOS is framework-agnostic. You can manage ISO 27001, ISO 9001, ISO 45001, and other frameworks concurrently with shared controls and unified evidence collection.' },

@@ -312,7 +312,7 @@ export function PostOnboardingHero({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-xs font-bold uppercase tracking-wider text-success">
+                <p className="text-xs font-medium text-success">
                   Setup complete
                 </p>
                 <CheckCircle2 className="h-3.5 w-3.5 text-success" />
@@ -330,7 +330,7 @@ export function PostOnboardingHero({
           </div>
           <div className="flex items-center gap-1.5 rounded-full border border-success/20 bg-success/10 px-3 py-1.5">
             <Zap className="h-3 w-3 text-success" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-success">
+            <span className="text-xs font-medium text-success">
               {state.completed}/{state.total} done
             </span>
           </div>

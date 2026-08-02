@@ -14,9 +14,7 @@ import {
   IndustryCTA,
   IndustryFAQ,
   InteractiveDashboard,
-  BeforeAfterSection,
   FrameworkExplorer,
-  VerticalTimeline,
   HeroStatsBar,
   CompareTable,
   SeeItInAction,
@@ -25,6 +23,16 @@ import {
   DemoNotificationTimeline,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
+import { PUBLIC_PRICING_TIERS, priceLabelFor } from '@/lib/marketing/pricing';
+
+/* The comparison row reads the entry plan from the public pricing tiers so it
+   cannot drift from /pricing. */
+const foundationTier = PUBLIC_PRICING_TIERS.find(
+  (tier) => tier.id === 'foundation',
+);
+const ENTRY_PRICE = foundationTier
+  ? `from ${priceLabelFor(foundationTier)}/mo`
+  : 'See pricing';
 
 /* ── Interactive Dashboard visual ────────────────────── */
 
@@ -118,7 +126,7 @@ function MentalHealthDashboardVisual() {
             expiry: '01 Feb 2026',
           },
           expandedContent: {
-            label: 'Worker Details, ACTION REQUIRED',
+            label: 'Worker Details: action required',
             items: [
               { key: 'State', value: 'NSW' },
               { key: 'Check Type', value: 'Worker Screening + Police Check' },
@@ -181,9 +189,7 @@ function FeatureVisual({
   return (
     <div className="p-5 space-y-3">
       <div>
-        <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-          {label}
-        </div>
+        <div className="text-xs font-medium text-slate-400">{label}</div>
         <div className="mt-0.5 text-[9px] text-slate-600">
           Illustrative · sample data
         </div>
@@ -201,10 +207,10 @@ function FeatureVisual({
                 <span
                   className={`h-2 w-2 rounded-full ${
                     r.status === 'green'
-                      ? 'bg-emerald-500'
+                      ? 'bg-success'
                       : r.status === 'amber'
-                        ? 'bg-amber-500'
-                        : 'bg-red-500'
+                        ? 'bg-warning'
+                        : 'bg-destructive'
                   }`}
                 />
               )}
@@ -229,12 +235,11 @@ export default function MentalHealthComplianceContent() {
           scrim="center"
         />
         <IndustryHero
-          eyebrow="National Standards for Mental Health Services"
           headline={
             <>
-              Defensible Compliance for
+              Ten standards,
               <br />
-              <span className="text-foreground">Mental Health Services</span>
+              evidenced <span className="mk-accent">daily</span>
             </>
           }
           subheadline="Operationalise the National Standards for Mental Health Services, consumer rights, restrictive-practice governance and incidents, continuously evidenced."
@@ -263,11 +268,6 @@ export default function MentalHealthComplianceContent() {
               ]}
             />
           }
-          jurisdictionBadges={[
-            { label: 'National Standards for Mental Health Services' },
-            { label: 'Reportable Incidents' },
-            { label: 'Restrictive Practices' },
-          ]}
         />
       </div>
 
@@ -275,98 +275,9 @@ export default function MentalHealthComplianceContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <BeforeAfterSection
-        headline="The Mental Health Compliance Gap"
-        subheadline="The difference between reconstructing evidence and being review-ready."
-        without={[
-          'Reviewers request consumer-rights and complaints evidence, scattered across shared drives, email, and spreadsheets',
-          'Worker screening check expired weeks ago, discovered only when the register is requested',
-          'A reportable incident not escalated within required timeframes, exposure to enforcement and harm',
-          'Seclusion or restraint applied without current authorisation, no documented review on file',
-        ]}
-        withFormaOS={[
-          'Continuous evidence chain across every NSMHS standard, review-ready export in one click',
-          'Automatic screening expiry alerts at 90, 60, and 30 days, zero workers operating without clearance',
-          'Reportable-incident workflow with notification timers and submission status tracking',
-          'Restrictive practices register linked to authorisations and scheduled review cycles',
-        ]}
-      />
-
-      <CompareTable
-        headline="FormaOS vs. The Status Quo"
-        description="See how purpose-built mental health compliance software compares."
-        col2Label="Care Software"
-        rows={[
-          {
-            feature: 'NSMHS standards pre-built',
-            spreadsheets: 'no',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Worker screening tracking',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Reportable incident workflow',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Review-ready export',
-            spreadsheets: 'no',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Named ownership per obligation',
-            spreadsheets: 'no',
-            genericGrc: 'yes',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Immutable evidence chain',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'AU data residency',
-            spreadsheets: 'no',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Restrictive practices register',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Onboarding time',
-            spreadsheets: 'Weeks',
-            genericGrc: 'Days',
-            formaos: 'Hours',
-          },
-          {
-            feature: 'Price',
-            spreadsheets: 'Hidden',
-            genericGrc: '$$$+',
-            formaos: 'from $297/mo',
-          },
-        ]}
-      />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
       <FrameworkExplorer
-        headline="Mental Health Frameworks. Pre-Built."
-        description="FormaOS ships with the National Standards for Mental Health Services pre-loaded, alongside the supporting registers mental health providers rely on. Your obligations are mapped from day one, no manual setup required."
+        headline="The ten standards, and the registers that sit under them"
+        description="The National Standards for Mental Health Services ship pre-loaded, alongside restrictive practices, reportable incidents and worker screening."
         frameworks={[
           {
             id: 'nsmhs',
@@ -374,18 +285,6 @@ export default function MentalHealthComplianceContent() {
             body: 'Australian Health Ministers',
             updated: '2025-11-01',
             obligationCount: '10 standards',
-            categories: [
-              { name: 'Rights and responsibilities', pct: 98 },
-              { name: 'Safety', pct: 96 },
-              { name: 'Consumer and carer participation', pct: 95 },
-              { name: 'Diversity responsiveness', pct: 94 },
-              { name: 'Promotion and prevention', pct: 96 },
-              { name: 'Consumers', pct: 97 },
-              { name: 'Carers', pct: 95 },
-              { name: 'Governance, leadership and management', pct: 99 },
-              { name: 'Integration', pct: 93 },
-              { name: 'Delivery of care', pct: 96 },
-            ],
             requirements: [
               'Rights and responsibilities',
               'Safety',
@@ -403,12 +302,6 @@ export default function MentalHealthComplianceContent() {
             body: 'Service Governance',
             updated: '2026-01-10',
             obligationCount: 'Register + reviews',
-            categories: [
-              { name: 'Authorisation documentation', pct: 100 },
-              { name: 'Seclusion and restraint logging', pct: 96 },
-              { name: 'Minimisation and review cycles', pct: 94 },
-              { name: 'Reporting and oversight', pct: 98 },
-            ],
             requirements: [
               'Authorisation documentation per consumer',
               'Seclusion and restraint event logging',
@@ -422,12 +315,6 @@ export default function MentalHealthComplianceContent() {
             body: 'Service Governance',
             updated: '2026-01-10',
             obligationCount: 'Pipeline',
-            categories: [
-              { name: 'Incident capture and triage', pct: 100 },
-              { name: 'Investigation and root cause', pct: 94 },
-              { name: 'Notification and submission tracking', pct: 96 },
-              { name: 'Corrective action and closure', pct: 98 },
-            ],
             requirements: [
               'Incident capture and triage',
               'Investigation and root cause analysis',
@@ -441,12 +328,6 @@ export default function MentalHealthComplianceContent() {
             body: 'State and Territory Screening Units',
             updated: '2025-11-20',
             obligationCount: 'Per worker',
-            categories: [
-              { name: 'Worker screening by state', pct: 100 },
-              { name: 'Police check validation', pct: 98 },
-              { name: 'Professional registration', pct: 96 },
-              { name: 'Continuous monitoring', pct: 95 },
-            ],
             requirements: [
               'Worker screening clearance by state',
               'National Police Check validation',
@@ -461,115 +342,9 @@ export default function MentalHealthComplianceContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <VerticalTimeline
-        steps={[
-          {
-            number: '01',
-            title: 'Connect Your NSMHS Obligations',
-            description:
-              'FormaOS ships with the National Standards for Mental Health Services, restrictive-practice oversight, and worker screening rules pre-built. Confirm your service scope and your obligation register is live in minutes.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
-            visual: (
-              <FeatureVisual
-                label="Framework Activation"
-                rows={[
-                  {
-                    k: 'NSMHS (10 Standards)',
-                    v: 'Activated',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Restrictive Practices Oversight',
-                    v: 'Activated',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Worker Screening Requirements',
-                    v: 'Activated',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Reportable Incidents Pipeline',
-                    v: 'Activated',
-                    status: 'green',
-                  },
-                ]}
-              />
-            ),
-          },
-          {
-            number: '02',
-            title: 'Map Evidence to Every Standard',
-            description:
-              'Upload policies, worker credentials, and incident records. FormaOS links each document to specific NSMHS standards, building continuous evidence chains.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
-            visual: (
-              <FeatureVisual
-                label="Evidence Mapping"
-                rows={[
-                  {
-                    k: 'Standard 1: Rights & Responsibilities',
-                    v: '32 evidence items',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Standard 8: Governance',
-                    v: '27 evidence items',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Worker Screening Register',
-                    v: '5 workers linked',
-                    status: 'amber',
-                  },
-                  {
-                    k: 'Standard 10: Delivery of Care',
-                    v: '24 evidence items',
-                    status: 'green',
-                  },
-                ]}
-              />
-            ),
-          },
-          {
-            number: '03',
-            title: 'Stay Review-Ready Every Day',
-            description:
-              'Automated alerts for every screening expiry, incident deadline, and evidence gap. When a review or accreditation cycle opens, your evidence pack is one click away.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
-            visual: (
-              <FeatureVisual
-                label="Readiness Score"
-                rows={[
-                  {
-                    k: 'Overall NSMHS coverage',
-                    v: '96%',
-                    status: 'green',
-                  },
-                  { k: 'Worker Screening Current', v: '4/5', status: 'amber' },
-                  { k: 'Restrictive Practices Review', v: 'Current', status: 'green' },
-                  {
-                    k: 'Evidence Pack Status',
-                    v: 'Ready to export',
-                    status: 'green',
-                  },
-                ]}
-              />
-            ),
-          },
-        ]}
-      />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
       <IndustryFeatures
-        headline="Purpose-Built for Mental Health Services"
-        subheadline="Every feature designed around real mental health compliance workflows, not generic task management."
+        headline="Built around consumers, authorisations and incidents"
+        subheadline="Worker screening, restrictive practices, consumer records and reportable incidents, held as one connected register."
         features={[
           {
             title: 'Worker Screening Dashboard',
@@ -600,7 +375,11 @@ export default function MentalHealthComplianceContent() {
                     v: 'Valid to Sep 2027',
                     status: 'green',
                   },
-                  { k: 'Marcus Tan, NSW', v: 'Expired Feb 2026', status: 'red' },
+                  {
+                    k: 'Marcus Tan, NSW',
+                    v: 'Expired Feb 2026',
+                    status: 'red',
+                  },
                 ]}
               />
             ),
@@ -665,37 +444,30 @@ export default function MentalHealthComplianceContent() {
             ],
             visual: (
               <div className="p-5 space-y-3">
-                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Incident Pipeline
+                <div className="text-xs font-medium text-slate-400">
+                  Incident pipeline
                 </div>
-                {[
-                  'Reported',
-                  'Under Investigation',
-                  'Notified',
-                  'Closed',
-                ].map((stage, i) => (
-                  <div key={stage} className="flex items-center gap-3">
-                    <div
-                      className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
-                        i < 3
-                          ? 'bg-white/[0.12] text-white border border-white/20'
-                          : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
-                      }`}
-                    >
-                      {i + 1}
-                    </div>
-                    <span
-                      className={`text-xs ${i < 3 ? 'text-white' : 'text-slate-500'}`}
-                    >
-                      {stage}
-                    </span>
-                    {i < 3 && (
-                      <span className="text-[10px] text-emerald-500 ml-auto">
-                        Complete
+                {['Reported', 'Under Investigation', 'Notified', 'Closed'].map(
+                  (stage, i) => (
+                    <div key={stage} className="flex items-center gap-3">
+                      <span
+                        className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                          i < 3 ? 'bg-success' : 'bg-white/20'
+                        }`}
+                      />
+                      <span
+                        className={`text-xs ${i < 3 ? 'text-white' : 'text-slate-500'}`}
+                      >
+                        {stage}
                       </span>
-                    )}
-                  </div>
-                ))}
+                      {i < 3 && (
+                        <span className="text-[10px] text-success ml-auto">
+                          Complete
+                        </span>
+                      )}
+                    </div>
+                  ),
+                )}
               </div>
             ),
           },
@@ -870,12 +642,73 @@ export default function MentalHealthComplianceContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <div className="relative isolate overflow-hidden">
-        <IndustryCTA
-          industry="Mental Health Services"
-          urgencyCallout="Reviews and accreditation cycles arrive on their own schedule. Is your evidence chain current right now?"
-        />
-      </div>
+      <CompareTable
+        headline="Compared with spreadsheets and care software"
+        description="Clinical and care systems record the episode. Neither they nor a spreadsheet hold the authorisation, the review cycle and the evidence together."
+        col2Label="Care Software"
+        rows={[
+          {
+            feature: 'NSMHS standards pre-built',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Worker screening tracking',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Reportable incident workflow',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Review-ready export',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Named ownership per obligation',
+            spreadsheets: 'no',
+            genericGrc: 'yes',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Immutable evidence chain',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'AU data residency',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Restrictive practices register',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Onboarding time',
+            spreadsheets: 'Weeks',
+            genericGrc: 'Days',
+            formaos: 'Hours',
+          },
+          {
+            feature: 'Price',
+            spreadsheets: 'Hidden',
+            genericGrc: '$$$+',
+            formaos: ENTRY_PRICE,
+          },
+        ]}
+      />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -923,6 +756,13 @@ export default function MentalHealthComplianceContent() {
           },
         ]}
       />
+      <div className="relative isolate overflow-hidden">
+        <IndustryCTA
+          industry="Mental Health Services"
+          urgencyCallout="Reviews and accreditation cycles arrive on their own schedule. Is your evidence chain current right now?"
+        />
+      </div>
+
       <RelatedIndustries currentSlug="mental-health-compliance" />
     </MarketingPageShell>
   );

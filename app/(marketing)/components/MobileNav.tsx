@@ -187,7 +187,7 @@ export function MobileNav() {
               initial={shouldReduceMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+              className="absolute inset-0 bg-black/80"
             />
 
             {/* Menu panel - positioned below header */}
@@ -288,13 +288,13 @@ export function MobileNav() {
 
                 {/* Footer trust indicators */}
                 <div className="px-4 pb-5 pt-2">
-                  <div className="flex items-center justify-center gap-6 text-xs text-slate-500">
+                  <div className="flex items-center justify-center gap-6 text-xs text-zinc-500">
                     <span className="flex items-center gap-1.5">
-                      <div className="h-2 w-2 rounded-full bg-slate-400" />
+                      <div className="h-2 w-2 rounded-full bg-zinc-400" />
                       Guided plan
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <div className="h-2 w-2 rounded-full bg-slate-400" />
+                      <div className="h-2 w-2 rounded-full bg-zinc-400" />
                       AU-hosted
                     </span>
                   </div>

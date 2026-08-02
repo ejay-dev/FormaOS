@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
@@ -22,8 +22,8 @@ export function DocsCTA() {
                 Can&apos;t find what you&apos;re looking for?
               </h2>
               <p className="text-slate-400 mb-8 max-w-xl mx-auto">
-                Our support team is here to help. Reach out for personalized
-                guidance or schedule a technical consultation.
+                Send the question through and you will get a direct answer. If a
+                document is missing, that is worth knowing too.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -39,18 +39,10 @@ export function DocsCTA() {
                       variant: 'primary',
                     })
                   }
-                  whileHover={
-                    shouldReduceMotion
-                      ? undefined
-                      : {
-                          scale: 1.03,
-                          boxShadow: '0 0 30px rgba(148, 163, 184, 0.25)',
-                        }
-                  }
                   whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
                   className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
                 >
-                  <span>Contact Support</span>
+                  <span>Contact us</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.a>
 
@@ -69,7 +61,7 @@ export function DocsCTA() {
                   className="mk-btn mk-btn-secondary group px-8 py-4 text-lg"
                 >
                   <span>Browse FAQ</span>
-                  <ExternalLink className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>

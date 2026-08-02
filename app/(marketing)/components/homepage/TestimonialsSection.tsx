@@ -63,14 +63,6 @@ const SCENARIOS = [
   },
 ] as const;
 
-const BUILT_ON_PARTNERS = [
-  'Vercel',
-  'Supabase',
-  'Stripe',
-  'Sentry',
-  'Resend',
-] as const;
-
 export function TestimonialsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
@@ -93,14 +85,11 @@ export function TestimonialsSection() {
       >
         <span className="mt-1.5 h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent" />
         <div className="max-w-2xl">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-            Use case scenarios
-          </p>
           <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
             How regulated teams operate with FormaOS
           </h2>
-          <p className="mt-4 max-w-xl text-base text-slate-400">
-            Anonymized scenarios from regulated organizations. Outcomes reflect
+          <p className="mt-4 max-w-xl text-base text-zinc-400">
+            Anonymised scenarios from regulated organisations. Outcomes reflect
             conditions at the time of deployment. We can walk through full
             deployments during evaluation.
           </p>
@@ -147,7 +136,7 @@ export function TestimonialsSection() {
                   className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border transition-colors ${
                     isActive
                       ? 'border-white/15 bg-white/[0.06] text-white'
-                      : 'border-white/10 bg-white/[0.02] text-slate-400 group-hover:text-slate-200'
+                      : 'border-white/10 bg-white/[0.02] text-zinc-400 group-hover:text-zinc-200'
                   }`}
                 >
                   <Icon className="h-5 w-5" strokeWidth={1.75} />
@@ -155,12 +144,12 @@ export function TestimonialsSection() {
                 <span className="min-w-0">
                   <span
                     className={`block text-[15px] font-semibold ${
-                      isActive ? 'text-white' : 'text-slate-300'
+                      isActive ? 'text-white' : 'text-zinc-300'
                     }`}
                   >
                     {s.sector}
                   </span>
-                  <span className="mt-0.5 block truncate text-xs text-slate-400">
+                  <span className="mt-0.5 block truncate text-xs text-zinc-400">
                     {s.framework}
                   </span>
                 </span>
@@ -182,7 +171,7 @@ export function TestimonialsSection() {
               {scenario.framework.split(' + ').map((fw) => (
                 <span
                   key={fw}
-                  className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-slate-400"
+                  className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-zinc-400"
                 >
                   {fw}
                 </span>
@@ -190,24 +179,24 @@ export function TestimonialsSection() {
             </div>
 
             <div className="mt-7">
-              <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+              <p className="mb-2.5 text-sm font-medium text-zinc-300">
                 The challenge
               </p>
-              <p className="text-lg leading-relaxed text-slate-200">
+              <p className="text-lg leading-relaxed text-zinc-200">
                 {scenario.situation}
               </p>
             </div>
 
             <div className="mt-auto border-t border-white/[0.07] pt-7">
-              <p className="mb-3.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+              <p className="mb-3.5 text-sm font-medium text-zinc-300">
                 What changed
               </p>
-              <ul className="space-y-3 text-sm leading-relaxed text-slate-200">
+              <ul className="space-y-3 text-sm leading-relaxed text-zinc-200">
                 {scenario.outcomes.map((outcome) => (
                   <li key={outcome} className="flex gap-3">
                     <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/[0.04]">
                       <Check
-                        className="h-2.5 w-2.5 text-slate-200"
+                        className="h-2.5 w-2.5 text-zinc-200"
                         strokeWidth={2.5}
                       />
                     </span>
@@ -224,28 +213,7 @@ export function TestimonialsSection() {
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
         transition={{ duration: 0.6, delay: 0.6 }}
-        className="mx-auto mt-16 max-w-4xl"
-      >
-        <p className="mb-5 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-          Built on
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-          {BUILT_ON_PARTNERS.map((partner) => (
-            <span
-              key={partner}
-              className="text-sm font-medium text-slate-400 transition-colors hover:text-slate-200"
-            >
-              {partner}
-            </span>
-          ))}
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.6, delay: 0.7 }}
-        className="mt-10 text-center"
+        className="mt-16 text-center"
       >
         <Link
           href="/customer-stories"

@@ -247,7 +247,7 @@ function NextActionsStripInner() {
                     {a.frameworkCode && (
                       <>
                         <span aria-hidden className="text-border">·</span>
-                        <span className="truncate font-mono text-[10px] uppercase tracking-wide">
+                        <span className="truncate text-[11px]">
                           {a.frameworkCode}
                         </span>
                       </>

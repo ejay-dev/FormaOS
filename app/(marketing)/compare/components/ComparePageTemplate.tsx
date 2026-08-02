@@ -137,13 +137,31 @@ const relatedLinksBySource: Record<
   ],
 };
 
+// Marks always carry a word, so the meaning does not depend on the icon or
+// its colour. "no" reads as "not documented": the competitor columns are
+// sourced from public material, which cannot prove absence.
 function FeatureCell({ value }: { value: string }) {
   if (value === 'yes')
-    return <Check className="h-4 w-4 text-emerald-400 mx-auto" />;
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs text-slate-200">
+        <Check className="h-4 w-4 text-success" aria-hidden="true" />
+        Included
+      </span>
+    );
   if (value === 'no')
-    return <Minus className="h-4 w-4 text-slate-600 mx-auto" />;
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs text-slate-400">
+        <Minus className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+        Not documented
+      </span>
+    );
   if (value === 'partial')
-    return <AlertCircle className="h-4 w-4 text-amber-400 mx-auto" />;
+    return (
+      <span className="inline-flex items-center gap-1.5 text-xs text-slate-300">
+        <AlertCircle className="h-4 w-4 text-warning" aria-hidden="true" />
+        Partial
+      </span>
+    );
   return <span className="text-xs text-slate-300 leading-snug">{value}</span>;
 }
 
@@ -164,21 +182,12 @@ export function ComparePageTemplate({
     relatedLinksBySource[source] ?? relatedLinksBySource.compare_healthmetrics;
   const buyerReviewHref = getBuyerReviewHref(source);
   const complianceHref = compliancePlanHref(source);
-
-  // Feature score computation
-  const formaosScore = featureComparison.filter(
-    (r) => r.formaos === 'yes',
-  ).length;
-  const formaosPartial = featureComparison.filter(
-    (r) => r.formaos === 'partial',
-  ).length;
-  const competitorScore = featureComparison.filter(
-    (r) => r.competitor === 'yes',
-  ).length;
-  const competitorPartial = featureComparison.filter(
-    (r) => r.competitor === 'partial',
-  ).length;
-  const totalFeatures = featureComparison.length;
+  const reviewedOn = datePublished
+    ? new Date(`${datePublished}T00:00:00`).toLocaleDateString('en-AU', {
+        month: 'long',
+        year: 'numeric',
+      })
+    : null;
 
   return (
     <MarketingPageShell>
@@ -242,7 +251,7 @@ export function ComparePageTemplate({
         <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <DotGrid spacing={28} color="rgba(148, 163, 184, 0.03)" />
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm overflow-hidden">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] overflow-hidden">
               <div className="p-6 pb-4 border-b border-white/[0.06]">
                 <h2 className="text-lg font-semibold text-white">
                   Feature Comparison
@@ -265,7 +274,7 @@ export function ComparePageTemplate({
                     </span>
                     <div className="mt-2.5 grid grid-cols-2 gap-2">
                       <div className="rounded-lg border border-white/20 bg-white/[0.05] px-3 py-2 text-center">
-                        <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300">
+                        <span className="mb-1 block text-[11px] font-medium text-slate-300">
                           FormaOS
                         </span>
                         <div className="flex min-h-[20px] items-center justify-center">
@@ -273,7 +282,7 @@ export function ComparePageTemplate({
                         </div>
                       </div>
                       <div className="rounded-lg border border-white/[0.06] px-3 py-2 text-center">
-                        <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                        <span className="mb-1 block text-[11px] font-medium text-slate-500">
                           {competitor}
                         </span>
                         <div className="flex min-h-[20px] items-center justify-center">
@@ -289,13 +298,13 @@ export function ComparePageTemplate({
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/[0.06]">
-                      <th className="text-left py-3 px-6 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[45%]">
+                      <th className="text-left py-3 px-6 text-xs font-semibold text-slate-400 w-[45%]">
                         Capability
                       </th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-white w-[27.5%] bg-white/[0.04] border-b-2 border-white/30">
+                      <th className="text-center py-3 px-4 text-xs font-semibold text-white w-[27.5%] bg-white/[0.04] border-b-2 border-white/30">
                         FormaOS
                       </th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[27.5%]">
+                      <th className="text-center py-3 px-4 text-xs font-semibold text-slate-400 w-[27.5%]">
                         {competitor}
                       </th>
                     </tr>
@@ -322,49 +331,14 @@ export function ComparePageTemplate({
               </div>
 
               <div className="p-4 border-t border-white/[0.06]">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  {/* Score summary */}
-                  <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-white">
-                        FormaOS
-                      </span>
-                      <span className="text-xs text-slate-300">
-                        {formaosScore}/{totalFeatures} full
-                      </span>
-                      {formaosPartial > 0 && (
-                        <span className="text-xs text-amber-400/70">
-                          +{formaosPartial} partial
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-slate-400">
-                        {competitor}
-                      </span>
-                      <span className="text-xs text-slate-300">
-                        {competitorScore}/{totalFeatures} full
-                      </span>
-                      {competitorPartial > 0 && (
-                        <span className="text-xs text-amber-400/70">
-                          +{competitorPartial} partial
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  {/* Legend */}
-                  <div className="flex items-center gap-6 text-[10px] text-slate-500">
-                    <span className="flex items-center gap-1.5">
-                      <Check className="h-3 w-3 text-emerald-400" /> Included
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <AlertCircle className="h-3 w-3 text-amber-400" /> Partial
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Minus className="h-3 w-3 text-slate-600" /> Not available
-                    </span>
-                  </div>
-                </div>
+                <p className="text-xs leading-relaxed text-slate-400">
+                  {competitor} rows were checked against that vendor&apos;s
+                  public materials
+                  {reviewedOn ? ` in ${reviewedOn}` : ''}. &ldquo;Not
+                  documented&rdquo; means we could not find the capability
+                  described publicly, not that it does not exist. If something
+                  here is wrong or has changed, tell us and we will correct it.
+                </p>
               </div>
             </div>
           </ScrollReveal>
@@ -401,7 +375,7 @@ export function ComparePageTemplate({
       <DeferredSection minHeight={80}>
         <section className="mk-section mk-section--compact relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-            <div className="rounded-2xl border border-white/[0.1] bg-white/[0.04] backdrop-blur-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="rounded-2xl border border-white/[0.1] bg-white/[0.04] p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h3 className="text-base font-semibold text-white">
                   Ready to see the difference firsthand?
@@ -466,17 +440,12 @@ export function ComparePageTemplate({
             pattern="alternating"
             className="grid gap-4 lg:grid-cols-3"
           >
-            {points.map((p, idx) => (
+            {points.map((p) => (
               <motion.article
                 key={p.title}
                 whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/[0.08] text-xs font-bold text-slate-300">
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
-                </div>
                 <h2 className="text-lg font-semibold text-white">{p.title}</h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
                   {p.detail}
@@ -495,7 +464,7 @@ export function ComparePageTemplate({
       <DeferredSection minHeight={140}>
         <section className="mk-section mk-section--compact relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7">
               <h2 className="text-lg font-semibold text-white mb-1">
                 When {competitor} may be the right choice
               </h2>
@@ -523,7 +492,7 @@ export function ComparePageTemplate({
       <DeferredSection minHeight={180}>
         <section className="mk-section mk-section--compact relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7">
               <h2 className="text-lg font-semibold text-white">
                 Continue your evaluation
               </h2>
@@ -572,7 +541,7 @@ export function ComparePageTemplate({
       <DeferredSection minHeight={200}>
         <section className="mk-section mk-section--compact relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7">
               <h2 className="text-lg font-semibold text-white">
                 Evaluation and procurement checks
               </h2>
@@ -585,7 +554,7 @@ export function ComparePageTemplate({
                     key={check.title}
                     className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4"
                   >
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    <h3 className="text-sm font-semibold text-white">
                       {check.title}
                     </h3>
                     <p className="mt-2 text-sm leading-relaxed text-slate-300">

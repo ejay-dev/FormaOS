@@ -79,39 +79,29 @@ export default async function RoleDetailPage({
   );
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-3">
-          <Link
-            href="/app/settings/roles"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Roles
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold">{role.name}</h1>
-            <p className="text-sm text-muted-foreground">
-              {role.description ||
-                'Custom role permission summary for this organization.'}
-            </p>
-          </div>
-        </div>
-        <button
-          type="button"
-          disabled
-          className="inline-flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-muted-foreground"
+    <div className="mx-auto w-full max-w-5xl space-y-6 pb-16">
+      <div className="space-y-3">
+        <Link
+          href="/app/settings/roles"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
         >
-          <Lock className="h-4 w-4" />
-          Editing not available yet
-        </button>
+          <ArrowLeft className="h-4 w-4" />
+          Roles
+        </Link>
+        <div>
+          <h1 className="text-2xl font-bold">{role.name}</h1>
+          <p className="text-sm text-muted-foreground">
+            {role.description ||
+              `A custom role with ${role.base_role} access, assignable to a team.`}
+          </p>
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Shield className="h-4 w-4" />
-            <span className="text-xs font-medium">Base Role</span>
+            <span className="text-sm">Based on</span>
           </div>
           <p className="mt-1 text-2xl font-semibold capitalize">
             {role.base_role}
@@ -120,14 +110,14 @@ export default async function RoleDetailPage({
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Lock className="h-4 w-4" />
-            <span className="text-xs font-medium">Enabled Permissions</span>
+            <span className="text-sm">Permissions on</span>
           </div>
           <p className="mt-1 text-2xl font-semibold">{enabledCount}</p>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center gap-2 text-muted-foreground">
             <Users className="h-4 w-4" />
-            <span className="text-xs font-medium">Assigned Members</span>
+            <span className="text-sm">Assigned members</span>
           </div>
           <p className="mt-1 text-2xl font-semibold">
             {assignedMembers?.length ?? 0}
@@ -138,11 +128,15 @@ export default async function RoleDetailPage({
       <div className="overflow-hidden rounded-lg border border-border bg-card">
         <div className="border-b border-border px-4 py-3">
           <h2 className="font-semibold">Permissions</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Inherited from the {role.base_role} role. To give someone different
+            access, assign them a role that already matches it.
+          </p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
+              <tr className="border-b border-border bg-muted/40 text-left text-sm text-muted-foreground">
                 <th className="px-4 py-3 font-medium">Module</th>
                 {ACTIONS.map((action) => (
                   <th key={action} className="px-4 py-3 font-medium">
@@ -162,7 +156,7 @@ export default async function RoleDetailPage({
                         <span
                           className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                             enabled
-                              ? 'bg-emerald-500/10 text-emerald-300'
+                              ? 'bg-success/10 text-success'
                               : 'bg-muted text-muted-foreground'
                           }`}
                         >
@@ -180,7 +174,7 @@ export default async function RoleDetailPage({
 
       <div className="overflow-hidden rounded-lg border border-border bg-card">
         <div className="border-b border-border px-4 py-3">
-          <h2 className="font-semibold">Assigned Members</h2>
+          <h2 className="font-semibold">Assigned members</h2>
         </div>
         {assignedMembers && assignedMembers.length > 0 ? (
           <div className="divide-y divide-border">

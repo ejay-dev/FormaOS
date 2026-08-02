@@ -41,20 +41,20 @@ const CATEGORIES = [
 ] as const;
 
 const statusColors: Record<string, string> = {
-  not_started: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-  in_progress: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
-  achieved: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
+  not_started: 'bg-muted text-muted-foreground',
+  in_progress: 'bg-info/10 text-info',
+  achieved: 'bg-success/10 text-success',
   partially_achieved:
-    'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
-  discontinued: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+    'bg-warning/10 text-warning',
+  discontinued: 'bg-destructive/10 text-destructive',
 };
 
 const progressBarColors: Record<string, string> = {
-  not_started: 'bg-gray-300 dark:bg-gray-600',
-  in_progress: 'bg-blue-500',
-  achieved: 'bg-green-500',
-  partially_achieved: 'bg-yellow-500',
-  discontinued: 'bg-red-400',
+  not_started: 'bg-muted-foreground/40',
+  in_progress: 'bg-info',
+  achieved: 'bg-success',
+  partially_achieved: 'bg-warning',
+  discontinued: 'bg-destructive',
 };
 
 export function GoalTracker({
@@ -201,7 +201,7 @@ export function GoalTracker({
               />
             </div>
             {addError && (
-              <p role="alert" className="text-sm text-red-600">
+              <p role="alert" className="text-sm text-destructive">
                 {addError}
               </p>
             )}
@@ -302,7 +302,7 @@ export function GoalTracker({
                         </span>
                         <p className="flex items-center gap-1">
                           {goal.current_value}
-                          <TrendingUp className="h-3 w-3 text-green-500" />
+                          <TrendingUp className="h-3 w-3 text-success" />
                         </p>
                       </div>
                     )}

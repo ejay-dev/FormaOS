@@ -27,19 +27,7 @@ export function PricingHero() {
       />
 
       <div className="relative z-10 mx-auto w-full max-w-3xl text-center">
-        <motion.div
-          initial={animate ? { opacity: 0, y: 12 } : false}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: animate ? duration.slow : 0 }}
-          className="mb-6 flex items-center justify-center gap-4"
-        >
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
-            Pricing
-          </span>
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-        </motion.div>
-
+        {/* No kicker: it only repeated the page title above the headline. */}
         <motion.h1
           id="pricing-hero-title"
           initial={animate ? { opacity: 0, y: 20 } : false}
@@ -54,7 +42,7 @@ export function PricingHero() {
           initial={animate ? { opacity: 0, y: 16 } : false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: animate ? duration.slower : 0, delay: animate ? 0.14 : 0 }}
-          className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg"
+          className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-zinc-400 sm:text-lg"
         >
           FormaOS replaces manual compliance work with enforced workflows and
           real-time audit evidence. Plans are anchored to risk, framework scope,
@@ -113,14 +101,14 @@ export function PricingHero() {
           className="mx-auto mt-14 grid max-w-2xl grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] sm:grid-cols-3"
         >
           {HERO_STATS.map((stat) => (
-            <div key={stat.label} className="bg-slate-950/40 px-6 py-5 text-center">
+            <div key={stat.label} className="bg-zinc-950/40 px-6 py-5 text-center">
               <div className="text-3xl font-semibold tracking-tight text-white">
                 {stat.value}
               </div>
-              <div className="mt-1.5 text-sm font-medium text-slate-300">
+              <div className="mt-1.5 text-sm font-medium text-zinc-300">
                 {stat.label}
               </div>
-              <p className="mt-0.5 text-xs text-slate-500">{stat.sub}</p>
+              <p className="mt-0.5 text-xs text-zinc-500">{stat.sub}</p>
             </div>
           ))}
         </motion.div>

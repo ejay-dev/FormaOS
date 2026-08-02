@@ -1,8 +1,13 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getPoliciesDueForReview } from '@/lib/policies/policy-engine';
 import { FileText, Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
+import {
+  StatusBadge,
+  documentStatus,
+} from '@/components/compliance/StatusBadge';
 
 export const metadata = { title: 'Policy Versions | FormaOS' };
 
@@ -31,6 +36,11 @@ export default async function PolicyVersionsPage() {
   }
   const latestPolicies = Array.from(policyMap.values());
 
+  // Review alerts name the policy, never its row id.
+  const titleByPolicyId = new Map<string, string>(
+    latestPolicies.map((p) => [p.policy_id as string, p.title as string]),
+  );
+
   const published = latestPolicies.filter(
     (p) => p.status === 'published',
   ).length;
@@ -40,23 +50,28 @@ export default async function PolicyVersionsPage() {
   ).length;
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full">
+      <div className="page-header">
         <div>
-          <h1 className="text-xl font-bold text-foreground">
-            Policy Management
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Version control, approvals, and acknowledgment tracking
+          <h1 className="page-title">Version history</h1>
+          <p className="page-description">
+            Approvals and acknowledgement tracking across every policy version
           </p>
         </div>
+        <Link
+          href="/app/policies"
+          className="inline-flex items-center rounded-md border border-border bg-card px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+        >
+          Policy Library
+        </Link>
       </div>
 
+      <div className="page-content space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-1">
             <FileText className="h-4 w-4" />{' '}
-            <span className="text-xs">Total Policies</span>
+            <span className="text-xs">Total policies</span>
           </div>
           <p className="text-2xl font-bold text-foreground">
             {latestPolicies.length}
@@ -67,23 +82,23 @@ export default async function PolicyVersionsPage() {
             <CheckCircle2 className="h-4 w-4" />{' '}
             <span className="text-xs">Published</span>
           </div>
-          <p className="text-2xl font-bold text-green-600">{published}</p>
+          <p className="text-2xl font-bold text-success">{published}</p>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-1">
             <Clock className="h-4 w-4" />{' '}
-            <span className="text-xs">Pending Approval</span>
+            <span className="text-xs">Pending approval</span>
           </div>
-          <p className="text-2xl font-bold text-yellow-600">
+          <p className="text-2xl font-bold text-warning">
             {pendingApproval}
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-1">
             <AlertTriangle className="h-4 w-4" />{' '}
-            <span className="text-xs">Due for Review</span>
+            <span className="text-xs">Due for review</span>
           </div>
-          <p className="text-2xl font-bold text-red-600">
+          <p className="text-2xl font-bold text-destructive">
             {dueForReview.length}
           </p>
         </div>
@@ -91,11 +106,11 @@ export default async function PolicyVersionsPage() {
 
       {/* Due for Review Alert */}
       {dueForReview.length > 0 && (
-        <div className="rounded-lg border border-yellow-300 dark:border-yellow-700 bg-yellow-50 dark:bg-yellow-900/20 p-4">
-          <h3 className="text-sm font-semibold text-yellow-800 dark:text-yellow-300 mb-2 flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" /> Policies Due for Review
+        <div className="rounded-lg border border-warning/20 bg-warning/10 p-4">
+          <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-warning">
+            <AlertTriangle className="h-4 w-4" /> Policies due for review
           </h3>
-          <div className="space-y-1">
+          <ul className="space-y-1">
             {dueForReview.map(
               (schedule: {
                 id: string;
@@ -103,16 +118,23 @@ export default async function PolicyVersionsPage() {
                 next_review_date: string;
                 review_frequency: string;
               }) => (
-                <div
-                  key={schedule.id}
-                  className="text-xs text-yellow-700 dark:text-yellow-400"
-                >
-                  Policy {schedule.policy_id.slice(0, 8)}… — Due{' '}
-                  {schedule.next_review_date} ({schedule.review_frequency})
-                </div>
+                <li key={schedule.id} className="text-xs text-warning">
+                  <Link
+                    href={`/app/policies/${schedule.policy_id}`}
+                    className="underline-offset-2 hover:underline"
+                  >
+                    {titleByPolicyId.get(schedule.policy_id) ?? 'Untitled policy'}
+                  </Link>{' '}
+                  — due{' '}
+                  {new Date(schedule.next_review_date).toLocaleDateString(
+                    'en-AU',
+                    { day: 'numeric', month: 'short', year: 'numeric' },
+                  )}{' '}
+                  ({String(schedule.review_frequency).replace(/_/g, ' ')})
+                </li>
               ),
             )}
-          </div>
+          </ul>
         </div>
       )}
 
@@ -128,7 +150,7 @@ export default async function PolicyVersionsPage() {
             published_at?: string;
             created_at: string;
           }) => (
-            <a
+            <Link
               key={policy.id}
               href={`/app/policies/${policy.policy_id}/versions`}
               className="flex items-center justify-between rounded-lg border border-border bg-card p-4 hover:bg-muted/30"
@@ -144,20 +166,8 @@ export default async function PolicyVersionsPage() {
                     ` · Published ${new Date(policy.published_at).toLocaleDateString()}`}
                 </p>
               </div>
-              <span
-                className={`px-2 py-0.5 text-xs rounded ${
-                  policy.status === 'published'
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                    : policy.status === 'pending_approval'
-                      ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                      : policy.status === 'draft'
-                        ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
-                        : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-500'
-                }`}
-              >
-                {policy.status.replace('_', ' ')}
-              </span>
-            </a>
+              <StatusBadge {...documentStatus(policy.status)} />
+            </Link>
           ),
         )}
         {latestPolicies.length === 0 && (
@@ -199,18 +209,19 @@ export default async function PolicyVersionsPage() {
                         v{policy.version_number} draft
                       </p>
                     </div>
-                    <a
+                    <Link
                       href={`/app/policies/${policy.policy_id}/edit`}
                       className="text-xs text-primary hover:underline"
                     >
                       Continue editing
-                    </a>
+                    </Link>
                   </div>
                 ),
               )}
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

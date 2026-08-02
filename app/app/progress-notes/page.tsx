@@ -8,6 +8,7 @@ import { NotebookPen, UserCircle2, BadgeCheck } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { SubmitButton, AdminActionButton } from '@/components/ui/submit-button';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 type PatientRow = {
   id: string;
@@ -63,7 +64,13 @@ export default async function ProgressNotesPage() {
     roleKey,
   );
 
-  const [{ data: notesData }, { data: patientsData }] = await Promise.all([
+  const NOTES_WINDOW = 40;
+  const [
+    { data: notesData },
+    { data: patientsData },
+    { count: totalNotes },
+    { count: awaitingSignOff },
+  ] = await Promise.all([
     supabase
       .from('org_progress_notes')
       .select(
@@ -71,12 +78,21 @@ export default async function ProgressNotesPage() {
       )
       .eq('organization_id', membership.organization_id)
       .order('created_at', { ascending: false })
-      .limit(40),
+      .limit(NOTES_WINDOW),
     supabase
       .from('org_patients')
       .select('id, full_name')
       .eq('organization_id', membership.organization_id)
       .order('full_name', { ascending: true }),
+    supabase
+      .from('org_progress_notes')
+      .select('id', { count: 'exact', head: true })
+      .eq('organization_id', membership.organization_id),
+    supabase
+      .from('org_progress_notes')
+      .select('id', { count: 'exact', head: true })
+      .eq('organization_id', membership.organization_id)
+      .is('signed_off_by', null),
   ]);
 
   const notes: NoteRow[] = notesData ?? [];
@@ -85,16 +101,25 @@ export default async function ProgressNotesPage() {
     patients.map((patient) => [patient.id, patient.full_name]),
   );
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Total', value: totalNotes ?? 0, sub: 'notes recorded' },
+    {
+      label: 'Awaiting sign-off',
+      value: awaitingSignOff ?? 0,
+      sub: (awaitingSignOff ?? 0) > 0 ? 'needs a reviewer' : 'all signed off',
+      tone: (awaitingSignOff ?? 0) > 0 ? 'warning' : 'success',
+    },
+    { label: 'People', value: patients.length, sub: 'on the caseload' },
+  ];
+
   return (
     <div className="flex flex-col h-full">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Progress Notes</h1>
-          <p className="page-description">
-            Capture care updates, follow-ups, and compliance-relevant notes
-          </p>
-        </div>
-      </div>
+      <PageHero
+        eyebrow="Care Operations · Progress notes"
+        title="Progress Notes"
+        subtitle="Capture care updates, follow-ups, and compliance-relevant notes."
+        metrics={heroMetrics}
+      />
 
       <div className="page-content space-y-4">
         {canWrite && (
@@ -112,12 +137,13 @@ export default async function ProgressNotesPage() {
             >
               <div className="md:col-span-1">
                 <label
-                  htmlFor="field-209"
+                  htmlFor="progress-note-patient"
                   className="text-xs font-medium text-muted-foreground"
                 >
                   Patient
                 </label>
                 <select
+                  id="progress-note-patient"
                   name="patientId"
                   className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
                   required
@@ -136,12 +162,13 @@ export default async function ProgressNotesPage() {
               </div>
               <div>
                 <label
-                  htmlFor="field-208"
+                  htmlFor="progress-note-tag"
                   className="text-xs font-medium text-muted-foreground"
                 >
-                  Status Tag
+                  Status tag
                 </label>
                 <select
+                  id="progress-note-tag"
                   name="statusTag"
                   className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
                   defaultValue="routine"
@@ -155,12 +182,13 @@ export default async function ProgressNotesPage() {
               </div>
               <div className="md:col-span-3">
                 <label
-                  htmlFor="field-207"
+                  htmlFor="progress-note-text"
                   className="text-xs font-medium text-muted-foreground"
                 >
                   Note
                 </label>
                 <textarea
+                  id="progress-note-text"
                   name="noteText"
                   rows={4}
                   className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"

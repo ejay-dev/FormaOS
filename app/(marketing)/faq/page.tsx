@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   },
 };
 
+// Mirrors the questions rendered on the page. Structured data that answers
+// something the visible page does not is both a rich-result violation and a
+// second official wording for the same question.
 const faqItems = [
   {
     question: 'What is FormaOS?',
@@ -32,39 +35,39 @@ const faqItems = [
       'FormaOS is an enterprise compliance operating system designed for regulated industries. It connects governance frameworks, operational controls, evidence collection, and audit defense into a single, unified platform.',
   },
   {
-    question: 'How does FormaOS ensure audit integrity?',
+    question: 'How is FormaOS different from task or compliance software?',
     answer:
-      'Every action in FormaOS is automatically logged with full context - who did what, when, and in relation to which control or workflow. Audit trails are immutable and timestamped, providing a complete chain of evidence that satisfies regulatory requirements.',
+      'Traditional compliance tools store documents and rely on manual tracking. FormaOS enforces control ownership, captures evidence as work is completed, maintains immutable audit trails, and provides continuous compliance visibility.',
   },
   {
-    question: 'How is evidence made immutable?',
+    question: 'Where is data stored and what residency options exist?',
     answer:
-      'Evidence records are tracked with audit logs and timestamps. Every upload, update, and approval is recorded for full traceability, creating an immutable chain of evidence.',
+      'FormaOS is AU-hosted by default, built for Australian-regulated organizations. Additional residency and cross-border handling requirements are reviewed during procurement, and a Data Processing Agreement is published in the Trust Center.',
   },
   {
-    question: 'Does FormaOS support ISO and SOC frameworks?',
+    question: 'Is FormaOS SOC 2 certified?',
     answer:
-      'Yes. FormaOS is framework-agnostic and supports multiple compliance frameworks simultaneously including ISO 27001, SOC 2, NDIS Practice Standards, healthcare regulations, and industry-specific requirements.',
+      'No. FormaOS is aligned to SOC 2 controls, meaning controls are modelled and evidence can be produced. Certified would require an independent audit of FormaOS as a vendor. Our infrastructure providers maintain their own SOC 2 reports.',
   },
   {
-    question: 'Is FormaOS multi-tenant secure?',
+    question: 'How does FormaOS generate audit trails?',
     answer:
-      'FormaOS implements enterprise-grade security with data encryption in transit and at rest, role-based access controls, SSO support, and isolated tenant environments for regulated data protection.',
+      'Every action is logged with full context: who did what, when, and against which control or workflow. Audit trails are immutable and timestamped, and can be filtered, searched, and exported at any time.',
+  },
+  {
+    question: 'Is evidence immutable?',
+    answer:
+      'Yes. Evidence records are append-only and tamper-evident. Once uploaded, evidence can only be superseded by a new version, with the original preserved in the audit trail alongside the actor and timestamp.',
   },
   {
     question: 'How do we evaluate FormaOS?',
     answer:
-      'FormaOS starts with a guided compliance plan so the rollout matches your frameworks, operational risk, evidence burden, and procurement path.',
+      'FormaOS starts with a guided compliance plan that scopes frameworks, team structure, evidence volume, audit exposure, and procurement requirements before a plan is recommended.',
   },
   {
-    question: 'How is FormaOS different from task or compliance software?',
+    question: 'Are APIs available?',
     answer:
-      'Traditional compliance tools store documents and rely on manual tracking. FormaOS is an operating system that runs your compliance program - enforcing control ownership, capturing evidence as work is completed, maintaining immutable audit trails, and providing continuous compliance visibility.',
-  },
-  {
-    question: 'Does FormaOS integrate with existing systems?',
-    answer:
-      'FormaOS provides 20+ integrations across productivity (Jira, Slack, Microsoft Teams), cloud (AWS, Azure, GCP), identity (Okta, Azure AD, Google Workspace), security (Qualys, Tenable), and HRIS tools. The REST API v1 supports 20+ endpoints with bearer API keys, and webhooks deliver signed event notifications in real-time.',
+      'Yes. The REST API v1 covers organizations, tasks, evidence, compliance data, reports, frameworks, controls, notifications, integrations, and search, with scoped bearer API keys, cursor pagination, rate limiting, and an OpenAPI 3.1 specification.',
   },
 ];
 

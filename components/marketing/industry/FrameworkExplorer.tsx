@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Check, BookOpen, Info } from 'lucide-react';
+import { Check, Info } from 'lucide-react';
 
 export interface FrameworkTab {
   id: string;
@@ -33,7 +33,7 @@ export function FrameworkExplorer({ headline, description, frameworks }: Framewo
 
   return (
     <section className="relative py-24 lg:py-32">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a] via-[#0d1117] to-[#0a0e1a]" />
+      <div className="absolute inset-0 bg-marketing-bg" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -44,10 +44,6 @@ export function FrameworkExplorer({ headline, description, frameworks }: Framewo
           transition={{ duration: 0.6 }}
           className="text-center mb-14"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-slate-500/20 bg-slate-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-6">
-            <BookOpen className="h-3.5 w-3.5" />
-            Framework Coverage
-          </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-[var(--font-display)] leading-[1.1] mb-4">
             {headline}
           </h2>
@@ -70,9 +66,9 @@ export function FrameworkExplorer({ headline, description, frameworks }: Framewo
                 key={fw.id}
                 type="button"
                 onClick={() => setActiveId(fw.id)}
-                className={`text-left rounded-xl px-4 py-3 text-sm transition-all whitespace-nowrap lg:whitespace-normal shrink-0 ${
+                className={`text-left rounded-xl px-4 py-3 min-h-[44px] text-sm transition-all whitespace-nowrap lg:whitespace-normal shrink-0 ${
                   activeId === fw.id
-                    ? 'bg-cyan-500/10 border border-cyan-500/20 text-white'
+                    ? 'bg-white/[0.06] border border-white/15 text-white'
                     : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03] border border-transparent'
                 }`}
               >
@@ -103,10 +99,10 @@ export function FrameworkExplorer({ headline, description, frameworks }: Framewo
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-cyan-400">{active.obligationCount}</div>
-                      <div className="text-[9px] uppercase tracking-wider text-slate-600">Obligations</div>
+                      <div className="text-2xl font-bold text-white">{active.obligationCount}</div>
+                      <div className="text-[11px] text-slate-500">Obligations</div>
                     </div>
-                    <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-400">
+                    <span className="rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-slate-300">
                       Pre-built
                     </span>
                   </div>
@@ -114,11 +110,11 @@ export function FrameworkExplorer({ headline, description, frameworks }: Framewo
 
                 {/* Key requirements */}
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-600 mb-3">Key requirements covered</div>
+                  <div className="text-[13px] text-slate-500 mb-3">Key requirements covered</div>
                   <div className="grid sm:grid-cols-2 gap-2">
                     {active.requirements.map((req) => (
                       <div key={req} className="flex items-start gap-2 text-sm text-slate-400">
-                        <Check className="h-3.5 w-3.5 mt-0.5 shrink-0 text-emerald-500" />
+                        <Check className="h-3.5 w-3.5 mt-0.5 shrink-0 text-success" />
                         <span className="leading-snug">{req}</span>
                       </div>
                     ))}

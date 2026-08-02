@@ -10,7 +10,7 @@ export default function Image() {
     (
       <div
         style={{
-          background: '#0a0f1c',
+          background: '#1C1E1F',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -24,7 +24,7 @@ export default function Image() {
       >
         <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: 16 }}>
           <div style={{ width: 40, height: 40, borderRadius: 10, background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ color: '#0a0f1c', fontSize: 22, fontWeight: 900 }}>F</div>
+            <div style={{ color: '#1C1E1F', fontSize: 22, fontWeight: 900 }}>F</div>
           </div>
           <span style={{ color: '#ffffff', fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em' }}>FormaOS</span>
         </div>

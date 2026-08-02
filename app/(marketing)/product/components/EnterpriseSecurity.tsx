@@ -46,7 +46,7 @@ export function EnterpriseSecurity() {
             <div className="text-center mb-10">
               <div className="mb-4 flex items-center justify-center gap-3">
                 <span className="h-px w-8 bg-white/25" />
-                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                <span className="text-xs font-semibold text-zinc-500">
                   Enterprise-Grade Security
                 </span>
                 <span className="h-px w-8 bg-white/25" />
@@ -55,7 +55,7 @@ export function EnterpriseSecurity() {
               <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
                 Security built into the operating layer
               </h2>
-              <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-zinc-400 max-w-2xl mx-auto leading-relaxed">
                 FormaOS is built for organizations under regulatory scrutiny.
                 Security controls, identity governance, and audit infrastructure
                 are core - not bolt-on features.
@@ -75,9 +75,9 @@ export function EnterpriseSecurity() {
                     className="flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-200"
                   >
                     <div className="inline-flex items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.05] p-2 shrink-0">
-                      <Icon className="w-4 h-4 text-slate-300" />
+                      <Icon className="w-4 h-4 text-zinc-300" />
                     </div>
-                    <span className="text-sm text-slate-300 leading-snug">
+                    <span className="text-sm text-zinc-300 leading-snug">
                       {feature.label}
                     </span>
                   </div>

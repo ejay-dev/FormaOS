@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CalendarDays, Clock, User } from 'lucide-react';
-import { blogPosts, getCategoryId } from '../blogData';
+import { blogPosts } from '../blogData';
 import { BlogHeroVisual } from '@/components/blog/BlogHeroVisual';
 import { RelatedPosts } from '@/components/blog/RelatedPosts';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
@@ -118,9 +118,6 @@ export default async function BlogPostPage({ params }: PageProps) {
               <span className="px-3 py-1 rounded-full bg-white/[0.08] text-slate-200 border border-white/15">
                 {post.category}
               </span>
-              <span className="px-3 py-1 rounded-full bg-gray-800/60 border border-white/5">
-                {getCategoryId(post.category).toUpperCase()}
-              </span>
             </div>
 
             <h1 className="mt-6 font-display text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight">
@@ -171,14 +168,14 @@ export default async function BlogPostPage({ params }: PageProps) {
         </section>
 
         <section className="mk-section relative max-w-4xl mx-auto px-6 lg:px-12">
-          <div className="space-y-14">
+          <div className="max-w-[68ch] space-y-14">
             {post.sections.map((section) => (
-              <div key={section.heading} className="space-y-6">
-                <h2 className="text-2xl font-semibold text-white">
+              <div key={section.heading} className="space-y-5">
+                <h2 className="text-2xl font-semibold tracking-tight text-white">
                   {section.heading}
                 </h2>
                 {section.paragraphs?.length ? (
-                  <div className="space-y-4 text-slate-300 leading-relaxed">
+                  <div className="space-y-5 text-[17px] leading-8 text-slate-300">
                     {section.paragraphs.map((paragraph) => (
                       <p key={paragraph}>{paragraph}</p>
                     ))}
@@ -186,7 +183,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 ) : null}
 
                 {section.bullets?.length ? (
-                  <ul className="space-y-2 text-slate-300 list-disc list-inside">
+                  <ul className="ml-1 list-disc space-y-2.5 pl-5 text-[17px] leading-8 text-slate-300 marker:text-slate-600">
                     {section.bullets.map((bullet) => (
                       <li key={bullet}>{bullet}</li>
                     ))}
@@ -194,7 +191,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 ) : null}
 
                 {section.steps?.length ? (
-                  <ol className="space-y-3 text-slate-300 list-decimal list-inside">
+                  <ol className="ml-1 list-decimal space-y-3 pl-5 text-[17px] leading-8 text-slate-300 marker:text-slate-500">
                     {section.steps.map((step) => (
                       <li key={step}>{step}</li>
                     ))}
@@ -202,9 +199,9 @@ export default async function BlogPostPage({ params }: PageProps) {
                 ) : null}
 
                 {section.links?.length ? (
-                  <div className="rounded-2xl border border-white/5 bg-gray-900/50 p-6 space-y-3">
-                    <p className="text-sm uppercase tracking-wide text-slate-400">
-                      Related links
+                  <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-6 space-y-3">
+                    <p className="text-sm font-medium text-slate-200">
+                      Keep reading
                     </p>
                     <div className="flex flex-col gap-3">
                       {section.links.map((link) => (
@@ -232,12 +229,10 @@ export default async function BlogPostPage({ params }: PageProps) {
             const a = getAuthorByName(post.author);
             if (!a) return null;
             return (
-              <div className="mt-12 mb-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-6 sm:p-7">
+              <div className="mt-12 mb-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 sm:p-7">
                 <div className="flex flex-wrap items-baseline justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Written by
-                    </p>
+                    <p className="text-sm text-slate-500">Written by</p>
                     <h2 className="mt-1 text-xl font-semibold text-white">
                       {a.name}
                     </h2>
@@ -278,7 +273,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             })()}
           />
 
-          <div className="mt-16 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-3xl border border-white/5 bg-gray-900/50 p-8">
+          <div className="mt-16 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-3xl border border-white/5 bg-white/[0.03] p-8">
             <div>
               <h3 className="text-lg font-semibold text-white">
                 Ready to operationalize compliance?

@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
-import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplianceAssistantPanel';
 import { ComplianceSummaryCards } from '@/components/compliance/ComplianceSummaryCards';
 import { MyActionsWidget } from '@/components/compliance/MyActionsWidget';
 import { UpcomingDeadlinesWidget } from '@/components/compliance/UpcomingDeadlinesWidget';
@@ -63,11 +62,11 @@ export function MyComplianceStatus({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'on_track':
-        return 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500';
+        return 'bg-success/10 border-success/30 text-success';
       case 'at_risk':
-        return 'bg-amber-500/10 border-amber-500/30 text-amber-500';
+        return 'bg-warning/10 border-warning/30 text-warning';
       case 'review_needed':
-        return 'bg-rose-500/10 border-rose-500/30 text-rose-500';
+        return 'bg-destructive/10 border-destructive/30 text-destructive';
       default:
         return 'bg-muted/40 border-border text-muted-foreground';
     }
@@ -155,11 +154,11 @@ export function MyCertificates({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30';
+        return 'bg-success/10 text-success border-success/30';
       case 'expiring_soon':
-        return 'bg-amber-500/10 text-amber-500 border-amber-500/30';
+        return 'bg-warning/10 text-warning border-warning/30';
       case 'expired':
-        return 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+        return 'bg-destructive/10 text-destructive border-destructive/30';
       default:
         return 'bg-muted/40 text-muted-foreground border-border';
     }
@@ -237,9 +236,9 @@ export function MyTasks({
       case 'in_progress':
         return 'bg-primary/10 text-primary border-primary/30';
       case 'completed':
-        return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30';
+        return 'bg-success/10 text-success border-success/30';
       case 'overdue':
-        return 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+        return 'bg-destructive/10 text-destructive border-destructive/30';
       default:
         return 'bg-muted/40 text-muted-foreground border-border';
     }
@@ -362,9 +361,9 @@ export function UploadEvidence({
                     case 'pending':
                       return 'bg-primary/10 text-primary border-primary/30';
                     case 'approved':
-                      return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30';
+                      return 'bg-success/10 text-success border-success/30';
                     case 'rejected':
-                      return 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+                      return 'bg-destructive/10 text-destructive border-destructive/30';
                     default:
                       return 'bg-muted/40 text-muted-foreground border-border';
                   }
@@ -447,7 +446,7 @@ export function Training({
                 {course.description}
               </p>
               {course.requiredFor && (
-                <p className="text-xs text-amber-500 mb-3">
+                <p className="text-xs text-warning mb-3">
                   Required for: {course.requiredFor}
                 </p>
               )}
@@ -618,27 +617,6 @@ export function EmployeeDashboard({
   tasksPending = 0,
   firstSessionActive = false,
 }: EmployeeDashboardProps) {
-  const aiSuggestions = [
-    {
-      title: 'Review task priorities',
-      detail: 'AI groups your highest-risk pending compliance tasks first.',
-      href: '/app/tasks',
-      icon: 'remediation' as const,
-    },
-    {
-      title: 'Find required evidence',
-      detail: 'Identify the next evidence documents needed for your role.',
-      href: '/app/vault',
-      icon: 'evidence' as const,
-    },
-    {
-      title: 'Clarify policy duties',
-      detail: 'Summarize role-specific policy obligations before submission.',
-      href: '/app/policies',
-      icon: 'policy' as const,
-    },
-  ];
-
   return (
     <div className="space-y-6">
       {/* Compliance Summary — same view as employer for context */}
@@ -646,12 +624,10 @@ export function EmployeeDashboard({
         <ComplianceSummaryCards />
       </ErrorBoundary>
 
-      <div className="rounded-2xl border border-border bg-card px-4 sm:px-5 py-4">
-        <p className="text-xs uppercase tracking-wider text-muted-foreground">
-          Workspace Context
-        </p>
+      <div className="rounded-xl border border-border bg-card px-4 sm:px-5 py-4">
+        <p className="text-sm text-muted-foreground">Signed in as</p>
         <p className="mt-1 text-sm text-foreground/90">
-          {employeeName} operating in {organizationName}
+          {employeeName} at {organizationName}
         </p>
       </div>
 
@@ -662,7 +638,6 @@ export function EmployeeDashboard({
       </div>
 
       {!firstSessionActive && <GettingStartedChecklist industry={industry} />}
-      <AIComplianceAssistantPanel suggestions={aiSuggestions} />
       <RoleWorkflowBoard
         role={userRole}
         industry={industry}

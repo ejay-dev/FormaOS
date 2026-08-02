@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
-import { CheckCircle2, XCircle, AlertTriangle, BarChart3 } from 'lucide-react';
+import { CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
 
 export interface CompareRow {
   feature: string;
@@ -18,15 +18,32 @@ export interface CompareTableProps {
   col2Label?: string;
 }
 
+/* The icon is never the only signal: each one carries the word it stands
+   for, so screen readers and printouts read the same as the grid. */
 function CellValue({ value }: { value: string }) {
   if (value === 'yes') {
-    return <CheckCircle2 className="h-4 w-4 text-cyan-400 mx-auto" />;
+    return (
+      <span className="flex items-center justify-center gap-1.5">
+        <CheckCircle2 className="h-4 w-4 text-success" />
+        <span className="text-xs text-slate-300">Yes</span>
+      </span>
+    );
   }
   if (value === 'no') {
-    return <XCircle className="h-4 w-4 text-red-500/60 mx-auto" />;
+    return (
+      <span className="flex items-center justify-center gap-1.5">
+        <XCircle className="h-4 w-4 text-destructive" />
+        <span className="text-xs text-slate-500">No</span>
+      </span>
+    );
   }
   if (value === 'partial') {
-    return <AlertTriangle className="h-3.5 w-3.5 text-amber-500/80 mx-auto" />;
+    return (
+      <span className="flex items-center justify-center gap-1.5">
+        <AlertTriangle className="h-3.5 w-3.5 text-warning" />
+        <span className="text-xs text-slate-400">Partial</span>
+      </span>
+    );
   }
   return (
     <span className="text-xs text-slate-300 text-center block">{value}</span>
@@ -43,7 +60,7 @@ export function CompareTable({
 
   return (
     <section className="relative py-24 lg:py-32">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a] via-[#0d1117] to-[#0a0e1a]" />
+      <div className="absolute inset-0 bg-marketing-bg" />
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -54,10 +71,6 @@ export function CompareTable({
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-cyan-400 mb-6">
-            <BarChart3 className="h-3.5 w-3.5" />
-            How We Compare
-          </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-[1.1] mb-4">
             {headline}
           </h2>
@@ -79,16 +92,16 @@ export function CompareTable({
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/[0.06]">
-                  <th className="text-left px-6 py-4 text-xs uppercase tracking-wider text-slate-500 font-medium w-[40%]">
+                  <th className="text-left px-6 py-4 text-xs text-slate-500 font-medium w-[40%]">
                     Feature
                   </th>
-                  <th className="px-4 py-4 text-xs uppercase tracking-wider text-slate-500 font-medium text-center w-[20%]">
+                  <th className="px-4 py-4 text-xs text-slate-500 font-medium text-center w-[20%]">
                     Spreadsheets
                   </th>
-                  <th className="px-4 py-4 text-xs uppercase tracking-wider text-slate-500 font-medium text-center w-[20%]">
+                  <th className="px-4 py-4 text-xs text-slate-500 font-medium text-center w-[20%]">
                     {col2Label}
                   </th>
-                  <th className="px-4 py-4 text-xs uppercase tracking-wider text-cyan-500/80 font-semibold text-center w-[20%]">
+                  <th className="px-4 py-4 text-xs text-white font-semibold text-center w-[20%]">
                     FormaOS
                   </th>
                 </tr>
@@ -110,7 +123,7 @@ export function CompareTable({
                     <td className="px-4 py-4">
                       <CellValue value={row.genericGrc} />
                     </td>
-                    <td className="px-4 py-4 bg-cyan-500/[0.03]">
+                    <td className="px-4 py-4 bg-white/[0.03]">
                       <CellValue value={row.formaos} />
                     </td>
                   </tr>
@@ -122,30 +135,30 @@ export function CompareTable({
           {/* Mobile cards */}
           <div className="sm:hidden divide-y divide-white/[0.06]">
             {rows.map((row) => (
-              <div key={row.feature} className="p-4 space-y-2">
-                <div className="text-sm font-medium text-white">
+              <div key={row.feature} className="p-4">
+                <div className="text-sm font-medium text-white mb-3">
                   {row.feature}
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div>
-                    <div className="text-[9px] uppercase tracking-wider text-slate-600 mb-1">
-                      Sheets
-                    </div>
-                    <CellValue value={row.spreadsheets} />
+                <dl className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-xs text-slate-500">Spreadsheets</dt>
+                    <dd>
+                      <CellValue value={row.spreadsheets} />
+                    </dd>
                   </div>
-                  <div>
-                    <div className="text-[9px] uppercase tracking-wider text-slate-600 mb-1">
-                      {col2Label}
-                    </div>
-                    <CellValue value={row.genericGrc} />
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-xs text-slate-500">{col2Label}</dt>
+                    <dd>
+                      <CellValue value={row.genericGrc} />
+                    </dd>
                   </div>
-                  <div className="bg-cyan-500/[0.03] rounded-lg p-1">
-                    <div className="text-[9px] uppercase tracking-wider text-cyan-600 mb-1">
-                      FormaOS
-                    </div>
-                    <CellValue value={row.formaos} />
+                  <div className="flex items-center justify-between gap-3 rounded-lg bg-white/[0.03] px-2 py-1 -mx-2">
+                    <dt className="text-xs font-medium text-white">FormaOS</dt>
+                    <dd>
+                      <CellValue value={row.formaos} />
+                    </dd>
                   </div>
-                </div>
+                </dl>
               </div>
             ))}
           </div>

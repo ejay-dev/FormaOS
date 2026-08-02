@@ -6,19 +6,18 @@ export default function ParticipantImportPage() {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-6 p-6">
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold">Import Participants</h1>
+        <h1 className="page-title">Import participants</h1>
         <p className="text-sm text-muted-foreground">
-          Bulk participant import is being prepared for this workspace. The link
-          now resolves correctly so your team lands in a valid workflow instead
-          of a 404.
+          CSV import is not ready yet. Add participants manually for now.
         </p>
       </div>
 
       <div className="rounded-xl border border-border bg-card p-6 space-y-4">
         <h2 className="text-base font-semibold">What you can do now</h2>
         <p className="text-sm text-muted-foreground">
-          Create participants manually while we finish the guided CSV import
-          flow. This keeps intake moving without sending staff into a dead end.
+          Create each participant from the intake form. Everything you enter
+          there carries into care plans, visits, and incidents, so nothing needs
+          re-entering when import arrives.
         </p>
         <div className="flex flex-wrap gap-3">
           <Link

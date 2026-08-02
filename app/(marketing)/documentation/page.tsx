@@ -4,24 +4,24 @@ import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Documentation & Knowledge Base | FormaOS',
+  title: 'Documentation | FormaOS',
   description:
-    'Comprehensive documentation for FormaOS, from getting started guides to advanced API references. Everything you need to master the compliance operating system.',
+    'Index of FormaOS documentation: the v1 REST API reference, security and data-handling documents, procurement material, and operational pages.',
   alternates: {
     canonical: `${siteUrl}/documentation`,
   },
   openGraph: {
-    title: 'Documentation & Knowledge Base | FormaOS',
+    title: 'Documentation | FormaOS',
     description:
-      'Comprehensive documentation for FormaOS, guides, tutorials, and API references for the compliance operating system.',
+      'Index of FormaOS documentation: the v1 REST API reference, security and data-handling documents, procurement material, and operational pages.',
     type: 'website',
     url: `${siteUrl}/documentation`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Documentation & Knowledge Base | FormaOS',
+    title: 'Documentation | FormaOS',
     description:
-      'Comprehensive documentation for FormaOS, guides, tutorials, and API references for the compliance operating system.',
+      'Index of FormaOS documentation: API reference, security and data handling, procurement material, and operational pages.',
   },
 };
 

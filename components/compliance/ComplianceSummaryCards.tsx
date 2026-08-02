@@ -22,7 +22,7 @@ function CompletionRing({ percentage }: { percentage: number }) {
     percentage >= 80
       ? 'var(--wire-success)'
       : percentage >= 50
-        ? '#f59e0b'
+        ? 'hsl(var(--warning))'
         : 'var(--wire-alert)';
 
   return (
@@ -130,10 +130,10 @@ export function ComplianceSummaryCards() {
           ragClass="metric-card-danger"
         />
         <SummaryCardInner
-          label="Due This Week"
+          label="Due this week"
           value={summary.dueSoon}
           icon={Clock}
-          color="#f59e0b"
+          color="hsl(var(--warning))"
           href="/app/compliance?status=due_soon"
           isLoading={isLoading}
           ragClass="metric-card-warning"

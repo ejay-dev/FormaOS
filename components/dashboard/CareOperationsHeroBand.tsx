@@ -93,9 +93,9 @@ function MiniStat({
   tone: 'success' | 'warning' | 'danger' | 'neutral';
 }) {
   const toneClass = {
-    success: 'text-emerald-500',
-    warning: 'text-amber-500',
-    danger: 'text-rose-500',
+    success: 'text-success',
+    warning: 'text-warning',
+    danger: 'text-destructive',
     neutral: 'text-muted-foreground',
   }[tone];
 
@@ -252,8 +252,8 @@ export function CareOperationsHeroBand() {
                   <span
                     className={`ml-2 shrink-0 rounded-md px-2 py-0.5 text-[11px] font-bold tabular-nums ${
                       cred.daysUntilExpiry <= 7
-                        ? 'bg-rose-500/10 text-rose-500'
-                        : 'bg-amber-500/10 text-amber-500'
+                        ? 'bg-destructive/10 text-destructive'
+                        : 'bg-warning/10 text-warning'
                     }`}
                   >
                     {cred.daysUntilExpiry}d
@@ -291,15 +291,15 @@ export function CareOperationsHeroBand() {
                     <div
                       className={`absolute inset-0 rounded-full ${
                         review.daysUntilReview <= 3
-                          ? 'bg-rose-500/10'
-                          : 'bg-amber-500/10'
+                          ? 'bg-destructive/10'
+                          : 'bg-warning/10'
                       }`}
                     />
                     <Clock
                       className={`h-3.5 w-3.5 ${
                         review.daysUntilReview <= 3
-                          ? 'text-rose-500'
-                          : 'text-amber-500'
+                          ? 'text-destructive'
+                          : 'text-warning'
                       }`}
                       aria-hidden="true"
                     />
@@ -324,7 +324,7 @@ export function CareOperationsHeroBand() {
 
       {/* Footer row — critical alerts */}
       {data.alerts.filter((a) => a.type === 'critical').length > 0 && (
-        <div className="mt-4 flex items-center gap-2 rounded-md border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
+        <div className="mt-4 flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span>
             {data.alerts.filter((a) => a.type === 'critical').length} critical

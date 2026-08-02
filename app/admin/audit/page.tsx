@@ -50,7 +50,7 @@ export default async function AdminAuditPage({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Audit</h1>
+        <h1 className="text-3xl font-bold text-foreground">Audit log</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Administrative actions, system events, and quality assurance.
         </p>

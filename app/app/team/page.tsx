@@ -141,23 +141,37 @@ export default async function TeamPage() {
   return (
     <div className="flex flex-col h-full">
       <PageHero
-        eyebrow="Administration · Team"
-        title="Team Management"
-        subtitle="Manage access, roles, and pending invitations."
+        title="Team"
+        subtitle="Who has access to this workspace, their role, and any invitations still pending."
         metrics={heroMetrics}
-        actions={orgId ? <InviteButton orgId={orgId} disabled={!hasSubscription || reachedLimit} /> : undefined}
+        actions={
+          <>
+            <Link
+              href="/app/team/org-chart"
+              className="inline-flex items-center rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Org chart
+            </Link>
+            {orgId ? (
+              <InviteButton
+                orgId={orgId}
+                disabled={!hasSubscription || reachedLimit}
+              />
+            ) : null}
+          </>
+        }
       />
 
       <div className="page-content space-y-4">
       {!hasSubscription ? (
-        <div className="flex items-center gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
+        <div className="flex items-center gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
           Subscription required to invite team members.{" "}
           <Link href="/app/billing" className="underline">Upgrade</Link>
         </div>
       ) : null}
 
       {hasSubscription && reachedLimit ? (
-        <div className="flex items-center gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
+        <div className="flex items-center gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
           Team limit reached ({memberCount + inviteCount}/{teamLimit}).{" "}
           <Link href="/app/billing" className="underline">Upgrade</Link>
         </div>
@@ -165,9 +179,9 @@ export default async function TeamPage() {
 
       {/* Active Members */}
       <section className="space-y-2">
-        <h2 className="section-label flex items-center gap-2">
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
           <Users className="h-3.5 w-3.5" />
-          Active Members ({memberRows.length})
+          Members ({memberRows.length})
         </h2>
         {memberRows.length === 0 ? (
           <div className="rounded-lg border border-border bg-card">
@@ -263,9 +277,9 @@ export default async function TeamPage() {
       {/* Pending Invites */}
       {inviteRows.length > 0 && (
         <section className="space-y-2">
-          <h2 className="section-label flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <Clock className="h-3.5 w-3.5" />
-            Pending Invitations ({inviteRows.length})
+            Pending invitations ({inviteRows.length})
           </h2>
           {/* Mobile cards */}
           <div className="md:hidden">

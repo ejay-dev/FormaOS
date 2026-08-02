@@ -47,7 +47,7 @@ export function OnboardingBanner({
           <ListChecks className="h-4 w-4 text-primary" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">
+          <p className="text-xs font-medium text-primary">
             Next step
           </p>
           <p className="mt-0.5 text-sm font-medium text-foreground">

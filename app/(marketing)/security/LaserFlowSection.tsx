@@ -37,9 +37,6 @@ export function LaserFlowSection() {
           transition={sa ? { duration: duration.slow, ease: signatureEase } : { duration: 0 }}
           className="text-center mb-10 sm:mb-14"
         >
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            Security Pipeline
-          </p>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3">
             From event intake to{' '}
             <span className="text-foreground">

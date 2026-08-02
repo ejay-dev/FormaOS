@@ -2,10 +2,15 @@ import { Skeleton, SkeletonCard } from '@/components/ui/skeleton';
 
 export default function EmailPreferencesLoading() {
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Loading email preferences"
+      className="space-y-8 animate-in fade-in duration-300"
+    >
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight text-foreground/70">
-          Email Preferences
+          Email preferences
         </h1>
         <Skeleton className="h-4 w-80" />
       </div>
@@ -29,6 +34,8 @@ export default function EmailPreferencesLoading() {
           </div>
         ))}
       </div>
+
+      <span className="sr-only">Loading content, please wait.</span>
     </div>
   );
 }

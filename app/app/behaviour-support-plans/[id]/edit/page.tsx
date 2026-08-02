@@ -69,14 +69,15 @@ export default async function EditBehaviourSupportPlanPage({
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Edit Behaviour Support Plan</h1>
+          <h1 className="page-title">Edit behaviour support plan</h1>
           <p className="text-sm text-muted-foreground">Update lifecycle, authorisation, and provider fields.</p>
         </div>
       </div>
 
       {!canEdit && (
-        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm">
-          You can view this plan, but only owner / admin / compliance_admin can save changes.
+        <div className="rounded-lg border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-foreground">
+          You can view this plan, but only an owner, admin, or compliance
+          officer can save changes.
         </div>
       )}
 

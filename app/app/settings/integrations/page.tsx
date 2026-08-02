@@ -1,7 +1,9 @@
-import Link from 'next/link';
-import { PlugZap } from 'lucide-react';
 import { getIntegrationStatus, listConnectedIntegrations } from '@/lib/integrations/manager';
 import { IntegrationCatalog, type IntegrationCatalogItem } from '@/components/integrations/integration-catalog';
+import {
+  SettingsPageHeader,
+  SettingsPageShell,
+} from '@/components/settings/settings-page-header';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { redirect } from 'next/navigation';
 
@@ -62,42 +64,20 @@ export default async function IntegrationSettingsPage() {
   });
 
   return (
-    <div className="space-y-8 pb-24 max-w-6xl animate-in fade-in duration-700">
-      <header className="flex flex-col gap-4">
-        <Link
-          href="/app/settings"
-          className="text-xs font-semibold text-muted-foreground hover:text-foreground/90"
-        >
-          ← Back to Settings
-        </Link>
-        <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground">
-            <PlugZap className="h-6 w-6" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              Integrations
-            </h1>
-            <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
-              Connect messaging channels, issue trackers, and evidence
-              repositories. Every integration is delivered, logged, and health
-              checked the same way.
-            </p>
-          </div>
-        </div>
-      </header>
+    <SettingsPageShell>
+      <SettingsPageHeader
+        title="Integrations"
+        description="Connect messaging channels, issue trackers, and evidence repositories."
+      />
 
-      {/* The third tile here used to be labelled "Event Fanout" and contained
-          a sentence rather than a number, so a stat row read as two facts and
-          one slogan. */}
-      <section className="grid gap-4 rounded-2xl border border-edge-2 bg-surface-1 p-6 sm:grid-cols-2">
-        <div className="rounded-xl border border-edge-2 bg-background/50 p-4">
+      <section className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-sm text-muted-foreground">Connected</p>
           <p className="mt-2 text-3xl font-semibold text-foreground">
             {items.filter((item) => item.connected).length}
           </p>
         </div>
-        <div className="rounded-xl border border-edge-2 bg-background/50 p-4">
+        <div className="rounded-lg border border-border bg-card p-4">
           <p className="text-sm text-muted-foreground">Healthy</p>
           <p className="mt-2 text-3xl font-semibold text-foreground">
             {items.filter((item) => item.health === 'healthy').length}
@@ -106,6 +86,6 @@ export default async function IntegrationSettingsPage() {
       </section>
 
       <IntegrationCatalog items={items} />
-    </div>
+    </SettingsPageShell>
   );
 }

@@ -18,10 +18,9 @@ interface Props {
 }
 
 const STRENGTH_COLORS: Record<string, string> = {
-  exact: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
-  partial:
-    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300',
-  related: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
+  exact: 'bg-success/10 text-success',
+  partial: 'bg-warning/10 text-warning',
+  related: 'bg-muted text-muted-foreground',
 };
 
 export function CrossMapMatrix({ frameworks, mappings }: Props) {
@@ -189,27 +188,22 @@ export function DeduplicationOpportunities({
                 </span>
               )}
             </div>
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium">
+            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-success/10 text-success text-xs font-medium">
               <Zap className="h-3 w-3" />+{opp.potentialScoreImprovement}%
             </span>
           </div>
 
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-xs font-medium text-green-600 dark:text-green-400 mb-1">
-                Satisfied
-              </p>
+              <p className="text-xs font-medium text-success mb-1">Satisfied</p>
               {opp.satisfiedControls.map((c, j) => (
                 <div key={j} className="text-xs text-foreground">
-                  {c.framework}:{' '}
-                  <code className="text-green-600 dark:text-green-400">
-                    {c.controlId}
-                  </code>
+                  {c.framework}: <code className="text-success">{c.controlId}</code>
                 </div>
               ))}
             </div>
             <div>
-              <p className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">
+              <p className="text-xs font-medium text-destructive mb-1">
                 Gaps (linkable)
               </p>
               {opp.unsatisfiedControls.map((c, j) => (
@@ -218,9 +212,7 @@ export function DeduplicationOpportunities({
                   className="flex items-center gap-2 text-xs text-foreground"
                 >
                   {c.framework}:{' '}
-                  <code className="text-red-600 dark:text-red-400">
-                    {c.controlId}
-                  </code>
+                  <code className="text-destructive">{c.controlId}</code>
                   <Link
                     href={`/app/controls?framework=${encodeURIComponent(c.framework)}&control=${encodeURIComponent(c.controlId)}`}
                     className="px-1.5 py-0.5 rounded bg-primary text-primary-foreground text-[10px] hover:bg-primary/90"

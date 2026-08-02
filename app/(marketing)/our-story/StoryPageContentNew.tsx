@@ -70,7 +70,7 @@ export function StoryHero() {
 // ----------------------------------------------------------------------------
 function FounderQuote() {
   return (
-    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
+    <section className="relative py-32 overflow-hidden bg-[#181a1c]">
       <div className="relative isolate z-10 max-w-5xl mx-auto px-6 lg:px-12 overflow-hidden">
         <SectionMedia
           src="/marketing-media/our-story.jpg"
@@ -86,7 +86,7 @@ function FounderQuote() {
           className="relative"
         >
           {/* Quote panel, solid scrim over the section photo */}
-          <div className="rounded-3xl border border-white/10 bg-slate-950/65 shadow-2xl p-12 lg:p-16 text-center relative overflow-hidden">
+          <div className="rounded-3xl border border-white/10 bg-zinc-950/65 shadow-2xl p-12 lg:p-16 text-center relative overflow-hidden">
             {/* Quote Icon */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
@@ -95,7 +95,7 @@ function FounderQuote() {
               transition={{ delay: 0.2, duration: duration.slow }}
               className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl border border-white/10 bg-white/[0.05] mb-8"
             >
-              <Quote className="w-10 h-10 text-slate-300" />
+              <Quote className="w-10 h-10 text-zinc-300" />
             </motion.div>
 
             {/* Quote Text */}
@@ -132,7 +132,7 @@ function FounderQuote() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.8, duration: duration.slow }}
-              className="relative flex flex-col items-center gap-4 text-slate-400 sm:flex-row sm:justify-center"
+              className="relative flex flex-col items-center gap-4 text-zinc-400 sm:flex-row sm:justify-center"
             >
               {/* Avatar: source is a 1:2 portrait (499×1023). Earlier
                   attempts used `scale-[1.5] origin-[50%_20%]` to zoom
@@ -186,7 +186,7 @@ function TheProblem() {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
+    <section className="relative py-32 overflow-hidden bg-[#181a1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         {/* Section Header, labelled hairline rule */}
         <motion.div
@@ -199,7 +199,7 @@ function TheProblem() {
           <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6">
             Every tool I looked at stored the documents.
             <br />
-            <span className="text-slate-500">None of them ran the work.</span>
+            <span className="text-zinc-500">None of them ran the work.</span>
           </h2>
         </motion.div>
 
@@ -212,14 +212,14 @@ function TheProblem() {
           className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10 mb-10"
         >
           <div className="space-y-6">
-            <p className="text-lg text-slate-400 leading-relaxed">
+            <p className="text-lg text-zinc-400 leading-relaxed">
               I started by reading the actual instruments: the NDIS Practice
               Standards, the Aged Care Quality Standards, ISO 27001 Annex A, the
               SOC 2 trust services criteria. Then I looked at the software that
               says it covers them. Almost all of it is a document library with a
               workflow tab bolted on.
             </p>
-            <p className="text-lg text-slate-400 leading-relaxed">
+            <p className="text-lg text-zinc-400 leading-relaxed">
               The obligations are not really about documents. They are about who
               did the thing, when, whether that person was still credentialed at
               the time, and whether anyone can show it six months later.
@@ -247,8 +247,8 @@ function TheProblem() {
                 key={idx}
                 className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/10"
               >
-                <span className="w-2 h-2 rounded-full bg-slate-500 flex-shrink-0" />
-                <span className="text-slate-300">{problem}</span>
+                <span className="w-2 h-2 rounded-full bg-zinc-500 flex-shrink-0" />
+                <span className="text-zinc-300">{problem}</span>
               </div>
             ))}
           </SectionChoreography>
@@ -289,7 +289,7 @@ function TheApproach() {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
+    <section className="relative py-32 overflow-hidden bg-[#181a1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         {/* Section Header, centered plain label */}
         <motion.div
@@ -312,14 +312,14 @@ function TheApproach() {
           transition={{ duration: duration.slow, delay: 0.1 }}
           className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10 mb-12"
         >
-          <p className="text-lg text-slate-400 mb-4">
+          <p className="text-lg text-zinc-400 mb-4">
             FormaOS stores documents too. The difference is that a document is
             the end of a chain, not the product.
           </p>
           <p className="text-xl text-white font-medium mb-4">
             I built it around one rule:
           </p>
-          <p className="text-2xl sm:text-3xl text-slate-300 font-bold italic leading-tight">
+          <p className="text-2xl sm:text-3xl text-zinc-300 font-bold italic leading-tight">
             &ldquo;Compliance should be embedded in how the work is done, not
             reconstructed after it is done.&rdquo;
           </p>
@@ -343,9 +343,9 @@ function TheApproach() {
                 className="group flex items-center gap-4 p-4 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 transition-colors duration-300"
               >
                 <div className="flex-shrink-0 w-10 h-10 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center">
-                  <capability.icon className="w-5 h-5 text-slate-300" />
+                  <capability.icon className="w-5 h-5 text-zinc-300" />
                 </div>
-                <span className="text-lg text-slate-300">
+                <span className="text-lg text-zinc-300">
                   {capability.text}
                 </span>
               </div>
@@ -370,7 +370,7 @@ function TheApproach() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.8 }}
-          className="text-xl text-slate-400"
+          className="text-xl text-zinc-400"
         >
           The evidence becomes{' '}
           <span className="text-white font-medium">
@@ -388,7 +388,7 @@ function TheApproach() {
 // ----------------------------------------------------------------------------
 function WhyWeBuiltIt() {
   return (
-    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
+    <section className="relative py-32 overflow-hidden bg-[#181a1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         {/* Section Header, labelled hairline rule */}
         <motion.div
@@ -401,7 +401,7 @@ function WhyWeBuiltIt() {
           <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6">
             I am not a compliance consultant.
             <br />
-            <span className="text-slate-500">That turned out to matter.</span>
+            <span className="text-zinc-500">That turned out to matter.</span>
           </h2>
         </motion.div>
 
@@ -414,7 +414,7 @@ function WhyWeBuiltIt() {
           className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10"
         >
           <div className="space-y-6">
-            <p className="text-lg text-slate-400 leading-relaxed">
+            <p className="text-lg text-zinc-400 leading-relaxed">
               I read a standard the way I read a spec: what triggers this, what
               is the deadline, who is accountable, what proves it happened. Most
               clauses turn out to be a state machine with a due date attached,
@@ -426,13 +426,13 @@ function WhyWeBuiltIt() {
             </p>
 
             <div className="p-6 rounded-2xl bg-white/[0.05] border border-white/10">
-              <p className="text-2xl text-slate-200 font-semibold italic leading-tight">
+              <p className="text-2xl text-zinc-200 font-semibold italic leading-tight">
                 &ldquo;Can an organisation prove, at any moment, that it is
                 operating in line with its obligations?&rdquo;
               </p>
             </div>
 
-            <p className="text-lg text-slate-400 leading-relaxed">
+            <p className="text-lg text-zinc-400 leading-relaxed">
               That answer has to hold on an ordinary Tuesday, not only in the
               week before an audit. It is why the audit log is hash-chained in
               Postgres with append-only enforced by a database trigger and RLS
@@ -476,7 +476,7 @@ function WhatMakesUsDifferent() {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
+    <section className="relative py-32 overflow-hidden bg-[#181a1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         {/* Section Header, centered plain label */}
         <motion.div
@@ -489,7 +489,7 @@ function WhatMakesUsDifferent() {
           <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6">
             The four decisions everything else follows from
           </h2>
-          <p className="text-lg text-slate-400 max-w-3xl mx-auto">
+          <p className="text-lg text-zinc-400 max-w-3xl mx-auto">
             None of these are settings. They sit in the schema, which is the
             reason they are hard to switch off when a deadline gets tight.
           </p>
@@ -515,13 +515,13 @@ function WhatMakesUsDifferent() {
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center">
-                    <principle.icon className="w-6 h-6 text-slate-300" />
+                    <principle.icon className="w-6 h-6 text-zinc-300" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-2">
                       {principle.title}
                     </h3>
-                    <p className="text-slate-400">{principle.description}</p>
+                    <p className="text-zinc-400">{principle.description}</p>
                   </div>
                 </div>
               </motion.div>
@@ -563,7 +563,7 @@ function OurMission() {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
+    <section className="relative py-32 overflow-hidden bg-[#181a1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         {/* Section Header, centered plain label */}
         <motion.div
@@ -604,7 +604,7 @@ function OurMission() {
           transition={{ duration: duration.slow, delay: 0.2 }}
           className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10 mb-12"
         >
-          <p className="text-lg text-slate-400 mb-6">
+          <p className="text-lg text-zinc-400 mb-6">
             A system that does this properly should:
           </p>
           <SectionChoreography
@@ -616,8 +616,8 @@ function OurMission() {
                 key={idx}
                 className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/10"
               >
-                <CheckCircle className="w-5 h-5 text-slate-300 flex-shrink-0" />
-                <span className="text-slate-300">{belief}</span>
+                <CheckCircle className="w-5 h-5 text-zinc-300 flex-shrink-0" />
+                <span className="text-zinc-300">{belief}</span>
               </div>
             ))}
           </SectionChoreography>
@@ -631,7 +631,7 @@ function OurMission() {
           transition={{ duration: duration.slow, delay: 0.6 }}
           className="space-y-4"
         >
-          <p className="text-lg text-slate-400">
+          <p className="text-lg text-zinc-400">
             FormaOS is bootstrapped, sole-engineered and AU-hosted. The roadmap
             is short on purpose.
           </p>
@@ -654,7 +654,7 @@ function OurMission() {
 // ----------------------------------------------------------------------------
 function FinalCTA() {
   return (
-    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
+    <section className="relative py-32 overflow-hidden bg-[#181a1c]">
       <div className="relative isolate z-10 max-w-7xl mx-auto px-6 lg:px-12 overflow-hidden">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -664,7 +664,7 @@ function FinalCTA() {
           className="relative"
         >
           {/* Executive Panel, solid scrim over the section photo */}
-          <div className="rounded-3xl border border-white/10 bg-slate-950/65 shadow-2xl overflow-hidden max-w-4xl mx-auto">
+          <div className="rounded-3xl border border-white/10 bg-zinc-950/65 shadow-2xl overflow-hidden max-w-4xl mx-auto">
             {/* Header */}
             <div className="bg-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-8 sm:py-10">
               <div className="text-center">
@@ -695,7 +695,7 @@ function FinalCTA() {
             {/* Content */}
             <div className="px-8 sm:px-12 py-10 sm:py-12">
               <div className="text-center mb-10">
-                <p className="text-lg text-slate-400 mb-6 max-w-2xl mx-auto">
+                <p className="text-lg text-zinc-400 mb-6 max-w-2xl mx-auto">
                   There are no customer logos on this page yet. What I can do is
                   walk you through the product against your own obligations and
                   let you judge it from there.
@@ -726,14 +726,14 @@ function FinalCTA() {
                 </Link>
                 <Link
                   href={demoHref('our_story_final')}
-                  className="group flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
+                  className="group flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300"
                 >
                   {PUBLIC_CTA_LABELS.bookDemo}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
               </motion.div>
 
-              <div className="text-center mt-8 text-sm text-slate-500">
+              <div className="text-center mt-8 text-sm text-zinc-500">
                 Guided compliance plan • Assessment-led onboarding •
                 Procurement-ready review
               </div>

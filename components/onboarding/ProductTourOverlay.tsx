@@ -222,7 +222,7 @@ export function ProductTourOverlay() {
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               Product Tour
             </p>
             <h3 className="text-lg font-semibold text-foreground">

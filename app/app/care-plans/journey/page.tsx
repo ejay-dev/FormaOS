@@ -11,14 +11,19 @@ import {
 } from '@/components/journey/JourneyBoard';
 import { CarePlansJourneyBoard } from '@/components/journey/CarePlansJourneyBoard';
 import { JourneySegmentBar } from '@/components/journey/JourneySegmentBar';
+import { normaliseCarePlanStatus } from '@/components/care/care-plan-status';
 
 export const metadata = { title: 'Care Plans Journey | FormaOS' };
 
+// Every canonical care-plan status has a column, so a plan can never be
+// transitioned into a state that drops it off this board.
 const STAGES: JourneyStage[] = [
   { key: 'draft', label: 'Draft', tone: 'muted' },
   { key: 'active', label: 'Active', tone: 'success' },
-  { key: 'under_review', label: 'Under Review', tone: 'info' },
+  { key: 'under_review', label: 'Under review', tone: 'info' },
+  { key: 'completed', label: 'Completed', tone: 'muted' },
   { key: 'expired', label: 'Expired', tone: 'danger' },
+  { key: 'archived', label: 'Archived', tone: 'muted' },
 ];
 
 const PLAN_TYPE_LABEL: Record<string, string> = {
@@ -69,9 +74,10 @@ async function CarePlansJourney({ orgId }: { orgId: string }) {
     .order('review_date', { ascending: true, nullsFirst: false })
     .limit(300);
 
-  const plans = ((data ?? []) as unknown as PlanRow[]).filter((p) =>
-    STAGES.some((s) => s.key === p.status),
-  );
+  const plans = ((data ?? []) as unknown as PlanRow[]).map((p) => ({
+    ...p,
+    status: normaliseCarePlanStatus(p.status),
+  }));
 
   if (plans.length === 0) {
     return (
@@ -161,6 +167,12 @@ async function CarePlansJourney({ orgId }: { orgId: string }) {
               key: 'draft',
               label: 'Draft',
               value: counts.draft ?? 0,
+              tone: 'muted',
+            },
+            {
+              key: 'completed',
+              label: 'Completed',
+              value: counts.completed ?? 0,
               tone: 'muted',
             },
             {

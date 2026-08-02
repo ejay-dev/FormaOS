@@ -178,7 +178,7 @@ export default async function InvestigationPage({
       </div>
 
       <div>
-        <h1 className="text-2xl font-bold">Investigation</h1>
+        <h1 className="page-title">Investigation</h1>
         <p className="text-muted-foreground">
           {incidentLabel} — {incident.incident_type} ({incident.severity})
         </p>

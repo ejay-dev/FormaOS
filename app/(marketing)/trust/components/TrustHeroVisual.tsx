@@ -140,7 +140,7 @@ function TrustHeroVisualInner() {
         >
           {/* Glass circle */}
           <div
-            className="relative flex items-center justify-center rounded-full border border-white/25 backdrop-blur-xl bg-gradient-to-br from-white/[0.10] to-white/[0.03]"
+            className="relative flex items-center justify-center rounded-full border border-white/25 bg-white/[0.05]"
             style={{ width: 100, height: 100 }}
           >
             <span className="text-xs font-bold text-white tracking-wide select-none">
@@ -174,7 +174,7 @@ function TrustHeroVisualInner() {
             }
           >
             <div
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02]"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-white/[0.10] bg-white/[0.04]"
               style={{ width: 80, height: 36 }}
             >
               {/* Colored dot */}

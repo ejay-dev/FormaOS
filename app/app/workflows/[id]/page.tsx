@@ -48,7 +48,7 @@ export default async function WorkflowDetailPage({
           <div className="flex items-start gap-3">
             <LockKeyhole className="mt-0.5 h-5 w-5 text-foreground" />
             <div>
-              <h1 className="text-xl font-semibold text-foreground">
+              <h1 className="page-title text-foreground">
                 Workflow automation is not enabled
               </h1>
               <p className="mt-2 max-w-2xl text-sm text-muted-foreground">

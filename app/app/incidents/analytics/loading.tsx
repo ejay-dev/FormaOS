@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Analytics" cards={2} tableRows={4} />;
+export default function AppIncidentsAnalyticsLoading() {
+  return <PageSkeleton title="Incident analytics" cards={2} tableRows={4} />;
 }

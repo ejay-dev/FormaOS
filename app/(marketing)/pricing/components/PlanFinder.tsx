@@ -120,7 +120,7 @@ export function PlanFinder() {
                 <span className="text-[13px] font-semibold text-white">
                   {dim.label}
                 </span>
-                <span className="text-xs text-slate-500">{dim.hint}</span>
+                <span className="text-xs text-zinc-500">{dim.hint}</span>
               </legend>
               <div className="mt-3 flex flex-wrap gap-2">
                 {dim.options.map((opt, oi) => {
@@ -140,7 +140,7 @@ export function PlanFinder() {
                       className={`rounded-xl border px-4 py-2.5 text-[13px] font-medium transition-colors duration-200 max-sm:flex max-sm:min-h-[44px] max-sm:items-center ${
                         isActive
                           ? 'border-white/30 bg-white/[0.08] text-white'
-                          : 'border-white/[0.08] bg-white/[0.02] text-slate-400 hover:border-white/[0.16] hover:text-slate-200'
+                          : 'border-white/[0.08] bg-white/[0.02] text-zinc-400 hover:border-white/[0.16] hover:text-zinc-200'
                       }`}
                     >
                       {opt.label}
@@ -157,7 +157,7 @@ export function PlanFinder() {
       <div className="lg:col-span-5">
         <div className="relative overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.03] p-7 lg:sticky lg:top-28">
           <span className="pointer-events-none absolute inset-y-7 left-0 w-px bg-gradient-to-b from-white/50 via-white/15 to-transparent" />
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+          <p className="text-[10px] font-semibold text-zinc-500">
             Recommended for your scope
           </p>
 
@@ -175,12 +175,12 @@ export function PlanFinder() {
                 <div className="text-3xl font-semibold tracking-tight text-white">
                   {priceLabelFor(tier)}
                 </div>
-                <div className="text-[11px] text-slate-500">
+                <div className="text-[11px] text-zinc-500">
                   {tier.priceSubtext}
                 </div>
               </div>
             </div>
-            <p className="mt-2 text-[13px] leading-relaxed text-slate-400">
+            <p className="mt-2 text-[13px] leading-relaxed text-zinc-400">
               {tier.audience}
             </p>
 
@@ -188,10 +188,10 @@ export function PlanFinder() {
               {drivers.map((d) => (
                 <li
                   key={d}
-                  className="flex items-start gap-2.5 text-[13px] leading-snug text-slate-300"
+                  className="flex items-start gap-2.5 text-[13px] leading-snug text-zinc-300"
                 >
                   <Check
-                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-400"
+                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-400"
                     aria-hidden="true"
                   />
                   <span className="capitalize">{d}</span>
@@ -213,12 +213,12 @@ export function PlanFinder() {
                 plan: tier.id,
               })
             }
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-100"
           >
             {tier.ctaLabel}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
-          <p className="mt-3 text-center text-[11px] text-slate-500">
+          <p className="mt-3 text-center text-[11px] text-zinc-500">
             Estimate only · final scope is confirmed in a short assessment.
           </p>
         </div>

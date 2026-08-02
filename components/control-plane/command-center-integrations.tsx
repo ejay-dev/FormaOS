@@ -9,9 +9,9 @@ export function CommandCenterIntegrations({
   onRequestIntegrationRetry,
 }: CommandCenterIntegrationsProps) {
   return (
-    <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+    <section className="rounded-xl border border-border bg-card p-6">
       <div className="mb-4 flex items-center gap-2">
-        <Wrench className="h-4 w-4 text-amber-300" />
+        <Wrench className="h-4 w-4 text-warning" />
         <h2 className="text-lg font-semibold text-foreground">
           Integrations Control
         </h2>
@@ -21,7 +21,7 @@ export function CommandCenterIntegrations({
         {integrations.map((integration) => (
           <div
             key={integration.key}
-            className="rounded-lg border border-slate-800 bg-slate-950/40 p-3"
+            className="rounded-lg border border-border bg-background/40 p-3"
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
@@ -43,10 +43,10 @@ export function CommandCenterIntegrations({
                       enabled: !integration.value.enabled,
                     })
                   }
-                  className="inline-flex items-center gap-1 rounded border border-slate-700 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
+                  className="inline-flex items-center gap-1 rounded border border-border px-2 py-1 text-xs text-foreground/90 hover:bg-muted"
                 >
                   {integration.value.enabled ? (
-                    <ToggleRight className="h-4 w-4 text-emerald-400" />
+                    <ToggleRight className="h-4 w-4 text-success" />
                   ) : (
                     <ToggleLeft className="h-4 w-4 text-muted-foreground/60" />
                   )}
@@ -55,7 +55,7 @@ export function CommandCenterIntegrations({
                 <button
                   type="button"
                   onClick={() => onRequestIntegrationRetry(integration.key)}
-                  className="inline-flex items-center gap-1 rounded border border-slate-700 px-2 py-1 text-xs text-foreground/90 hover:bg-slate-800"
+                  className="inline-flex items-center gap-1 rounded border border-border px-2 py-1 text-xs text-foreground/90 hover:bg-muted"
                 >
                   <RefreshCcw className="h-3.5 w-3.5" />
                   Retry
@@ -64,7 +64,7 @@ export function CommandCenterIntegrations({
             </div>
 
             {integration.value.last_error ? (
-              <p className="mt-2 rounded border border-rose-700/40 bg-rose-900/20 px-2 py-1 text-xs text-rose-100">
+              <p className="mt-2 rounded border border-destructive/20 bg-destructive/10 px-2 py-1 text-xs text-destructive">
                 {integration.value.last_error}
               </p>
             ) : null}
@@ -91,8 +91,8 @@ export function CommandCenterIntegrations({
                     }}
                     className={`rounded border px-2 py-0.5 text-[11px] ${
                       enabled
-                        ? 'border-emerald-700/50 bg-emerald-900/20 text-emerald-200'
-                        : 'border-slate-700 text-muted-foreground'
+                        ? 'border-success/20 bg-success/10 text-success'
+                        : 'border-border text-muted-foreground'
                     }`}
                   >
                     {scope}

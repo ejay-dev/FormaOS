@@ -41,7 +41,7 @@ export default async function IncidentAnalyticsPage() {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Incident Analytics</h1>
+        <h1 className="page-title">Incident analytics</h1>
         <p className="text-muted-foreground">
           Review incident patterns, resolution times, and trends.
         </p>
@@ -56,19 +56,19 @@ export default async function IncidentAnalyticsPage() {
           <p className="text-2xl font-bold">{stats.total}</p>
         </div>
         <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="flex items-center gap-2 text-yellow-600 text-sm mb-1">
+          <div className="flex items-center gap-2 text-warning text-sm mb-1">
             <AlertTriangle className="h-4 w-4" /> Open
           </div>
           <p className="text-2xl font-bold">{openCount}</p>
         </div>
         <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="flex items-center gap-2 text-green-600 text-sm mb-1">
+          <div className="flex items-center gap-2 text-success text-sm mb-1">
             <Clock className="h-4 w-4" /> Resolved
           </div>
           <p className="text-2xl font-bold">{resolvedCount}</p>
         </div>
         <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="flex items-center gap-2 text-red-600 text-sm mb-1">
+          <div className="flex items-center gap-2 text-destructive text-sm mb-1">
             <Repeat className="h-4 w-4" /> Recurring Patterns
           </div>
           <p className="text-2xl font-bold">{patterns.length}</p>

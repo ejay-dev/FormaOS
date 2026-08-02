@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
-import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection, MarketingPageShell } from '../components/shared';
 import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
@@ -72,11 +71,11 @@ export default function WhatIsCosContent() {
             </p>
             <p>
               The shift from compliance documentation to compliance operations
-              represents a fundamental change in how organizations approach
+              represents a fundamental change in how organisations approach
               regulatory obligations. Instead of treating compliance as a
               periodic project (annual audits, quarterly reviews, pre-assessment
               preparation), a compliance operating system makes compliance a
-              natural output of how your organization works every day.
+              natural output of how your organisation works every day.
             </p>
           </div>
         </ScrollReveal>
@@ -139,16 +138,14 @@ export default function WhatIsCosContent() {
                 variant="scaleUp"
                 range={[0, 0.3 + idx * 0.04]}
               >
-                <HoverLift>
-                  <GlassCard intensity="normal" className="h-full p-6">
-                    <h3 className="text-lg font-semibold text-white">
-                      {item.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                      {item.description}
-                    </p>
-                  </GlassCard>
-                </HoverLift>
+                <div className="h-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
+                  <h3 className="text-lg font-semibold text-white">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                    {item.description}
+                  </p>
+                </div>
               </ScrollReveal>
             ))}
           </div>
@@ -178,7 +175,7 @@ export default function WhatIsCosContent() {
             </p>
           </div>
           <div className="mt-8 overflow-x-auto">
-            <GlassCard intensity="normal" className="p-0 overflow-hidden">
+            <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
               <table className="w-full text-sm text-left">
                 <thead>
                   <tr className="border-b border-white/10">
@@ -255,7 +252,7 @@ export default function WhatIsCosContent() {
                   ))}
                 </tbody>
               </table>
-            </GlassCard>
+            </div>
           </div>
         </section>
       </DeferredSection>
@@ -278,7 +275,7 @@ export default function WhatIsCosContent() {
           <div className="mt-8 space-y-6">
             {[
               {
-                industry: 'Healthcare organizations',
+                industry: 'Healthcare organisations',
                 description:
                   'Hospitals, clinics, and aged care providers managing NSQHS Standards, AHPRA requirements, clinical governance, and accreditation readiness across multiple sites and services.',
               },
@@ -295,12 +292,12 @@ export default function WhatIsCosContent() {
               {
                 industry: 'Financial services',
                 description:
-                  'Regulated financial organizations managing compliance across APRA, ASIC, AML/CTF, and industry-specific requirements with complex control environments.',
+                  'Regulated financial organisations managing compliance across APRA, ASIC, AML/CTF, and industry-specific requirements with complex control environments.',
               },
               {
                 industry: 'Government agencies',
                 description:
-                  'Public sector organizations managing compliance across multiple regulatory frameworks while maintaining transparency and audit readiness for oversight bodies.',
+                  'Public sector organisations managing compliance across multiple regulatory frameworks while maintaining transparency and audit readiness for oversight bodies.',
               },
             ].map((item, idx) => (
               <ScrollReveal
@@ -308,14 +305,14 @@ export default function WhatIsCosContent() {
                 variant="fadeUp"
                 range={[0, 0.25 + idx * 0.04]}
               >
-                <GlassCard intensity="subtle" className="p-6">
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
                   <h3 className="text-lg font-semibold text-white">
                     {item.industry}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-slate-300">
                     {item.description}
                   </p>
-                </GlassCard>
+                </div>
               </ScrollReveal>
             ))}
           </div>
@@ -351,14 +348,14 @@ export default function WhatIsCosContent() {
                 </strong>
                 . It doesn&apos;t just store compliance information or track
                 compliance activities, it embeds compliance into the
-                operational fabric of the organization. The difference is like
+                operational fabric of the organisation. The difference is like
                 the difference between a recipe book and a commercial kitchen:
                 one describes what should happen, the other makes it happen
                 reliably at scale.
               </p>
               <p>
                 This evolution matters because regulatory complexity is
-                increasing, not decreasing. Organizations face more frameworks,
+                increasing, not decreasing. Organisations face more frameworks,
                 more oversight, and higher expectations for evidence quality.
                 The only sustainable approach is making compliance a natural
                 output of operations, not a separate workstream that competes
@@ -400,7 +397,7 @@ export default function WhatIsCosContent() {
               {
                 question: 'Who needs a compliance operating system?',
                 answer:
-                  'Any organization that must demonstrate compliance to regulators, auditors, or accreditation bodies. This includes healthcare providers, disability service organizations, financial services firms, technology companies pursuing SOC 2 or ISO certification, and government agencies.',
+                  'Any organisation that must demonstrate compliance to regulators, auditors, or accreditation bodies. This includes healthcare providers, disability service organisations, financial services firms, technology companies pursuing SOC 2 or ISO certification, and government agencies.',
               },
               {
                 question: 'What are the benefits over spreadsheets?',
@@ -413,14 +410,14 @@ export default function WhatIsCosContent() {
                 variant="fadeUp"
                 range={[0, 0.25 + idx * 0.04]}
               >
-                <GlassCard intensity="subtle" className="p-6">
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6">
                   <h3 className="text-lg font-semibold text-white">
                     {item.question}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-slate-300">
                     {item.answer}
                   </p>
-                </GlassCard>
+                </div>
               </ScrollReveal>
             ))}
           </div>
@@ -475,21 +472,21 @@ export default function WhatIsCosContent() {
                 description: 'Immutable evidence capture and management.',
               },
             ].map((link) => (
-              <HoverLift key={link.href}>
-                <Link href={link.href} className="block h-full">
-                  <GlassCard intensity="normal" className="h-full p-5">
-                    <h4 className="text-sm font-semibold text-white">
-                      {link.label}
-                    </h4>
-                    <p className="mt-2 text-xs text-slate-400">
-                      {link.description}
-                    </p>
-                    <span className="mt-3 inline-flex items-center gap-1 text-xs text-slate-300">
-                      Learn more <ArrowRight className="h-3 w-3" />
-                    </span>
-                  </GlassCard>
-                </Link>
-              </HoverLift>
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block h-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors hover:border-white/20"
+              >
+                <h4 className="text-sm font-semibold text-white">
+                  {link.label}
+                </h4>
+                <p className="mt-2 text-xs text-slate-400">
+                  {link.description}
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs text-slate-300">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </span>
+              </Link>
             ))}
           </div>
         </section>
@@ -501,13 +498,13 @@ export default function WhatIsCosContent() {
 
       {/* CTA */}
       <section className="relative isolate overflow-hidden mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-white/[0.08] bg-slate-950/65 p-8 text-center backdrop-blur-sm sm:p-10">
+        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 text-center sm:p-10">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             See the compliance operating system in action
           </h2>
           <p className="mx-auto mt-4 max-w-3xl text-slate-300">
             FormaOS is the compliance operating system for regulated
-            organizations. Turn regulatory obligations into structured controls,
+            organisations. Turn regulatory obligations into structured controls,
             owned actions, and immutable audit evidence.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

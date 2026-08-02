@@ -12,6 +12,7 @@ import { useOrgId } from '@/lib/stores/app';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { PageSkeleton } from '@/components/ui/skeleton';
 import { PageHero } from '@/components/ui/page-hero';
+import { describeEntitlement } from '@/lib/billing/entitlement-labels';
 
 type EntitlementRow = {
   feature_key: string;
@@ -25,84 +26,6 @@ type SubscriptionRow = {
   trial_expires_at: string | null;
   stripe_customer_id: string | null;
 };
-
-/**
- * org_entitlements.feature_key is a database key (`retention_governance`,
- * `sso_saml`). Keep this in step with EntitlementKey in
- * lib/billing/entitlements.ts — it can't be imported here because that module
- * pulls in the server Supabase client.
- */
-const ENTITLEMENT_LABELS: Record<
-  string,
-  { name: string; description: string }
-> = {
-  audit_export: {
-    name: 'Audit export',
-    description: 'Export audit trails and evidence packs.',
-  },
-  reports: {
-    name: 'Standard reports',
-    description: 'Built-in compliance and activity reporting.',
-  },
-  framework_evaluations: {
-    name: 'Framework evaluations',
-    description: 'Automated control checks against your installed packs.',
-  },
-  certifications: {
-    name: 'Certifications',
-    description: 'Track staff certifications and expiry dates.',
-  },
-  team_limit: {
-    name: 'Team members',
-    description: 'People you can invite to this workspace.',
-  },
-  ai_assistant: {
-    name: 'AI assistant',
-    description: 'Ask questions about your controls, policies and evidence.',
-  },
-  capa_management: {
-    name: 'Corrective actions',
-    description: 'Log corrective actions with an owner and a due date.',
-  },
-  custom_reports: {
-    name: 'Custom reports',
-    description: 'Build reports from your own filters and fields.',
-  },
-  form_analytics: {
-    name: 'Form analytics',
-    description: 'Completion and response trends across your forms.',
-  },
-  workflow_automation: {
-    name: 'Workflow automation',
-    description: 'Scheduled and triggered actions across tasks and evidence.',
-  },
-  sso_saml: {
-    name: 'Single sign-on',
-    description: 'Sign in through your SAML identity provider.',
-  },
-  directory_sync: {
-    name: 'Directory sync',
-    description: 'Keep workspace members in step with your directory.',
-  },
-  retention_governance: {
-    name: 'Retention governance',
-    description: 'Retention policies and legal holds.',
-  },
-};
-
-function describeEntitlement(featureKey: string): {
-  name: string;
-  description: string;
-} {
-  const known = ENTITLEMENT_LABELS[featureKey];
-  if (known) return known;
-
-  const humanised = featureKey.replaceAll('_', ' ');
-  return {
-    name: humanised.charAt(0).toUpperCase() + humanised.slice(1),
-    description: '',
-  };
-}
 
 /**
  * =========================================================
@@ -260,15 +183,14 @@ export default function BillingPage() {
   const subStatus = subscription?.status ?? 'not active';
   const subTone =
     subStatus === 'active' || subStatus === 'trialing'
-      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
-      : 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+      ? 'bg-success/10 text-success border-success/30'
+      : 'bg-destructive/10 text-destructive border-destructive/30';
 
   return (
     <div className="flex flex-col h-full">
       <PageHero
-        eyebrow="Administration · Billing"
-        title="Billing & Plan"
-        subtitle="Manage subscription status and entitlements."
+        title="Billing and plan"
+        subtitle="Your subscription status and what it includes."
         actions={
           <span
             className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold capitalize ${subTone}`}
@@ -281,8 +203,8 @@ export default function BillingPage() {
 
       <div className="page-content max-w-3xl space-y-4">
       {status === 'success' ? (
-        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-600">
-          Subscription activated. Entitlements will update shortly.
+        <div className="rounded-lg border border-success/20 bg-success/10 px-3 py-2 text-sm text-success">
+          Subscription activated. Your plan features will update shortly.
         </div>
       ) : null}
       {status === 'cancelled' ? (
@@ -313,7 +235,7 @@ export default function BillingPage() {
         </div>
       ) : null}
       {resumeCheckoutPlan && !canSelfServe ? (
-        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
+        <div className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
           Your checkout session timed out. Activate your subscription below to
           finish setting up your workspace.
         </div>
@@ -357,9 +279,7 @@ export default function BillingPage() {
         <div className="flex items-center gap-3 text-foreground">
           <CreditCard className="h-4 w-4 text-muted-foreground" />
           <div>
-            <div className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-              Current plan
-            </div>
+            <div className="text-sm text-muted-foreground">Current plan</div>
             <div className="text-lg font-semibold">
               {plan?.name ?? 'Plan not set'}
             </div>
@@ -394,7 +314,9 @@ export default function BillingPage() {
       </div>
 
       <div className="rounded-lg border border-border bg-card p-4">
-        <h3 className="section-label mb-3">Entitlements</h3>
+        <h3 className="mb-3 text-sm font-semibold text-foreground">
+          What your plan includes
+        </h3>
         <div className="grid gap-2 md:grid-cols-2">
           {entitlements.map((entitlement) => {
             const label = describeEntitlement(entitlement.feature_key);

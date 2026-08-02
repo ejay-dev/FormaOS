@@ -2,16 +2,12 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
-import {
-  GraduationCap,
-  Plus,
-  Calendar,
-  AlertTriangle,
-  CheckCircle2,
-  User,
-  Search,
-} from 'lucide-react';
+import { GraduationCap, Plus, Calendar, User, Search } from 'lucide-react';
 import { AddCertificationModal } from '@/components/registers/add-certification-modal';
+import {
+  StatusBadge,
+  certificateExpiry,
+} from '@/components/compliance/StatusBadge';
 import {
   getOrgMemberIdentities,
   type MemberIdentityMap,
@@ -143,19 +139,17 @@ export default function TrainingRegisterPage() {
   }, [records, identities, searchQuery, statusFilter]);
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="flex flex-col h-full">
       <AddCertificationModal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         members={members}
       />
 
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">
-            Staff Training Register
-          </h1>
-          <p className="text-muted-foreground mt-1 font-medium">
+          <h1 className="page-title">Staff training register</h1>
+          <p className="page-description">
             Monitor mandatory certifications and worker screening.
           </p>
         </div>
@@ -165,77 +159,75 @@ export default function TrainingRegisterPage() {
           title={
             schemaAvailable
               ? undefined
-              : 'Training records are unavailable until the org_training_records table is migrated.'
+              : 'Training records are not enabled for this workspace yet.'
           }
-          className="flex items-center gap-2 bg-surface-2 text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
         >
-          <Plus className="h-4 w-4" />
-          Add Certification
+          <Plus className="h-3.5 w-3.5" />
+          Add certification
         </button>
       </div>
 
+      <div className="page-content space-y-4">
       {!schemaAvailable ? (
         <div
-          className="rounded-2xl border border-warning/20 bg-warning/10 p-4 text-sm text-warning"
+          className="rounded-lg border border-warning/20 bg-warning/10 p-3 text-sm text-warning"
           data-testid="training-register-schema-disabled"
         >
-          Training register actions are unavailable until the
-          org_training_records database table is migrated.
+          Training records are not enabled for this workspace yet. Contact
+          support to turn them on.
         </div>
       ) : null}
 
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] md:grid-cols-[1fr_auto] items-center gap-3 bg-surface-1 p-2 rounded-2xl border border-edge-2 shadow-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] items-center gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <input
-              type="search"
+            type="search"
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search by name or certification"
             aria-label="Search training records"
-            className="w-full pl-12 pr-4 py-2.5 text-sm font-medium outline-none bg-transparent"
-              enterKeyHint="search"
-              autoCapitalize="off"
-              autoCorrect="off"
-              spellCheck={false}
-            />
+            className="h-9 w-full rounded-md border border-border bg-background pl-9 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            enterKeyHint="search"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
+          />
         </div>
         <select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
           aria-label="Filter by status"
-          className="h-10 rounded-xl border border-edge-2 bg-surface-1 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
+          className="h-9 rounded-md border border-border bg-background px-2 text-xs text-foreground"
         >
-          <option value={ALL_FILTER}>All Statuses</option>
+          <option value={ALL_FILTER}>All statuses</option>
           <option value="active">Active</option>
           <option value="expired">Expired</option>
         </select>
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
           {error}
         </div>
       ) : null}
 
-      <div className="bg-surface-1 border border-edge-2 rounded-[2.5rem] shadow-sm overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         <div className="w-full overflow-x-auto">
-          <table className="min-w-[860px] w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-surface-1 border-b border-edge-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">
-                <th className="px-8 py-6">Personnel</th>
-                <th className="px-8 py-6">Certification / Training</th>
-                <th className="px-8 py-6">Completion</th>
-                <th className="px-8 py-6">Expiry Status</th>
+          <table className="min-w-[720px] w-full text-left text-sm">
+            <thead className="bg-muted/50 text-xs">
+              <tr className="border-b border-border">
+                <th className="px-3 py-2 font-medium">Staff member</th>
+                <th className="px-3 py-2 font-medium">Certification</th>
+                <th className="px-3 py-2 font-medium">Completed</th>
+                <th className="px-3 py-2 font-medium">Expiry</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td
-                    colSpan={4}
-                    className="px-8 py-20 text-center animate-pulse"
-                  >
+                  <td colSpan={4} className="px-3 py-12 text-center">
                     <p className="text-sm text-muted-foreground">
                       Loading training records…
                     </p>
@@ -243,80 +235,68 @@ export default function TrainingRegisterPage() {
                 </tr>
               ) : filteredRecords.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-8 py-24 text-center">
-                    <div className="h-16 w-16 bg-surface-2 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-edge-2">
-                      <GraduationCap className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                    <p className="text-sm font-black text-foreground tracking-tight">
+                  <td colSpan={4} className="px-3 py-12 text-center">
+                    <GraduationCap className="mx-auto h-8 w-8 text-muted-foreground opacity-50" />
+                    <p className="mt-2 text-sm font-medium text-foreground">
                       No matching records found
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       Adjust your search or add a new certification.
                     </p>
                   </td>
                 </tr>
               ) : (
                 filteredRecords.map((record) => {
-                  const isExpired = Boolean(
-                    record.expiry_date &&
-                    new Date(record.expiry_date) < new Date(),
-                  );
                   const identity = identities[record.user_id];
                   return (
                     <tr
                       key={record.id}
-                      className="group hover:bg-surface-1 transition-colors"
+                      className="hover:bg-muted/30 transition-colors"
                     >
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-xl bg-surface-2 flex items-center justify-center text-sm font-semibold text-muted-foreground border border-edge-2 group-hover:bg-surface-3 transition-colors">
+                      <td className="px-3 py-2">
+                        <div className="flex items-center gap-2">
+                          <div className="h-7 w-7 shrink-0 rounded-md border border-border bg-muted flex items-center justify-center text-[11px] font-semibold text-muted-foreground">
                             {identity ? (
                               identity.initials
                             ) : (
-                              <User className="h-5 w-5" />
+                              <User className="h-3.5 w-3.5" />
                             )}
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-foreground">
+                            <span className="font-medium text-foreground">
                               {identity?.name ?? 'Unknown member'}
                             </span>
                             {identity?.email ? (
-                              <span className="text-xs font-medium text-muted-foreground">
+                              <span className="text-xs text-muted-foreground">
                                 {identity.email}
                               </span>
                             ) : null}
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-6">
-                        <p className="text-sm font-semibold text-foreground tracking-tight">
-                          {record.title}
-                        </p>
+                      <td className="px-3 py-2 text-foreground">
+                        {record.title}
                       </td>
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
-                          <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                      <td className="px-3 py-2">
+                        <span className="flex items-center gap-1.5 text-muted-foreground">
+                          <Calendar className="h-3.5 w-3.5" />
                           {new Date(
                             record.completion_date,
                           ).toLocaleDateString()}
-                        </div>
+                        </span>
                       </td>
-                      <td className="px-8 py-6">
-                        <div
-                          className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold uppercase tracking-wide w-fit shadow-sm ${
-                            isExpired
-                              ? 'bg-destructive/10 text-destructive border-destructive/20'
-                              : 'bg-success/10 text-success border-success/20'
-                          }`}
-                        >
-                          {isExpired ? (
-                            <AlertTriangle className="h-3 w-3" />
-                          ) : (
-                            <CheckCircle2 className="h-3 w-3" />
-                          )}
-                          {isExpired ? 'Expired' : 'Verified Active'}
-                          {record.expiry_date &&
-                            ` • ${new Date(record.expiry_date).toLocaleDateString()}`}
+                      <td className="px-3 py-2">
+                        <div className="flex items-center gap-2">
+                          <StatusBadge
+                            {...certificateExpiry(record.expiry_date)}
+                          />
+                          {record.expiry_date ? (
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(
+                                record.expiry_date,
+                              ).toLocaleDateString()}
+                            </span>
+                          ) : null}
                         </div>
                       </td>
                     </tr>
@@ -326,6 +306,7 @@ export default function TrainingRegisterPage() {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   );

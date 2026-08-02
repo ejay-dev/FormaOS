@@ -83,9 +83,12 @@ export default async function CrossMapPage() {
     { label: 'Mappings', value: totalMappings, sub: 'total' },
     { label: 'Groups', value: totalGroups, sub: 'control groups' },
     {
-      label: 'Dedup',
+      label: 'Shared work',
       value: totalOpportunities,
-      sub: totalOpportunities > 0 ? 'opportunities' : 'none found',
+      sub:
+        totalOpportunities > 0
+          ? 'controls you can satisfy once'
+          : 'none found',
       tone: totalOpportunities > 0 ? 'success' : 'neutral',
     },
     {
@@ -98,7 +101,7 @@ export default async function CrossMapPage() {
   return (
     <div className="space-y-6 p-6">
       <PageHero
-        eyebrow="Compliance · Cross-Map"
+        eyebrow="Compliance"
         title="Framework Cross-Mapping"
         subtitle="Reuse evidence across frameworks and eliminate duplicate compliance work."
         metrics={heroMetrics}

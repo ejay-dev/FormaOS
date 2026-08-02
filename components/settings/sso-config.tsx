@@ -88,7 +88,7 @@ export function SsoConfigPanel({ orgId, initial, sp, disabledReason }: Props) {
     <section className="rounded-3xl border border-border bg-surface-1 p-6 space-y-5">
       <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 className="text-xl font-black text-foreground">SSO Configuration</h2>
+          <h2 className="text-xl font-semibold text-foreground">Single sign-on</h2>
           <p className="text-sm text-muted-foreground">
             Upload IdP metadata, enforce SSO by domain, and enable JIT provisioning.
           </p>
@@ -138,7 +138,7 @@ export function SsoConfigPanel({ orgId, initial, sp, disabledReason }: Props) {
             />
           </label>
           <div>
-            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+            <div className="mb-2 text-sm font-medium text-foreground">
               Default JIT Role
             </div>
             <select
@@ -155,7 +155,7 @@ export function SsoConfigPanel({ orgId, initial, sp, disabledReason }: Props) {
             </select>
           </div>
           <div>
-            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+            <div className="mb-2 text-sm font-medium text-foreground">
               Allowed Domains
             </div>
             <textarea
@@ -172,26 +172,26 @@ export function SsoConfigPanel({ orgId, initial, sp, disabledReason }: Props) {
         <div className="rounded-2xl border border-border bg-card p-4 space-y-4">
           <div className="grid gap-3 text-sm">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+              <div className="text-sm font-medium text-foreground">
                 Metadata URL
               </div>
               <code className="block break-all text-foreground/90">{sp.metadataUrl}</code>
             </div>
             <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+              <div className="text-sm font-medium text-foreground">
                 ACS URL
               </div>
               <code className="block break-all text-foreground/90">{sp.acsUrl}</code>
             </div>
             <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+              <div className="text-sm font-medium text-foreground">
                 Entity ID
               </div>
               <code className="block break-all text-foreground/90">{sp.entityId}</code>
             </div>
           </div>
           <div>
-            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+            <div className="mb-2 text-sm font-medium text-foreground">
               IdP Metadata XML
             </div>
             <textarea

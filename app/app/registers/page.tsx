@@ -8,6 +8,10 @@ import { DeleteButton } from '@/components/delete-button';
 import { exportRegistersToPDF } from '@/lib/utils/export-helper';
 import { useAppStore } from '@/lib/stores/app';
 import { PageHero } from '@/components/ui/page-hero';
+import {
+  StatusBadge,
+  severityStatus,
+} from '@/components/compliance/StatusBadge';
 import Link from 'next/link';
 import {
   Laptop,
@@ -67,6 +71,7 @@ const CARE_REGISTERS = [
 export default function RegistersPage() {
   const [registers, setRegisters] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [activeTab, setActiveTab] = useState<'care' | 'assets'>('care');
 
   const organization = useAppStore((state) => state.organization);
@@ -107,8 +112,10 @@ export default function RegistersPage() {
 
       if (error) throw error;
       setRegisters(data || []);
+      setLoadFailed(false);
     } catch {
-      setRegisters([]);
+      // A failed fetch must never be reported as "nothing registered".
+      setLoadFailed(true);
     } finally {
       setLoading(false);
     }
@@ -129,17 +136,6 @@ export default function RegistersPage() {
     }
   };
 
-  const _getRiskColor = (level: string) => {
-    switch (level?.toLowerCase()) {
-      case 'high':
-        return 'bg-destructive/10 text-destructive border-destructive/20';
-      case 'medium':
-        return 'bg-warning/10 text-warning border-warning/20';
-      default:
-        return 'bg-success/10 text-success border-success/20';
-    }
-  };
-
   if (loading)
     return (
       <div className="flex h-64 items-center justify-center">
@@ -150,7 +146,7 @@ export default function RegistersPage() {
   return (
     <div className="flex flex-col h-full">
       <PageHero
-        eyebrow="Governance · Registers"
+        eyebrow="Governance"
         title="Registers"
         titleTestId="registers-title"
         subtitle={
@@ -242,7 +238,26 @@ export default function RegistersPage() {
         {/* Asset Registers (existing) */}
         {(!isCareIndustry || activeTab === 'assets') && (
           <>
-            {registers.length === 0 ? (
+            {loadFailed ? (
+              <div className="flex flex-col items-center justify-center rounded-lg border border-border bg-card py-8 text-center">
+                <p className="text-sm font-medium text-foreground">
+                  Couldn&apos;t load your asset register
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Your records are still there — the connection failed.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoading(true);
+                    fetchRegisters();
+                  }}
+                  className="mt-4 inline-flex items-center rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : registers.length === 0 ? (
               <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-8 text-center">
                 <Database className="h-8 w-8 text-muted-foreground mb-3 opacity-50" />
                 <p className="text-sm text-muted-foreground">
@@ -262,17 +277,9 @@ export default function RegistersPage() {
                           {getIcon(item.type || item.category)}
                         </div>
                         <div className="flex items-center gap-2">
-                          <span
-                            className={`status-pill ${
-                              item.risk_level?.toLowerCase() === 'high'
-                                ? 'status-pill-red'
-                                : item.risk_level?.toLowerCase() === 'medium'
-                                  ? 'status-pill-amber'
-                                  : 'status-pill-green'
-                            }`}
-                          >
-                            {item.risk_level || 'LOW'}
-                          </span>
+                          <StatusBadge
+                            {...severityStatus(item.risk_level ?? 'low')}
+                          />
                           <DeleteButton
                             id={item.id}
                             tableName="org_registers"

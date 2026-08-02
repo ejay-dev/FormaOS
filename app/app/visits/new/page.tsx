@@ -60,7 +60,7 @@ export default async function NewVisitPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Schedule Visit</h1>
+          <h1 className="page-title">Schedule visit</h1>
           <p className="text-muted-foreground">
             Create a new service delivery entry
           </p>
@@ -85,7 +85,7 @@ export default async function NewVisitPage() {
                 htmlFor="field-66"
                 className="block text-sm font-medium mb-1"
               >
-                Client <span className="text-red-500">*</span>
+                Client <span className="text-destructive">*</span>
               </label>
               <select
                 id="field-66"
@@ -134,7 +134,7 @@ export default async function NewVisitPage() {
                 htmlFor="field-64"
                 className="block text-sm font-medium mb-1"
               >
-                Start Date/Time <span className="text-red-500">*</span>
+                Start Date/Time <span className="text-destructive">*</span>
               </label>
               <input
                 id="field-64"

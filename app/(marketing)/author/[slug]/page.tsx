@@ -111,7 +111,7 @@ export default async function AuthorPage({
             Back to all posts
           </Link>
 
-          <div className="mt-8 rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 sm:p-10">
+          <div className="mt-8 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 sm:p-10">
             <div className="flex items-start gap-4">
               <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06]">
                 <BookOpen
@@ -120,8 +120,8 @@ export default async function AuthorPage({
                 />
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                  {author.kind === 'person' ? 'Author' : 'Editorial byline'}
+                <p className="text-sm text-slate-500">
+                  {author.kind === 'person' ? 'Author' : 'Byline'}
                 </p>
                 <h1 className="mt-1 text-3xl sm:text-4xl font-bold text-white">
                   {author.name}
@@ -156,9 +156,7 @@ export default async function AuthorPage({
           <h2 className="text-2xl font-semibold text-white">
             Posts under this byline
             <span className="ml-3 text-base font-normal text-slate-400">
-              {posts.length === 1
-                ? '1 article'
-                : `${posts.length} article${posts.length === 0 ? 's' : 's'}`}
+              {posts.length === 1 ? '1 article' : `${posts.length} articles`}
             </span>
           </h2>
 
@@ -181,7 +179,7 @@ export default async function AuthorPage({
                     href={`/blog/${post.id}`}
                     className="block h-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
                   >
-                    <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+                    <p className="text-xs font-medium text-slate-400">
                       {post.category}
                     </p>
                     <h3 className="mt-2 text-lg font-semibold text-white">

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Zap } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import {
   compliancePlanHref,
   salesHref,
@@ -25,8 +25,7 @@ export function IndustryCTA({ industry, urgencyCallout }: IndustryCTAProps) {
 
   return (
     <section className="relative py-24 lg:py-32">
-      <div className="absolute inset-0 bg-[#080b14]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/[0.03] to-transparent" />
+      <div className="absolute inset-0 bg-marketing-bg" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
         <motion.div
@@ -36,17 +35,14 @@ export function IndustryCTA({ industry, urgencyCallout }: IndustryCTAProps) {
           transition={{ duration: 0.6 }}
         >
           {urgencyCallout && (
-            <div className="mb-8 mx-auto max-w-2xl rounded-xl border border-amber-500/20 bg-amber-500/[0.06] px-6 py-4">
-              <p className="text-sm font-medium text-amber-300/90 leading-relaxed text-center">
+            <div className="mb-8 mx-auto max-w-2xl rounded-xl border border-warning/25 bg-warning/[0.06] px-6 py-4">
+              <p className="text-sm font-medium text-warning leading-relaxed text-center">
                 {urgencyCallout}
               </p>
             </div>
           )}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-[var(--font-display)] leading-[1.1] mb-4">
-            Start Governing {industry}{' '}
-            <span className="text-white">
-              Compliance Today
-            </span>
+            Start Governing {industry} Compliance Today
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-12">
             Every obligation in one register, each with a named owner and the
@@ -71,14 +67,14 @@ export function IndustryCTA({ industry, urgencyCallout }: IndustryCTAProps) {
               transition={{ duration: 0.4, delay: i * 0.1 }}
               className={`relative rounded-xl border p-6 text-left transition-all ${
                 tier.featured
-                  ? 'border-cyan-500/30 bg-cyan-500/[0.06] shadow-lg'
+                  ? 'border-white/20 bg-white/[0.05]'
                   : 'border-white/[0.06] bg-white/[0.02]'
               }`}
             >
               {tier.featured && tier.badge && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-400 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-950">
-                    <Zap className="h-3 w-3" /> {tier.badge}
+                  <span className="inline-flex items-center rounded-full border border-white/15 bg-marketing-bg px-3 py-1 text-[11px] font-medium text-white">
+                    {tier.badge}
                   </span>
                 </div>
               )}

@@ -3,6 +3,7 @@ import { HomeClientMarker } from './components/home-client-marker';
 import FigmaHomepage from './components/FigmaHomepage';
 import { HeroStaticShell } from './components/HeroStaticShell';
 import { HomeProofStaticShell } from './components/HomeProofStaticShell';
+import { AuditChainSection } from './components/homepage/AuditChainSection';
 import { HowItWorks } from '@/components/HowItWorks';
 import { TrustBar } from '@/components/TrustBar';
 import { siteUrl } from '@/lib/seo';
@@ -71,13 +72,16 @@ export default function HomePage() {
     <div className="relative min-h-screen overflow-x-hidden">
       <HomeClientMarker />
 
-      {/* Server-rendered hero: copy is in the initial HTML for crawlers and LCP */}
+      {/* Server-rendered: hero, framework trust, buyer paths, the operating
+          loop and the cryptographic proof are all in the initial HTML, so
+          crawlers and no-JS visitors get the argument without running JS. */}
       <HeroStaticShell />
       <TrustBar />
       <HomeProofStaticShell />
       <HowItWorks />
+      <AuditChainSection />
 
-      {/* Client sections: animations, control-plane overrides, below-fold content */}
+      {/* Client sections: the demo, industries, scenarios and closing CTA */}
       <FigmaHomepage skipHero />
     </div>
   );

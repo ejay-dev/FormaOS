@@ -1,25 +1,33 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { Plus } from 'lucide-react';
+
+import {
+  SettingsPageHeader,
+  SettingsPageShell,
+} from '@/components/settings/settings-page-header';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { Shield, Plus, Users } from 'lucide-react';
 
-export const metadata = { title: 'Roles & Permissions | FormaOS' };
+export const metadata = { title: 'Roles | Settings | FormaOS' };
 
 const BASE_ROLES = [
   {
+    name: 'Owner',
+    description:
+      'Everything an admin can do, plus billing and transferring ownership.',
+  },
+  {
     name: 'Admin',
-    description: 'Full access to all modules',
-    color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    description: 'Full access to every module, including team and settings.',
   },
   {
     name: 'Member',
-    description: 'Standard access with create and edit',
-    color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    description: 'Create and edit records across the modules they work in.',
   },
   {
     name: 'Viewer',
-    description: 'Read-only access across modules',
-    color: 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400',
+    description: 'Read-only access across modules.',
   },
 ];
 
@@ -35,55 +43,50 @@ export default async function RolesPage() {
     .order('name');
 
   return (
-    <div className="p-6 space-y-6 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-foreground">
-            Roles & Permissions
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Manage default and custom roles for your organization
-          </p>
-        </div>
-        <a
-          href="/app/settings/roles/new"
-          className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4" /> Create Custom Role
-        </a>
-      </div>
+    <SettingsPageShell>
+      <SettingsPageHeader
+        title="Roles"
+        description="The four built-in roles, plus any custom roles you assign to a team."
+        action={
+          <Link
+            href="/app/settings/roles/new"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Plus className="h-4 w-4" />
+            Create custom role
+          </Link>
+        }
+      />
 
-      {/* Base Roles */}
-      <div>
-        <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-          <Shield className="h-4 w-4" /> Default Roles
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-foreground">Built-in roles</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {BASE_ROLES.map((role) => (
             <div
               key={role.name}
               className="rounded-lg border border-border bg-card p-4"
             >
-              <div className="flex items-center gap-2 mb-2">
-                <span
-                  className={`px-2 py-0.5 text-xs rounded font-medium ${role.color}`}
-                >
-                  {role.name}
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm font-medium text-foreground">{role.name}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
                 {role.description}
               </p>
             </div>
           ))}
         </div>
-      </div>
+        <p className="text-sm text-muted-foreground">
+          Change a person&apos;s role on the{' '}
+          <Link
+            href="/app/team"
+            className="font-medium text-primary hover:text-primary/80"
+          >
+            Team page
+          </Link>
+          .
+        </p>
+      </section>
 
-      {/* Custom Roles */}
-      <div>
-        <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-          <Users className="h-4 w-4" /> Custom Roles
-        </h2>
+      <section className="space-y-3">
+        <h2 className="text-lg font-semibold text-foreground">Custom roles</h2>
         {customRoles && customRoles.length > 0 ? (
           <div className="space-y-2">
             {customRoles.map(
@@ -91,34 +94,40 @@ export default async function RolesPage() {
                 id: string;
                 name: string;
                 base_role: string;
+                description: string | null;
                 permissions: Record<string, Record<string, boolean>>;
               }) => {
-                const moduleCount = Object.keys(role.permissions || {}).length;
-                const permCount = Object.values(role.permissions || {}).reduce(
-                  (sum, perms) =>
-                    sum + Object.values(perms).filter(Boolean).length,
+                const overrideCount = Object.values(
+                  role.permissions || {},
+                ).reduce(
+                  (sum, actions) => sum + Object.keys(actions ?? {}).length,
                   0,
                 );
                 return (
                   <div
                     key={role.id}
-                    className="flex items-center justify-between rounded-lg border border-border bg-card p-4"
+                    className="flex items-center justify-between gap-4 rounded-lg border border-border bg-card p-4"
                   >
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground">
                         {role.name}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        Based on {role.base_role} · {moduleCount} modules ·{' '}
-                        {permCount} permissions
+                      <p className="mt-0.5 text-sm text-muted-foreground">
+                        {role.description
+                          ? `${role.description} · `
+                          : ''}
+                        Starts from {role.base_role} access
+                        {overrideCount > 0
+                          ? ` with ${overrideCount} adjustment${overrideCount === 1 ? '' : 's'}`
+                          : ''}
                       </p>
                     </div>
-                    <a
+                    <Link
                       href={`/app/settings/roles/${role.id}`}
-                      className="text-xs text-primary hover:underline"
+                      className="shrink-0 text-sm font-medium text-primary hover:text-primary/80"
                     >
-                      Edit
-                    </a>
+                      View
+                    </Link>
                   </div>
                 );
               },
@@ -126,16 +135,14 @@ export default async function RolesPage() {
           </div>
         ) : (
           <div className="rounded-lg border border-border bg-card p-8 text-center">
-            <p className="text-sm text-muted-foreground">
-              No custom roles created yet
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Custom roles let you fine-tune permissions beyond the default
-              admin/member/viewer roles
+            <p className="text-sm text-foreground">No custom roles yet</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              A custom role copies one of the built-in roles under a name that
+              matches the job, so you can assign it to a team.
             </p>
           </div>
         )}
-      </div>
-    </div>
+      </section>
+    </SettingsPageShell>
   );
 }

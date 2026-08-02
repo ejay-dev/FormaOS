@@ -46,7 +46,7 @@ const FLOATING_CARDS = [
 ] as const;
 
 const GLASS =
-  'rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02]';
+  'rounded-2xl border border-white/[0.10] bg-gradient-to-br from-white/[0.08] to-white/[0.02]';
 
 /* Converging path coordinates - 3 lines from wide bottom to narrow top */
 const PATHS = [
@@ -57,7 +57,7 @@ const PATHS = [
 
 function IconShield() {
   return (
-    <svg width="20" height="22" viewBox="0 0 20 22" fill="none" className="text-slate-300/60">
+    <svg width="20" height="22" viewBox="0 0 20 22" fill="none" className="text-zinc-300/60">
       <path
         d="M10 1L2 4.5V10.5C2 15.5 5.5 20 10 21C14.5 20 18 15.5 18 10.5V4.5L10 1Z"
         stroke="currentColor"
@@ -70,7 +70,7 @@ function IconShield() {
 
 function IconChart() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-slate-400/60">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-zinc-400/60">
       <rect x="2" y="10" width="4" height="8" rx="1" stroke="currentColor" strokeWidth="1.2" />
       <rect x="8" y="6" width="4" height="12" rx="1" stroke="currentColor" strokeWidth="1.2" />
       <rect x="14" y="2" width="4" height="16" rx="1" stroke="currentColor" strokeWidth="1.2" />
@@ -80,7 +80,7 @@ function IconChart() {
 
 function IconGlobe() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-slate-500/60">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-zinc-500/60">
       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.2" />
       <ellipse cx="10" cy="10" rx="4" ry="8" stroke="currentColor" strokeWidth="1.2" />
       <line x1="2" y1="10" x2="18" y2="10" stroke="currentColor" strokeWidth="1.2" />
@@ -121,8 +121,8 @@ function OurStoryHeroVisualInner() {
           >
             <defs>
               <linearGradient id="pathGradStatic" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor="rgb(148,163,184)" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="rgb(148,163,184)" stopOpacity="0" />
+                <stop offset="0%" stopColor="rgb(161,161,170)" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="rgb(161,161,170)" stopOpacity="0" />
               </linearGradient>
             </defs>
             {PATHS.map((d, i) => (
@@ -143,7 +143,7 @@ function OurStoryHeroVisualInner() {
               className="absolute flex items-center gap-2"
               style={{ left: 175, top: m.y, transform: 'translateX(-50%)' }}
             >
-              <div className="w-[10px] h-[10px] rounded-full bg-slate-400/60" />
+              <div className="w-[10px] h-[10px] rounded-full bg-zinc-400/60" />
               <div
                 className={`${GLASS} px-2 py-1 flex items-center gap-1.5`}
                 style={{ height: 22 }}
@@ -201,8 +201,8 @@ function OurStoryHeroVisualInner() {
         >
           <defs>
             <linearGradient id="pathGrad" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="rgb(148,163,184)" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="rgb(148,163,184)" stopOpacity="0" />
+              <stop offset="0%" stopColor="rgb(161,161,170)" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="rgb(161,161,170)" stopOpacity="0" />
             </linearGradient>
           </defs>
           {PATHS.map((d, i) => (
@@ -245,8 +245,8 @@ function OurStoryHeroVisualInner() {
           >
             {/* Glowing dot */}
             <div
-              className="w-[10px] h-[10px] rounded-full bg-slate-300"
-              style={{ boxShadow: '0 0 10px rgba(148,163,184,0.5)' }}
+              className="w-[10px] h-[10px] rounded-full bg-zinc-300"
+              style={{ boxShadow: '0 0 10px rgba(161,161,170,0.5)' }}
             />
             {/* Glass label card */}
             <div

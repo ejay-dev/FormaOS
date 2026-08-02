@@ -29,7 +29,6 @@ export const metadata: Metadata = {
 
 interface Pillar {
   id: string;
-  eyebrow: string;
   title: string;
   lede: string;
   Icon: typeof ShieldCheck;
@@ -42,7 +41,6 @@ interface Pillar {
 const PILLARS: Pillar[] = [
   {
     id: 'compliance',
-    eyebrow: 'Pillar 01',
     title: 'Compliance Engine',
     lede: 'Turn regulatory obligations into governed, testable controls with pre-built framework packs.',
     Icon: ShieldCheck,
@@ -71,7 +69,6 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'evidence',
-    eyebrow: 'Pillar 02',
     title: 'Evidence Vault',
     lede: 'Defensible evidence with chain-of-custody, not a dumping ground.',
     Icon: FolderLock,
@@ -98,7 +95,6 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'workflow',
-    eyebrow: 'Pillar 03',
     title: 'Tasks & Governance',
     lede: 'Named owners, clear SLAs, audit-ready history. Accountability, not spreadsheets.',
     Icon: Workflow,
@@ -125,7 +121,6 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'care',
-    eyebrow: 'Pillar 04',
     title: 'Care Operations',
     lede: 'Participants, visits, progress notes, and credentials, all held in compliance context.',
     Icon: HeartPulse,
@@ -154,7 +149,6 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'trust',
-    eyebrow: 'Pillar 05',
     title: 'Trust Surface',
     lede: 'Buyer-grade assurance packets, AU-hosted by default, SSO-ready for the enterprise.',
     Icon: Handshake,
@@ -205,7 +199,7 @@ function Cell({ value }: { value: boolean | string }) {
       <CheckCircle2 className="mx-auto h-4 w-4 text-emerald-400" aria-hidden="true" />
     );
   if (value === false)
-    return <Minus className="mx-auto h-4 w-4 text-slate-700" aria-hidden="true" />;
+    return <Minus className="mx-auto h-4 w-4 text-zinc-700" aria-hidden="true" />;
   return (
     <span className="text-xs text-amber-300 font-semibold">{value}</span>
   );
@@ -217,12 +211,6 @@ export default function FeaturesPillarsPage() {
       {/* Hero */}
       <section className="relative mx-auto max-w-6xl px-6 pt-24 pb-16 sm:pt-32">
         <div className="flex flex-col items-start gap-5">
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 bg-white/25" />
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Features · 5 Pillars
-            </span>
-          </div>
           <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
             One OS for every obligation <br className="hidden sm:block" />
             <span className="text-foreground">
@@ -277,23 +265,18 @@ export default function FeaturesPillarsPage() {
                       <div
                         className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${pillar.accent} shadow-lg`}
                       >
-                        <Icon className="h-6 w-6 text-slate-950" aria-hidden="true" />
+                        <Icon className="h-6 w-6 text-zinc-950" aria-hidden="true" />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                          {pillar.eyebrow}
-                        </span>
-                        <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-                          {pillar.title}
-                        </h2>
-                      </div>
+                      <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+                        {pillar.title}
+                      </h2>
                     </div>
                     <p className="text-lg text-muted-foreground sm:max-w-md">
                       {pillar.lede}
                     </p>
                     {pillar.footnote && (
                       <p
-                        className="text-sm font-medium text-slate-400"
+                        className="text-sm font-medium text-zinc-400"
                         dangerouslySetInnerHTML={{ __html: pillar.footnote }}
                       />
                     )}
@@ -308,7 +291,7 @@ export default function FeaturesPillarsPage() {
                       >
                         <div className="flex items-start gap-2">
                           <CheckCircle2
-                            className="mt-0.5 h-4 w-4 shrink-0 text-slate-400"
+                            className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400"
                             aria-hidden="true"
                           />
                           <div>
@@ -334,7 +317,7 @@ export default function FeaturesPillarsPage() {
       <section className="relative mx-auto max-w-6xl px-6 pb-24">
         <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] to-[hsl(var(--panel-2))] p-8 shadow-premium-lg">
           <div className="flex flex-col gap-1 pb-5">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            <span className="text-[11px] font-semibold text-muted-foreground">
               How we compare
             </span>
             <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">

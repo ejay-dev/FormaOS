@@ -6,7 +6,7 @@ import { useCursorPosition } from '@/components/motion/CursorContext';
 
 /* ─── Glass panel shared styling ─── */
 const GLASS =
-  'rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02]';
+  'rounded-2xl border border-white/[0.10] bg-gradient-to-br from-white/[0.08] to-white/[0.02]';
 
 /* ─── Entrance stagger per layer ─── */
 const ENTRANCE_DELAYS = [0.2, 0.4, 0.6] as const;
@@ -103,7 +103,7 @@ function ProductHeroVisualInner() {
               rotateX: cursorActive ? midRotateX : 0,
             }}
           >
-            <div className={`${GLASS} w-full h-full p-5 shadow-[0_0_60px_rgba(148,163,184,0.06)]`}>
+            <div className={`${GLASS} w-full h-full p-5 shadow-[0_0_60px_rgba(161,161,170,0.06)]`}>
               <EvidenceChecklist />
             </div>
           </motion.div>
@@ -122,7 +122,7 @@ function ProductHeroVisualInner() {
               rotateX: cursorActive ? backRotateX : 0,
             }}
           >
-            <div className={`${GLASS} w-full h-full p-5 shadow-[0_0_60px_rgba(148,163,184,0.06)]`}>
+            <div className={`${GLASS} w-full h-full p-5 shadow-[0_0_60px_rgba(161,161,170,0.06)]`}>
               <AuditReport />
             </div>
           </motion.div>
@@ -149,86 +149,86 @@ function PanelShell({
     <div
       className={`absolute inset-0 ${GLASS} p-5`}
       style={{ transform: `translateZ(${z}px)`, filter: blur }}
-    >
-      {children}
-    </div>
-  );
+ >
+ {children}
+ </div>
+ );
 }
 
 /* ────────────────────────────────────────────────────────────────────── */
-/*  Front Panel - Compliance Dashboard                                   */
+/* Front Panel - Compliance Dashboard */
 /* ────────────────────────────────────────────────────────────────────── */
 
 function ComplianceDashboard() {
-  return (
-    <>
-      {/* Header row */}
-      <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/[0.06]">
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
-          <span className="text-sm font-semibold text-white/80 tracking-wide">Compliance Dashboard</span>
-        </div>
-        {/* Score badge */}
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/25">
-          <span className="text-xs font-bold text-emerald-400">94%</span>
-        </div>
-      </div>
+ return (
+ <>
+ {/* Header row */}
+ <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/[0.06]">
+ <div className="flex items-center gap-2">
+ <div className="w-2.5 h-2.5 rounded-full bg-zinc-400" />
+ <span className="text-sm font-semibold text-white/80 tracking-wide">Compliance Dashboard</span>
+ </div>
+ {/* Score badge */}
+ <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/25">
+ <span className="text-xs font-bold text-emerald-400">94%</span>
+ </div>
+ </div>
 
-      {/* Section label */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="text-[10px] uppercase tracking-[0.15em] text-white/25 font-medium">
-          Framework Status
-        </div>
-        {/* Caption marks this hero visual as illustrative, addresses
-            both audit row #21 (demo metrics not labelled as such) and
-            the framework-taxonomy rule against absolute claims
-            ("Certified", "Compliant") in marketing mocks. */}
-        <div className="text-[9px] uppercase tracking-[0.18em] text-white/30 font-medium">
-          Example dashboard
-        </div>
-      </div>
+ {/* Section label */}
+ <div className="flex items-center justify-between mb-3">
+ <div className="text-[10px] text-white/25 font-medium">
+ Framework Status
+ </div>
+ {/* Caption marks this hero visual as illustrative, addresses
+ both audit row #21 (demo metrics not labelled as such) and
+ the framework-taxonomy rule against absolute claims
+ ("Certified", "Compliant") in marketing mocks. */}
+ <div className="text-[9px] text-white/30 font-medium">
+ Example dashboard
+ </div>
+ </div>
 
-      {/* Status rows, sublabels describe the *customer's* compliance
-          state inside FormaOS, not FormaOS-the-product's certification.
-          Wording avoids "Certified" / "Compliant" / "Accredited" per the
-          framework-status taxonomy (audit row #4). */}
-      <div className="space-y-2.5">
-        <StatusRow color="emerald" label="SOC 2 Type II" sublabel="Controls operating" />
-        <StatusRow color="emerald" label="ISO 27001" sublabel="On track, next review Q3" />
-        <StatusRow color="amber" label="GDPR Article 30" sublabel="2 items need review" />
-        <StatusRow color="emerald" label="HIPAA Security Rule" sublabel="Controls operating" />
-        <StatusRow color="rose" label="PCI DSS v4.0" sublabel="Action required, 1 finding" />
-      </div>
-    </>
-  );
+ {/* Status rows, sublabels describe the *customer's* compliance
+ state inside FormaOS, not FormaOS-the-product's certification.
+ Wording avoids "Certified" / "Compliant" / "Accredited" per the
+ framework-status taxonomy (audit row #4). */}
+ <div className="space-y-2.5">
+ <StatusRow color="emerald" label="SOC 2 Type II" sublabel="Controls operating" />
+ <StatusRow color="emerald" label="ISO 27001" sublabel="On track, next review Q3" />
+ <StatusRow color="amber" label="GDPR Article 30" sublabel="2 items need review" />
+ <StatusRow color="emerald" label="HIPAA Security Rule" sublabel="Controls operating" />
+ <StatusRow color="rose" label="PCI DSS v4.0" sublabel="Action required, 1 finding" />
+ </div>
+ </>
+ );
 }
 
 function StatusRow({
-  color,
-  label,
-  sublabel,
+ color,
+ label,
+ sublabel,
 }: {
-  color: 'emerald' | 'amber' | 'rose';
-  label: string;
-  sublabel: string;
+ color: 'emerald' | 'amber' | 'rose';
+ label: string;
+ sublabel: string;
 }) {
-  const dotColor = {
-    emerald: 'bg-emerald-400 shadow-[0_0_6px_rgba(148,163,184,0.5)]',
-    amber: 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.5)]',
-    rose: 'bg-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.5)]',
-  }[color];
+ const dotColor = {
+ emerald: 'bg-emerald-400 shadow-[0_0_6px_rgba(161,161,170,0.5)]',
+ amber: 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.5)]',
+ rose: 'bg-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.5)]',
+ }[color];
 
-  const badgeStyle = {
-    emerald: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
-    amber: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
-    rose: 'bg-rose-500/15 text-rose-400 border-rose-500/20',
-  }[color];
+ const badgeStyle = {
+ emerald: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
+ amber: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
+ rose: 'bg-rose-500/15 text-rose-400 border-rose-500/20',
+ }[color];
 
-  const badgeText = { emerald: 'Pass', amber: 'Review', rose: 'Critical' }[color];
+ const badgeText = { emerald: 'Pass', amber: 'Review', rose: 'Critical' }[color];
 
-  return (
-    <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] transition-colors">
-      <div className={`w-2 h-2 rounded-full ${dotColor}`} />
+ return (
+ <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] transition-colors">
+ <div className={`w-2 h-2 rounded-full ${dotColor}`} />
       <div className="flex-1 min-w-0">
         <div className="text-xs font-medium text-white/70 truncate">{label}</div>
         <div className="text-[10px] text-white/30 truncate">{sublabel}</div>
@@ -257,13 +257,13 @@ function EvidenceChecklist() {
     <>
       {/* Header */}
       <div className="flex items-center gap-2 mb-5 pb-3 border-b border-white/[0.06]">
-        <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+        <div className="w-2.5 h-2.5 rounded-full bg-zinc-400" />
         <span className="text-sm font-semibold text-white/80 tracking-wide">Evidence Collection</span>
         <span className="ml-auto text-[10px] text-white/30 font-medium">3 / 5 complete</span>
       </div>
 
       {/* Section label */}
-      <div className="text-[10px] uppercase tracking-[0.15em] text-white/25 font-medium mb-3">
+      <div className="text-[10px] text-white/25 font-medium mb-3">
         Required Evidence
       </div>
 
@@ -278,7 +278,7 @@ function EvidenceChecklist() {
             {item.checked ? (
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
                 <circle cx="10" cy="10" r="9" className="fill-white/[0.12] stroke-white/30" strokeWidth="1" />
-                <path d="M6.5 10.5L9 13L13.5 7.5" className="stroke-slate-200" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M6.5 10.5L9 13L13.5 7.5" className="stroke-zinc-200" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             ) : (
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
@@ -289,7 +289,7 @@ function EvidenceChecklist() {
               {item.label}
             </span>
             {item.checked && (
-              <span className="ml-auto text-[9px] text-slate-400/70 font-medium">Done</span>
+              <span className="ml-auto text-[9px] text-zinc-400/70 font-medium">Done</span>
             )}
           </div>
         ))}
@@ -313,9 +313,9 @@ function AuditReport() {
     <>
       {/* Header */}
       <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/[0.06]">
-        <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+        <div className="w-2.5 h-2.5 rounded-full bg-zinc-400" />
         <span className="text-sm font-semibold text-white/80 tracking-wide">Audit Report</span>
-        <span className="ml-auto text-[10px] text-slate-400/60 font-medium">Q1 2026</span>
+        <span className="ml-auto text-[10px] text-zinc-400/60 font-medium">Q1 2026</span>
       </div>
 
       {/* Progress ring + label */}
@@ -335,10 +335,10 @@ function AuditReport() {
               fill="none"
               strokeWidth="6"
               strokeLinecap="round"
-              className="stroke-slate-400"
+              className="stroke-zinc-400"
               strokeDasharray={CIRCUMFERENCE}
               strokeDashoffset={DASH_OFFSET}
-              style={{ filter: 'drop-shadow(0 0 6px rgba(148,163,184,0.35))' }}
+              style={{ filter: 'drop-shadow(0 0 6px rgba(161,161,170,0.35))' }}
             />
           </svg>
           {/* Center text */}
@@ -380,7 +380,7 @@ function StatCell({
   accent: 'slate' | 'emerald' | 'amber';
 }) {
   const textColor = {
-    slate: 'text-slate-300',
+    slate: 'text-zinc-300',
     emerald: 'text-emerald-400',
     amber: 'text-amber-400',
   }[accent];

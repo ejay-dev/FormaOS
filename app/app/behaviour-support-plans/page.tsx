@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Plus, FileText, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { fetchSystemState } from "@/lib/system-state/server";
+import { PageHero, type PageHeroMetric } from "@/components/ui/page-hero";
 
 export const metadata = {
   title: "Behaviour Support Plans | FormaOS",
@@ -16,10 +17,10 @@ const PLAN_TYPE_LABELS: Record<string, string> = {
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   draft: { label: "Draft", color: "text-muted-foreground bg-muted/30" },
-  submitted: { label: "Submitted", color: "text-blue-700 bg-blue-500/10" },
-  authorised: { label: "Authorised", color: "text-emerald-700 bg-emerald-500/10" },
-  active: { label: "Active", color: "text-emerald-700 bg-emerald-500/10" },
-  expired: { label: "Expired", color: "text-red-600 bg-red-500/10" },
+  submitted: { label: "Submitted", color: "text-info bg-info/10" },
+  authorised: { label: "Authorised", color: "text-success bg-success/10" },
+  active: { label: "Active", color: "text-success bg-success/10" },
+  expired: { label: "Expired", color: "text-destructive bg-destructive/10" },
   withdrawn: { label: "Withdrawn", color: "text-muted-foreground bg-muted/50" },
 };
 
@@ -104,72 +105,44 @@ export default async function BehaviourSupportPlansPage() {
     }).length,
   };
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: "Total", value: stats.total, sub: "plans" },
+    {
+      label: "Active",
+      value: stats.active,
+      sub: stats.active > 0 ? "in effect" : "none active",
+      tone: "success",
+    },
+    { label: "Drafts", value: stats.drafts, sub: "not yet submitted" },
+    {
+      label: "Expiring",
+      value: stats.expiringSoon,
+      sub: stats.expiringSoon > 0 ? "within 30 days" : "none due",
+      tone: stats.expiringSoon > 0 ? "warning" : "neutral",
+    },
+  ];
+
   return (
     <div className="flex flex-col h-full">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title" data-testid="bsp-page-title">
-            Behaviour Support Plans
-          </h1>
-          <p className="page-description">
-            Track interim and comprehensive BSPs per the NDIS Restrictive Practices and
-            Behaviour Support Rules 2018 (F2018L00632).
-          </p>
-        </div>
-        <Link
-          href="/app/behaviour-support-plans/new"
-          className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-          data-testid="create-bsp-btn"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          New BSP
-        </Link>
-      </div>
+      <PageHero
+        eyebrow="Care Operations · Behaviour support"
+        title="Behaviour Support Plans"
+        titleTestId="bsp-page-title"
+        subtitle="Interim and comprehensive plans under the NDIS Restrictive Practices and Behaviour Support Rules 2018."
+        metrics={heroMetrics}
+        actions={
+          <Link
+            href="/app/behaviour-support-plans/new"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+            data-testid="create-bsp-btn"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New BSP
+          </Link>
+        }
+      />
 
       <div className="page-content space-y-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="metric-card metric-card-neutral">
-            <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Total
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.total}</p>
-          </div>
-          <div className="metric-card metric-card-success">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Active
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.active}</p>
-          </div>
-          <div className="metric-card metric-card-neutral">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Drafts
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.drafts}</p>
-          </div>
-          <div
-            className={`metric-card ${
-              stats.expiringSoon > 0 ? "metric-card-warning" : "metric-card-success"
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Expires ≤30d
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.expiringSoon}</p>
-          </div>
-        </div>
-
         <div className="rounded-lg border border-border overflow-hidden overflow-x-auto">
           <table className="min-w-[700px] w-full" data-testid="bsp-table">
             <thead className="bg-muted/50">

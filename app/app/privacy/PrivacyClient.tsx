@@ -133,7 +133,7 @@ export function PrivacyClient({ userEmail, ownerOrgsCount }: Props) {
                   : 'Download my data'}
               </button>
               {exportState === 'error' ? (
-                <p className="mt-3 text-sm text-rose-600 dark:text-rose-400">
+                <p className="mt-3 text-sm text-destructive">
                   {exportError}
                 </p>
               ) : null}
@@ -168,10 +168,10 @@ export function PrivacyClient({ userEmail, ownerOrgsCount }: Props) {
       {/* Delete — GDPR Article 17 (right to erasure) */}
       <section
         id="delete"
-        className="rounded-2xl border border-rose-500/30 bg-card p-6 shadow-sm"
+        className="rounded-2xl border border-destructive/30 bg-card p-6 shadow-sm"
       >
         <div className="flex items-start gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
             <AlertTriangle className="h-5 w-5" />
           </div>
           <div className="flex-1">
@@ -184,13 +184,13 @@ export function PrivacyClient({ userEmail, ownerOrgsCount }: Props) {
               preferences from FormaOS. This cannot be undone.
             </p>
             {ownerOrgsCount > 0 ? (
-              <p className="mt-3 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-sm text-amber-700 dark:text-amber-300">
+              <p className="mt-3 rounded-md border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
                 You own {ownerOrgsCount}{' '}
                 {ownerOrgsCount === 1 ? 'organization' : 'organizations'} on
                 FormaOS. If any of those organizations have other members,
-                transfer ownership in{' '}
-                <span className="font-medium">Settings → Roles</span> before
-                deleting your account.
+                transfer ownership first: open{' '}
+                <span className="font-medium">Team</span> and change another
+                member&apos;s role to Owner before deleting your account.
               </p>
             ) : null}
 
@@ -200,7 +200,7 @@ export function PrivacyClient({ userEmail, ownerOrgsCount }: Props) {
                   <button
                     type="button"
                     data-testid="delete-account"
-                    className="inline-flex items-center gap-2 rounded-lg border border-rose-500/40 bg-rose-500/5 px-4 py-2 text-sm font-medium text-rose-600 hover:bg-rose-500/10 dark:text-rose-400"
+                    className="inline-flex items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/20"
                   >
                     <AlertTriangle className="h-4 w-4" />
                     Delete my account…
@@ -232,7 +232,7 @@ export function PrivacyClient({ userEmail, ownerOrgsCount }: Props) {
                     autoComplete="off"
                   />
                   {deleteState === 'error' && deleteError ? (
-                    <p className="mt-2 text-sm text-rose-600 dark:text-rose-400">
+                    <p className="mt-2 text-sm text-destructive">
                       {deleteError}
                     </p>
                   ) : null}
@@ -246,7 +246,7 @@ export function PrivacyClient({ userEmail, ownerOrgsCount }: Props) {
                         if (!deleteBlocked) void handleDelete();
                       }}
                       disabled={deleteBlocked || deleteState === 'submitting'}
-                      className="bg-rose-600 text-white hover:bg-rose-700"
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
                       {deleteState === 'submitting'
                         ? 'Deleting…'

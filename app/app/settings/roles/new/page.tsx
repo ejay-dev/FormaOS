@@ -42,7 +42,7 @@ export default async function NewRolePage({
   const { error } = await searchParams;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 p-6">
+    <div className="mx-auto w-full max-w-5xl space-y-6 pb-16">
       <div className="flex items-center gap-3">
         <Link
           href="/app/settings/roles"
@@ -51,9 +51,10 @@ export default async function NewRolePage({
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Create Custom Role</h1>
+          <h1 className="text-2xl font-bold">Create a custom role</h1>
           <p className="text-sm text-muted-foreground">
-            Start from a base role — you can refine permissions after creation
+            A custom role copies a built-in role&apos;s access under your own
+            name, so you can assign it to a team.
           </p>
         </div>
       </div>
@@ -66,7 +67,7 @@ export default async function NewRolePage({
 
       <form
         action={createRole}
-        className="space-y-4 rounded-lg border border-border bg-card p-5"
+        className="max-w-2xl space-y-4 rounded-lg border border-border bg-card p-5"
       >
         <div>
           <label htmlFor="name" className="mb-1 block text-sm font-medium">
@@ -95,6 +96,9 @@ export default async function NewRolePage({
             <option value="member">Member — standard access</option>
             <option value="admin">Admin — full module access</option>
           </select>
+          <p className="mt-1 text-xs text-muted-foreground">
+            The custom role gets exactly this role&apos;s access.
+          </p>
         </div>
         <div>
           <label htmlFor="description" className="mb-1 block text-sm font-medium">
@@ -119,7 +123,7 @@ export default async function NewRolePage({
             type="submit"
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            Create Role
+            Create role
           </button>
         </div>
       </form>

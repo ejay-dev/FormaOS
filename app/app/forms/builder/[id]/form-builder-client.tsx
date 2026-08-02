@@ -235,7 +235,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">{form.title}</h1>
+          <h1 className="page-title text-foreground">{form.title}</h1>
           <p className="text-muted-foreground">{form.description}</p>
         </div>
         <div className="flex gap-3">

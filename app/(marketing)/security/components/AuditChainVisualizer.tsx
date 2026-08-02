@@ -170,8 +170,8 @@ export function AuditChainVisualizer() {
           <span
             className={`flex h-6 w-6 items-center justify-center rounded-full border ${
               intact
-                ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-400'
-                : 'border-rose-400/30 bg-rose-400/10 text-rose-400'
+                ? 'border-white/15 bg-white/[0.06] text-success'
+                : 'border-white/15 bg-white/[0.06] text-destructive'
             }`}
           >
             {intact ? <Check className="h-3.5 w-3.5" /> : <ShieldAlert className="h-3.5 w-3.5" />}
@@ -216,13 +216,13 @@ export function AuditChainVisualizer() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: reduce ? 0 : 0.25 }}
               className={`grid grid-cols-[auto_1fr_auto] items-center gap-x-4 px-5 py-3.5 transition-colors ${
-                broken ? 'bg-rose-500/[0.04]' : ''
+                broken ? 'bg-white/[0.04]' : ''
               }`}
             >
               <span
                 className={`flex h-7 w-7 items-center justify-center rounded-lg border font-mono text-[11px] font-semibold ${
                   broken
-                    ? 'border-rose-400/30 bg-rose-400/[0.08] text-rose-300'
+                    ? 'border-white/20 bg-white/[0.08] text-destructive'
                     : 'border-white/[0.12] bg-white/[0.04] text-slate-300'
                 }`}
               >
@@ -241,11 +241,11 @@ export function AuditChainVisualizer() {
                   </span>
                   {edited ? (
                     <>
-                      <span className="text-rose-400">recomputed {short(row.liveHash as string)}</span>
+                      <span className="text-destructive">recomputed {short(row.liveHash as string)}</span>
                       <span className="text-slate-600">≠ sealed {short(row.hash)}</span>
                     </>
                   ) : (
-                    <span className={broken ? 'text-rose-400' : 'text-slate-400'}>
+                    <span className={broken ? 'text-destructive' : 'text-slate-400'}>
                       hash {short(row.hash)}
                     </span>
                   )}
@@ -254,8 +254,8 @@ export function AuditChainVisualizer() {
 
               <div className="flex items-center gap-2">
                 <span
-                  className={`hidden items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] sm:inline-flex ${
-                    broken ? 'border-rose-400/30 text-rose-300' : 'border-emerald-400/25 text-emerald-300/90'
+                  className={`hidden items-center gap-1.5 rounded-full border border-white/15 px-2.5 py-1 text-[11px] font-medium sm:inline-flex ${
+                    broken ? 'text-destructive' : 'text-success'
                   }`}
                 >
                   {broken ? <ShieldAlert className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
@@ -268,7 +268,7 @@ export function AuditChainVisualizer() {
                   title={edited ? 'Restore original content' : 'Edit this sealed entry'}
                   className={`flex h-7 w-7 items-center justify-center rounded-lg border transition max-sm:h-11 max-sm:w-11 ${
                     edited
-                      ? 'border-rose-400/40 bg-rose-400/10 text-rose-300'
+                      ? 'border-white/25 bg-white/[0.08] text-destructive'
                       : 'border-white/[0.1] text-slate-500 hover:border-white/25 hover:text-white'
                   }`}
                 >
@@ -286,7 +286,7 @@ export function AuditChainVisualizer() {
           <Anchor className="h-3.5 w-3.5 text-slate-400" />
           Chain head anchored daily to Sigstore Rekor · 05:30 UTC
         </span>
-        <span className="rounded-full border border-white/[0.08] px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-slate-500">
+        <span className="rounded-full border border-white/[0.08] px-2.5 py-0.5 text-[10px] font-medium text-slate-500">
           Illustrative · live SHA-256
         </span>
       </div>
