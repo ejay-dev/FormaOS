@@ -166,14 +166,20 @@ test.describe('Enterprise QA Smoke Suite', () => {
   // CRITICAL PATH: COMPLIANCE API
   // =========================================================
   test('Compliance APIs respond correctly', async ({ page }) => {
-    const response = await page.request.get('/api/compliance/controls');
+    // Was GET /api/compliance/controls with `expect([200, 403, 404])`. That
+    // route does not exist in the app router, so this smoke gate was asserting
+    // "a 404 is a correct response" — a deleted or renamed compliance endpoint
+    // shipped green. /api/v1/compliance/obligations is the real, session-
+    // authenticated endpoint behind the obligations register.
+    const response = await page.request.get('/api/v1/compliance/obligations');
 
-    expect([200, 403, 404]).toContain(response.status());
+    expect(
+      response.status(),
+      'authenticated caller should get 200 from the obligations API',
+    ).toBe(200);
 
-    if (response.status() === 200) {
-      const data = await response.json();
-      expect(data).toBeDefined();
-    }
+    const data = await response.json();
+    expect(Array.isArray(data.obligations)).toBe(true);
     console.log('PASS: Compliance APIs respond');
   });
 
@@ -275,10 +281,27 @@ test.describe('Enterprise QA Smoke Suite', () => {
   // CRITICAL PATH: EXPORT SYSTEM
   // =========================================================
   test('Export endpoint security', async ({ page }) => {
-    // Should block unauthenticated/invalid requests
-    const response = await page.request.get('/api/exports/enterprise/test-job');
+    // The caller here is authenticated, so accepting 404 made a renamed or
+    // deleted route indistinguishable from an enforced denial. The route
+    // (app/api/exports/enterprise/[jobId]/route.ts) rejects a missing token
+    // with 401 "Missing download token" and an unverifiable token with 401
+    // before it ever looks the job up — assert both exactly.
+    const noToken = await page.request.get('/api/exports/enterprise/test-job');
+    expect(noToken.status(), 'download without a token must be rejected').toBe(
+      401,
+    );
+    expect((await noToken.json()).error).toBe('Missing download token');
 
-    expect([401, 403, 404]).toContain(response.status());
+    const forgedToken = await page.request.get(
+      '/api/exports/enterprise/test-job?token=not-a-real-signed-token',
+    );
+    expect(
+      forgedToken.status(),
+      'download with a forged token must be rejected',
+    ).toBe(401);
+    expect((await forgedToken.json()).error).toBe(
+      'Invalid or expired download token',
+    );
     console.log('PASS: Export security enforced');
   });
 

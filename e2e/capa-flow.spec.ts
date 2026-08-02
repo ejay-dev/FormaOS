@@ -17,14 +17,20 @@ function linkedIncidentLocator(
     .first();
 }
 
+// 2026-08-02: this used to return true for ANY error whose message merely
+// contained the table name, so `permission denied for table org_capa_items`,
+// `column org_capa_items.severity does not exist` and RLS-policy violations
+// all skipped the entire CAPA lifecycle gate instead of failing it.
+// PostgREST reports a genuinely absent relation as PGRST205 / "Could not
+// find the table '<name>' in the schema cache"; nothing else qualifies.
 function isSchemaMissing(error: unknown, table: string) {
   const value = error as { code?: string; message?: string } | null;
-  const message = value?.message ?? '';
+  if (!value) return false;
+  const message = value.message ?? '';
   return (
-    value?.code === 'PGRST205' ||
-    message.includes(table) ||
-    message.includes('Could not find the') ||
-    message.includes('schema cache')
+    value.code === 'PGRST205' ||
+    message.includes(`Could not find the table 'public.${table}'`) ||
+    message.includes(`Could not find the table "public.${table}"`)
   );
 }
 
@@ -75,8 +81,19 @@ test.describe('CAPA lifecycle workflow', () => {
       .eq('organization_id', context.orgId)
       .limit(1);
 
+    const capaSchemaMissing = isSchemaMissing(schemaError, 'org_capa_items');
+    // org_capa_items and every column probed above exist in production
+    // (verified against the live schema 2026-08-02). Only an absent relation
+    // is an environment gap; a permission/column/RLS error must fail this
+    // gate rather than silently skip it.
+    if (!capaSchemaMissing) {
+      expect(
+        schemaError,
+        `org_capa_items schema probe failed: ${(schemaError as { message?: string } | null)?.message ?? ''}`,
+      ).toBeNull();
+    }
     test.skip(
-      Boolean(schemaError && isSchemaMissing(schemaError, 'org_capa_items')),
+      capaSchemaMissing,
       'CAPA lifecycle schema is not applied in this environment',
     );
 

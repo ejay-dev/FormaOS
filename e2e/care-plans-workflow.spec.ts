@@ -1,6 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-import { getWorkspaceSeedContext } from './helpers/workspace-seed';
+import {
+  authenticateWorkspacePage,
+  getWorkspaceSeedContext,
+  seedParticipant,
+} from './helpers/workspace-seed';
 
 function isoDateOffset(days: number): string {
   const date = new Date();
@@ -9,30 +13,32 @@ function isoDateOffset(days: number): string {
 }
 
 test.describe('Care plans workflow', () => {
+  // 2026-08-02: this spec used to insert an org_patients row and an
+  // org_care_plans row with `context.admin` (service role), update the status
+  // with the same client, read it back and assert the values it had just
+  // written. Service role bypasses RLS and no server action, page or
+  // validation ever ran — it only proved Postgres returns what was written,
+  // while the name promised care-plan workflow coverage. It now drives the
+  // real status transitions through /app/care-plans/[id], which calls
+  // `updateCarePlanStatus` (app/app/actions/care-operations.ts) under the
+  // signed-in user's RLS context and writes an audit event.
   test('tracks care plan lifecycle states from draft to review due', async ({
+    page,
     browserName,
   }) => {
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
+    test.setTimeout(240_000);
 
     const context = await getWorkspaceSeedContext();
     const unique = Date.now();
-    const participantName = `E2E Patient ${unique}`;
     const planTitle = `E2E Care Plan ${unique}`;
 
-    const { data: participant, error: participantError } = await context.admin
-      .from('org_patients')
-      .insert({
-        organization_id: context.orgId,
-        full_name: participantName,
-        care_status: 'active',
-        risk_level: 'low',
-        created_by: context.userId,
-      })
-      .select('id')
-      .single();
-
-    expect(participantError).toBeNull();
-    const participantId = participant?.id as string;
+    const participant = await seedParticipant(context, {
+      fullName: `E2E Patient ${unique}`,
+      careStatus: 'active',
+      riskLevel: 'low',
+    });
+    const participantId = participant.id as string;
     expect(participantId).toBeTruthy();
 
     let planId: string | null = null;
@@ -61,55 +67,113 @@ test.describe('Care plans workflow', () => {
       planId = createdPlan?.id as string;
       expect(planId).toBeTruthy();
 
-      const { data: draftRead, error: draftReadError } = await context.admin
+      // RLS read path: the signed-in member's own (anon-key) client must be
+      // able to see the plan. The service-role client above cannot prove this.
+      const { data: rlsRead, error: rlsReadError } = await context.anon
         .from('org_care_plans')
-        .select('id, status, review_date, title')
-        .eq('organization_id', context.orgId)
+        .select('id, title, status')
         .eq('id', planId)
-        .single();
-      expect(draftReadError).toBeNull();
-      expect(draftRead?.status).toBe('draft');
-      expect(draftRead?.title).toBe(planTitle);
+        .maybeSingle();
+      expect(rlsReadError).toBeNull();
+      expect(
+        rlsRead,
+        'RLS denied the plan owner read access to their own care plan',
+      ).not.toBeNull();
+      expect((rlsRead as { title?: string } | null)?.title).toBe(planTitle);
 
-      const { error: activateError } = await context.admin
-        .from('org_care_plans')
-        .update({
-          status: 'active',
-          review_date: isoDateOffset(-2),
-        })
-        .eq('organization_id', context.orgId)
-        .eq('id', planId);
-      expect(activateError).toBeNull();
+      await authenticateWorkspacePage(page, context.email);
+      await page.goto(`/app/care-plans/${planId}`, { waitUntil: 'commit' });
 
-      const { data: activeRead, error: activeReadError } = await context.admin
+      // The status pill is the span rendered immediately after the title h1.
+      const statusBadge = page.locator(
+        '[data-testid="care-plan-title"] + span',
+      );
+
+      await expect(page.getByTestId('care-plan-title')).toHaveText(planTitle, {
+        timeout: 30_000,
+      });
+      await expect(statusBadge).toHaveText('draft');
+
+      // draft → active, driven by the page's own transition form.
+      await page.getByRole('button', { name: 'Activate' }).click();
+      await page.waitForURL(`**/app/care-plans/${planId}`, {
+        waitUntil: 'commit',
+      });
+
+      await expect
+        .poll(
+          async () => {
+            const { data } = await context.admin
+              .from('org_care_plans')
+              .select('status')
+              .eq('organization_id', context.orgId)
+              .eq('id', planId!)
+              .maybeSingle();
+            return (data as { status?: string } | null)?.status;
+          },
+          { timeout: 30_000 },
+        )
+        .toBe('active');
+
+      // updateCarePlanStatus logs the transition with `required: true`, so a
+      // silent audit-trail regression fails here rather than shipping green.
+      await expect
+        .poll(
+          async () => {
+            const { data } = await context.admin
+              .from('org_audit_logs')
+              .select('action, entity_type, entity_id')
+              .eq('organization_id', context.orgId)
+              .eq('entity_id', planId!)
+              .eq('action', 'CARE_PLAN_STATUS_CHANGED')
+              .limit(1);
+            return (data ?? []).length;
+          },
+          { timeout: 30_000 },
+        )
+        .toBeGreaterThan(0);
+
+      await expect(statusBadge).toHaveText('active', { timeout: 30_000 });
+
+      // active → review, the transition that makes the plan "review due".
+      await page.getByRole('button', { name: 'Mark for Review' }).click();
+      await page.waitForURL(`**/app/care-plans/${planId}`, {
+        waitUntil: 'commit',
+      });
+
+      await expect
+        .poll(
+          async () => {
+            const { data } = await context.admin
+              .from('org_care_plans')
+              .select('status')
+              .eq('organization_id', context.orgId)
+              .eq('id', planId!)
+              .maybeSingle();
+            return (data as { status?: string } | null)?.status;
+          },
+          { timeout: 30_000 },
+        )
+        .toBe('review');
+
+      await expect(statusBadge).toHaveText('review', { timeout: 30_000 });
+
+      // The transition must also be visible through the member's own RLS
+      // context, not just to the service-role client.
+      const { data: rlsAfter, error: rlsAfterError } = await context.anon
         .from('org_care_plans')
-        .select('id, status, review_date')
-        .eq('organization_id', context.orgId)
+        .select('status')
         .eq('id', planId)
-        .single();
-      expect(activeReadError).toBeNull();
-      expect(activeRead?.status).toBe('active');
-      expect(activeRead?.review_date).toBe(isoDateOffset(-2));
-
-      const { error: reviewTransitionError } = await context.admin
-        .from('org_care_plans')
-        .update({
-          status: 'under_review',
-        })
-        .eq('organization_id', context.orgId)
-        .eq('id', planId);
-      expect(reviewTransitionError).toBeNull();
-
-      const { data: reviewRead, error: reviewReadError } = await context.admin
-        .from('org_care_plans')
-        .select('id, status')
-        .eq('organization_id', context.orgId)
-        .eq('id', planId)
-        .single();
-      expect(reviewReadError).toBeNull();
-      expect(reviewRead?.status).toBe('under_review');
+        .maybeSingle();
+      expect(rlsAfterError).toBeNull();
+      expect((rlsAfter as { status?: string } | null)?.status).toBe('review');
     } finally {
       if (planId) {
+        await context.admin
+          .from('org_audit_logs')
+          .delete()
+          .eq('organization_id', context.orgId)
+          .eq('entity_id', planId);
         await context.admin
           .from('org_care_plans')
           .delete()

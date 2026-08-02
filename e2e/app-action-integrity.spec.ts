@@ -35,6 +35,29 @@ const SIDEBAR_ROUTES = [
   '/app/capa',
 ];
 
+// Origins we do not own. A failed request to PostHog/Sentry/Stripe says
+// nothing about FormaOS behaviour, so those resource errors stay suppressed.
+const THIRD_PARTY_RESOURCE_HOSTS = [
+  'posthog.com',
+  'sentry.io',
+  'stripe.com',
+  'vercel.live',
+  'googletagmanager.com',
+  'google-analytics.com',
+];
+
+function isThirdPartyResource(url: string) {
+  if (!url) return false;
+  try {
+    const host = new URL(url).hostname;
+    return THIRD_PARTY_RESOURCE_HOSTS.some(
+      (candidate) => host === candidate || host.endsWith(`.${candidate}`),
+    );
+  } catch {
+    return false;
+  }
+}
+
 function installIntegrityGuards(page: Page) {
   const failures: string[] = [];
 
@@ -45,6 +68,7 @@ function installIntegrityGuards(page: Page) {
   page.on('console', (message) => {
     if (message.type() !== 'error') return;
     const text = message.text();
+    const sourceUrl = message.location()?.url ?? '';
     if (
       text.includes('favicon') ||
       text.includes('ResizeObserver loop') ||
@@ -54,15 +78,30 @@ function installIntegrityGuards(page: Page) {
       text.includes('Error fetching registers:') ||
       text.includes('Error during WebSocket handshake') ||
       text.includes('Failed to load resource: net::ERR_NETWORK_CHANGED') ||
-      text.includes('Failed to load resource: the server responded with a status of 401') ||
-      text.includes('Failed to load resource: the server responded with a status of 403') ||
-      text.includes('Failed to load resource: the server responded with a status of 429') ||
-      text.includes('Failed to load resource: the server responded with a status of 400') ||
-      text.includes('Failed to load resource: the server responded with a status of 500')
+      // Crawling 24 routes back-to-back can trip our own rate limiter; that
+      // is a property of the harness, not of the page under test.
+      text.includes(
+        'Failed to load resource: the server responded with a status of 429',
+      )
     ) {
       return;
     }
-    failures.push(`console error: ${text}`);
+
+    // 2026-08-02: this filter used to drop 400/401/403/500 resource errors
+    // from ANY origin. A first-party XHR returning 500 (or 401/403 from an
+    // authenticated session) is precisely the class of failure this gate
+    // exists to catch, so only third-party origins are suppressed now.
+    const isResourceStatusError =
+      /Failed to load resource: the server responded with a status of \d{3}/.test(
+        text,
+      );
+    if (isResourceStatusError && isThirdPartyResource(sourceUrl)) {
+      return;
+    }
+
+    failures.push(
+      `console error: ${text}${sourceUrl ? ` (${sourceUrl})` : ''}`,
+    );
   });
 
   page.on('response', (response) => {
@@ -106,14 +145,20 @@ async function gotoAppRoute(page: Page, route: string) {
   throw lastError;
 }
 
+// 2026-08-02: this used to return true for ANY error whose message merely
+// mentioned the table name — `permission denied for table X`, `column X.y
+// does not exist` and RLS violations all matched, so real regressions were
+// reclassified as "schema not applied" and silently downgraded. PostgREST
+// reports a genuinely absent relation as PGRST205 / "Could not find the
+// table '<name>' in the schema cache"; nothing else counts.
 function isMissingTableError(error: unknown, table: string) {
   const value = error as { code?: string; message?: string } | null;
-  const message = value?.message ?? '';
+  if (!value) return false;
+  const message = value.message ?? '';
   return (
-    value?.code === 'PGRST205' ||
-    message.includes(table) ||
-    message.includes('Could not find the') ||
-    message.includes('schema cache')
+    value.code === 'PGRST205' ||
+    message.includes(`Could not find the table 'public.${table}'`) ||
+    message.includes(`Could not find the table "public.${table}"`)
   );
 }
 
@@ -317,7 +362,10 @@ test.describe('Authenticated app action integrity', () => {
       'org_saved_reports',
     );
     if (!customReportsSchemaMissing) {
-      expect(reportError).toBeFalsy();
+      expect(
+        reportError,
+        `org_saved_reports insert failed: ${(reportError as { message?: string } | null)?.message ?? ''}`,
+      ).toBeNull();
     }
 
     const participant = await seedParticipant(context, {
@@ -444,6 +492,15 @@ test.describe('Authenticated app action integrity', () => {
       schemaError,
       'org_capa_items',
     );
+    // Anything other than an absent relation (permission denied, missing
+    // column, RLS violation) is a real regression on a table that exists in
+    // production — fail rather than fall through to the disabled-state path.
+    if (!capaSchemaMissing) {
+      expect(
+        schemaError,
+        `org_capa_items schema probe failed: ${schemaError?.message ?? ''}`,
+      ).toBeNull();
+    }
 
     await authenticateWorkspacePage(page, context.email);
     if (capaSchemaMissing) {

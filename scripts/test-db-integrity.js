@@ -21,9 +21,19 @@ if (!supabaseUrl || !serviceRoleKey) {
   process.exit(0);
 }
 
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
 const supabase = createClient(supabaseUrl, serviceRoleKey, {
   auth: { persistSession: false },
 });
+
+// Unauthenticated client. `anon` holds SELECT grants on the org-scoped
+// tables, so RLS is the only thing standing between an anonymous caller
+// and every tenant's rows — which makes it the only client that can
+// actually observe RLS. The service-role client bypasses RLS by design.
+const anonymous = anonKey
+  ? createClient(supabaseUrl, anonKey, { auth: { persistSession: false } })
+  : null;
 
 async function testDatabaseIntegrity() {
   console.log('🔍 Running database integrity checks...\n');
@@ -63,25 +73,75 @@ async function testDatabaseIntegrity() {
     }
   }
 
-  // Test 2: Check RLS is enabled (by attempting unauthorized access)
+  // Test 2: Check RLS actually blocks unauthorized access.
+  //
+  // Audit 2026-08-02: this step used to issue the probe with the
+  // SERVICE-ROLE client, which bypasses RLS by design — it asserted
+  // "the service role can read organizations", which is true whether
+  // every policy is intact, partially dropped, or RLS is disabled
+  // outright. The probe now runs as the anonymous role, which is
+  // subject to RLS and holds a table-level SELECT grant, so a dropped
+  // policy or `ALTER TABLE ... DISABLE ROW LEVEL SECURITY` surfaces
+  // immediately as leaked rows.
   console.log('\n2️⃣  Checking RLS policies...');
-  try {
-    // This should work with service role key
-    const { error: serviceError } = await supabase
-      .from('organizations')
-      .select('id')
-      .limit(1);
+  const rlsProtectedTables = ['organizations', 'org_members', 'org_tasks'];
 
-    if (!serviceError) {
-      console.log('   ✅ Service role can access protected tables');
-      results.passed++;
-    } else {
-      console.log(`   ⚠️  Service role access issue: ${serviceError.message}`);
-      results.skipped++;
+  if (!anonymous) {
+    console.log(
+      '   ❌ NEXT_PUBLIC_SUPABASE_ANON_KEY not set — RLS cannot be verified',
+    );
+    results.failed++;
+    results.errors.push(
+      'RLS check: NEXT_PUBLIC_SUPABASE_ANON_KEY is required to probe RLS as an unauthenticated caller',
+    );
+  } else {
+    for (const table of rlsProtectedTables) {
+      try {
+        const { data, error } = await anonymous
+          .from(table)
+          .select('id')
+          .limit(5);
+
+        if (error) {
+          // A hard permission error is also acceptable containment.
+          const message = error.message || '';
+          if (
+            message.includes('permission denied') ||
+            error.code === '42501'
+          ) {
+            console.log(
+              `   ✅ RLS on "${table}" denies anonymous reads (${message})`,
+            );
+            results.passed++;
+          } else {
+            console.log(
+              `   ❌ RLS probe on "${table}" failed unexpectedly: ${message}`,
+            );
+            results.failed++;
+            results.errors.push(`RLS probe ${table}: ${message}`);
+          }
+          continue;
+        }
+
+        const leaked = (data || []).length;
+        if (leaked === 0) {
+          console.log(`   ✅ RLS on "${table}" returns no rows to anon`);
+          results.passed++;
+        } else {
+          console.log(
+            `   ❌ RLS BROKEN: "${table}" returned ${leaked} row(s) to an unauthenticated caller`,
+          );
+          results.failed++;
+          results.errors.push(
+            `RLS ${table}: leaked ${leaked} row(s) to the anon role`,
+          );
+        }
+      } catch (err) {
+        console.log(`   ❌ RLS probe on "${table}" threw: ${err.message}`);
+        results.failed++;
+        results.errors.push(`RLS probe ${table}: ${err.message}`);
+      }
     }
-  } catch (err) {
-    console.log(`   ⚠️  RLS check skipped: ${err.message}`);
-    results.skipped++;
   }
 
   // Test 3: Check foreign key relationships

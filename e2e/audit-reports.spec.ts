@@ -81,16 +81,20 @@ test.describe('Audit Reports Page', () => {
   test('Report type selector shows available frameworks', async ({ page }) => {
     await gotoAppRoute(page, '/app/reports');
 
-    // Look for framework options
-    const frameworks = page.locator('text=/soc ?2|iso ?27001|ndis|hipaa/i');
-    const hasFrameworks = await frameworks
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    // 2026-08-02: this used to resolve a locator, swallow the failure with
+    // `.catch(() => false)` and only console.log — it passed with the whole
+    // framework list absent. app/app/reports/page.tsx renders EXPORT_CARDS
+    // unconditionally under the "Certification Reports" panel, so every one
+    // of the four framework cards must be present.
+    await expect(
+      page.getByText('Certification Reports', { exact: true }),
+    ).toBeVisible({ timeout: 15_000 });
 
-    if (hasFrameworks) {
-      const count = await frameworks.count();
-      console.log(`${count} report framework options available`);
+    for (const framework of ['SOC 2', 'ISO 27001', 'NDIS', 'HIPAA']) {
+      await expect(
+        page.getByRole('heading', { name: framework, exact: true }).first(),
+        `${framework} certification report card should be listed`,
+      ).toBeVisible();
     }
   });
 
@@ -360,32 +364,66 @@ test.describe('Export UI', () => {
   test('Export button is visible on reports page', async ({ page }) => {
     await gotoAppRoute(page, '/app/reports');
 
-    // Look for export/download buttons
-    const exportBtn = page.locator(
-      'button:has-text("Export"), button:has-text("Download"), a:has-text("Export")',
-    );
-    const hasExport = await exportBtn
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    // 2026-08-02: previously `.catch(() => false)` + console.log with no
+    // expect — the test passed with the entire export panel missing. The
+    // Buyer Trust Packet block always renders; the generate affordance is
+    // either an entitled `report-export-link` or the explicit disabled
+    // fallback, and one of the two must exist.
+    await expect(
+      page.getByRole('heading', { name: 'Buyer Trust Packet' }),
+    ).toBeVisible({ timeout: 15_000 });
 
-    if (hasExport) {
-      console.log('Export button visible on reports page');
+    const exportLink = page.locator('[data-testid="report-export-link"]').first();
+    const exportBlocked = page
+      .getByRole('button', { name: 'Generate unavailable' })
+      .first();
+    await expect(exportLink.or(exportBlocked)).toBeVisible();
+
+    if ((await exportLink.count()) > 0) {
+      await expect(exportLink).toHaveAttribute(
+        'href',
+        '/api/reports/export?type=trust&format=pdf&mode=sync',
+      );
+    } else {
+      await expect(exportBlocked).toBeDisabled();
     }
   });
 
-  test('Format selection is available', async ({ page }) => {
+  test('Export links request an explicit report format', async ({ page }) => {
     await gotoAppRoute(page, '/app/reports');
 
-    // Look for format options
-    const formats = page.locator('text=/pdf|json|csv/i');
-    const hasFormats = await formats
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    // 2026-08-02: this test was named "Format selection is available" and
+    // asserted nothing. /app/reports ships no format picker — every export
+    // affordance is a direct link to /api/reports/export with the format
+    // pinned in the query string (app/app/reports/page.tsx and
+    // components/reports/IndustryReportTemplates.tsx). Assert that real
+    // contract instead of a selector that never shipped.
+    await expect(
+      page.getByText('Certification Reports', { exact: true }),
+    ).toBeVisible({ timeout: 15_000 });
 
-    if (hasFormats) {
-      console.log('Format selection available');
+    const exportLinks = page.locator('a[href^="/api/reports/export"]');
+    const linkCount = await exportLinks.count();
+
+    if (linkCount > 0) {
+      const hrefs = await exportLinks.evaluateAll((nodes) =>
+        nodes.map((node) => node.getAttribute('href') ?? ''),
+      );
+      for (const href of hrefs) {
+        expect(href).toMatch(
+          /^\/api\/reports\/export\?type=(soc2|iso27001|ndis|hipaa|trust)&format=pdf&mode=sync$/,
+        );
+      }
+    } else {
+      // Export entitlement absent — the page must say so rather than render
+      // a dead panel.
+      expect(
+        await page
+          .getByRole('button', {
+            name: /Generate unavailable|Requires admin export access|Requires export access/,
+          })
+          .count(),
+      ).toBeGreaterThan(0);
     }
   });
 });

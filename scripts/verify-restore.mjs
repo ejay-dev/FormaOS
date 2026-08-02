@@ -128,14 +128,42 @@ async function checkOrgEvidenceHashNotNull() {
 }
 
 async function checkAdminAuditLogPresent() {
+  // Audit 2026-08-02: `passed: (count ?? 0) >= 0` is true for every value
+  // count can take — including 0 and null — so a PITR branch that restored
+  // an empty admin_audit_log scored this invariant as passed and inflated
+  // the drill's reported coverage. The platform-admin audit trail is
+  // append-only and non-empty in prod, so a restore that hands back zero
+  // rows has lost it.
   const { count, error } = await target
     .from('admin_audit_log')
     .select('id', { count: 'exact', head: true });
   if (error) return { name: 'admin_audit_log_present', passed: false, detail: error.message };
+  if ((count ?? 0) === 0) {
+    return {
+      name: 'admin_audit_log_present',
+      passed: false,
+      detail: 'count=0 — admin audit trail did not survive the restore',
+    };
+  }
+
+  // The newest row must still carry its actor + action, i.e. the restore
+  // brought back rows, not just an empty shell of the table.
+  const { data, error: rowError } = await target
+    .from('admin_audit_log')
+    .select('id, action, created_at')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (rowError) {
+    return { name: 'admin_audit_log_present', passed: false, detail: rowError.message };
+  }
+
   return {
     name: 'admin_audit_log_present',
-    passed: (count ?? 0) >= 0, // table exists + reachable
-    detail: `count=${count}`,
+    passed: Boolean(data?.id) && Boolean(data?.action),
+    detail: data?.action
+      ? `count=${count} newest_action=${data.action}`
+      : `count=${count} newest row missing action`,
   };
 }
 

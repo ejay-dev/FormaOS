@@ -309,6 +309,22 @@ test.describe('Critical Routes Checklist', () => {
 
   for (const route of criticalRoutes) {
     test(`${route.name} loads without errors`, async ({ page }) => {
+      // Listeners MUST be attached before navigation. They used to be
+      // registered after page.goto(), so every console error emitted during
+      // document load, hydration and initial client render happened before
+      // the listener existed — `errors` was always empty and the assertion
+      // below could not fail.
+      const consoleErrors: string[] = [];
+      const pageErrors: string[] = [];
+      page.on('console', (msg) => {
+        if (msg.type() === 'error') {
+          consoleErrors.push(msg.text());
+        }
+      });
+      page.on('pageerror', (error) => {
+        pageErrors.push(error.message);
+      });
+
       await page.goto(route.path);
 
       // Should not see 404
@@ -317,23 +333,23 @@ test.describe('Critical Routes Checklist', () => {
       // Should have content
       await expect(page.locator('h1, h2').first()).toBeVisible();
 
-      // Check for console errors
-      const errors: string[] = [];
-      page.on('console', (msg) => {
-        if (msg.type() === 'error') {
-          errors.push(msg.text());
-        }
-      });
-
       await page.waitForTimeout(2000);
 
       // Filter out known non-critical errors
-      const criticalErrors = errors.filter(
+      const criticalErrors = consoleErrors.filter(
         (e) =>
           !e.includes('favicon') && !e.includes('chunk') && !e.includes('404'),
       );
 
-      expect(criticalErrors.length).toBe(0);
+      // Uncaught client exceptions are never acceptable and are not filtered.
+      expect(
+        pageErrors,
+        `Uncaught exception(s) on ${route.path}:\n${pageErrors.join('\n')}`,
+      ).toEqual([]);
+      expect(
+        criticalErrors,
+        `Console error(s) on ${route.path}:\n${criticalErrors.join('\n')}`,
+      ).toEqual([]);
     });
   }
 });

@@ -896,24 +896,56 @@ test.describe('Enterprise Government Audit Readiness', () => {
   test.describe('Phase 1 — Public Routes & Marketing Integrity', () => {
     test('all marketing pages load without errors', async ({ page }) => {
       test.setTimeout(180000); // 3 min for 11 routes
-      for (const route of PUBLIC_ROUTES) {
-        try {
-          await page.goto(route, {
-            timeout: 30000,
-            waitUntil: 'domcontentloaded',
-          });
-          await page.waitForTimeout(1000);
-          await assertNoErrorState(page);
 
-          // Every public page should have visible heading content
-          const heading = page.locator('h1, h2').first();
-          await expect(heading).toBeVisible({ timeout: 15000 });
-        } catch (err) {
-          console.warn(
-            `[Marketing Route] ${route} had an issue: ${(err as Error).message?.slice(0, 100)}`,
-          );
+      // Every assertion used to sit inside a try/catch that only
+      // console.warn'd, so a 404/500 on any public route still reported PASS.
+      // Collect per-route failures instead and assert the collection is empty
+      // at the end — that still exercises all 11 routes in one run, but a
+      // broken route now fails the test with the route named.
+      const failures: string[] = [];
+
+      for (const route of PUBLIC_ROUTES) {
+        const response = await page.goto(route, {
+          timeout: 30000,
+          waitUntil: 'domcontentloaded',
+        });
+
+        const status = response?.status() ?? 0;
+        if (status === 0 || status >= 400) {
+          failures.push(`${route} → HTTP ${status || 'no response'}`);
+          continue;
+        }
+
+        const errorHeading = page.locator(
+          'h1:text-is("404"), h2:text-is("404"), ' +
+            'h1:has-text("Page Not Found"), h2:has-text("Page Not Found"), ' +
+            'h1:has-text("Internal Server Error"), h2:has-text("Internal Server Error")',
+        );
+        if (
+          await errorHeading
+            .first()
+            .isVisible({ timeout: 2000 })
+            .catch(() => false)
+        ) {
+          failures.push(`${route} → rendered an error page`);
+          continue;
+        }
+
+        // Every public page should have visible heading content
+        const headingVisible = await page
+          .locator('h1, h2')
+          .first()
+          .isVisible({ timeout: 15000 })
+          .catch(() => false);
+        if (!headingVisible) {
+          failures.push(`${route} → no visible <h1>/<h2>`);
         }
       }
+
+      expect(
+        failures,
+        `Public routes failed to load cleanly:\n${failures.join('\n')}`,
+      ).toEqual([]);
     });
 
     test('pricing page displays Enterprise plan with correct features', async ({
@@ -983,17 +1015,27 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await page.waitForTimeout(2000);
 
       const newPage = await context.newPage();
-      await newPage.goto('/app/dashboard', {
-        waitUntil: 'domcontentloaded',
-        timeout: 30000,
-      });
-      await newPage.waitForTimeout(2000);
+      try {
+        await newPage.goto('/app/dashboard', {
+          waitUntil: 'domcontentloaded',
+          timeout: 30000,
+        });
 
-      // New tab in same context should share session
-      const url = newPage.url();
-      // Accept either /app (session valid) or /auth (session cookie-based, may not share)
-      expect(url).toMatch(/\/(app|auth)/);
-      await newPage.close();
+        // A second tab in the same BrowserContext shares the auth cookies, so
+        // it MUST land inside the app. The old assertion accepted /app *or*
+        // /auth, i.e. it passed whether the session survived or was dropped —
+        // which is the one thing this test exists to detect. /app/dashboard
+        // redirects to /app (app/app/dashboard/page.tsx), and an
+        // unauthenticated request is redirected to /auth/signin by the /app
+        // layout, so the two outcomes are cleanly distinguishable.
+        await expect(newPage).toHaveURL(/\/app(\/|$|\?)/, { timeout: 20000 });
+        expect(
+          new URL(newPage.url()).pathname,
+          'new tab was bounced to sign-in — session cookies are not shared across tabs',
+        ).not.toMatch(/^\/auth\//);
+      } finally {
+        await newPage.close();
+      }
     });
   });
 

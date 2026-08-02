@@ -283,28 +283,61 @@ function auditSecurityHeaders() {
 }
 
 function auditAdminMfaGate() {
-  const adminLayout = safeRead('app/admin/layout.tsx') ?? '';
-  const appLayout = safeRead('app/app/layout.tsx') ?? '';
-  const adminGated = /requireMfa|mfa-gate|ensureMfa|verifyMfa/i.test(adminLayout);
-  const appGated = /requireMfa|mfa-gate|ensureMfa|verifyMfa/i.test(appLayout);
+  // Audit 2026-08-02: the previous version returned 'pass' whenever
+  // NEITHER layout matched the gate signature — i.e. deleting MFA
+  // enforcement from both /app and /admin turned a would-be warning into
+  // a green gate under SECURITY_BASELINE_STRICT=1. Absence of the gate is
+  // now the loudest failure, not the quietest.
+  //
+  // Importing the module is not enough either: the layout has to act on
+  // it, so a redirect to the challenge path is required as well.
+  const GATE_IMPORT = /requireMfa|mfa-gate|ensureMfa|verifyMfa|evaluateMfaGate/i;
+  const GATE_ENFORCEMENT = /MFA_CHALLENGE_PATH|\/auth\/mfa-challenge/;
 
-  if (!adminGated && appGated) {
+  const layouts = [
+    { path: 'app/admin/layout.tsx', label: '/admin/*' },
+    { path: 'app/app/layout.tsx', label: '/app/*' },
+  ].map((layout) => {
+    const contents = safeRead(layout.path);
+    return {
+      ...layout,
+      exists: contents !== null,
+      imported: GATE_IMPORT.test(contents ?? ''),
+      enforced: GATE_ENFORCEMENT.test(contents ?? ''),
+    };
+  });
+
+  const ungated = layouts.filter(
+    (layout) => !layout.exists || !layout.imported || !layout.enforced,
+  );
+
+  if (ungated.length > 0) {
+    const details = ungated.map((layout) => {
+      if (!layout.exists) return `${layout.path} is missing`;
+      if (!layout.imported)
+        return `${layout.path} does not reference an MFA gate`;
+      return `${layout.path} references an MFA gate but never redirects to the challenge`;
+    });
     return createCheck(
       'admin_mfa_gate',
       'Admin MFA Gate',
       'warn',
-      '/admin/* layout does not import an MFA gate while /app/* does — admin can be reached password-only.',
-      ['app/admin/layout.tsx'],
-      'Either gate /admin/* with the same MFA check used in /app/*, or document the carve-out explicitly.',
+      `MFA enforcement missing on ${ungated.map((l) => l.label).join(' and ')} — ${
+        ungated.length === layouts.length
+          ? 'no layout enforces MFA at all'
+          : 'these surfaces can be reached password-only'
+      }.`,
+      details,
+      'Gate every privileged layout with evaluateMfaGate (or equivalent) and redirect to MFA_CHALLENGE_PATH when the challenge has not been cleared.',
     );
   }
+
   return createCheck(
     'admin_mfa_gate',
     'Admin MFA Gate',
     'pass',
-    adminGated
-      ? '/admin/* layout enforces an MFA gate.'
-      : 'Neither /app nor /admin currently import an MFA gate by this signature — nothing to assert.',
+    'Both /admin/* and /app/* layouts evaluate an MFA gate and redirect to the challenge.',
+    layouts.map((layout) => layout.path),
   );
 }
 

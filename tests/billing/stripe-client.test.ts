@@ -65,7 +65,13 @@ describe('getStripePriceId', () => {
     delete process.env.STRIPE_PRICE_ENTERPRISE;
   });
 
-  it('ignores legacy Foundation and Growth env aliases so stale production vars cannot override current prices', () => {
+  // Audit 2026-08-02: this test used to be titled "ignores legacy Foundation
+  // and Growth env aliases so stale production vars cannot override current
+  // prices" while asserting the exact opposite — Foundation/Growth are the
+  // ONLY names lib/billing/stripe.ts reads (configuredPriceIds, lines 22-23).
+  // Anyone auditing billing config by reading test names concluded a stale
+  // STRIPE_PRICE_FOUNDATION was inert when it is the live variable.
+  it('reads basic/pro prices from STRIPE_PRICE_FOUNDATION/GROWTH and ignores STRIPE_PRICE_BASIC/PRO entirely', () => {
     process.env.STRIPE_PRICE_FOUNDATION = 'price_foundation';
     process.env.STRIPE_PRICE_GROWTH = 'price_growth';
     process.env.STRIPE_PRICE_BASIC = 'price_legacy_basic';
@@ -74,9 +80,28 @@ describe('getStripePriceId', () => {
 
     expect(getStripePriceId('basic')).toBe('price_foundation');
     expect(getStripePriceId('pro')).toBe('price_growth');
+    expect(getStripePriceId('basic')).not.toBe('price_legacy_basic');
+    expect(getStripePriceId('pro')).not.toBe('price_legacy_pro');
 
     delete process.env.STRIPE_PRICE_FOUNDATION;
     delete process.env.STRIPE_PRICE_GROWTH;
+    delete process.env.STRIPE_PRICE_BASIC;
+    delete process.env.STRIPE_PRICE_PRO;
+  });
+
+  // The trap an operator falls into: setting the names that match the plan
+  // keys does nothing at all. Checkout silently runs on the dev placeholder
+  // (non-production) or fails closed with null (production).
+  it('does not honour STRIPE_PRICE_BASIC/PRO on their own — checkout falls back to the dev placeholders', () => {
+    delete process.env.STRIPE_PRICE_FOUNDATION;
+    delete process.env.STRIPE_PRICE_GROWTH;
+    process.env.STRIPE_PRICE_BASIC = 'price_operator_basic';
+    process.env.STRIPE_PRICE_PRO = 'price_operator_pro';
+    const { getStripePriceId } = require('@/lib/billing/stripe');
+
+    expect(getStripePriceId('basic')).toBe(DEFAULTS.basic);
+    expect(getStripePriceId('pro')).toBe(DEFAULTS.pro);
+
     delete process.env.STRIPE_PRICE_BASIC;
     delete process.env.STRIPE_PRICE_PRO;
   });

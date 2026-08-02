@@ -5,7 +5,7 @@
 
 import { test, expect, type Page } from '@playwright/test';
 import { cleanupTestUser } from './helpers/test-auth';
-import { getCredentials, gotoAppRoute, loginAs } from './helpers/fixtures';
+import { getCredentials, loginAs } from './helpers/fixtures';
 
 async function getApiWithRetry(page: Page, path: string) {
   let lastError: unknown;
@@ -71,49 +71,42 @@ test.describe('Customer Health Score API', () => {
     }
   });
 
+  // 2026-08-02: the three tests below wrapped every assertion in
+  // `if (response.status() === 200)` without ever asserting the status. A
+  // regression to 401/403/500 on /api/customer-health/score reported green
+  // while asserting nothing. `beforeEach` logs in with a seeded workspace
+  // user that has an org membership, so 200 is the contract (the route only
+  // returns 403 when `org_members` has no row for the user).
   test('Health score includes factors breakdown', async ({ page }) => {
     const response = await getApiWithRetry(page, '/api/customer-health/score');
+    expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const data = await response.json();
-      const factors = data.healthScore.factors;
+    const data = await response.json();
+    const factors = data.healthScore.factors;
 
-      expect(factors).toHaveProperty('loginFrequency');
-      expect(factors).toHaveProperty('featureAdoption');
-      expect(factors).toHaveProperty('complianceTrend');
-      expect(factors).toHaveProperty('automationUsage');
-      expect(factors).toHaveProperty('overdueCompliance');
-
-      console.log('Health score factors:', factors);
-    }
+    expect(factors).toHaveProperty('loginFrequency');
+    expect(factors).toHaveProperty('featureAdoption');
+    expect(factors).toHaveProperty('complianceTrend');
+    expect(factors).toHaveProperty('automationUsage');
+    expect(factors).toHaveProperty('overdueCompliance');
   });
 
   test('Health score includes alerts', async ({ page }) => {
     const response = await getApiWithRetry(page, '/api/customer-health/score');
+    expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const data = await response.json();
-      expect(data.healthScore).toHaveProperty('alerts');
-      expect(Array.isArray(data.healthScore.alerts)).toBe(true);
-
-      if (data.healthScore.alerts.length > 0) {
-        console.log(`Health score has ${data.healthScore.alerts.length} alerts`);
-      }
-    }
+    const data = await response.json();
+    expect(data.healthScore).toHaveProperty('alerts');
+    expect(Array.isArray(data.healthScore.alerts)).toBe(true);
   });
 
   test('Health score includes recommended actions', async ({ page }) => {
     const response = await getApiWithRetry(page, '/api/customer-health/score');
+    expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const data = await response.json();
-      expect(data.healthScore).toHaveProperty('recommendedActions');
-      expect(Array.isArray(data.healthScore.recommendedActions)).toBe(true);
-
-      if (data.healthScore.recommendedActions.length > 0) {
-        console.log(`Health score has ${data.healthScore.recommendedActions.length} recommended actions`);
-      }
-    }
+    const data = await response.json();
+    expect(data.healthScore).toHaveProperty('recommendedActions');
+    expect(Array.isArray(data.healthScore.recommendedActions)).toBe(true);
   });
 });
 
@@ -128,24 +121,28 @@ test.describe('Health Status Thresholds', () => {
 
   test('Health status matches score threshold', async ({ page }) => {
     const response = await getApiWithRetry(page, '/api/customer-health/score');
+    // 2026-08-02: the threshold check used to be gated on a 200 that was
+    // never asserted, so an API failure passed the test with zero coverage
+    // of the mapping it is named for.
+    expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const data = await response.json();
-      const score = data.healthScore.score;
-      const status = data.healthScore.status;
+    const data = await response.json();
+    const score = data.healthScore.score;
+    const status = data.healthScore.status;
 
-      // Verify status matches thresholds
-      if (score >= 75) {
-        expect(status).toBe('Healthy');
-      } else if (score >= 50) {
-        expect(status).toBe('Warning');
-      } else if (score >= 25) {
-        expect(status).toBe('At Risk');
-      } else {
-        expect(status).toBe('Critical');
-      }
+    expect(typeof score).toBe('number');
+    expect(score).toBeGreaterThanOrEqual(0);
+    expect(score).toBeLessThanOrEqual(100);
 
-      console.log(`Score ${score} correctly maps to status ${status}`);
+    // Verify status matches thresholds
+    if (score >= 75) {
+      expect(status).toBe('Healthy');
+    } else if (score >= 50) {
+      expect(status).toBe('Warning');
+    } else if (score >= 25) {
+      expect(status).toBe('At Risk');
+    } else {
+      expect(status).toBe('Critical');
     }
   });
 });
@@ -178,20 +175,37 @@ test.describe('Founder Health Rankings', () => {
 
   test('Rankings include summary statistics', async ({ page }) => {
     const response = await getApiWithRetry(page, '/api/customer-health/rankings');
+    // 2026-08-02: previously every assertion was gated on an unasserted 200,
+    // so a 401/500 on the founder rankings endpoint passed silently. The
+    // route has exactly two legitimate outcomes for an authenticated caller:
+    // 403 with FOUNDER_REQUIRED, or 200 with a complete summary.
+    const status = response.status();
+    expect([200, 403]).toContain(status);
 
-    if (response.status() === 200) {
-      const data = await response.json();
-      const summary = data.rankings.summary;
+    const data = await response.json();
 
-      expect(summary).toHaveProperty('total');
-      expect(summary).toHaveProperty('healthy');
-      expect(summary).toHaveProperty('warning');
-      expect(summary).toHaveProperty('atRisk');
-      expect(summary).toHaveProperty('critical');
-      expect(summary).toHaveProperty('averageScore');
-
-      console.log('Rankings summary:', summary);
+    if (status === 403) {
+      expect(data.code).toBe('FOUNDER_REQUIRED');
+      // A denied caller must not receive any cross-tenant ranking payload.
+      expect(data).not.toHaveProperty('rankings');
+      return;
     }
+
+    const summary = data.rankings.summary;
+    expect(summary).toHaveProperty('total');
+    expect(summary).toHaveProperty('healthy');
+    expect(summary).toHaveProperty('warning');
+    expect(summary).toHaveProperty('atRisk');
+    expect(summary).toHaveProperty('critical');
+    expect(summary).toHaveProperty('averageScore');
+
+    // The buckets are computed from the same list they summarise
+    // (lib/customer-health/compute-rankings.ts) — a drift between them is a
+    // real defect the shape checks above cannot see.
+    expect(summary.total).toBe(data.rankings.organizations.length);
+    expect(
+      summary.healthy + summary.warning + summary.atRisk + summary.critical,
+    ).toBe(summary.total);
   });
 
   test('Admin health page loads for founders', async ({ page }) => {
@@ -211,35 +225,11 @@ test.describe('Founder Health Rankings', () => {
 // =========================================================
 // HEALTH SCORE DISPLAY TESTS
 // =========================================================
-test.describe('Health Score Display', () => {
-  test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
-  });
-
-  test('Dashboard may show health indicator', async ({ page }) => {
-    await gotoAppRoute(page, '/app');
-
-    // Look for health-related indicators
-    const healthIndicator = page.locator('[data-testid="health-score"], text=/health|status|healthy|warning|at risk/i');
-    const hasHealth = await healthIndicator.first().isVisible({ timeout: 5000 }).catch(() => false);
-
-    if (hasHealth) {
-      console.log('Health indicator displayed on dashboard');
-    } else {
-      console.log('Health indicator not prominently displayed (may be in admin view)');
-    }
-  });
-
-  test('Health alerts may be shown when applicable', async ({ page }) => {
-    await gotoAppRoute(page, '/app');
-
-    // Look for health alerts
-    const alerts = page.locator('[data-testid="health-alert"], text=/action required|attention|improve/i');
-    const hasAlerts = await alerts.first().isVisible({ timeout: 3000 }).catch(() => false);
-
-    if (hasAlerts) {
-      console.log('Health alerts displayed');
-    }
-  });
-});
+// 2026-08-02: the "Health Score Display" describe block held two tests
+// ("Dashboard may show health indicator", "Health alerts may be shown when
+// applicable") that contained no `expect` at all. They were unsalvageable:
+// nothing under app/app renders a customer-health indicator or alert — the
+// feature has an API (/api/customer-health/score, /api/customer-health/
+// rankings) and no in-app surface at all. Rather than invent a selector for
+// UI that does not exist, the block was removed; the API contract is covered
+// by the tests above. See the report note on the orphaned health-score UI.

@@ -154,12 +154,17 @@ test.describe('Deep workflow integrity', () => {
 
     const reloadedRow = page
       .locator('tr', { hasText: obligation.title as string });
-    // The evidence cell renders the count inside a button next to the
-    // paperclip icon. Allow a moment for the client fetch to complete.
-    await expect(async () => {
-      const txt = await reloadedRow.textContent();
-      expect(txt ?? '').toMatch(/[1-9]\d*/);
-    }).toPass({ timeout: 10_000 });
+    // Read the evidence-count cell itself — a `font-mono` span inside the
+    // paperclip button (components/compliance/ObligationsTable.tsx). The
+    // previous assertion matched /[1-9]\d*/ against the *whole row text*,
+    // which already contains the "2" in the seeded title "E2E Obligation …",
+    // so it passed even when the count rendered 0. The pre-upload count was
+    // asserted to be 0 above and exactly one file was uploaded, so the
+    // register must now render "1".
+    const evidenceCountCell = reloadedRow
+      .locator('button:has(svg.lucide-paperclip) span.font-mono')
+      .first();
+    await expect(evidenceCountCell).toHaveText('1', { timeout: 10_000 });
 
     // Cleanup
     if (evidenceRow?.file_path) {
@@ -445,13 +450,16 @@ test.describe('Deep workflow integrity', () => {
       await gotoWorkflowRoute(page, '/app/compliance');
       const row = page.locator('tr', { hasText: obligation.title as string });
       await expect(row).toBeVisible({ timeout: 15_000 });
-      // Count should be visible as a number ≥ 2 in the row
-      await expect(async () => {
-        const text = await row.textContent();
-        const match = (text ?? '').match(/(\d+)/g) ?? [];
-        const counts = match.map((m) => parseInt(m, 10));
-        expect(counts.some((n) => n >= 2)).toBe(true);
-      }).toPass({ timeout: 10_000 });
+      // Assert on the evidence-count cell, not the row text. Scraping every
+      // digit group out of the row matched the "2" inside the seeded title
+      // "E2E Counted …", so `counts.some((n) => n >= 2)` held even when the
+      // count rendered 0. Two evidence rows were seeded against this and only
+      // this obligation, and /api/v1/compliance/obligations counts per
+      // task_id, so the cell must read exactly "2".
+      const evidenceCountCell = row
+        .locator('button:has(svg.lucide-paperclip) span.font-mono')
+        .first();
+      await expect(evidenceCountCell).toHaveText('2', { timeout: 15_000 });
     } finally {
       await context.admin
         .from('org_evidence')
