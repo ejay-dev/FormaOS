@@ -52,6 +52,13 @@ describe('integrations manager', () => {
   });
 
   it('rejects connect requests with missing required config', async () => {
+    // connectIntegration now reads the stored row first so an edit that omits an
+    // unchanged secret can be merged rather than rejected. With no stored row the
+    // merged config is still empty, so validation must still fail.
+    createAdminMock.mockReturnValue({
+      from: jest.fn(() => createQueryStub({ data: null })),
+    } as any);
+
     await expect(
       connectIntegration({
         orgId: 'org_123',
