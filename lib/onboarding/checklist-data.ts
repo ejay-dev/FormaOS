@@ -94,8 +94,13 @@ export async function getChecklistCountsForOrg(
     safeCount(
       'org_frameworks',
       admin
+        // Verified against prod 2026-08-03: org_frameworks has exactly three
+        // columns — organization_id, framework_slug, enabled_at. There is no
+        // `id`, so select('id') returned PostgREST 42703, safeCount swallowed
+        // it, and this count sat at 0 for every org — meaning the "connect a
+        // framework" onboarding step could never complete.
         .from('org_frameworks')
-        .select('id', { count: 'exact', head: true }),
+        .select('organization_id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_policies',

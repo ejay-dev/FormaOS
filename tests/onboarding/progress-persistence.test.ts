@@ -163,7 +163,7 @@ describe('Progress Persistence - Basic Operations', () => {
       expect(cached).toBeNull();
     });
 
-    it('should handle missing properties in cache', () => {
+    it('should return null when the cached entry has no counts or timestamp', () => {
       const incompleteData = {
         orgId: mockOrgId,
         // Missing counts and timestamp
@@ -174,10 +174,19 @@ describe('Progress Persistence - Basic Operations', () => {
         JSON.stringify(incompleteData),
       );
 
-      // Should not throw
+      // Audit 2026-08-03 — this test previously asserted only that the call
+      // did not throw and never looked at the return value, so it passed
+      // whatever came back. With `timestamp` missing the source computes
+      // `Date.now() - undefined` = NaN, `NaN > CACHE_DURATION_MS` is false,
+      // so it falls through to `return data.counts` and hands the caller
+      // `undefined` — not the documented `ChecklistCompletionCounts | null`.
+      // `hasFreshCache` then evaluates `undefined !== null` and reports a
+      // fresh cache for an entry that has no counts in it at all.
       expect(() => {
         getCachedProgress(mockOrgId);
       }).not.toThrow();
+      expect(getCachedProgress(mockOrgId)).toBeNull();
+      expect(hasFreshCache(mockOrgId)).toBe(false);
     });
   });
 
@@ -324,16 +333,37 @@ describe('Progress Persistence - Multi-Org Scenarios', () => {
     localStorage.clear();
   });
 
-  it('should isolate cache by orgId', () => {
+  it('should never serve one org cached progress belonging to another org', () => {
+    // Audit 2026-08-03 — this test used to be called "should isolate cache
+    // by orgId" while asserting the opposite: that org1's entry is destroyed
+    // by an org2 write. The guarantee worth locking in is the tenant one —
+    // a caller asking for org X never receives org Y's counts — and it holds
+    // regardless of whether progress is stored under one key or per-org keys.
+    setCachedProgress(org1, counts1);
+
+    expect(getCachedProgress(org2)).toBeNull();
+    expect(getCachedProgress(org2)).not.toEqual(counts1);
+    expect(hasFreshCache(org2)).toBe(false);
+
+    setCachedProgress(org2, counts2);
+
+    expect(getCachedProgress(org2)).toEqual(counts2);
+    expect(getCachedProgress(org1)).not.toEqual(counts2);
+  });
+
+  it('should store progress under one global key, so an org switch evicts the previous entry', () => {
     setCachedProgress(org1, counts1);
     setCachedProgress(org2, counts2);
 
-    const cached1 = getCachedProgress(org1);
-    const cached2 = getCachedProgress(org2);
-
-    // Should get org2's data (last write wins in single key storage)
-    expect(cached1).toBeNull(); // org1 was overwritten
-    expect(cached2).toEqual(counts2);
+    // This documents the storage design rather than endorsing it: a single
+    // STORAGE_KEY for every org means a multi-org user cold-starts the
+    // onboarding checklist on every switch. If per-org keys are introduced,
+    // THIS is the test to update — the tenant-isolation test above stays
+    // valid either way.
+    const raw = localStorage.getItem('formaos_onboarding_progress');
+    expect(raw).not.toBeNull();
+    expect(JSON.parse(raw!).orgId).toBe(org2);
+    expect(getCachedProgress(org1)).toBeNull();
   });
 
   it('should switch between orgs correctly', () => {
