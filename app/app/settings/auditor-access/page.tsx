@@ -1,8 +1,13 @@
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { listAuditorAccess, getAuditorActivity } from '@/lib/auditor/portal';
-import { revokeAuditorGrant } from '@/app/app/actions/auditor-access';
+import {
+  dismissIssuedAuditorToken,
+  revokeAuditorGrant,
+} from '@/app/app/actions/auditor-access';
+import { ISSUED_TOKEN_COOKIE } from '@/lib/auditor/issued-token';
 import { Shield, Clock, Eye, Plus } from 'lucide-react';
 import {
   SettingsPageHeader,
@@ -38,9 +43,21 @@ export default async function AuditorAccessPage({
   const canManage = state.role === 'owner' || state.role === 'admin';
   const tokens = await listAuditorAccess(state.organization.id);
   const activity = await getAuditorActivity(state.organization.id);
-  const grantedUrl = granted
-    ? `${getAppBaseUrl()}/audit-portal/${encodeURIComponent(granted)}`
+  // `granted` is only a flag. The raw token itself comes from a short-lived
+  // httpOnly cookie set by grantAuditorAccess, so it never reaches the address
+  // bar, browser history, the Referer header, or CDN access logs. A crafted
+  // ?granted=1 link therefore cannot fabricate a link panel either — without
+  // the cookie there is no token to render.
+  const issuedToken =
+    granted === '1'
+      ? ((await cookies()).get(ISSUED_TOKEN_COOKIE)?.value ?? null)
+      : null;
+  const grantedUrl = issuedToken
+    ? `${getAppBaseUrl()}/audit-portal/${issuedToken}`
     : null;
+  // Flag present but cookie gone: the 10-minute window elapsed, or the operator
+  // already dismissed it. Say so rather than silently rendering nothing.
+  const issuedTokenExpired = granted === '1' && !issuedToken;
 
   return (
     <SettingsPageShell>
@@ -83,6 +100,27 @@ export default async function AuditorAccessPage({
             issue a new one.
           </p>
           <AuditorLink url={grantedUrl} />
+          {/* Clears the cookie so the link stops being retrievable on revisit,
+              rather than lingering for the rest of its 10-minute TTL. */}
+          <form action={dismissIssuedAuditorToken} className="mt-3">
+            <button
+              type="submit"
+              className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+            >
+              I&rsquo;ve copied the link
+            </button>
+          </form>
+        </section>
+      ) : issuedTokenExpired ? (
+        <section className="rounded-lg border border-border bg-card p-5">
+          <h2 className="text-base font-semibold text-foreground">
+            Link no longer available
+          </h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            The grant was created, but the one-time link is no longer shown. It
+            is stored hashed and cannot be looked up. Revoke the grant below and
+            issue a new one if you still need to send it.
+          </p>
         </section>
       ) : null}
 

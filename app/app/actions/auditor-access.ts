@@ -1,13 +1,24 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { createAuditorAccess, revokeAuditorAccess } from '@/lib/auditor/portal';
+// The raw token grants a third party read access to the org's whole evidence
+// set until expiry, so it is handed back through a short-lived httpOnly cookie
+// rather than the query string — keeping it out of the address bar, browser
+// history, the Referer of any outbound click, and proxy/CDN access logs.
+import {
+  ISSUED_TOKEN_COOKIE,
+  ISSUED_TOKEN_TTL_SECONDS,
+} from '@/lib/auditor/issued-token';
 import { fetchSystemState } from '@/lib/system-state/server';
 
 const LIST_PATH = '/app/settings/auditor-access';
 const NEW_PATH = '/app/settings/auditor-access/new';
+
+
 
 // An auditor grant hands a third party read access to the org's evidence, so
 // grant and revoke sit behind the same roles the rest of the settings cluster
@@ -49,10 +60,17 @@ export async function grantAuditorAccess(formData: FormData) {
     redirect(`${NEW_PATH}?error=grant-failed`);
   }
 
+  const cookieStore = await cookies();
+  cookieStore.set(ISSUED_TOKEN_COOKIE, granted.token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: LIST_PATH,
+    maxAge: ISSUED_TOKEN_TTL_SECONDS,
+  });
+
   revalidatePath(LIST_PATH);
-  // The raw token travels back once so the list page can show the auditor's
-  // link. It is hashed at rest and cannot be recovered afterwards.
-  redirect(`${LIST_PATH}?granted=${encodeURIComponent(granted.token)}`);
+  redirect(`${LIST_PATH}?granted=1`);
 }
 
 export async function revokeAuditorGrant(formData: FormData) {
@@ -77,4 +95,15 @@ export async function revokeAuditorGrant(formData: FormData) {
 
   revalidatePath(LIST_PATH);
   redirect(`${LIST_PATH}?revoked=1`);
+}
+
+/**
+ * Clears the one-time token cookie once the operator has copied the link.
+ * Without this the link stays retrievable for the full cookie TTL on any
+ * revisit to the list page.
+ */
+export async function dismissIssuedAuditorToken() {
+  const cookieStore = await cookies();
+  cookieStore.delete({ name: ISSUED_TOKEN_COOKIE, path: LIST_PATH });
+  redirect(LIST_PATH);
 }

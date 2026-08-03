@@ -123,6 +123,31 @@ export async function publishForm(
   return data;
 }
 
+/**
+ * Take a published form back to draft.
+ *
+ * Mirrors publishForm deliberately, including the status guard: the update only
+ * matches a row already in 'published', so a concurrent archive or a repeated
+ * click cannot silently rewrite some other state.
+ */
+export async function unpublishForm(
+  db: SupabaseClient,
+  formId: string,
+  orgId: string,
+) {
+  const { data, error } = await db
+    .from('org_forms')
+    .update({ status: 'draft', updated_at: new Date().toISOString() })
+    .eq('id', formId)
+    .eq('org_id', orgId)
+    .eq('status', 'published')
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
 export async function archiveForm(
   db: SupabaseClient,
   formId: string,

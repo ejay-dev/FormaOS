@@ -248,14 +248,19 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
     setStatusError(null);
     setPublishing(true);
     try {
-      const supabase = createSupabaseClient();
-      const { error } = await supabase
-        .from('org_forms')
-        .update({ status: 'draft', updated_at: new Date().toISOString() })
-        .eq('id', form.id)
-        .eq('org_id', orgId);
-
-      if (error) throw error;
+      // Routed through the API for the same reason publish is: a direct client
+      // write only has to satisfy the org_forms_update RLS policy, which admits
+      // ANY org member (viewer and staff included), so a non-admin could take a
+      // live form offline even though the same UI refuses to let them publish
+      // one. /api/v1/forms/[formId]/unpublish requires the forms:write scope,
+      // which sessionHasScopes grants to owner/admin only.
+      const response = await fetch(`/api/v1/forms/${form.id}/unpublish`, {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        throw new Error(body?.error ?? 'The form could not be unpublished.');
+      }
 
       setForm((current) =>
         current ? { ...current, status: 'draft' } : current,
