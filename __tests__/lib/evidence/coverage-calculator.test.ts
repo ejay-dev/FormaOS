@@ -64,22 +64,34 @@ describe('calculateCoverage', () => {
     expect(result.totalControls).toBe(0);
   });
 
-  it('calculates coverage with evidence', async () => {
+  // Audit 2026-08-03: coverage used to read org_evidence.control_id, a column
+  // that does not exist in production, and the discarded error made every org
+  // read 0%. It now joins through control_evidence and requires the linked
+  // evidence row to exist and be current, so the fixture models both queries.
+  it('calculates coverage from current evidence linked to controls', async () => {
     let callCount = 0;
     mockAdmin.from = jest.fn(() => {
       callCount++;
-      if (callCount <= 1) {
+      if (callCount === 1) {
         // org_controls count
         return createBuilder({ data: null, error: null, count: 10 });
       }
-      // org_evidence with control_ids
+      if (callCount === 2) {
+        // control_evidence link rows
+        return createBuilder({
+          data: [
+            { control_id: 'c1', evidence_id: 'e1' },
+            { control_id: 'c2', evidence_id: 'e2' },
+            { control_id: 'c2', evidence_id: 'e2' }, // duplicate link
+            { control_id: 'c3', evidence_id: 'e3' },
+          ],
+          error: null,
+          count: null,
+        });
+      }
+      // org_evidence rows that exist AND are current
       return createBuilder({
-        data: [
-          { control_id: 'c1' },
-          { control_id: 'c2' },
-          { control_id: 'c2' }, // duplicate
-          { control_id: 'c3' },
-        ],
+        data: [{ id: 'e1' }, { id: 'e2' }, { id: 'e3' }],
         error: null,
         count: null,
       });
@@ -89,6 +101,54 @@ describe('calculateCoverage', () => {
     expect(result.totalControls).toBe(10);
     expect(result.coveredControls).toBe(3);
     expect(result.coverage).toBe(30);
+    expect(result.unavailable).toBe(false);
+  });
+
+  it('does not count a control whose linked evidence no longer exists', async () => {
+    // This is the production state: control_evidence holds 74 rows whose
+    // evidence_id matches nothing in org_evidence, and the column has no
+    // foreign key. A dangling link is not coverage.
+    let callCount = 0;
+    mockAdmin.from = jest.fn(() => {
+      callCount++;
+      if (callCount === 1) return createBuilder({ data: null, error: null, count: 10 });
+      if (callCount === 2) {
+        return createBuilder({
+          data: [
+            { control_id: 'c1', evidence_id: 'gone-1' },
+            { control_id: 'c2', evidence_id: 'e2' },
+          ],
+          error: null,
+          count: null,
+        });
+      }
+      // only e2 still exists and is current
+      return createBuilder({ data: [{ id: 'e2' }], error: null, count: null });
+    });
+
+    const result = await calculateCoverage('org-1');
+    expect(result.coveredControls).toBe(1);
+    expect(result.coverage).toBe(10);
+  });
+
+  it('reports unavailable rather than 0% when the link query fails', async () => {
+    // The original bug: a 42703 on a non-existent column was discarded and the
+    // empty set rendered as a real "0% coverage" measurement.
+    let callCount = 0;
+    mockAdmin.from = jest.fn(() => {
+      callCount++;
+      if (callCount === 1) return createBuilder({ data: null, error: null, count: 10 });
+      return createBuilder({
+        data: null,
+        error: { message: 'column "control_id" does not exist', code: '42703' },
+        count: null,
+      });
+    });
+
+    const result = await calculateCoverage('org-1');
+    expect(result.unavailable).toBe(true);
+    expect(result.coverage).toBeNull();
+    expect(result.reason).toContain('control_id');
   });
 
   // Audit 2026-08-02: this asserted `expect(builder.eq).toHaveBeenCalled()`
