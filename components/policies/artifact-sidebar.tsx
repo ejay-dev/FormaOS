@@ -49,7 +49,17 @@ export function ArtifactSidebar({
 
     setIsLinking(artifactId);
     try {
-      await linkArtifactToPolicy(policyId, artifactId);
+      // The action catches its own failures and returns { success: false,
+      // error } rather than throwing, so "did not throw" is not success.
+      const result = await linkArtifactToPolicy(policyId, artifactId);
+
+      if (result && result.success === false) {
+        reportError({
+          title: 'Link failed',
+          message: result.error || 'The evidence could not be attached.',
+        });
+        return;
+      }
 
       // Show success state briefly
       setJustLinked(artifactId);

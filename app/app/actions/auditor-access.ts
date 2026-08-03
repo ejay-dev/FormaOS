@@ -54,7 +54,15 @@ export async function grantAuditorAccess(formData: FormData) {
     auditorCompany: auditorCompany || undefined,
     scopes: {},
     expiresInDays: Number.isFinite(expiresInDays) ? expiresInDays : 30,
-  }).catch(() => null);
+  }).catch((err: unknown) => {
+    // The operator only ever sees ?error=grant-failed, so without this the
+    // cause of a failed grant is lost entirely.
+    console.error('[auditor-access] createAuditorAccess failed', {
+      orgId: state.organization.id,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return null;
+  });
 
   if (!granted) {
     redirect(`${NEW_PATH}?error=grant-failed`);
@@ -87,7 +95,14 @@ export async function revokeAuditorGrant(formData: FormData) {
 
   const revoked = await revokeAuditorAccess(tokenId, state.organization.id)
     .then(() => true)
-    .catch(() => false);
+    .catch((err: unknown) => {
+      console.error('[auditor-access] revokeAuditorAccess failed', {
+        orgId: state.organization.id,
+        tokenId,
+        error: err instanceof Error ? err.message : String(err),
+      });
+      return false;
+    });
 
   if (!revoked) {
     redirect(`${LIST_PATH}?error=revoke-failed`);

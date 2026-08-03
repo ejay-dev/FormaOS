@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   FileText,
   CheckCircle2,
+  AlertTriangle,
 } from 'lucide-react';
 import { useComplianceAction } from '@/components/compliance-system';
 import { useAppStore } from '@/lib/stores/app';
@@ -116,6 +117,17 @@ export function UploadArtifactModal({
       cancelled = true;
     };
   }, [isOpen, policies.length]);
+
+  // Swapping the form for the outcome view unmounts whatever held focus, so
+  // it has to be moved back into the panel by hand. useModalA11y only does
+  // this when the dialog opens.
+  useEffect(() => {
+    if (!success) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+    if (!panel.hasAttribute('tabindex')) panel.setAttribute('tabindex', '-1');
+    panel.focus();
+  }, [success, panelRef]);
 
   if (!isOpen) return null;
 
@@ -251,32 +263,58 @@ export function UploadArtifactModal({
     }
   };
 
-  // Success state
+  // The outcome view keeps the same panel shape as the form below, and must
+  // keep `ref={panelRef}`: React reuses the DOM node across this switch, and
+  // useModalA11y captured that node when the dialog opened.
   if (success) {
     return (
       <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
         <div
+          ref={panelRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="upload-artifact-success-title"
           className="w-full max-w-md bg-popover rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden p-10 sm:p-12 flex flex-col items-center justify-center animate-in zoom-in-95"
         >
-          <div className="h-20 w-20 rounded-full bg-success/10 flex items-center justify-center mb-4 border-2 border-success/20">
-            <CheckCircle2 className="h-10 w-10 text-success" />
+          <div
+            className={`h-20 w-20 rounded-full flex items-center justify-center mb-4 border-2 ${
+              controlAttached
+                ? 'bg-success/10 border-success/20'
+                : 'bg-warning/10 border-warning/20'
+            }`}
+          >
+            {controlAttached ? (
+              <CheckCircle2 className="h-10 w-10 text-success" />
+            ) : (
+              <AlertTriangle className="h-10 w-10 text-warning" />
+            )}
           </div>
           <h3
             id="upload-artifact-success-title"
             className="text-xl font-bold text-foreground"
           >
-            Evidence uploaded
+            {controlAttached
+              ? 'Evidence uploaded'
+              : 'Uploaded, but not attached'}
           </h3>
-          <p className="text-sm text-muted-foreground mt-2 text-center">
-            {controlLabel && controlAttached
-              ? `Attached to ${controlLabel}.`
-              : controlLabel && !controlAttached
-                ? `Saved to the vault, but it could not be attached to ${controlLabel}. Attach it from the control so the gap closes.`
+          {controlAttached ? (
+            <p className="text-sm text-muted-foreground mt-2 text-center">
+              {controlLabel
+                ? `Attached to ${controlLabel}.`
                 : 'Saved to the vault and waiting for review.'}
-          </p>
+            </p>
+          ) : (
+            <p
+              role="alert"
+              className="text-sm text-muted-foreground mt-2 text-center"
+            >
+              Saved to the vault, but it could not be attached to{' '}
+              <span className="font-medium text-foreground">
+                {controlLabel || 'the control'}
+              </span>
+              . Attach it from the control so the gap closes.
+            </p>
+          )}
           {!controlAttached && (
             <button
               type="button"

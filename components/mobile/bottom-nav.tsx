@@ -2,21 +2,28 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { CreditCard, History, Menu } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import {
   getIndustryNavigation,
+  STAFF_NAV,
   type NavItem,
 } from '@/lib/navigation/industry-sidebar';
-import { MobileMoreSheet, type MoreSheetGroup } from './more-sheet';
+import {
+  MobileMoreSheet,
+  type MoreSheetGroup,
+  type MoreSheetItem,
+} from './more-sheet';
 
 /**
  * Four routed slots plus More. Both halves are built from the same
  * getIndustryNavigation() result the desktop sidebar renders, so labels,
  * targets and availability match the sidebar by construction: an aged-care
  * organisation gets "Residents", a financial-services one never sees a care
- * route at all, and a staff-role user gets the restricted staff nav.
+ * route at all, and a staff-role user gets the restricted staff nav. The
+ * sheet then adds sub-nav routes and the cross-industry tail below, which
+ * the desktop reaches through expansion and the user menu.
  */
 const PRIMARY_SLOTS = 4;
 
@@ -58,20 +65,64 @@ function selectPrimary(navigation: NavItem[]): NavItem[] {
   return primary;
 }
 
+/**
+ * Routes no industry sidebar carries as a top-level entry. On desktop they
+ * hang off the user menu; on a phone the sheet is the only place they can
+ * live, and the audit trail in particular had no other mobile entry point in
+ * any care navigation.
+ */
+const CROSS_INDUSTRY_TAIL: (MoreSheetItem & { category: string })[] = [
+  {
+    href: '/app/audit-trail',
+    label: 'Audit Trail',
+    Icon: History,
+    category: 'Intelligence',
+  },
+  {
+    href: '/app/billing',
+    label: 'Billing',
+    Icon: CreditCard,
+    category: 'Account',
+  },
+];
+
 function buildMoreGroups(
   navigation: NavItem[],
   primaryHrefs: Set<string>,
+  includeTail: boolean,
 ): MoreSheetGroup[] {
   const groups: MoreSheetGroup[] = [];
+  const seen = new Set(primaryHrefs);
 
-  for (const item of navigation) {
-    if (primaryHrefs.has(item.href)) continue;
-    let group = groups.find((g) => g.label === item.category);
+  const push = (category: string, item: MoreSheetItem) => {
+    if (seen.has(item.href)) return;
+    seen.add(item.href);
+    let group = groups.find((g) => g.label === category);
     if (!group) {
-      group = { label: item.category, items: [] };
+      group = { label: category, items: [] };
       groups.push(group);
     }
-    group.items.push({ href: item.href, label: item.name, Icon: item.icon });
+    group.items.push(item);
+  };
+
+  for (const item of navigation) {
+    push(item.category, { href: item.href, label: item.name, Icon: item.icon });
+    // Sub-nav routes only surface on desktop while their parent is expanded,
+    // so the sheet is their sole mobile entry point — including when the
+    // parent itself holds a primary slot and is skipped above.
+    for (const child of item.children ?? []) {
+      push(item.category, {
+        href: child.href,
+        label: `${item.name} · ${child.name}`,
+        Icon: item.icon,
+      });
+    }
+  }
+
+  if (includeTail) {
+    for (const { category, ...item } of CROSS_INDUSTRY_TAIL) {
+      push(category, item);
+    }
   }
 
   return groups;
@@ -100,9 +151,12 @@ export function MobileBottomNav({
     const { navigation } = getIndustryNavigation(industry, role);
     const selected = selectPrimary(navigation);
     const primaryHrefs = new Set(selected.map((item) => item.href));
+    // Restricted roles get STAFF_NAV back verbatim; comparing identity keeps
+    // the list of those roles in the resolver rather than duplicated here.
+    const restricted = navigation === STAFF_NAV;
     return {
       primary: selected,
-      moreGroups: buildMoreGroups(navigation, primaryHrefs),
+      moreGroups: buildMoreGroups(navigation, primaryHrefs, !restricted),
     };
   }, [industry, role]);
 

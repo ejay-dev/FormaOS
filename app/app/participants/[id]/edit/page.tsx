@@ -62,7 +62,7 @@ export default async function EditParticipantPage({
   const isNDIS = systemState.organization.industry === 'ndis';
 
   const supabase = await createSupabaseServerClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('org_patients')
     .select(
       `
@@ -92,6 +92,10 @@ export default async function EditParticipantPage({
     .eq('id', participantId)
     .maybeSingle();
 
+  // supabase-js resolves with { data: null, error } rather than rejecting, so
+  // an RLS denial or timeout would otherwise read as "no such record".
+  if (error) throw new Error(error.message);
+
   const participant = data as ParticipantRow | null;
   if (!participant) notFound();
 
@@ -117,7 +121,11 @@ export default async function EditParticipantPage({
       <form
         action={async (fd: FormData) => {
           'use server';
-          await updateParticipant(participantId, fd);
+          // On success updateParticipant redirects; on failure it returns a
+          // typed error instead of throwing, so rethrow it or the page just
+          // re-renders and the edit is lost without a word to the user.
+          const result = await updateParticipant(participantId, fd);
+          if (result && !result.success) throw new Error(result.error);
         }}
         className="space-y-6"
       >

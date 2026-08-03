@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
+  AlertTriangle,
   Clock,
   ShieldCheck,
   Search,
@@ -12,6 +13,7 @@ import {
 import Link from 'next/link';
 import { EvidenceButton } from '@/components/tasks/evidence-button';
 import { createTask, updateTaskStatus } from '@/app/app/actions/tasks';
+import { hasPermission, normalizeRole } from '@/app/app/actions/rbac';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { redirect } from 'next/navigation';
 import { normalizeTaskPriority } from '@/lib/tasks/priority';
@@ -47,8 +49,17 @@ type TasksPageProps = {
     priority?: string | string[];
     status?: string | string[];
     filter?: string | string[];
+    error?: string | string[];
   }>;
 };
+
+// The row control redirects back here with a code rather than the raw error
+// string: the reason is already logged server-side by actionError, and a
+// message echoed out of the query string would let a crafted link put
+// arbitrary text in front of a signed-in operator.
+const STATUS_ERROR_CODE = 'status-update-failed';
+const STATUS_ERROR_MESSAGE =
+  'That task could not be updated. Your workspace may be read-only while a payment is outstanding, or the task may have been removed. Refresh and try again.';
 
 function parseSingleValue(input: string | string[] | undefined): string {
   return Array.isArray(input) ? (input[0] ?? '') : (input ?? '');
@@ -84,6 +95,8 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   const filterKey = parseSingleValue(resolvedSearchParams.filter)
     .trim()
     .toLowerCase();
+  const statusErrorShown =
+    parseSingleValue(resolvedSearchParams.error).trim() === STATUS_ERROR_CODE;
 
   const systemState = await fetchSystemState();
   if (!systemState) {
@@ -92,6 +105,21 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 
   const supabase = await createSupabaseServerClient();
   const orgId = systemState.organization.id;
+
+  // Same permission updateTaskStatus enforces, so the row control is only
+  // offered to people it can actually work for. Everything the role cannot
+  // predict — the billing read-only gate, a deleted task — still lands in the
+  // alert above the table.
+  const { data: membership } = await supabase
+    .from('org_members')
+    .select('role')
+    .eq('user_id', systemState.user.id)
+    .eq('organization_id', orgId)
+    .maybeSingle();
+  const canEditTasks = hasPermission(
+    normalizeRole(membership?.role ?? null),
+    'EDIT_CONTROLS',
+  );
 
   // 2. Fetch Tasks with Live Evidence Counts
   const { data: tasks } = await supabase
@@ -167,6 +195,20 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   const hasFilters = Boolean(
     query || priorityFilter !== 'all' || statusFilter !== 'all',
   );
+
+  // Filters live in the URL, so both redirects have to carry them back or the
+  // operator loses their place on top of losing the change.
+  const filterParams = new URLSearchParams();
+  if (queryRaw) filterParams.set('q', queryRaw);
+  if (priorityFilter !== 'all') filterParams.set('priority', priorityFilter);
+  if (statusFilter !== 'all') filterParams.set('status', statusFilter);
+  if (filterKey) filterParams.set('filter', filterKey);
+  const clearedQuery = filterParams.toString();
+  const statusClearedHref = clearedQuery
+    ? `/app/tasks?${clearedQuery}`
+    : '/app/tasks';
+  filterParams.set('error', STATUS_ERROR_CODE);
+  const statusFailureHref = `/app/tasks?${filterParams.toString()}`;
 
   const heroMetrics: PageHeroMetric[] = [
     { label: 'Total', value: allTasks.length, sub: 'tasks' },
@@ -297,6 +339,19 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
       />
 
       <div className="page-content space-y-4">
+        {statusErrorShown ? (
+          <p
+            role="alert"
+            className="flex items-start gap-2 rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+          >
+            <AlertTriangle
+              className="mt-px h-3.5 w-3.5 shrink-0"
+              aria-hidden="true"
+            />
+            {STATUS_ERROR_MESSAGE}
+          </p>
+        ) : null}
+
         {/* Filters */}
         <form
           method="get"
@@ -370,9 +425,11 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                   <th className="px-4 py-3 text-sm font-medium">Priority</th>
                   <th className="px-4 py-3 text-sm font-medium">Evidence</th>
                   <th className="px-4 py-3 text-sm font-medium">Due date</th>
-                  <th className="px-4 py-3 text-sm font-medium text-right">
-                    Actions
-                  </th>
+                  {canEditTasks ? (
+                    <th className="px-4 py-3 text-sm font-medium text-right">
+                      Actions
+                    </th>
+                  ) : null}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -438,27 +495,42 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                       </div>
                     </td>
 
-                    <td className="px-4 py-3 text-right">
-                      <form
-                        action={async () => {
-                          'use server';
-                          await updateTaskStatus(
-                            task.id,
-                            isTaskOpen(task.status) ? 'completed' : 'pending',
-                          );
-                        }}
-                      >
-                        <button
-                          type="submit"
-                          className="inline-flex min-h-[32px] items-center rounded-md border border-border px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent/30 hover:text-foreground"
+                    {canEditTasks ? (
+                      <td className="px-4 py-3 text-right">
+                        <form
+                          action={async () => {
+                            'use server';
+                            // updateTaskStatus resolves with
+                            // { success: false, error } instead of throwing,
+                            // so an unread result turns a refused write into a
+                            // page that re-renders unchanged and says nothing.
+                            const result = await updateTaskStatus(
+                              task.id,
+                              isTaskOpen(task.status) ? 'completed' : 'pending',
+                            );
+                            if (!result.success) {
+                              redirect(statusFailureHref);
+                            }
+                            // The code stays in the URL until something
+                            // succeeds, so clear it rather than leaving a stale
+                            // alert over a change that worked.
+                            if (statusErrorShown) {
+                              redirect(statusClearedHref);
+                            }
+                          }}
                         >
-                          {isTaskOpen(task.status)
-                            ? 'Mark complete'
-                            : 'Reopen'}
-                          <span className="sr-only"> {task.title}</span>
-                        </button>
-                      </form>
-                    </td>
+                          <button
+                            type="submit"
+                            className="inline-flex min-h-[32px] items-center rounded-md border border-border px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent/30 hover:text-foreground"
+                          >
+                            {isTaskOpen(task.status)
+                              ? 'Mark complete'
+                              : 'Reopen'}
+                            <span className="sr-only"> {task.title}</span>
+                          </button>
+                        </form>
+                      </td>
+                    ) : null}
                   </tr>
                 ))}
               </tbody>

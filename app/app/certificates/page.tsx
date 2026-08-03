@@ -83,6 +83,10 @@ export default async function CertificatesPage() {
     .order("expiry_date", { ascending: true })
     .limit(200);
 
+  // A failed read and an empty result are indistinguishable downstream — both
+  // leave `certificates` null. On a renewals screen the empty state asserts
+  // that nothing lapses, so the two must not share a rendering path.
+  const loadFailed = Boolean(error);
   if (error) {
     console.error("[CertificatesPage] Error fetching certificates:", error);
   }
@@ -148,21 +152,33 @@ export default async function CertificatesPage() {
       </div>
 
       <div className="page-content space-y-4">
+      {loadFailed && (
+        <div
+          role="alert"
+          className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          data-testid="certificates-error"
+        >
+          Renewals could not be loaded. Nothing below reflects which
+          credentials lapse — refresh the page, and use the full register if it
+          keeps failing.
+        </div>
+      )}
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className={`metric-card ${stats.expired > 0 ? 'metric-card-danger' : 'metric-card-success'}`}>
+        <div className={`metric-card ${loadFailed ? 'metric-card-neutral' : stats.expired > 0 ? 'metric-card-danger' : 'metric-card-success'}`}>
           <div className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
             <p className="text-xs font-medium text-muted-foreground">Expired</p>
           </div>
-          <p className="text-2xl font-bold">{stats.expired}</p>
+          <p className="text-2xl font-bold">{loadFailed ? "-" : stats.expired}</p>
         </div>
-        <div className={`metric-card ${stats.within30 > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
+        <div className={`metric-card ${loadFailed ? 'metric-card-neutral' : stats.within30 > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-muted-foreground" />
             <p className="text-xs font-medium text-muted-foreground">Next 30 days</p>
           </div>
-          <p className="text-2xl font-bold">{stats.within30}</p>
+          <p className="text-2xl font-bold">{loadFailed ? "-" : stats.within30}</p>
         </div>
         <div className="metric-card metric-card-neutral">
           <div className="flex items-center gap-2">
@@ -171,7 +187,7 @@ export default async function CertificatesPage() {
               31 to {RENEWAL_HORIZON_DAYS} days
             </p>
           </div>
-          <p className="text-2xl font-bold">{stats.later}</p>
+          <p className="text-2xl font-bold">{loadFailed ? "-" : stats.later}</p>
         </div>
       </div>
 
@@ -242,7 +258,9 @@ export default async function CertificatesPage() {
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                   <p>
-                    Nothing lapses in the next {RENEWAL_HORIZON_DAYS} days.
+                    {loadFailed
+                      ? "Renewals could not be loaded, so nothing can be shown here."
+                      : `Nothing lapses in the next ${RENEWAL_HORIZON_DAYS} days.`}
                   </p>
                   <Link href="/app/staff-compliance" className="text-primary hover:underline mt-2 inline-block">
                     Open the staff credential register

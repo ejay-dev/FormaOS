@@ -1521,6 +1521,16 @@ export const DEFAULT_ADMIN_NAV: NavItem[] = [
   },
 
   {
+    // Every other industry navigation carries /app/team; this one did not, so a
+    // default-industry org lost Team management from both the sidebar and the
+    // command palette even though the route and its permissions exist.
+    name: 'Team',
+    href: '/app/team',
+    icon: Users,
+    category: 'System',
+    testId: 'nav-team',
+  },
+  {
     name: 'Settings',
     href: '/app/settings',
     icon: Settings,

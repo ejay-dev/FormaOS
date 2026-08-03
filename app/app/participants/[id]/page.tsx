@@ -10,6 +10,7 @@ import {
   CalendarClock,
   ClipboardList,
   ClipboardCheck,
+  FileText,
   NotebookPen,
   Pencil,
   Phone,
@@ -56,6 +57,14 @@ function formatDateTime(value: string | null | undefined): string {
   } catch {
     return 'N/A';
   }
+}
+
+function SectionLoadError({ what }: { what: string }) {
+  return (
+    <p className="text-sm text-destructive">
+      Couldn&rsquo;t load {what}. Refresh to try again.
+    </p>
+  );
 }
 
 type ParticipantRow = {
@@ -106,15 +115,16 @@ export default async function ParticipantDetailPage({
   const supabase = await createSupabaseServerClient();
 
   const [
-    { data: participant },
-    { data: recentVisits },
-    { data: recentIncidents },
-    { data: carePlans },
-    { data: membership },
-    { count: activeMedications },
-    { data: progressNotes },
-    { data: linkedTasks },
-    { data: shifts },
+    { data: participant, error: participantError },
+    { data: recentVisits, error: visitsError },
+    { data: recentIncidents, error: incidentsError },
+    { data: carePlans, error: carePlansError },
+    { data: membership, error: membershipError },
+    { count: activeMedications, error: medicationsError },
+    { data: progressNotes, error: progressNotesError },
+    { data: linkedTasks, error: tasksError },
+    { data: shifts, error: shiftsError },
+    { data: linkedEvidence, error: evidenceError },
   ] = await Promise.all([
     supabase
       .from('org_patients')
@@ -204,11 +214,53 @@ export default async function ParticipantDetailPage({
       .eq('patient_id', participantId)
       .order('started_at', { ascending: false })
       .limit(6),
+    supabase
+      .from('org_evidence')
+      .select('id, file_name, verification_status, created_at')
+      .eq('organization_id', orgId)
+      .eq('patient_id', participantId)
+      .order('created_at', { ascending: false })
+      .limit(10),
   ]);
+
+  // supabase-js resolves with { data: null, error } rather than rejecting, so
+  // every query has to be inspected or a backend failure renders as a
+  // confident empty state on a clinical record.
+  if (participantError) throw new Error(participantError.message);
 
   const profile = participant as ParticipantRow | null;
   if (!profile) notFound();
 
+  const failedSections = (
+    [
+      ['visits', visitsError],
+      ['incidents', incidentsError],
+      ['care_plans', carePlansError],
+      ['membership', membershipError],
+      ['medications', medicationsError],
+      ['progress_notes', progressNotesError],
+      ['tasks', tasksError],
+      ['shifts', shiftsError],
+      ['evidence', evidenceError],
+    ] as const
+  ).filter(([, sectionError]) => sectionError);
+
+  if (failedSections.length > 0) {
+    log.error(
+      {
+        organizationId: orgId,
+        entityId: participantId,
+        sections: failedSections.map(([name, sectionError]) => ({
+          name,
+          message: sectionError?.message,
+        })),
+      },
+      'Participant detail sections failed to load',
+    );
+  }
+
+  // A failed membership read leaves roleKey at the lowest role, so the write
+  // forms disappear rather than appear — fail closed; it is logged above.
   const roleKey = normalizeRole(membership?.role ?? null);
   // Same gates the server actions enforce: staff and above can record,
   // manager and above can sign off and raise tasks.
@@ -238,6 +290,19 @@ export default async function ParticipantDetailPage({
     ended_at: string | null;
     staff_user_id: string;
   }>;
+  const evidenceRows = (linkedEvidence ?? []) as Array<{
+    id: string;
+    file_name: string | null;
+    verification_status: string | null;
+    created_at: string;
+  }>;
+  const incidents = (recentIncidents ?? []) as Array<{
+    id: string;
+    incident_type?: string | null;
+    severity?: string | null;
+    status?: string | null;
+    occurred_at?: string | null;
+  }>;
 
   const activeShift = shiftRows.find(
     (shift) =>
@@ -259,7 +324,7 @@ export default async function ParticipantDetailPage({
       view: 'detail',
       notes_loaded: notes.length,
       tasks_loaded: tasks.length,
-      incidents_loaded: (recentIncidents ?? []).length,
+      incidents_loaded: incidents.length,
     },
     reason: 'phi_read',
   }).catch((err) => {
@@ -275,9 +340,26 @@ export default async function ParticipantDetailPage({
     );
   });
 
-  const openIncidents = (recentIncidents ?? []).filter(
-    (item: { status?: string }) => item.status === 'open',
+  const openIncidents = incidents.filter(
+    (item) => item.status === 'open',
   ).length;
+
+  const nowIso = new Date().toISOString();
+  const overdueTasks = tasks.filter(
+    (task) =>
+      task.due_date && task.status !== 'completed' && task.due_date < nowIso,
+  );
+
+  // The incident clause only sees the six rows fetched above; anything older
+  // than that is surfaced by the incidents register, not by this banner.
+  const escalationNeeded =
+    profile.emergency_flag ||
+    profile.risk_level === 'critical' ||
+    incidents.some(
+      (incident) =>
+        incident.status === 'open' &&
+        (incident.severity === 'high' || incident.severity === 'critical'),
+    );
 
   return (
     <div className="space-y-6">
@@ -321,14 +403,29 @@ export default async function ParticipantDetailPage({
         </div>
       </div>
 
-      {profile.emergency_flag || profile.risk_level === 'critical' ? (
+      {escalationNeeded ? (
         <div className="rounded-xl border border-destructive/40 bg-destructive/10 px-5 py-4">
           <div className="inline-flex items-center gap-2 text-sm font-semibold text-destructive">
             <ShieldAlert className="h-4 w-4" />
             Elevated risk profile
           </div>
           <p className="mt-1 text-xs text-foreground">
-            This {label.toLowerCase()} has emergency or critical-risk markers.
+            This {label.toLowerCase()} has emergency, critical-risk, or open
+            high-severity incident markers.
+          </p>
+        </div>
+      ) : null}
+
+      {overdueTasks.length > 0 ? (
+        <div className="rounded-xl border border-warning/30 bg-warning/10 px-5 py-4">
+          <div className="inline-flex items-center gap-2 text-sm font-semibold text-warning">
+            <AlertTriangle className="h-4 w-4" />
+            {overdueTasks.length} overdue task
+            {overdueTasks.length === 1 ? '' : 's'}
+          </div>
+          <p className="mt-1 text-xs text-foreground">
+            Past their due date and not yet completed for this{' '}
+            {label.toLowerCase()}.
           </p>
         </div>
       ) : null}
@@ -338,14 +435,16 @@ export default async function ParticipantDetailPage({
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Active Incidents
           </p>
-          <p className="mt-1 text-2xl font-semibold">{openIncidents}</p>
+          <p className="mt-1 text-2xl font-semibold">
+            {incidentsError ? '—' : openIncidents}
+          </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
             Recent Visits
           </p>
           <p className="mt-1 text-2xl font-semibold">
-            {recentVisits?.length ?? 0}
+            {visitsError ? '—' : (recentVisits?.length ?? 0)}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
@@ -432,7 +531,9 @@ export default async function ParticipantDetailPage({
             Recent Visits
           </h2>
           <div className="mt-4 space-y-2">
-            {(recentVisits ?? []).length === 0 ? (
+            {visitsError ? (
+              <SectionLoadError what="visits" />
+            ) : (recentVisits ?? []).length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 No visits recorded.
               </p>
@@ -473,39 +574,32 @@ export default async function ParticipantDetailPage({
             Recent Incidents
           </h2>
           <div className="mt-4 space-y-2">
-            {(recentIncidents ?? []).length === 0 ? (
+            {incidentsError ? (
+              <SectionLoadError what="incidents" />
+            ) : incidents.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 No incidents recorded.
               </p>
             ) : (
-              (recentIncidents ?? []).map(
-                (incident: {
-                  id: string;
-                  incident_type?: string;
-                  severity?: string;
-                  status?: string;
-                  created_at?: string;
-                  occurred_at?: string;
-                }) => (
-                  <Link
-                    key={incident.id}
-                    href={`/app/incidents/${incident.id}`}
-                    className="min-h-[44px] md:min-h-0 block rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="capitalize">
-                        {incident.incident_type || 'general'}
-                      </span>
-                      <span className="text-xs text-muted-foreground capitalize">
-                        {incident.severity} · {incident.status}
-                      </span>
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {formatDateTime(incident.occurred_at)}
-                    </div>
-                  </Link>
-                ),
-              )
+              incidents.map((incident) => (
+                <Link
+                  key={incident.id}
+                  href={`/app/incidents/${incident.id}`}
+                  className="min-h-[44px] md:min-h-0 block rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="capitalize">
+                      {incident.incident_type || 'general'}
+                    </span>
+                    <span className="text-xs text-muted-foreground capitalize">
+                      {incident.severity} · {incident.status}
+                    </span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {formatDateTime(incident.occurred_at)}
+                  </div>
+                </Link>
+              ))
             )}
           </div>
         </section>
@@ -528,7 +622,9 @@ export default async function ParticipantDetailPage({
           </Link>
         </div>
         <div className="mt-4 space-y-2">
-          {(carePlans ?? []).length === 0 ? (
+          {carePlansError ? (
+            <SectionLoadError what="care plans" />
+          ) : (carePlans ?? []).length === 0 ? (
             <p className="text-sm text-muted-foreground">
               No care plans linked to this {label.toLowerCase()} yet.
             </p>
@@ -586,12 +682,22 @@ export default async function ParticipantDetailPage({
               Medication chart
             </Link>
           </div>
-          <p className="mt-4 text-2xl font-semibold">{activeMedications ?? 0}</p>
-          <p className="text-sm text-muted-foreground">
-            {(activeMedications ?? 0) === 1
-              ? 'active medication'
-              : 'active medications'}
-          </p>
+          {medicationsError ? (
+            <div className="mt-4">
+              <SectionLoadError what="the medication count" />
+            </div>
+          ) : (
+            <>
+              <p className="mt-4 text-2xl font-semibold">
+                {activeMedications ?? 0}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {(activeMedications ?? 0) === 1
+                  ? 'active medication'
+                  : 'active medications'}
+              </p>
+            </>
+          )}
           <p className="mt-3 text-sm text-muted-foreground">
             Dosages, as-needed rules, and the administration record are on the
             chart.
@@ -649,7 +755,9 @@ export default async function ParticipantDetailPage({
             </div>
           ) : null}
           <div className="mt-4 space-y-2">
-            {shiftRows.length === 0 ? (
+            {shiftsError ? (
+              <SectionLoadError what="shifts" />
+            ) : shiftRows.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 No shifts logged yet.
               </p>
@@ -743,7 +851,9 @@ export default async function ParticipantDetailPage({
             </form>
           ) : null}
           <div className="mt-4 space-y-2">
-            {notes.length === 0 ? (
+            {progressNotesError ? (
+              <SectionLoadError what="progress notes" />
+            ) : notes.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 No progress notes yet.
               </p>
@@ -874,7 +984,9 @@ export default async function ParticipantDetailPage({
             </form>
           ) : null}
           <div className="mt-4 space-y-2">
-            {tasks.length === 0 ? (
+            {tasksError ? (
+              <SectionLoadError what="tasks" />
+            ) : tasks.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 No tasks linked to this {label.toLowerCase()}.
               </p>
@@ -904,6 +1016,52 @@ export default async function ParticipantDetailPage({
           </div>
         </section>
       </div>
+
+      <section
+        className="rounded-xl border border-border bg-card p-5"
+        data-testid="participant-linked-evidence"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <FileText className="h-4 w-4" />
+            Linked Evidence
+          </h2>
+          <Link
+            href="/app/vault"
+            className="text-xs text-primary hover:underline"
+          >
+            Evidence vault
+          </Link>
+        </div>
+        <div className="mt-4 space-y-2">
+          {evidenceError ? (
+            <SectionLoadError what="linked evidence" />
+          ) : evidenceRows.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No evidence linked to this {label.toLowerCase()} yet.
+            </p>
+          ) : (
+            evidenceRows.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-lg border border-border px-3 py-2 text-sm"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-medium">
+                    {item.file_name || 'Untitled file'}
+                  </span>
+                  <span className="text-xs text-muted-foreground capitalize">
+                    {(item.verification_status ?? 'pending').replace(/_/g, ' ')}
+                  </span>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Uploaded {formatDateTime(item.created_at)}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
 
       {profile.communication_needs || profile.cultural_considerations ? (
         <section className="rounded-xl border border-border bg-card p-5">

@@ -291,9 +291,10 @@ export function TeamEmptyState({
     <EmptyState
       module="team"
       title="No team members yet"
-      // Without a handler the page owns the invite affordance in its header,
-      // so no button is rendered here rather than a button that does nothing.
       description="Invite the people who do the work. Each person gets a role that decides what they can see and change."
+      // Inviting opens a modal, so there is no route to fall back to. Without a
+      // handler the page owns the affordance in its header and EmptyState drops
+      // the button, rather than rendering one that does nothing.
       action={{
         label: 'Invite a team member',
         onClick: onInviteAction,

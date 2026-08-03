@@ -81,9 +81,11 @@ export async function registerVaultArtifact(data: {
     .select('id')
     .maybeSingle();
 
-  // org_evidence.control_id is not present in every deployed database. The
-  // file still has to land when it is missing, so retry without the link
-  // and report back that the control was not attached.
+  // org_evidence.control_id is not in the shipped schema yet (no migration
+  // adds it, and production does not have it either), so this retry is the
+  // live path rather than a rare fallback: the file still has to land, and
+  // `controlLinked: false` tells the modal to say the control was not
+  // attached instead of claiming a link that was never written.
   if (
     error &&
     controlToLink &&

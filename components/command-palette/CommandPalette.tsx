@@ -188,6 +188,23 @@ function buildAppCommandGroups(
 ): CommandGroup[] {
   const { navigation } = getIndustryNavigation(industry, role);
   const moduleHrefs = new Set(navigation.map((item) => item.href));
+  const navigationItems = buildNavigationItems(navigation);
+
+  // Every industry navigation carries /app/team, but the default one an org
+  // uses before it picks an industry does not — so a full membership would
+  // otherwise lose both the Team route and the invite action that keys off it.
+  // Added here on the same signal as Billing below rather than by narrowing
+  // the palette to whatever the sidebar happens to list.
+  if (moduleHrefs.has('/app/settings') && !moduleHrefs.has('/app/team')) {
+    moduleHrefs.add('/app/team');
+    navigationItems.push({
+      id: 'nav-/app/team',
+      label: 'Team',
+      icon: Users,
+      href: '/app/team',
+      keywords: ['members', 'roles', 'permissions'],
+    });
+  }
 
   const quickLinks = [...QUICK_LINK_ITEMS];
   // Billing is reached from the account menu rather than any sidebar, so it
@@ -205,7 +222,7 @@ function buildAppCommandGroups(
   }
 
   return [
-    { heading: 'Navigation', items: buildNavigationItems(navigation) },
+    { heading: 'Navigation', items: navigationItems },
     {
       heading: 'Actions',
       items: ACTION_ITEMS.filter((item) => moduleHrefs.has(item.module)),

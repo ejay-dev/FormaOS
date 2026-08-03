@@ -599,7 +599,7 @@ export default function PhaseDemo() {
                             }`} />
                           </div>
                           <div className="relative z-10 min-w-0">
-                            <div className={`text-[9px] uppercase tracking-wider ${isActive ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
+                            <div className={`text-[9px] uppercase tracking-wider ${isActive ? 'text-muted-foreground' : 'text-muted-foreground/60'}`}>
                               Phase {config.number}
                             </div>
                             <div className={`text-[11px] font-medium truncate ${
