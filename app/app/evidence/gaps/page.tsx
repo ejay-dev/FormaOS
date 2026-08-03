@@ -72,10 +72,24 @@ export default async function EvidenceGapsPage() {
             <Shield className="h-4 w-4" />
             <span className="text-xs font-medium">Coverage</span>
           </div>
-          <p className="mt-1 text-3xl font-bold">{coverage.coverage}%</p>
-          <p className="text-xs text-muted-foreground">
-            {coverage.coveredControls}/{coverage.totalControls} controls
-          </p>
+          {coverage.unavailable ? (
+            <>
+              <p className="mt-1 text-3xl font-bold text-muted-foreground">
+                &mdash;
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Not available &mdash; evidence is not currently linked to
+                controls, so coverage cannot be measured.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mt-1 text-3xl font-bold">{coverage.coverage}%</p>
+              <p className="text-xs text-muted-foreground">
+                {coverage.coveredControls}/{coverage.totalControls} controls
+              </p>
+            </>
+          )}
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center gap-2 text-muted-foreground">
