@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { getCredentials, loginAs } from './helpers/fixtures';
 
 /**
  * Navigation 404 Audit
@@ -6,8 +7,13 @@ import { test, expect } from '@playwright/test';
  * Verifies that every link in the sidebar and topbar resolves to a real page
  * (status 200) and does NOT return 404.
  *
- * Runs against a logged-in session. The test uses localStorage e2e_test_mode
- * to suppress the product tour overlay.
+ * Runs against a logged-in session. Previously the beforeEach only set the
+ * e2e_test_mode localStorage flag and never installed a session, so every
+ * /app/* navigation was redirected to /auth/signin by the /app layout
+ * (app/app/layout.tsx). The sign-in page returns 200 and contains no
+ * "not found" copy, so all 24 route assertions passed unconditionally — a
+ * deleted route would not have been noticed. loginAs() installs a real
+ * Supabase session and also sets e2e_test_mode to suppress the product tour.
  */
 
 // All routes referenced in sidebar navigation (industry-sidebar.ts)
@@ -50,10 +56,8 @@ const SIDEBAR_ROUTES = [
 
 test.describe('Navigation — No 404s', () => {
   test.beforeEach(async ({ page }) => {
-    // Suppress product tour
-    await page.addInitScript(() => {
-      localStorage.setItem('e2e_test_mode', 'true');
-    });
+    const creds = await getCredentials();
+    await loginAs(page, creds.email, creds.password);
   });
 
   for (const route of SIDEBAR_ROUTES) {
@@ -63,18 +67,24 @@ test.describe('Navigation — No 404s', () => {
         timeout: 30_000,
       });
 
-      // If the page redirects to /auth/signin that's OK (auth required)
-      // but the route itself should not be a Next.js 404
-      const is404 = response?.status() === 404;
-      const hasNotFoundText = await page
-        .locator('text=This page could not be found')
-        .isVisible()
-        .catch(() => false);
-
+      expect(response, `Route ${route} produced no response`).not.toBeNull();
       expect(
-        is404 || hasNotFoundText,
-        `Route ${route} returned 404 or showed "not found" text`,
-      ).toBe(false);
+        response!.status(),
+        `Route ${route} returned HTTP ${response!.status()}`,
+      ).toBeLessThan(400);
+
+      await expect(
+        page.locator('text=This page could not be found'),
+        `Route ${route} rendered the Next.js not-found page`,
+      ).toHaveCount(0);
+
+      // The session must have survived the navigation. Without this the
+      // whole suite silently degrades to asserting things about
+      // /auth/signin, which is how it became unfalsifiable.
+      expect(
+        new URL(page.url()).pathname,
+        `Route ${route} bounced to sign-in — the authenticated session was not established`,
+      ).not.toMatch(/^\/(auth|unauthorized)/);
     });
   }
 
@@ -85,34 +95,38 @@ test.describe('Navigation — No 404s', () => {
       timeout: 30_000,
     });
 
-    // If redirected to auth, skip this test (need auth setup)
-    if (page.url().includes('/auth/')) {
-      test.skip();
-      return;
-    }
+    expect(
+      new URL(page.url()).pathname,
+      'authenticated /app landed on the auth surface',
+    ).not.toMatch(/^\/auth/);
 
     // Find all sidebar links
     const sidebarLinks = await page.locator('aside a[href^="/app"]').all();
+    expect(
+      sidebarLinks.length,
+      'no sidebar links were rendered — the app shell did not load',
+    ).toBeGreaterThan(0);
 
-    for (const link of sidebarLinks) {
-      const href = await link.getAttribute('href');
-      if (!href) continue;
+    const hrefs = (
+      await Promise.all(sidebarLinks.map((link) => link.getAttribute('href')))
+    ).filter((href): href is string => Boolean(href));
 
+    for (const href of hrefs) {
       const navResponse = await page.goto(href, {
         waitUntil: 'domcontentloaded',
         timeout: 30_000,
       });
 
-      const is404 = navResponse?.status() === 404;
-      const hasNotFoundText = await page
-        .locator('text=This page could not be found')
-        .isVisible()
-        .catch(() => false);
-
+      expect(navResponse, `Sidebar link ${href} produced no response`).not.toBeNull();
       expect(
-        is404 || hasNotFoundText,
-        `Sidebar link ${href} returned 404`,
-      ).toBe(false);
+        navResponse!.status(),
+        `Sidebar link ${href} returned HTTP ${navResponse!.status()}`,
+      ).toBeLessThan(400);
+
+      await expect(
+        page.locator('text=This page could not be found'),
+        `Sidebar link ${href} rendered the Next.js not-found page`,
+      ).toHaveCount(0);
     }
   });
 
@@ -122,10 +136,10 @@ test.describe('Navigation — No 404s', () => {
       timeout: 30_000,
     });
 
-    if (page.url().includes('/auth/')) {
-      test.skip();
-      return;
-    }
+    expect(
+      new URL(page.url()).pathname,
+      'authenticated /app landed on the auth surface',
+    ).not.toMatch(/^\/auth/);
 
     // Wait a moment for any tour overlay to appear
     await page.waitForTimeout(2000);

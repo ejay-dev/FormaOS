@@ -126,6 +126,7 @@ export async function reviewAttestation(input: {
   try {
     const row = await updateAttestationReview({
       attestationId: input.attestationId,
+      organizationId: membership.orgId,
       reviewerUserId: membership.userId,
       decision: input.decision,
       rejectedReason: input.rejectedReason,

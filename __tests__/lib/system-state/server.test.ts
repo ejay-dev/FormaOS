@@ -88,6 +88,11 @@ function mockChain(result: unknown = { data: null, error: null }) {
   c.match = jest.fn().mockReturnValue(c);
   c.is = jest.fn().mockReturnValue(c);
   c.not = jest.fn().mockReturnValue(c);
+  // getMembershipData chains .or(...) for the deprovisioning filter
+  // (compliance_status.is.null,compliance_status.neq.inactive); without it here
+  // the mock throws and every membership test fails for the wrong reason.
+  c.or = jest.fn().mockReturnValue(c);
+  c.filter = jest.fn().mockReturnValue(c);
   c.insert = jest.fn().mockReturnValue(c);
   c.upsert = jest.fn().mockReturnValue(c);
   c.update = jest.fn().mockReturnValue(c);

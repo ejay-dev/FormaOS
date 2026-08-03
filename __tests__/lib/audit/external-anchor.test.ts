@@ -51,16 +51,14 @@ describe('signTopHash + verifySignature — round trip', () => {
   it('rejects when the signed hash is different from the verified hash', () => {
     const { privateKeyPem, publicKeyPem } = generateEphemeralSigningKey();
     const sig = signTopHash(topHash, privateKeyPem);
-    expect(
-      verifySignature('b'.repeat(64), sig, publicKeyPem),
-    ).toBe(false);
+    expect(verifySignature('b'.repeat(64), sig, publicKeyPem)).toBe(false);
   });
 
   it('returns false (not throws) when the signature is malformed', () => {
     const { publicKeyPem } = generateEphemeralSigningKey();
-    expect(verifySignature(topHash, 'not-valid-base64-signature', publicKeyPem)).toBe(
-      false,
-    );
+    expect(
+      verifySignature(topHash, 'not-valid-base64-signature', publicKeyPem),
+    ).toBe(false);
   });
 });
 
@@ -76,11 +74,13 @@ describe('recordAnchor — provider=internal-test', () => {
   }));
 
   it('returns a synthetic anchor result and skips the network call', async () => {
-    jest.isolateModules(async () => {
+    // Must be isolateModulesAsync + await: the synchronous isolateModules
+    // discards the returned promise, so the `it` finished before any
+    // expect ran and this positive-path test could never fail.
+    await jest.isolateModulesAsync(async () => {
       const before = { ...process.env };
       process.env.AUDIT_CHAIN_ANCHOR_ENABLED = 'true';
       try {
-
         const { recordAnchor } = require('@/lib/audit/external-anchor');
         const result = await recordAnchor(
           {
@@ -106,7 +106,6 @@ describe('recordAnchor — provider=internal-test', () => {
       const before = { ...process.env };
       delete process.env.AUDIT_CHAIN_ANCHOR_ENABLED;
       try {
-
         const { recordAnchor } = require('@/lib/audit/external-anchor');
         const result = await recordAnchor(
           {
@@ -128,7 +127,6 @@ describe('recordAnchor — provider=internal-test', () => {
       const before = { ...process.env };
       process.env.AUDIT_CHAIN_ANCHOR_ENABLED = 'true';
       try {
-
         const { recordAnchor } = require('@/lib/audit/external-anchor');
         await expect(
           recordAnchor(
@@ -151,7 +149,6 @@ describe('recordAnchor — provider=internal-test', () => {
       const before = { ...process.env };
       process.env.AUDIT_CHAIN_ANCHOR_ENABLED = 'true';
       try {
-
         const { recordAnchor } = require('@/lib/audit/external-anchor');
         await expect(
           recordAnchor(

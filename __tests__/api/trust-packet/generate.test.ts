@@ -99,7 +99,11 @@ describe('POST /api/trust-packet/generate', () => {
         ],
         error: null,
       }),
-      policies: createBuilder({
+      // Table names must match what the route actually queries
+      // (org_policies / org_control_evaluations). Keying these off
+      // 'policies'/'controls' silently fell through to the empty default
+      // builder, so every fixture-backed test measured an empty packet.
+      org_policies: createBuilder({
         data: [
           {
             id: 'p1',
@@ -110,7 +114,7 @@ describe('POST /api/trust-packet/generate', () => {
         ],
         error: null,
       }),
-      controls: createBuilder({
+      org_control_evaluations: createBuilder({
         data: [{ id: 'c1', status: 'implemented', framework_key: 'soc2' }],
         error: null,
       }),
@@ -179,8 +183,29 @@ describe('POST /api/trust-packet/generate', () => {
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(json.success).toBe(true);
-    expect(json.shareUrl).toBeDefined();
-    expect(json.packet).toBeDefined();
+    // The seeded fixture has 1 framework, 1 active policy and 1 implemented
+    // control — the packet must report exactly that, not an empty summary.
+    expect(json.packet.compliance_summary).toEqual({
+      frameworks_enabled: 1,
+      active_policies: 1,
+      total_controls: 1,
+      implemented_controls: 1,
+      coverage_percent: 100,
+    });
+    expect(json.packet.frameworks).toEqual([
+      { key: 'soc2', status: 'active', enabled_at: '2025-01-01' },
+    ]);
+    expect(json.packet.recipient_email).toBe('test@example.com');
+    expect(json.packet.note).toBe('For review');
+    expect(json.packet.org_id).toBe('org-1');
+    expect(json.packet.signature.value).toEqual(expect.any(String));
+    // expiresInDays=14 must drive the expiry, not the 7-day default.
+    const daysOut =
+      (new Date(json.expiresAt).getTime() - Date.now()) / 86_400_000;
+    expect(daysOut).toBeGreaterThan(13.5);
+    expect(daysOut).toBeLessThan(14.5);
+    // The persisted row is what backs the share link.
+    expect(json.shareUrl).toMatch(/\/trust-packet\/[0-9a-f]{64}$/);
   });
 
   it('succeeds with default body when json parse fails', async () => {
@@ -192,6 +217,13 @@ describe('POST /api/trust-packet/generate', () => {
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(json.success).toBe(true);
+    // Unparseable body → defaults: no recipient, no note, 7-day expiry.
+    expect(json.packet.recipient_email).toBeNull();
+    expect(json.packet.note).toBeNull();
+    const daysOut =
+      (new Date(json.expiresAt).getTime() - Date.now()) / 86_400_000;
+    expect(daysOut).toBeGreaterThan(6.5);
+    expect(daysOut).toBeLessThan(7.5);
   });
 
   it('handles insert error gracefully with warning', async () => {
@@ -269,7 +301,10 @@ describe('POST /api/trust-packet/generate', () => {
   });
 
   it('handles zero controls', async () => {
-    builderResults.org_control_evaluations = createBuilder({ data: [], error: null });
+    builderResults.org_control_evaluations = createBuilder({
+      data: [],
+      error: null,
+    });
     const res = await POST(makeRequest());
     expect(res.status).toBe(200);
     const json = await res.json();

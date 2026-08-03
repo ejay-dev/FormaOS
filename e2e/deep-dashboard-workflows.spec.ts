@@ -583,22 +583,43 @@ test.describe.serial('Deep dashboard workflows', () => {
             form.requestSubmit();
           }
         });
-      await page.waitForTimeout(3_000);
+      // The task created through the UI must actually persist. This used to
+      // `test.skip()` when the task was absent, blaming Supabase latency —
+      // but a broken create server action (validation error, RLS denial,
+      // failed revalidation) produces exactly that state, so every such
+      // regression was reported as a skip and the rest of this test body
+      // (policies, vault, invitations, reports, billing, executive) was
+      // abandoned. Poll the DB instead: that absorbs write latency without
+      // absorbing failures.
+      await expect
+        .poll(
+          async () => {
+            const { count, error } = await ctx.admin
+              .from('org_tasks')
+              .select('id', { count: 'exact', head: true })
+              .eq('organization_id', ctx.orgId)
+              .eq('title', `${label} UI Task`);
+
+            if (error) {
+              throw new Error(error.message);
+            }
+
+            return count ?? 0;
+          },
+          {
+            message: `Expected "${label} UI Task" to persist after submitting the task form`,
+            timeout: 30_000,
+          },
+        )
+        .toBeGreaterThan(0);
+
+      // …and it must be readable back through the roadmap UI, which proves
+      // the list query + revalidation path, not just the write.
       await gotoHealthy(page, `/app/tasks?q=${encodeURIComponent(label)}`);
-      // UI task creation depends on form submission completing — skip if not persisted (Supabase latency)
-      const uiTaskPresent = await page
-        .locator('body')
-        .textContent()
-        .then(
-          (t) => (t ?? '').includes(`${label} UI Task`),
-          () => false,
-        );
-      if (!uiTaskPresent) {
-        test.skip(
-          true,
-          `${label} UI Task not found after form submission — likely Supabase latency`,
-        );
-      }
+      await expect(page.locator('table:not([hidden])').first()).toContainText(
+        `${label} UI Task`,
+        { timeout: 15_000 },
+      );
 
       await gotoHealthy(page, `/app/policies`);
       await expect(

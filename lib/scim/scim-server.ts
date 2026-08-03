@@ -1,5 +1,7 @@
 import { createHash } from 'crypto';
+import type { User as AuthUser } from '@supabase/supabase-js';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getSupabaseServiceRoleKey, getSupabaseUrl } from '@/lib/supabase/env';
 import { revokeAllSessions } from '@/lib/auth/session-revocation';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
@@ -549,11 +551,16 @@ export async function getUser(
   return resources.find((resource) => resource.id === userId) ?? null;
 }
 
-function mapScimRole(input: Record<string, unknown>): OrgMemberRole {
+function extractScimRole(input: Record<string, unknown>): string | null {
   const requestedRole =
     (input.role as string | undefined) ??
-    (input.roles as Array<{ value?: string }> | undefined)?.[0]?.value ??
-    'member';
+    (input.roles as Array<{ value?: string }> | undefined)?.[0]?.value;
+  return typeof requestedRole === 'string' && requestedRole.trim()
+    ? requestedRole
+    : null;
+}
+
+function normalizeOrgMemberRole(requestedRole: string): OrgMemberRole {
   const normalized = requestedRole.toLowerCase();
   if (
     normalized === 'owner' ||
@@ -564,6 +571,10 @@ function mapScimRole(input: Record<string, unknown>): OrgMemberRole {
     return normalized;
   }
   return 'member';
+}
+
+function mapScimRole(input: Record<string, unknown>): OrgMemberRole {
+  return normalizeOrgMemberRole(extractScimRole(input) ?? 'member');
 }
 
 function getPrimaryEmail(input: Record<string, unknown>) {
@@ -592,15 +603,91 @@ function getFullName(input: Record<string, unknown>) {
   return typeof input.displayName === 'string' ? input.displayName.trim() : '';
 }
 
-async function lookupUserByEmail(email: string) {
+// auth.admin.listUsers() defaults to page 1 / perPage 50, so an
+// unpaginated call only ever searches the first 50 auth users. Walk
+// every page until a short page is returned, otherwise an existing
+// user sorting past page 1 is treated as new and createUser() fails
+// on the duplicate email — a permanent SCIM provisioning outage for
+// that user.
+const AUTH_USER_PAGE_SIZE = 200;
+const AUTH_USER_MAX_PAGES = 100;
+
+// The page walk costs one round trip per 200 auth users on every POST /Users
+// — including the very common re-push of an existing user — which blows the
+// IdP connector timeout on a large directory. GoTrue's admin users endpoint
+// accepts a filter, so resolve the common case there first and keep the walk
+// as the fallback for processes without service-role credentials.
+type AdminApiLookup =
+  | { available: false }
+  | { available: true; user: AuthUser | null };
+
+async function lookupUserByEmailViaAdminApi(
+  target: string,
+): Promise<AdminApiLookup> {
+  const baseUrl = getSupabaseUrl().replace(/\/$/, '');
+  const serviceKey = getSupabaseServiceRoleKey();
+  if (!baseUrl || !serviceKey) return { available: false };
+
+  let body: { users?: AuthUser[] } | null;
+  try {
+    const response = await fetch(
+      `${baseUrl}/auth/v1/admin/users?per_page=${AUTH_USER_PAGE_SIZE}&filter=${encodeURIComponent(target)}`,
+      {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+        },
+        cache: 'no-store',
+      },
+    );
+
+    if (!response?.ok) return { available: false };
+
+    body = (await response.json()) as { users?: AuthUser[] } | null;
+  } catch {
+    // Any transport/parse failure is inconclusive, not "user absent" — the
+    // paginated walk below stays authoritative.
+    return { available: false };
+  }
+
+  const users = body?.users ?? [];
+
+  const match = users.find((user) => user.email?.toLowerCase() === target);
+  if (match) return { available: true, user: match };
+
+  // `filter` matches substrings, so a full page with no exact hit means the
+  // answer may still be on a later page — inconclusive, not "absent".
+  if (users.length >= AUTH_USER_PAGE_SIZE) return { available: false };
+
+  return { available: true, user: null };
+}
+
+async function lookupUserByEmail(email: string): Promise<AuthUser | null> {
   const admin = createSupabaseAdminClient();
-  const { data } = await admin.auth.admin.listUsers();
-  return (
-    data?.users?.find(
-      (user: { email?: string }) =>
-        user.email?.toLowerCase() === email.toLowerCase(),
-    ) ?? null
-  );
+  const target = email.toLowerCase();
+
+  const direct = await lookupUserByEmailViaAdminApi(target);
+  if (direct.available) return direct.user;
+
+  for (let page = 1; page <= AUTH_USER_MAX_PAGES; page += 1) {
+    const { data, error } = await admin.auth.admin.listUsers({
+      page,
+      perPage: AUTH_USER_PAGE_SIZE,
+    });
+
+    if (error) {
+      throw new Error(`Failed to look up SCIM user: ${error.message}`);
+    }
+
+    const users = data?.users ?? [];
+    const match = users.find(
+      (user: { email?: string }) => user.email?.toLowerCase() === target,
+    );
+    if (match) return match;
+    if (users.length < AUTH_USER_PAGE_SIZE) break;
+  }
+
+  return null;
 }
 
 export async function createUser(
@@ -622,7 +709,19 @@ export async function createUser(
     };
   }
 
-  let authUser = await lookupUserByEmail(email);
+  let authUser: Awaited<ReturnType<typeof lookupUserByEmail>>;
+  try {
+    authUser = await lookupUserByEmail(email);
+  } catch (error) {
+    return {
+      status: 500,
+      error: scimError(
+        500,
+        error instanceof Error ? error.message : 'Failed to look up SCIM user',
+      ),
+    };
+  }
+
   if (!authUser) {
     const created = await admin.auth.admin.createUser({
       email,
@@ -693,6 +792,63 @@ export async function createUser(
   return { status: 201, data: user };
 }
 
+// Entra ID sends `active` as the strings "True"/"False" rather than a JSON
+// boolean; downstream comparisons are strict (`payload.active === false`).
+function normalizeScimActive(value: unknown): unknown {
+  if (typeof value !== 'string') return value;
+  const normalized = value.trim().toLowerCase();
+  if (normalized === 'true') return true;
+  if (normalized === 'false') return false;
+  return value;
+}
+
+function applyUserPatchAttribute(
+  next: Record<string, unknown>,
+  attributePath: string,
+  value: unknown,
+) {
+  switch (attributePath) {
+    case 'displayName':
+      next.displayName = value;
+      return;
+    case 'userName':
+      next.userName = value;
+      return;
+    case 'active':
+      next.active = normalizeScimActive(value);
+      return;
+    case 'name':
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        next.name = { ...(next.name as object), ...(value as object) };
+      }
+      return;
+    case 'name.givenName':
+      next.name = { ...(next.name as object), givenName: value };
+      return;
+    case 'name.familyName':
+      next.name = { ...(next.name as object), familyName: value };
+      return;
+    case 'emails':
+      next.emails = value;
+      return;
+    case `${SCIM_ENTERPRISE_USER_EXTENSION}:department`:
+      next[SCIM_ENTERPRISE_USER_EXTENSION] = {
+        ...(next[SCIM_ENTERPRISE_USER_EXTENSION] as object),
+        department: value,
+      };
+      return;
+    case SCIM_ENTERPRISE_USER_EXTENSION:
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        next[SCIM_ENTERPRISE_USER_EXTENSION] = {
+          ...(next[SCIM_ENTERPRISE_USER_EXTENSION] as object),
+          ...(value as object),
+        };
+      }
+      return;
+    default:
+  }
+}
+
 function applyUserPatchDocument(
   current: ScimUser,
   body: Record<string, unknown>,
@@ -714,25 +870,21 @@ function applyUserPatchDocument(
   for (const operation of body.Operations as ScimPatchOperation[]) {
     const op = String(operation.op ?? '').toLowerCase();
     const path = String(operation.path ?? '');
-    if (op === 'replace' || op === 'add') {
-      if (!path || path === 'displayName') next.displayName = operation.value;
-      if (!path || path === 'userName') next.userName = operation.value;
-      if (!path || path === 'active') next.active = operation.value;
-      if (path === 'name.givenName') {
-        next.name = { ...(next.name as object), givenName: operation.value };
-      }
-      if (path === 'name.familyName') {
-        next.name = { ...(next.name as object), familyName: operation.value };
-      }
-      if (path === 'emails') {
-        next.emails = operation.value;
-      }
-      if (path === `${SCIM_ENTERPRISE_USER_EXTENSION}:department`) {
-        next[SCIM_ENTERPRISE_USER_EXTENSION] = {
-          ...(next[SCIM_ENTERPRISE_USER_EXTENSION] as object),
-          department: operation.value,
-        };
-      }
+    if (op !== 'replace' && op !== 'add') continue;
+
+    if (path) {
+      applyUserPatchAttribute(next, path, operation.value);
+      continue;
+    }
+
+    // RFC 7644 §3.5.2: a path-less operation's value is an object whose keys
+    // are attribute paths, not a scalar applied to every attribute.
+    const { value } = operation;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
+    for (const [attributePath, attributeValue] of Object.entries(
+      value as Record<string, unknown>,
+    )) {
+      applyUserPatchAttribute(next, attributePath, attributeValue);
     }
   }
 
@@ -773,7 +925,21 @@ export async function updateUser(
     current[SCIM_ENTERPRISE_USER_EXTENSION]?.department ??
     null;
 
-  const membershipStatus = payload.active === false ? 'inactive' : 'active';
+  // PUT carries `active` straight from the IdP, so it needs the same
+  // "True"/"False" string normalisation the PATCH path applies.
+  const nextActive = normalizeScimActive(payload.active);
+  const membershipStatus = nextActive === false ? 'inactive' : 'active';
+
+  // Only touch org_members.role when the request actually carries one — a
+  // display-name or activation update must not demote an owner/admin.
+  const requestedRole = extractScimRole(payload);
+  const memberUpdate: Record<string, unknown> = {
+    department,
+    compliance_status: membershipStatus,
+  };
+  if (requestedRole) {
+    memberUpdate.role = normalizeOrgMemberRole(requestedRole);
+  }
 
   const [profileResult, memberResult, authResult] = await Promise.all([
     admin.from('user_profiles').upsert(
@@ -786,11 +952,7 @@ export async function updateUser(
     ),
     admin
       .from('org_members')
-      .update({
-        role: mapScimRole(payload),
-        department,
-        compliance_status: membershipStatus,
-      })
+      .update(memberUpdate)
       .eq('organization_id', orgId)
       .eq('user_id', userId),
     admin.auth.admin.updateUserById(userId, {
@@ -813,6 +975,18 @@ export async function updateUser(
           'Failed to update user',
       ),
     };
+  }
+
+  // Deactivation is a deprovisioning event, not just a flag flip: an
+  // already-issued token keeps working until expiry unless the session
+  // watermark moves. Mirror deleteUser and revoke on the transition
+  // only, so a repeated no-op push from the IdP doesn't keep bumping it.
+  if (current.active && membershipStatus === 'inactive') {
+    try {
+      await revokeAllSessions(userId, { reason: 'scim_deprovision' });
+    } catch (err) {
+      consoleShim.error('[SCIM] updateUser: session revoke failed', err);
+    }
   }
 
   const updated = await getUser(orgId, userId, baseUrl);

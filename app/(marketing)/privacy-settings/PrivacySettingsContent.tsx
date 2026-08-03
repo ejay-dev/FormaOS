@@ -3,28 +3,23 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, ArrowLeft, ArrowRight, Download, ShieldCheck, X } from 'lucide-react';
+import {
+  ANALYTICS_CONSENT_COOKIE,
+  applyAnalyticsConsent,
+  readAnalyticsConsent,
+  type AnalyticsConsentValue,
+} from '@/lib/monitoring/analytics';
 
-const CONSENT_COOKIE = 'formaos_cookie_consent';
 const CONSENT_MAX_AGE_DAYS = 365;
 
-type ConsentValue = 'accepted' | 'rejected' | null;
-
-function readConsent(): ConsentValue {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith(`${CONSENT_COOKIE}=`));
-  if (!match) return null;
-  const value = match.split('=')[1];
-  if (value === 'accepted' || value === 'rejected') return value;
-  return null;
-}
+type ConsentValue = AnalyticsConsentValue;
 
 function writeConsent(value: 'accepted' | 'rejected') {
   if (typeof document === 'undefined') return;
   const maxAge = CONSENT_MAX_AGE_DAYS * 24 * 60 * 60;
   const secure = window.location.protocol === 'https:' ? '; Secure' : '';
-  document.cookie = `${CONSENT_COOKIE}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+  document.cookie = `${ANALYTICS_CONSENT_COOKIE}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+  applyAnalyticsConsent(value);
   window.dispatchEvent(
     new CustomEvent('formaos:cookie-consent', { detail: { value } }),
   );
@@ -32,7 +27,10 @@ function writeConsent(value: 'accepted' | 'rejected') {
 
 function clearConsent() {
   if (typeof document === 'undefined') return;
-  document.cookie = `${CONSENT_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
+  document.cookie = `${ANALYTICS_CONSENT_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
+  // No stored preference means no consent, so capture stays off until the
+  // visitor accepts again.
+  applyAnalyticsConsent(null);
   window.dispatchEvent(
     new CustomEvent('formaos:cookie-consent', { detail: { value: null } }),
   );
@@ -44,8 +42,15 @@ export default function PrivacySettingsContent() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setConsent(readConsent());
+    const current = readAnalyticsConsent();
+    setConsent(current);
     setMounted(true);
+    // Only re-assert an explicit decision. Opting out here when nothing is
+    // stored would persist that opt-out in posthog-js just for viewing this
+    // page, and no consent already means capture is off by default.
+    if (current !== null) {
+      applyAnalyticsConsent(current);
+    }
   }, []);
 
   const accept = () => {

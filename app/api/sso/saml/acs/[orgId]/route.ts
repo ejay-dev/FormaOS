@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logIdentityEvent } from '@/lib/identity/audit';
-import { provisionJitUser } from '@/lib/sso/jit-provisioning';
+import { findUserByEmail, provisionJitUser } from '@/lib/sso/jit-provisioning';
 import { getOrgSsoConfig } from '@/lib/sso/org-sso';
 import { buildServiceProviderUrls, validateSamlResponse } from '@/lib/sso/saml';
 
@@ -77,7 +77,70 @@ export async function POST(
       });
     }
 
+    // The binding check below runs BEFORE any session exists — it is what
+    // decides whether to mint one — so there is no authenticated context for
+    // createSupabaseOrgClient to bind to.
+    // eslint-disable-next-line formaos/no-admin-client-with-org-filter
     const admin = createSupabaseAdminClient();
+
+    // Audit 2026-08-02 — bind the asserted identity to THIS organisation.
+    //
+    // Everything validateSamlResponse() checks is supplied by the org's own
+    // admin: the signing certificate and idpEntityId are parsed from the
+    // idp_metadata_xml they upload via PUT /api/sso/config, and
+    // isAllowedDomain() returns true when their allowedDomains list is empty.
+    // Nothing verifies that they control the domain they are asserting. So
+    // without the check below, an admin of any tenant holding the sso_saml
+    // entitlement could sign an assertion naming victim@another-tenant.com and
+    // receive a magic link that logs them in as that user — a full cross-tenant
+    // account takeover.
+    //
+    // The session is minted by GoTrue before any application code runs, so the
+    // membership check in /auth/callback is not a sufficient backstop: an
+    // admin-generated magic link carries no PKCE state, so the tokens are
+    // readable straight off the redirect. The binding therefore has to happen
+    // here, BEFORE generateLink.
+    //
+    // Deliberately resolved against org_members rather than an invitation: a
+    // pending invitation is also attacker-creatable (any org admin may invite
+    // an arbitrary address), so accepting one here would leave the takeover
+    // path open.
+    // Resolve the asserted address to a real auth account, then require that
+    // account to be a member of THIS organisation.
+    //
+    // Resolved through the auth admin API rather than public.user_profiles:
+    // that table has an `email` column but it is NULL for all 2,598 production
+    // rows, so a lookup against it matches nothing and would reject every
+    // legitimate SSO login.
+    const assertedUser = await findUserByEmail(validated.email);
+
+    if (!assertedUser?.id) {
+      throw new Error(
+        'This account is not a member of the organization for this SSO connection',
+      );
+    }
+
+    // Pre-session admin access, justified where the client is constructed above.
+    // eslint-disable-next-line formaos/no-admin-client-with-org-filter
+    const { data: membership, error: membershipError } = await admin
+      .from('org_members')
+      .select('user_id')
+      .eq('organization_id', orgId)
+      .eq('user_id', assertedUser.id)
+      .maybeSingle();
+
+    if (membershipError) {
+      throw new Error(
+        `Unable to verify SSO membership: ${membershipError.message}`,
+      );
+    }
+
+    if (!membership) {
+      throw new Error(
+        'This account is not a member of the organization for this SSO connection',
+      );
+    }
+
     const next = safeNext(typeof relayState === 'string' ? relayState : null);
     const redirectTo = `${appBase}/auth/callback?sso_org=${encodeURIComponent(orgId)}&next=${encodeURIComponent(next)}`;
     const { data: link, error } = await admin.auth.admin.generateLink({

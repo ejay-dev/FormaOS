@@ -142,27 +142,31 @@ export async function syncComplianceFramework(
 export async function ensureFrameworkPacksInstalled() {
   if (installPromise) return installPromise;
 
-  installPromise = (async () => {
-    try {
-      const admin = createSupabaseAdminClient();
+  // Pack loading and syncComplianceFramework are upsert-only, so a retry
+  // after a partial install is safe — and required, otherwise a single
+  // failed run leaves this instance permanently believing the packs are
+  // present. Only a run that completes may stay memoised.
+  const attempt = (async () => {
+    const admin = createSupabaseAdminClient();
 
-      for (const pack of PACK_REGISTRY) {
-        const filePath = path.join(process.cwd(), 'framework-packs', pack.file);
-        await loadFrameworkPack({ path: filePath }, { adminClient: admin });
-        await syncComplianceFramework(pack.slug, admin);
-      }
-
-      const result = await applyLegacyControlMapping(admin);
-      if (!result.ok) {
-        for (const err of result.errors) {
-          consoleShim.warn('[framework-installer] legacy mapping:', err);
-        }
-      }
-    } catch (error) {
-      consoleShim.error('[framework-installer] Failed to install packs:', error);
+    for (const pack of PACK_REGISTRY) {
+      const filePath = path.join(process.cwd(), 'framework-packs', pack.file);
+      await loadFrameworkPack({ path: filePath }, { adminClient: admin });
+      await syncComplianceFramework(pack.slug, admin);
     }
-  })();
 
+    const result = await applyLegacyControlMapping(admin);
+    if (!result.ok) {
+      for (const err of result.errors) {
+        consoleShim.warn('[framework-installer] legacy mapping:', err);
+      }
+    }
+  })().catch((error: unknown) => {
+    installPromise = null;
+    consoleShim.error('[framework-installer] Failed to install packs:', error);
+  });
+
+  installPromise = attempt;
   return installPromise;
 }
 

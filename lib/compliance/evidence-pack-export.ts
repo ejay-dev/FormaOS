@@ -4,6 +4,7 @@
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getFrameworkCodeForSlug } from '@/lib/frameworks/pack-registry';
 import { getSnapshotHistory } from './snapshot-service';
 import archiver from 'archiver';
 import { getQueueClient } from '@/lib/queue';
@@ -32,11 +33,25 @@ export type ExportManifest = {
   statistics: {
     totalControls: number;
     satisfiedControls: number;
+    /**
+     * Controls with no evaluation row yet. Coverage percentages are meaningless
+     * until the evaluation engine has run, so the count is stated explicitly
+     * rather than folded into an implied 0%.
+     */
+    unevaluatedControls: number;
     totalEvidence: number;
     totalTasks: number;
     totalPolicies: number;
   };
 };
+
+// org_control_evaluations.status spells a passing control as `compliant`
+// (evaluation engine) or `satisfied` / `met` (legacy + cross-map rows).
+const SATISFIED_CONTROL_STATUSES = new Set(['satisfied', 'compliant', 'met']);
+
+// PostgREST sends `.in()` filters in the query string; provisioning.ts uses the
+// same ceiling to keep a request line from overflowing.
+const EVALUATION_KEY_CHUNK_SIZE = 100;
 
 /**
  * Create an export job
@@ -224,8 +239,12 @@ export async function processExportJob(
       statistics: {
         totalControls: controls.controls?.length || 0,
         satisfiedControls:
+          controls.controls?.filter((c: { status?: string }) =>
+            SATISFIED_CONTROL_STATUSES.has(c.status ?? ''),
+          ).length || 0,
+        unevaluatedControls:
           controls.controls?.filter(
-            (c: { status?: string }) => c.status === 'satisfied',
+            (c: { status?: string }) => (c.status ?? 'unknown') === 'unknown',
           ).length || 0,
         totalEvidence: evidence.evidence?.length || 0,
         totalTasks: tasks.tasks?.length || 0,
@@ -359,32 +378,129 @@ async function getControlsData(orgId: string, frameworkSlug: string) {
 
   const { data: controls } = await admin
     .from('framework_controls')
-    .select('control_code, title, summary_description, default_risk_level')
+    .select('id, control_code, title, summary_description, default_risk_level')
     .eq('framework_id', framework.id);
 
-  // Get control status from evaluations
-  const { data: evaluations } = await admin
-    .from('org_control_evaluations')
-    .select('control_key, status, details')
-    .eq('organization_id', orgId);
+  const frameworkControls = (controls || []) as Array<{
+    id: string;
+    control_code: string;
+    title: string;
+    summary_description?: string;
+    default_risk_level?: string;
+  }>;
 
-  const controlsWithStatus = (controls || []).map(
-    (c: {
-      control_code: string;
-      title: string;
-      summary_description?: string;
-      default_risk_level?: string;
-    }) => {
-      const evaluation = evaluations?.find((e: { control_key?: string }) =>
-        e.control_key?.includes(c.control_code),
-      );
-      return {
-        ...c,
-        status: evaluation?.status || 'unknown',
-        details: evaluation?.details || {},
-      };
-    },
+  // org_control_evaluations.control_key is written as `control:<compliance_controls.id>`
+  // by the evaluation engine, and compliance_controls points back at the pack
+  // control through framework_control_id. Older rows carry the bare control_code.
+  // Both are matched exactly — a substring match crosses codes (PCI-1/PCI-10).
+  const { data: complianceControls } = frameworkControls.length
+    ? await admin
+        .from('compliance_controls')
+        .select('id, framework_control_id')
+        .in(
+          'framework_control_id',
+          frameworkControls.map((c) => c.id),
+        )
+    : { data: [] };
+
+  const keysByControlId = new Map<string, string[]>(
+    frameworkControls.map((c) => [c.id, [c.control_code]]),
   );
+
+  for (const link of (complianceControls || []) as Array<{
+    id: string;
+    framework_control_id?: string;
+  }>) {
+    const keys = link.framework_control_id
+      ? keysByControlId.get(link.framework_control_id)
+      : undefined;
+    // Evaluation-engine keys take precedence over the legacy bare code.
+    if (keys) keys.unshift(`control:${link.id}`);
+  }
+
+  const candidateKeys = [...new Set([...keysByControlId.values()].flat())];
+
+  // org_control_evaluations.framework_id references compliance_frameworks.id,
+  // a different catalog table from `frameworks` — without this scope a legacy
+  // bare-code row belonging to another framework that shares a control code
+  // would be attributed to this pack.
+  const { data: complianceFramework, error: complianceFrameworkError } =
+    await admin
+      .from('compliance_frameworks')
+      .select('id')
+      .eq('code', getFrameworkCodeForSlug(frameworkSlug))
+      .maybeSingle();
+
+  if (complianceFrameworkError) {
+    throw new Error(
+      `Compliance framework lookup failed: ${complianceFrameworkError.message}`,
+    );
+  }
+
+  const evaluationByKey = new Map<
+    string,
+    { status?: string; details?: unknown; last_evaluated_at?: string }
+  >();
+
+  if (complianceFramework?.id) {
+    for (
+      let offset = 0;
+      offset < candidateKeys.length;
+      offset += EVALUATION_KEY_CHUNK_SIZE
+    ) {
+      const keyChunk = candidateKeys.slice(
+        offset,
+        offset + EVALUATION_KEY_CHUNK_SIZE,
+      );
+
+      const { data: evaluations, error: evaluationError } = await admin
+        .from('org_control_evaluations')
+        .select('control_key, status, details, last_evaluated_at')
+        .eq('organization_id', orgId)
+        .eq('framework_id', complianceFramework.id)
+        .eq('control_type', 'framework_control')
+        .in('control_key', keyChunk);
+
+      // Failing loudly beats shipping an auditor bundle where every control
+      // silently reads 'unknown'.
+      if (evaluationError) {
+        throw new Error(
+          `Control evaluation lookup failed: ${evaluationError.message}`,
+        );
+      }
+
+      for (const evaluation of (evaluations || []) as Array<{
+        control_key?: string;
+        status?: string;
+        details?: unknown;
+        last_evaluated_at?: string;
+      }>) {
+        if (!evaluation.control_key) continue;
+        const existing = evaluationByKey.get(evaluation.control_key);
+        if (
+          !existing ||
+          (evaluation.last_evaluated_at ?? '') >
+            (existing.last_evaluated_at ?? '')
+        ) {
+          evaluationByKey.set(evaluation.control_key, evaluation);
+        }
+      }
+    }
+  }
+
+  const controlsWithStatus = frameworkControls.map((c) => {
+    const evaluation = (keysByControlId.get(c.id) ?? [])
+      .map((key) => evaluationByKey.get(key))
+      .find(Boolean);
+    return {
+      control_code: c.control_code,
+      title: c.title,
+      summary_description: c.summary_description,
+      default_risk_level: c.default_risk_level,
+      status: evaluation?.status || 'unknown',
+      details: evaluation?.details || {},
+    };
+  });
 
   return {
     frameworkName: framework.name,
@@ -458,6 +574,11 @@ function generateCSVSummary(
   _evidence: { evidence?: unknown[] },
   _tasks: { tasks?: unknown[] },
 ): string {
+  const controlCoverage =
+    manifest.statistics.totalControls > 0
+      ? `${Math.round((manifest.statistics.satisfiedControls / manifest.statistics.totalControls) * 100)}%`
+      : 'n/a';
+
   const lines = [
     'Audit Evidence Pack Summary',
     `Framework,${manifest.frameworkName}`,
@@ -467,7 +588,8 @@ function generateCSVSummary(
     'Statistics',
     `Total Controls,${manifest.statistics.totalControls}`,
     `Satisfied Controls,${manifest.statistics.satisfiedControls}`,
-    `Control Coverage,${Math.round((manifest.statistics.satisfiedControls / manifest.statistics.totalControls) * 100)}%`,
+    `Controls Not Yet Evaluated,${manifest.statistics.unevaluatedControls}`,
+    `Control Coverage,${controlCoverage}`,
     `Total Evidence,${manifest.statistics.totalEvidence}`,
     `Total Tasks,${manifest.statistics.totalTasks}`,
     `Total Policies,${manifest.statistics.totalPolicies}`,

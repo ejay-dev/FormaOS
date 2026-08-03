@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import type { User } from '@supabase/supabase-js';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { revokeAllSessions } from '@/lib/auth/session-revocation';
 import { consoleShim } from '@/lib/monitoring/console-shim';
@@ -240,15 +241,65 @@ async function loadDirectorySnapshot(
   }
 }
 
-async function findUserByEmail(email: string) {
+// auth.admin.listUsers() defaults to page 1 / perPage 50, so an
+// unpaginated call only ever sees the first 50 auth users — anyone
+// past page 1 was reported as new, which made createUser() fail on a
+// duplicate email and abort the entire sync run. Pages are pulled
+// lazily and cached: a lookup only walks far enough to find its
+// email, so a three-user directory on a project with thousands of
+// auth users costs one page instead of the whole table, while a
+// large directory degrades to the same full walk as before.
+const AUTH_USER_PAGE_SIZE = 200;
+const AUTH_USER_MAX_PAGES = 100;
+
+function createAuthUserLookup() {
   const admin = createSupabaseAdminClient();
-  const { data } = await admin.auth.admin.listUsers();
-  return (
-    data?.users?.find(
-      (user: { email?: string }) =>
-        user.email?.toLowerCase() === email.toLowerCase(),
-    ) ?? null
-  );
+  const byEmail = new Map<string, User>();
+  let nextPage = 1;
+  let exhausted = false;
+
+  async function loadNextPage() {
+    const { data, error } = await admin.auth.admin.listUsers({
+      page: nextPage,
+      perPage: AUTH_USER_PAGE_SIZE,
+    });
+
+    if (error) {
+      throw new Error(`Failed to list auth users: ${error.message}`);
+    }
+
+    const users = data?.users ?? [];
+    for (const user of users) {
+      const key = user.email?.toLowerCase();
+      // First page wins so a user created earlier in this run is not
+      // clobbered by a later page that already includes it.
+      if (key && !byEmail.has(key)) byEmail.set(key, user);
+    }
+
+    nextPage += 1;
+    if (users.length < AUTH_USER_PAGE_SIZE || nextPage > AUTH_USER_MAX_PAGES) {
+      exhausted = true;
+    }
+  }
+
+  return {
+    async find(email: string): Promise<User | null> {
+      const key = email.toLowerCase();
+      const cached = byEmail.get(key);
+      if (cached) return cached;
+
+      while (!exhausted) {
+        await loadNextPage();
+        const match = byEmail.get(key);
+        if (match) return match;
+      }
+
+      return null;
+    },
+    remember(email: string, user: User) {
+      byEmail.set(email.toLowerCase(), user);
+    },
+  };
 }
 
 export async function upsertDirectorySyncConfig(args: {
@@ -360,6 +411,7 @@ export async function syncDirectory(
 
   try {
     const snapshot = await loadDirectorySnapshot(provider, config);
+    const authUsers = createAuthUserLookup();
 
     let createdUsers = 0;
     let updatedUsers = 0;
@@ -368,7 +420,8 @@ export async function syncDirectory(
     for (const directoryUser of snapshot.users) {
       if (!directoryUser.email) continue;
 
-      let user = await findUserByEmail(directoryUser.email);
+      const emailKey = directoryUser.email.toLowerCase();
+      let user = await authUsers.find(emailKey);
       if (!user) {
         const created = await admin.auth.admin.createUser({
           email: directoryUser.email,
@@ -386,6 +439,7 @@ export async function syncDirectory(
           );
         }
         user = created.data.user;
+        authUsers.remember(emailKey, user);
         createdUsers += 1;
       } else {
         await admin.auth.admin.updateUserById(user.id, {
@@ -440,7 +494,7 @@ export async function syncDirectory(
 
       const memberIds: string[] = [];
       for (const email of group.members) {
-        const user = await findUserByEmail(email);
+        const user = await authUsers.find(email);
         if (user) {
           memberIds.push(user.id);
         }

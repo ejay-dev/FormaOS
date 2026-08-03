@@ -37,101 +37,83 @@ describe('tierParticleCount', () => {
   });
 });
 
-describe('getDeviceTierConfig (SSR)', () => {
-  it('returns mid tier config when typeof window is undefined', () => {
-    // In JSDOM we can't truly delete window, so test the
-    // function's behavior when matchMedia isn't available is effectively
-    // covered by the "browser" test below. Here we verify the mid-tier
-    // defaults directly.
-    const midDefaults = {
+/**
+ * Audit 2026-08-02: the SSR describe and all three "TierConfig properties"
+ * tests used to build a plain object literal inside the test body and assert
+ * that literal's own properties — no function from '@/lib/device-tier' was
+ * ever called, so detectTier/buildConfig had effectively zero coverage. Each
+ * test below now drives the real detection heuristics through
+ * getDeviceTierConfig() with controlled browser signals.
+ *
+ * getDeviceTierConfig memoises into a module-level `cachedConfig`, so every
+ * call resets the module registry to get a fresh detection.
+ */
+function loadTierConfig(signals: {
+  reducedMotion?: boolean;
+  coarsePointer?: boolean;
+  width?: number;
+  cores?: number;
+  memory?: number;
+  dpr?: number;
+}) {
+  const {
+    reducedMotion = false,
+    coarsePointer = false,
+    width = 1440,
+    cores = 8,
+    memory = 8,
+    dpr = 1,
+  } = signals;
+
+  window.matchMedia = jest.fn((query: string) => ({
+    matches: query.includes('prefers-reduced-motion')
+      ? reducedMotion
+      : query.includes('pointer: coarse')
+        ? coarsePointer
+        : false,
+  })) as any;
+  Object.defineProperty(window, 'innerWidth', {
+    value: width,
+    writable: true,
+    configurable: true,
+  });
+  Object.defineProperty(window, 'devicePixelRatio', {
+    value: dpr,
+    writable: true,
+    configurable: true,
+  });
+  Object.defineProperty(window.navigator, 'hardwareConcurrency', {
+    value: cores,
+    writable: true,
+    configurable: true,
+  });
+  Object.defineProperty(window.navigator, 'deviceMemory', {
+    value: memory,
+    writable: true,
+    configurable: true,
+  });
+
+  jest.resetModules();
+  const { getDeviceTierConfig } = require('@/lib/device-tier');
+  return getDeviceTierConfig() as TierConfig;
+}
+
+describe('getDeviceTierConfig', () => {
+  it('memoises detection so every consumer sees the same config object', () => {
+    const first = loadTierConfig({ cores: 8, memory: 8, width: 1440 });
+    const { getDeviceTierConfig } = require('@/lib/device-tier');
+    expect(getDeviceTierConfig()).toBe(first);
+  });
+
+  it('classifies a mid device from mid-range hardware signals', () => {
+    // cores 4 (+2) + memory 4 (+2) + width 800 (+1) = 5 -> mid (3..5)
+    const config = loadTierConfig({ cores: 4, memory: 4, width: 800 });
+    expect(config).toEqual({
       tier: 'mid',
-      particleMultiplier: 0.5,
-      enableBlur: true,
-      maxLayers: 3,
-      fpsCap: 30,
-    };
-    expect(midDefaults.tier).toBe('mid');
-    expect(midDefaults.particleMultiplier).toBe(0.5);
-    expect(midDefaults.enableBlur).toBe(true);
-    expect(midDefaults.maxLayers).toBe(3);
-    expect(midDefaults.fpsCap).toBe(30);
-  });
-});
-
-describe('getDeviceTierConfig (browser)', () => {
-  it('returns config when window and matchMedia exist', () => {
-    window.matchMedia = jest.fn().mockReturnValue({ matches: false }) as any;
-    Object.defineProperty(window, 'innerWidth', {
-      value: 1200,
-      writable: true,
-      configurable: true,
-    });
-    Object.defineProperty(window.navigator, 'hardwareConcurrency', {
-      value: 4,
-      writable: true,
-      configurable: true,
-    });
-
-    jest.resetModules();
-    const { getDeviceTierConfig: getConfig } = require('@/lib/device-tier');
-    const config = getConfig();
-    expect(['low', 'mid', 'high']).toContain(config.tier);
-    expect(typeof config.particleMultiplier).toBe('number');
-  });
-});
-
-describe('TierConfig properties', () => {
-  it('low tier disables blur, overlays, connections', () => {
-    // Manually construct expected low config
-    const lowConfig = {
-      tier: 'low' as const,
-      isTouch: false,
-      reducedMotion: true,
-      cursorTilt: false,
-      autoDrift: false,
-      particleMultiplier: 0.25,
-      enableBlur: false,
-      enableOverlays: false,
-      enableConnections: false,
-      maxLayers: 2,
-      fpsCap: 20,
-      parallaxIntensity: 0.3,
-    };
-    expect(lowConfig.enableBlur).toBe(false);
-    expect(lowConfig.enableOverlays).toBe(false);
-    expect(lowConfig.enableConnections).toBe(false);
-    expect(lowConfig.cursorTilt).toBe(false);
-  });
-
-  it('high tier enables all features', () => {
-    const highConfig = {
-      tier: 'high' as const,
       isTouch: false,
       reducedMotion: false,
       cursorTilt: true,
       autoDrift: false,
-      particleMultiplier: 1,
-      enableBlur: true,
-      enableOverlays: true,
-      enableConnections: true,
-      maxLayers: 5,
-      fpsCap: 30,
-      parallaxIntensity: 1,
-    };
-    expect(highConfig.enableBlur).toBe(true);
-    expect(highConfig.enableOverlays).toBe(true);
-    expect(highConfig.enableConnections).toBe(true);
-    expect(highConfig.cursorTilt).toBe(true);
-    expect(highConfig.autoDrift).toBe(false);
-  });
-
-  it('touch device on mid tier gets autoDrift, no cursorTilt', () => {
-    const touchMid = {
-      tier: 'mid' as const,
-      isTouch: true,
-      reducedMotion: false,
-      cursorTilt: false,
-      autoDrift: true,
       particleMultiplier: 0.5,
       enableBlur: true,
       enableOverlays: false,
@@ -139,8 +121,82 @@ describe('TierConfig properties', () => {
       maxLayers: 3,
       fpsCap: 30,
       parallaxIntensity: 0.6,
-    };
-    expect(touchMid.autoDrift).toBe(true);
-    expect(touchMid.cursorTilt).toBe(false);
+    });
+  });
+
+  it('demotes a small low-memory phone to the low tier', () => {
+    // cores 2 (+0) + memory 1 (+0) + width 390 (+0) + dpr 3 on <430 (-1) = -1
+    const config = loadTierConfig({
+      cores: 2,
+      memory: 1,
+      width: 390,
+      dpr: 3,
+      coarsePointer: true,
+    });
+    expect(config.tier).toBe('low');
+  });
+});
+
+describe('TierConfig properties', () => {
+  it('low tier disables blur, overlays, connections', () => {
+    // prefers-reduced-motion forces the low tier regardless of hardware.
+    const config = loadTierConfig({
+      reducedMotion: true,
+      cores: 8,
+      memory: 8,
+      width: 1440,
+    });
+    expect(config.tier).toBe('low');
+    expect(config.reducedMotion).toBe(true);
+    expect(config.enableBlur).toBe(false);
+    expect(config.enableOverlays).toBe(false);
+    expect(config.enableConnections).toBe(false);
+    expect(config.cursorTilt).toBe(false);
+    expect(config.autoDrift).toBe(false);
+    expect(config.particleMultiplier).toBe(0.25);
+    expect(config.maxLayers).toBe(2);
+    expect(config.fpsCap).toBe(20);
+    expect(config.parallaxIntensity).toBe(0.3);
+  });
+
+  it('high tier enables all features', () => {
+    // cores 8 (+3) + memory 8 (+3) + width 1440 (+2) = 8 -> high (>=6)
+    const config = loadTierConfig({ cores: 8, memory: 8, width: 1440 });
+    expect(config.tier).toBe('high');
+    expect(config.enableBlur).toBe(true);
+    expect(config.enableOverlays).toBe(true);
+    expect(config.enableConnections).toBe(true);
+    expect(config.cursorTilt).toBe(true);
+    expect(config.autoDrift).toBe(false);
+    expect(config.particleMultiplier).toBe(1);
+    expect(config.maxLayers).toBe(5);
+    expect(config.parallaxIntensity).toBe(1);
+  });
+
+  it('touch device on mid tier gets autoDrift, no cursorTilt', () => {
+    const config = loadTierConfig({
+      coarsePointer: true,
+      cores: 4,
+      memory: 4,
+      width: 800,
+    });
+    expect(config.tier).toBe('mid');
+    expect(config.isTouch).toBe(true);
+    expect(config.autoDrift).toBe(true);
+    expect(config.cursorTilt).toBe(false);
+  });
+
+  it('touch device on low tier gets neither autoDrift nor cursorTilt', () => {
+    const config = loadTierConfig({
+      coarsePointer: true,
+      reducedMotion: true,
+      cores: 8,
+      memory: 8,
+      width: 1440,
+    });
+    expect(config.tier).toBe('low');
+    expect(config.isTouch).toBe(true);
+    expect(config.autoDrift).toBe(false);
+    expect(config.cursorTilt).toBe(false);
   });
 });

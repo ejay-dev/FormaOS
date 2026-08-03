@@ -48,25 +48,12 @@ jest.mock('@/lib/observability/structured-logger', () => ({
   },
 }));
 
-// We need to mock the queue types
-jest.mock('@/lib/queue/types', () => ({
-  QUEUE_KEYS: {
-    PENDING: 'queue:pending',
-    PROCESSING: 'queue:processing',
-    DEAD: 'queue:dead',
-    JOB_PREFIX: 'queue:job:',
-    METRICS_PREFIX: 'queue:metrics:',
-  },
-  DEFAULT_QUEUE_CONFIG: {
-    maxAttempts: 3,
-    batchSize: 10,
-    jobTtlSeconds: 86400,
-    processingTimeoutSeconds: 300,
-    baseBackoffMs: 1000,
-  },
-}));
-
+// NOTE: '@/lib/queue/types' is deliberately NOT mocked. Mocking the constants
+// the module under test imports turns every key/config assertion into the
+// mock verifying itself — the previous mock had already drifted to
+// jobTtlSeconds: 86400 while production uses 7 days (604800).
 import { QueueClient } from '@/lib/queue/client';
+import { QUEUE_KEYS, DEFAULT_QUEUE_CONFIG } from '@/lib/queue/types';
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -75,20 +62,73 @@ beforeEach(() => {
 });
 
 describe('QueueClient', () => {
+  it('runs against the production key names and config', () => {
+    // Guards against the file re-acquiring a local mock of the constants.
+    expect(QUEUE_KEYS).toEqual({
+      PENDING: 'queue:pending',
+      PROCESSING: 'queue:processing',
+      DEAD: 'queue:dead',
+      JOB_PREFIX: 'queue:job:',
+      METRICS_PREFIX: 'queue:metrics:',
+    });
+    expect(DEFAULT_QUEUE_CONFIG.jobTtlSeconds).toBe(7 * 24 * 60 * 60);
+    expect(DEFAULT_QUEUE_CONFIG.processingTimeoutSeconds).toBe(5 * 60);
+    expect(DEFAULT_QUEUE_CONFIG.maxAttempts).toBe(3);
+    expect(DEFAULT_QUEUE_CONFIG.batchSize).toBe(10);
+    expect(DEFAULT_QUEUE_CONFIG.baseBackoffMs).toBe(1_000);
+  });
+
   describe('enqueue', () => {
     it('enqueues a job with Redis available', async () => {
       const client = new QueueClient();
+      const before = Date.now();
       const result = await client.enqueue('test-job' as any, { foo: 'bar' });
 
       expect(result.success).toBe(true);
-      expect(result.jobId).toMatch(/^job_/);
+      expect(result.jobId).toMatch(/^job_[a-z0-9]+_[a-z0-9]+$/);
       expect(result.scheduledAt).toBeDefined();
-      expect(mockPipeline.set).toHaveBeenCalled();
-      expect(mockPipeline.zadd).toHaveBeenCalledWith(
-        'queue:pending',
-        expect.any(Object),
+
+      // Job body is stored under the real key prefix with the real defaults.
+      expect(mockPipeline.set).toHaveBeenCalledWith(
+        `queue:job:${result.jobId}`,
+        expect.any(String),
       );
+      const stored = JSON.parse(mockPipeline.set.mock.calls[0][1]);
+      expect(stored).toMatchObject({
+        id: result.jobId,
+        type: 'test-job',
+        state: 'pending',
+        payload: { foo: 'bar' },
+        attempts: 0,
+        maxAttempts: DEFAULT_QUEUE_CONFIG.maxAttempts,
+        // 7 days, not the 1 day the old local mock claimed.
+        ttlSeconds: 604800,
+      });
+
+      expect(mockPipeline.zadd).toHaveBeenCalledWith(QUEUE_KEYS.PENDING, {
+        score: expect.any(Number),
+        member: result.jobId,
+      });
+      const { score } = mockPipeline.zadd.mock.calls[0][1];
+      expect(score).toBeGreaterThanOrEqual(before);
       expect(mockPipeline.exec).toHaveBeenCalled();
+    });
+
+    it('honours an explicit ttlSeconds and maxAttempts override', async () => {
+      const client = new QueueClient();
+      const result = await client.enqueue(
+        'test-job' as any,
+        {},
+        { ttlSeconds: 60, maxAttempts: 9, organizationId: 'org-1' },
+      );
+
+      const stored = JSON.parse(mockPipeline.set.mock.calls[0][1]);
+      expect(stored).toMatchObject({
+        id: result.jobId,
+        ttlSeconds: 60,
+        maxAttempts: 9,
+        organizationId: 'org-1',
+      });
     });
 
     it('returns failure when Redis not available', async () => {
@@ -179,11 +219,21 @@ describe('QueueClient', () => {
       await client.completeJob('job_done', { result: 'ok' });
 
       expect(mockPipeline.zrem).toHaveBeenCalledWith(
-        'queue:processing',
+        QUEUE_KEYS.PROCESSING,
         'job_done',
       );
-      expect(mockPipeline.expire).toHaveBeenCalled();
+      // TTL comes from the job record, so the cleanup window is the real one.
+      expect(mockPipeline.expire).toHaveBeenCalledWith(
+        'queue:job:job_done',
+        86400,
+      );
       expect(mockPipeline.incr).toHaveBeenCalledWith('queue:metrics:completed');
+      const stored = JSON.parse(mockPipeline.set.mock.calls[0][1]);
+      expect(stored).toMatchObject({
+        state: 'completed',
+        result: { result: 'ok' },
+      });
+      expect(stored.completedAt).toEqual(expect.any(String));
     });
 
     it('no-ops when Redis not available', async () => {
@@ -208,14 +258,25 @@ describe('QueueClient', () => {
       mockRedisClient.get.mockResolvedValueOnce(JSON.stringify(mockJob));
 
       const client = new QueueClient();
+      const before = Date.now();
       const outcome = await client.failJob('job_retry', 'timeout');
 
       expect(outcome).toBe('retrying');
-      expect(mockPipeline.zadd).toHaveBeenCalledWith(
-        'queue:pending',
-        expect.any(Object),
+      expect(mockRedisClient.zrem).toHaveBeenCalledWith(
+        QUEUE_KEYS.PROCESSING,
+        'job_retry',
       );
+      expect(mockPipeline.zadd).toHaveBeenCalledWith(QUEUE_KEYS.PENDING, {
+        score: expect.any(Number),
+        member: 'job_retry',
+      });
+      // Exponential backoff: baseBackoffMs * 2^attempts = 1000 * 2^1 = 2000ms.
+      const { score } = mockPipeline.zadd.mock.calls[0][1];
+      expect(score).toBeGreaterThanOrEqual(before + 2000);
+      expect(score).toBeLessThan(before + 2000 + 5_000);
       expect(mockPipeline.incr).toHaveBeenCalledWith('queue:metrics:retried');
+      const stored = JSON.parse(mockPipeline.set.mock.calls[0][1]);
+      expect(stored).toMatchObject({ state: 'pending', lastError: 'timeout' });
     });
 
     it('moves job to dead letter queue when max attempts reached', async () => {
@@ -234,11 +295,25 @@ describe('QueueClient', () => {
       const outcome = await client.failJob('job_dead', 'max retries exhausted');
 
       expect(outcome).toBe('dead');
-      expect(mockPipeline.zadd).toHaveBeenCalledWith(
-        'queue:dead',
-        expect.any(Object),
+      expect(mockPipeline.zadd).toHaveBeenCalledWith(QUEUE_KEYS.DEAD, {
+        score: expect.any(Number),
+        member: 'job_dead',
+      });
+      // A dead job must NOT be put back on the pending set.
+      expect(mockPipeline.zadd).not.toHaveBeenCalledWith(
+        QUEUE_KEYS.PENDING,
+        expect.anything(),
+      );
+      expect(mockPipeline.expire).toHaveBeenCalledWith(
+        'queue:job:job_dead',
+        86400,
       );
       expect(mockPipeline.incr).toHaveBeenCalledWith('queue:metrics:dead');
+      const stored = JSON.parse(mockPipeline.set.mock.calls[0][1]);
+      expect(stored).toMatchObject({
+        state: 'dead',
+        lastError: 'max retries exhausted',
+      });
     });
 
     it('returns dead when Redis not available', async () => {
@@ -356,13 +431,16 @@ describe('QueueClient', () => {
 
       expect(result).toBe(true);
       expect(mockPipeline.zrem).toHaveBeenCalledWith(
-        'queue:dead',
+        QUEUE_KEYS.DEAD,
         'job_requeue',
       );
-      expect(mockPipeline.zadd).toHaveBeenCalledWith(
-        'queue:pending',
-        expect.any(Object),
-      );
+      expect(mockPipeline.zadd).toHaveBeenCalledWith(QUEUE_KEYS.PENDING, {
+        score: expect.any(Number),
+        member: 'job_requeue',
+      });
+      const stored = JSON.parse(mockPipeline.set.mock.calls[0][1]);
+      // Attempts must reset, otherwise the retry immediately re-deads.
+      expect(stored).toMatchObject({ state: 'pending', attempts: 0 });
     });
 
     it('returns false for non-dead job', async () => {

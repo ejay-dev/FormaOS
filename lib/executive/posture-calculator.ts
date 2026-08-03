@@ -132,45 +132,103 @@ export async function calculateExecutivePosture(
 }
 
 /**
+ * Per-control rows in org_control_evaluations are control_type='framework_control'
+ * (there has never been a 'control_snapshot' row). The table has no control_id,
+ * gap_description, evidence_count or required_evidence column: the control's
+ * identity and evidence counts live in `details`, and the verdict in `status`.
+ * lib/frameworks/provisioning.ts writes control_code/control_title,
+ * lib/compliance/evaluate-framework-controls.ts writes code/title + evaluator.
+ */
+type ControlEvaluationRow = {
+  id: string;
+  framework_id: string | null;
+  control_key: string | null;
+  status: string | null;
+  compliance_score: number | null;
+  last_evaluated_at: string | null;
+  details: Record<string, unknown> | null;
+};
+
+const FAILING_CONTROL_STATUSES = [
+  'at_risk',
+  'partial',
+  'in_progress',
+  'non_compliant',
+  'failed',
+];
+
+/** compliance_score is only written by the seed generator; status is authoritative. */
+const CONTROL_STATUS_SCORES: Record<string, number> = {
+  compliant: 100,
+  satisfied: 100,
+  met: 100,
+  partial: 50,
+  in_progress: 50,
+  at_risk: 50,
+  non_compliant: 0,
+  failed: 0,
+};
+
+function controlScoreFromRow(row: ControlEvaluationRow): number {
+  const rawScore = Number(row.compliance_score ?? 0);
+  if (rawScore > 0) return rawScore;
+  return CONTROL_STATUS_SCORES[(row.status ?? '').toLowerCase()] ?? 0;
+}
+
+function controlCodeFromRow(row: ControlEvaluationRow): string {
+  const details = row.details ?? {};
+  const fromDetails = details.control_code ?? details.code;
+  if (typeof fromDetails === 'string' && fromDetails) return fromDetails;
+  // Seed rows put the bare code in control_key; evaluated rows use
+  // `control:<compliance_controls.id>`, which is not a display value.
+  if (row.control_key && !row.control_key.startsWith('control:')) {
+    return row.control_key;
+  }
+  return 'UNKNOWN';
+}
+
+function controlTitleFromRow(row: ControlEvaluationRow): string {
+  const details = row.details ?? {};
+  const fromDetails = details.control_title ?? details.title;
+  return typeof fromDetails === 'string' && fromDetails
+    ? fromDetails
+    : 'Unknown Control';
+}
+
+/**
  * Get critical control failures (controls with score < 50%)
  */
 async function getCriticalControlFailures(
   orgId: string,
   admin: ReturnType<typeof createSupabaseAdminClient>
 ): Promise<CriticalControl[]> {
-  const { data: evaluations } = await admin
+  const { data, error } = await admin
     .from('org_control_evaluations')
-    .select(`
-      id,
-      control_id,
-      framework_id,
-      compliance_score,
-      last_evaluated_at,
-      gap_description,
-      evidence_count,
-      required_evidence
-    `)
+    .select(
+      'id, framework_id, control_key, status, compliance_score, last_evaluated_at, details'
+    )
     .eq('organization_id', orgId)
-    .eq('control_type', 'control_snapshot')
-    .lt('compliance_score', 50)
+    .eq('control_type', 'framework_control')
+    .in('status', FAILING_CONTROL_STATUSES)
     .order('compliance_score', { ascending: true })
+    .order('last_evaluated_at', { ascending: false })
     .limit(10);
 
-  if (!evaluations?.length) return [];
+  if (error) {
+    consoleShim.error(
+      '[ExecutivePosture] Failed to fetch control evaluations:',
+      error
+    );
+    return [];
+  }
 
-  // Get control details
-  const controlIds = evaluations.map((e: { control_id?: string }) => e.control_id).filter(Boolean) as string[];
-  const { data: controls } = await admin
-    .from('compliance_controls')
-    .select('id, code, title, framework_id')
-    .in('id', controlIds);
-
-  const controlMap = new Map<string, { id: string; code: string; title: string; framework_id?: string }>(
-    controls?.map((c: { id: string; code: string; title: string; framework_id?: string }) => [c.id, c]) || []
-  );
+  const evaluations = (data ?? []) as ControlEvaluationRow[];
+  if (!evaluations.length) return [];
 
   // Get framework codes
-  const frameworkIds = [...new Set(evaluations.map((e: { framework_id?: string }) => e.framework_id).filter(Boolean))] as string[];
+  const frameworkIds = [
+    ...new Set(evaluations.map((row) => row.framework_id).filter(Boolean)),
+  ] as string[];
   const { data: frameworks } = await admin
     .from('compliance_frameworks')
     // Schema column is `name` (audit database-017). Alias for API stability.
@@ -181,23 +239,29 @@ async function getCriticalControlFailures(
     frameworks?.map((f: { id: string; code: string; title: string }) => [f.id, f]) || []
   );
 
-  return evaluations.map((eval_: { id: string; control_id: string; framework_id: string; compliance_score?: number; last_evaluated_at?: string; gap_description?: string; evidence_count?: number; required_evidence?: number }) => {
-    const control = controlMap.get(eval_.control_id);
-    const framework = frameworkMap.get(eval_.framework_id);
-    const score = eval_.compliance_score ?? 0;
+  return evaluations.map((row) => {
+    const details = row.details ?? {};
+    const framework = row.framework_id
+      ? frameworkMap.get(row.framework_id)
+      : undefined;
+    const detailsFrameworkCode =
+      typeof details.framework_code === 'string' ? details.framework_code : undefined;
+    const evaluator = details.evaluator as { reason?: string | null } | null | undefined;
+    const score = controlScoreFromRow(row);
 
     return {
-      id: eval_.id,
-      controlCode: control?.code || 'UNKNOWN',
-      title: control?.title || 'Unknown Control',
-      framework: framework?.title || 'Unknown Framework',
-      frameworkCode: framework?.code || 'UNKNOWN',
+      id: row.id,
+      controlCode: controlCodeFromRow(row),
+      title: controlTitleFromRow(row),
+      framework: framework?.title || detailsFrameworkCode || 'Unknown Framework',
+      frameworkCode: framework?.code || detailsFrameworkCode || 'UNKNOWN',
       status: score < 25 ? 'critical' : score < 40 ? 'high' : 'medium',
       dueDate: undefined,
-      lastEvaluated: eval_.last_evaluated_at,
-      gapDescription: eval_.gap_description ?? undefined,
-      evidenceCount: eval_.evidence_count ?? 0,
-      requiredEvidence: eval_.required_evidence ?? 1,
+      lastEvaluated: row.last_evaluated_at ?? '',
+      gapDescription:
+        typeof evaluator?.reason === 'string' ? evaluator.reason : undefined,
+      evidenceCount: Number(details.approved_evidence_count ?? 0),
+      requiredEvidence: Number(details.required_evidence_count ?? 1),
     } as CriticalControl;
   });
 }

@@ -3,8 +3,16 @@ import {
   getLatestAssessment,
   getAssessmentHistory,
 } from '@/lib/soc2/readiness-engine';
+// The engine reads the real framework pack (a previous virtual jest.mock of
+// '@/framework-packs/soc2.json' never took effect and was silently ignored).
+// Assert against the pack itself so adding a control cannot make these tests
+// wrong, while dropping a control from the result still fails them.
+import soc2Pack from '@/framework-packs/soc2.json';
 
 jest.mock('server-only', () => ({}));
+
+const PACK_CONTROL_CODES = soc2Pack.controls.map((c) => c.control_code);
+const PACK_DOMAIN_NAMES = soc2Pack.domains.map((d) => d.name);
 
 const mockQuery: any = {};
 
@@ -25,27 +33,6 @@ function resetMock() {
 jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: () => mockQuery,
 }));
-
-// Mock soc2 framework pack
-jest.mock(
-  '@/framework-packs/soc2.json',
-  () => ({
-    controls: [
-      {
-        control_code: 'SOC2-S1',
-        title: 'Test Control',
-        summary_description: 'Test',
-        implementation_guidance: 'test guidance',
-        default_risk_level: 'high',
-        domain: 'Security',
-        suggested_evidence_types: ['document'],
-        suggested_task_templates: [],
-      },
-    ],
-    domains: [{ name: 'Security', key: 'security' }],
-  }),
-  { virtual: true },
-);
 
 describe('getLatestAssessment', () => {
   beforeEach(resetMock);
@@ -183,10 +170,13 @@ describe('calculateSoc2Readiness', () => {
 
     const result = await calculateSoc2Readiness('org-1');
     expect(result.overallScore).toBe(0);
-    expect(result.totalControls).toBe(11); // real soc2.json pack has 11 controls
     expect(result.satisfiedControls).toBe(0);
-    expect(result.controlResults).toHaveLength(11);
-    expect(result.domainScores).toHaveLength(5);
+    // Every control and domain in the pack is assessed — no silent drops.
+    expect(result.totalControls).toBe(PACK_CONTROL_CODES.length);
+    expect(result.controlResults.map((c) => c.controlCode)).toEqual(
+      PACK_CONTROL_CODES,
+    );
+    expect(result.domainScores.map((d) => d.domain)).toEqual(PACK_DOMAIN_NAMES);
   });
 
   it('calculates readiness with high compliance', async () => {
@@ -239,10 +229,14 @@ describe('calculateSoc2Readiness', () => {
     });
 
     const result = await calculateSoc2Readiness('org-1');
+    const s1 = result.controlResults.find(
+      (c) => c.controlCode === 'SOC2-S1',
+    )!;
     expect(result.overallScore).toBeGreaterThan(0);
     expect(result.satisfiedControls).toBe(1);
-    expect(result.controlResults[0].status).toBe('satisfied');
-    expect(result.controlResults[0].evidenceCount).toBe(2);
+    expect(s1.status).toBe('satisfied');
+    expect(s1.evidenceCount).toBe(2);
+    expect(s1.gaps).toEqual([]);
   });
 
   it('identifies partial compliance and gaps', async () => {
@@ -285,7 +279,9 @@ describe('calculateSoc2Readiness', () => {
     });
 
     const result = await calculateSoc2Readiness('org-1');
-    const control = result.controlResults[0];
+    const control = result.controlResults.find(
+      (c) => c.controlCode === 'SOC2-S1',
+    )!;
     expect(control.status).toBe('partial');
     expect(control.gaps).toContain(
       'Evidence exists but compliance score below threshold',
@@ -301,7 +297,9 @@ describe('calculateSoc2Readiness', () => {
     );
 
     const result = await calculateSoc2Readiness('org-1');
-    const control = result.controlResults[0];
+    const control = result.controlResults.find(
+      (c) => c.controlCode === 'SOC2-S1',
+    )!;
     expect(control.status).toBe('missing');
     expect(control.gaps).toContain('No evidence collected');
     expect(control.gaps).toContain('No tasks assigned');
@@ -312,9 +310,19 @@ describe('calculateSoc2Readiness', () => {
       resolve({ data: [], error: null }),
     );
 
-    await calculateSoc2Readiness('org-1');
+    const result = await calculateSoc2Readiness('org-1');
     expect(mockQuery.from).toHaveBeenCalledWith('soc2_readiness_assessments');
-    expect(mockQuery.insert).toHaveBeenCalled();
+    // The persisted row must match what the caller was handed back.
+    expect(mockQuery.insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        organization_id: 'org-1',
+        overall_score: result.overallScore,
+        domain_scores: result.domainScores,
+        control_results: result.controlResults,
+        assessed_at: result.assessedAt,
+        evidence_summary: { totalEvidence: 0, controlsWithEvidence: 0 },
+      }),
+    );
   });
 
   it('returns assessed timestamp', async () => {

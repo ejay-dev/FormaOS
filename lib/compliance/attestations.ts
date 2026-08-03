@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 // Audit Sprint 6c (2026-05-23): data layer for the manual-attestation
@@ -12,8 +11,8 @@ import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 // The list-resolver here is the part that bridges the evaluator world
 // ("this control needs human attestation") and the attestation row
 // world ("here's the human attestation, claimed, reviewed"). It joins
-// org_control_evaluations rows whose `details->gaps` contain
-// `code=manual_attestation_required` against the latest
+// org_control_evaluations rows whose `details->evaluator->gap_codes`
+// contain `manual_attestation_required` against the latest
 // org_control_attestations row per (framework, control).
 
 export type AttestationStatus = 'claimed' | 'reviewed' | 'rejected';
@@ -53,6 +52,31 @@ export interface ControlNeedingAttestation {
 
 export const MANUAL_GAP_CODE = 'manual_attestation_required';
 
+/**
+ * Shape of `org_control_evaluations.details`.
+ *
+ * evaluate-framework-controls.ts is the only writer that runs the registry
+ * evaluators; it persists gap codes as a flat string array under
+ * `evaluator.gap_codes` and the control's human-readable code/title as
+ * `code`/`title` (`control_key` itself is the internal `control:<uuid>` key).
+ * ~1,438 older rows in production instead carry `control_code`/`control_title`,
+ * so both spellings are read.
+ */
+interface EvaluationDetails {
+  code?: string;
+  title?: string;
+  control_code?: string;
+  control_title?: string;
+  evaluator?: {
+    reason?: string | null;
+    gap_codes?: string[];
+  } | null;
+}
+
+function detailsOf(row: Record<string, unknown>): EvaluationDetails {
+  return (row.details ?? {}) as EvaluationDetails;
+}
+
 function toAttestationRow(raw: Record<string, unknown>): AttestationRow {
   return {
     id: String(raw.id),
@@ -85,11 +109,14 @@ export async function listControlsNeedingAttestation(
   // 1. Manual-attestation-required signals from the evaluator output.
   // Per-control rows live alongside per-framework snapshot rows in this
   // table — we want the per-control ones (control_key IS NOT NULL).
+  // No status filter: `not_evaluated` is an evaluator status, not an engine
+  // status, and evaluate-framework-controls.ts deliberately leaves the
+  // heuristic status in place when an evaluator returns it — so a control
+  // needing attestation can carry any of compliant/at_risk/non_compliant.
   // .eq('organization_id', orgId) appended automatically.
   const { data: evalRows, error: evalError } = await supabase
     .from('org_control_evaluations')
     .select('framework_id, control_key, details')
-    .eq('status', 'not_evaluated')
     .not('control_key', 'is', null);
 
   if (evalError) {
@@ -98,11 +125,10 @@ export async function listControlsNeedingAttestation(
     );
   }
 
-  const candidates = ((evalRows ?? []) as Array<Record<string, unknown>>).filter((row) => {
-    const details = (row as { details?: { gaps?: Array<{ code?: string }> } })
-      .details;
-    return details?.gaps?.some((g) => g?.code === MANUAL_GAP_CODE) === true;
-  });
+  const candidates = ((evalRows ?? []) as Array<Record<string, unknown>>).filter(
+    (row) =>
+      detailsOf(row).evaluator?.gap_codes?.includes(MANUAL_GAP_CODE) === true,
+  );
 
   if (candidates.length === 0) return [];
 
@@ -131,7 +157,19 @@ export async function listControlsNeedingAttestation(
     .select('*')
     .order('claimed_at', { ascending: false });
 
-  if (attError) {
+  // org_control_attestations was absent from production until it was backfilled
+  // on 2026-08-03 (migration 20260624021 had been recorded in the ledger while
+  // the table itself was never created — the known repo-vs-prod divergence).
+  // The tolerance is kept for environments still in that state: a missing
+  // relation reads as "no attestations yet" and the page renders the
+  // "awaiting attestation" bucket, rather than 500ing the moment an evaluator
+  // emits a gap code. A genuine query failure still throws.
+  const attestationTableMissing =
+    attError?.code === '42P01' ||
+    attError?.code === 'PGRST205' ||
+    /relation .* does not exist|could not find the table/i.test(attError?.message ?? '');
+
+  if (attError && !attestationTableMissing) {
     throw new Error(
       `listControlsNeedingAttestation: failed to read attestations: ${attError.message}`,
     );
@@ -147,20 +185,20 @@ export async function listControlsNeedingAttestation(
 
   return candidates.map((c) => {
     const frameworkId = String((c as { framework_id: string }).framework_id);
-    const controlKey = String((c as { control_key: string }).control_key);
-    const details = (c as { details?: { gaps?: Array<{ message?: string }> } })
-      .details;
-    const message =
-      details?.gaps?.find((g) => g?.message)?.message ??
-      'Manual attestation required.';
+    const details = detailsOf(c);
+    // The published control code (e.g. "A.5.6") is what the operator and the
+    // attestation rows key on; `control_key` is the internal `control:<uuid>`.
+    const controlKey =
+      details.code ??
+      details.control_code ??
+      String((c as { control_key: string }).control_key);
+    const message = details.evaluator?.reason ?? 'Manual attestation required.';
 
     return {
       frameworkId,
       frameworkName: frameworkNameById.get(frameworkId) ?? null,
       controlKey,
-      // We don't have a separate control title table populated for
-      // every pack today — fall back to the code itself.
-      controlTitle: controlKey,
+      controlTitle: details.title ?? details.control_title ?? controlKey,
       message,
       latestAttestation: latestByKey.get(`${frameworkId}|${controlKey}`) ?? null,
     };
@@ -203,6 +241,16 @@ export async function insertAttestationClaim(
 
 export interface ReviewAttestationInput {
   attestationId: string;
+  /**
+   * Audit 2026-08-02 — required. The lookup below runs on the service-role
+   * client, which bypasses RLS, and previously filtered on the attestation id
+   * alone. The caller (reviewAttestation in app/app/actions/
+   * compliance-attestations.ts) already held the reviewer's org id and simply
+   * did not pass it, so any authenticated user who knew or guessed an
+   * attestation UUID could approve or reject another tenant's compliance
+   * attestation. Made non-optional so every call site has to supply it.
+   */
+  organizationId: string;
   reviewerUserId: string;
   decision: 'approve' | 'reject';
   rejectedReason?: string;
@@ -223,9 +271,15 @@ export async function updateAttestationReview(
       'updateAttestationReview: rejected_reason required when rejecting',
     );
   }
-  const admin = createSupabaseAdminClient();
+  // Audit 2026-08-02: this ran on the raw admin client filtered by id alone, so
+  // any authenticated user who knew an attestation UUID could approve or reject
+  // another tenant's compliance attestation. Switched to the org-scoped client
+  // — which the rest of this module already uses — rather than hand-writing
+  // .eq('organization_id', ...) on each statement: the wrapper stamps the
+  // filter structurally, so a future statement added here cannot forget it.
+  const supabase = createSupabaseOrgClient(input.organizationId);
 
-  const { data: existing, error: readError } = await admin
+  const { data: existing, error: readError } = await supabase
     .from('org_control_attestations')
     .select('id, claimed_by, status')
     .eq('id', input.attestationId)
@@ -263,7 +317,7 @@ export async function updateAttestationReview(
           rejected_reason: input.rejectedReason?.trim() ?? null,
         };
 
-  const { data: updated, error: updateError } = await admin
+  const { data: updated, error: updateError } = await supabase
     .from('org_control_attestations')
     .update(patch)
     .eq('id', input.attestationId)

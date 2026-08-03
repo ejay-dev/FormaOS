@@ -6,6 +6,10 @@ import {
   isSelfServePlan,
   parseCheckoutIntent,
 } from '@/lib/billing/checkout-intent';
+import { PLAN_CATALOG, type PlanKey } from '@/lib/plans';
+
+// The only plan that must never reach self-serve Stripe Checkout.
+const SALES_LED_PLANS: PlanKey[] = ['enterprise'];
 
 describe('checkout-intent helpers', () => {
   describe('constants', () => {
@@ -27,8 +31,24 @@ describe('checkout-intent helpers', () => {
       expect(isSelfServePlan('pro')).toBe(true);
     });
 
+    it('treats Scale as self-serve', () => {
+      expect(isSelfServePlan('scale')).toBe(true);
+    });
+
     it('blocks Enterprise — invoice-only via Stripe Invoicing', () => {
       expect(isSelfServePlan('enterprise')).toBe(false);
+    });
+
+    // Guards the catalog itself: a plan key added to PLAN_CATALOG without a
+    // deliberate decision here fails this test instead of silently defaulting
+    // into (or out of) self-serve checkout.
+    it('classifies every plan in the catalog', () => {
+      const catalogKeys = (Object.keys(PLAN_CATALOG) as PlanKey[]).sort();
+      expect(catalogKeys).toEqual(['basic', 'enterprise', 'pro', 'scale']);
+
+      for (const key of catalogKeys) {
+        expect(isSelfServePlan(key)).toBe(!SALES_LED_PLANS.includes(key));
+      }
     });
   });
 
@@ -46,8 +66,17 @@ describe('checkout-intent helpers', () => {
       expect(parseCheckoutIntent('enterprise')).toBeNull();
     });
 
-    it('returns null for sales-led plans — only enterprise is blocked', () => {
-      expect(parseCheckoutIntent('enterprise')).toBeNull();
+    // Audit 2026-08-02: this case previously re-asserted the enterprise
+    // expectation verbatim, so no other plan in the sales-led/self-serve
+    // split was exercised. It now walks the whole catalog: every non-
+    // enterprise plan must round-trip, and enterprise alone must be null.
+    it('passes through every self-serve plan and blocks only the sales-led ones', () => {
+      for (const key of Object.keys(PLAN_CATALOG) as PlanKey[]) {
+        expect(parseCheckoutIntent(key)).toBe(
+          SALES_LED_PLANS.includes(key) ? null : key,
+        );
+      }
+      expect(parseCheckoutIntent('scale')).toBe('scale');
     });
 
     it('returns null for unknown values so the auto-checkout handshake is safe', () => {

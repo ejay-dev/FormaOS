@@ -2,13 +2,14 @@
  * New Staff Credential Form Page
  */
 
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createStaffCredential } from '@/app/app/actions/care-operations';
 import { SubmitButton } from '@/components/ui/submit-button';
+import { resolveUserLabels } from '@/lib/identity/user-directory';
 
 const CREDENTIAL_TYPES = [
   { value: 'wwcc', label: 'Working With Children Check' },
@@ -28,15 +29,38 @@ export default async function NewCredentialPage() {
   if (!systemState) redirect('/auth/signin');
 
   const { organization } = systemState;
-  const supabase = await createSupabaseServerClient();
+  const db = createSupabaseAdminClient();
 
-  // Fetch staff members for dropdown
-  const { data: staffMembers } = await supabase
+  // Fetch staff members for dropdown. `users:user_id(...)` cannot be embedded —
+  // org_members.user_id points at auth.users and the production schema declares
+  // no FK to a public table — so profiles are resolved in a second query.
+  const { data: members, error: membersError } = await db
     .from('org_members')
-    .select('user_id, users:user_id(email)')
+    .select('user_id')
     .eq('organization_id', organization.id);
 
-  type StaffMember = NonNullable<typeof staffMembers>[number];
+  if (membersError) {
+    throw new Error(`Failed to load staff members: ${membersError.message}`);
+  }
+
+  const memberIds = Array.from(
+    new Set(
+      (members ?? [])
+        .map((member) => member.user_id as string)
+        .filter(Boolean),
+    ),
+  );
+
+  // user_profiles.full_name and .email are NULL for all 2,598 production rows,
+  // so building the picker from that table produced a list of blank options.
+  // auth.users is the only populated source and is not reachable through
+  // PostgREST, hence the admin-API directory lookup.
+  const profileLabelById = await resolveUserLabels(db, memberIds);
+
+  const staffMembers = memberIds.map((userId) => ({
+    user_id: userId,
+    label: profileLabelById.get(userId) ?? userId,
+  }));
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -83,16 +107,9 @@ export default async function NewCredentialPage() {
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 defaultValue={systemState.user.id}
               >
-                {staffMembers?.map((member: StaffMember) => (
+                {staffMembers.map((member) => (
                   <option key={member.user_id} value={member.user_id}>
-                    {(() => {
-                      const u = member.users;
-                      const profile = Array.isArray(u) ? u[0] : u;
-                      return (
-                        (profile as { email?: string } | null)?.email ||
-                        member.user_id
-                      );
-                    })()}
+                    {member.label}
                   </option>
                 ))}
               </select>

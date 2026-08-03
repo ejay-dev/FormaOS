@@ -29,6 +29,74 @@ import type {
 const DEFAULT_MAX_RETRIES = 3;
 const INLINE_DELAY_THRESHOLD_MS = 30_000;
 
+/**
+ * Audit 2026-08-02 — allow-list for the `update_status` / `update_field`
+ * actions.
+ *
+ * Those two actions used to pass `config.table`, `config.recordId` and
+ * `config.field` straight into the service-role client, with no allow-list and
+ * no tenant filter. Because a workflow definition is authored by an ordinary
+ * org owner/admin/compliance_officer (POST /api/workflows) and run by them
+ * (POST /api/workflows/[id]/execute), that was an arbitrary cross-tenant write
+ * primitive: a step of
+ *   { table: 'org_members', recordId: '<own membership>', field: 'role', value: 'owner' }
+ * escalated the author to owner, and pointing recordId at another tenant's row
+ * mutated that tenant's data.
+ *
+ * Three separate constraints are applied below, because any one alone is
+ * insufficient:
+ *   1. the table must be listed here (blocks org_members, org_subscriptions, …);
+ *   2. the column must be listed for that table (blocks `role`, `plan_key`, …);
+ *   3. the UPDATE is filtered by the workflow's own org column, so even a
+ *      correctly-named table+field cannot reach another tenant's row.
+ *
+ * Every table and every column below was verified to exist in production on
+ * 2026-08-03 (information_schema). Listing a column that does not exist would
+ * reproduce the silent-write-failure bug this codebase already has elsewhere,
+ * so this list is deliberately narrow rather than aspirational — org_obligations
+ * and org_control_attestations were dropped from an earlier draft of it because
+ * neither table exists.
+ */
+const AUTOMATABLE_TARGETS = {
+  org_tasks: {
+    column: 'organization_id',
+    fields: ['status', 'priority', 'due_date', 'assigned_to', 'description'],
+  },
+  // `tasks` uses organization_id (not org_id) and is a much narrower table
+  // than org_tasks — no priority, no description.
+  tasks: { column: 'organization_id', fields: ['status', 'due_date', 'assigned_to'] },
+  org_incidents: { column: 'organization_id', fields: ['status', 'severity', 'description'] },
+  org_capa_items: {
+    column: 'organization_id',
+    fields: ['status', 'priority', 'severity', 'due_date', 'assigned_to', 'description'],
+  },
+  org_evidence: { column: 'organization_id', fields: ['status'] },
+  org_risks: { column: 'organization_id', fields: ['status', 'likelihood', 'impact', 'description'] },
+} as const satisfies Record<string, { column: string; fields: readonly string[] }>;
+
+type AutomatableTable = keyof typeof AUTOMATABLE_TARGETS;
+
+function resolveAutomationTarget(
+  table: unknown,
+  field: string,
+): { table: AutomatableTable; column: string } {
+  const name = String(table ?? '');
+  if (!Object.prototype.hasOwnProperty.call(AUTOMATABLE_TARGETS, name)) {
+    throw new Error(
+      `Workflow action target table "${name}" is not automatable. ` +
+        `Allowed: ${Object.keys(AUTOMATABLE_TARGETS).join(', ')}.`,
+    );
+  }
+  const target = AUTOMATABLE_TARGETS[name as AutomatableTable];
+  if (!(target.fields as readonly string[]).includes(field)) {
+    throw new Error(
+      `Workflow action cannot write "${field}" on "${name}". ` +
+        `Allowed fields: ${target.fields.join(', ')}.`,
+    );
+  }
+  return { table: name as AutomatableTable, column: target.column };
+}
+
 class WorkflowPauseSignal extends Error {
   constructor(
     readonly status: 'waiting_approval' | 'waiting_delay',
@@ -152,16 +220,21 @@ async function performAction(
 
     case 'create_task':
     case 'assign_task': {
+      // Audit 2026-08-02: this insert previously named four columns that do not
+      // exist on public.tasks — org_id (the column is organization_id),
+      // description, and priority — and set status='pending', which the
+      // tasks_status_check constraint rejects (open|in_progress|completed).
+      // Every create_task/assign_task step therefore failed. Verified against
+      // production: tasks is (id, organization_id, title, assigned_to, status,
+      // due_date, created_at).
       const { data, error } = await supabase
         .from('tasks')
         .insert({
-          org_id: workflow.org_id,
+          organization_id: workflow.org_id,
           title: config.title,
-          description: config.description,
           assigned_to: config.assignedTo ?? null,
           due_date: config.dueDate ?? null,
-          priority: config.priority ?? 'medium',
-          status: 'pending',
+          status: 'open',
         })
         .select('id')
         .single();
@@ -178,10 +251,15 @@ async function performAction(
         return { skipped: true, reason: 'table/recordId required' };
       }
 
+      const target = resolveAutomationTarget(config.table, 'status');
+
       const { error } = await supabase
-        .from(String(config.table))
+        .from(target.table)
         .update({ status: config.status })
-        .eq('id', String(config.recordId));
+        .eq('id', String(config.recordId))
+        // Tenant filter: the row must belong to the workflow's own org, so a
+        // recordId pointing at another tenant simply matches nothing.
+        .eq(target.column, workflow.org_id);
 
       if (error) {
         throw new Error(error.message);
@@ -195,10 +273,14 @@ async function performAction(
         return { skipped: true, reason: 'table/recordId/field required' };
       }
 
+      const field = String(config.field);
+      const target = resolveAutomationTarget(config.table, field);
+
       const { error } = await supabase
-        .from(String(config.table))
-        .update({ [String(config.field)]: config.value })
-        .eq('id', String(config.recordId));
+        .from(target.table)
+        .update({ [field]: config.value })
+        .eq('id', String(config.recordId))
+        .eq(target.column, workflow.org_id);
 
       if (error) {
         throw new Error(error.message);

@@ -321,28 +321,65 @@ class GDPRComplianceTest {
    * Test security measures
    */
   async testSecurity(page) {
+    const targetIsHttps = this.baseUrl.startsWith('https://');
+
     const tests = [
-      {
-        name: 'HTTPS Enforcement',
-        test: async () => {
-          const response = await page.goto(
-            this.baseUrl.replace('http://', 'https://'),
-          );
-          return {
-            passed: response.url().startsWith('https://'),
-            details: 'Must enforce HTTPS for data protection',
-          };
-        },
-      },
+      // Audit 2026-08-02: this check used to navigate to
+      // `baseUrl.replace('http://','https://')`. Against the default
+      // http://localhost:3000 there is no TLS listener, so page.goto
+      // rejected, the throw was caught by the wrapper below and recorded
+      // as a non-Environment violation — which the exit logic turns into
+      // exit 1 on EVERY run, regardless of the app's privacy posture. The
+      // failed navigation also parked the page on
+      // chrome-error://chromewebdata, destabilising later checks (the
+      // sibling SOC2 script documents the same hazard).
+      //
+      // TLS enforcement is only observable against an https target, so the
+      // check now runs for real there and is reported as an Environment
+      // limitation (excluded from the exit code) on a plaintext loopback
+      // run rather than being faked either way.
+      ...(targetIsHttps
+        ? [
+            {
+              name: 'HTTPS Enforcement',
+              test: async () => {
+                const response = await page.goto(this.baseUrl, {
+                  waitUntil: 'domcontentloaded',
+                });
+                const finalUrl = response ? response.url() : page.url();
+                const headers = response ? response.headers() : {};
+                const hsts = headers['strict-transport-security'] ?? null;
+                const maxAge = hsts
+                  ? Number((/max-age=(\d+)/i.exec(hsts) || [])[1] ?? 0)
+                  : 0;
+                return {
+                  passed: finalUrl.startsWith('https://') && maxAge > 0,
+                  details: `Must stay on TLS and send a live HSTS policy (url=${finalUrl}, strict-transport-security=${hsts ?? 'absent'})`,
+                };
+              },
+            },
+          ]
+        : []),
       {
         name: 'Secure Authentication',
+        // Audit 2026-08-02: this probed `/login`, which is not a route and
+        // has no redirect (next.config only redirects /signup*), so it
+        // always landed on the 404 page, found no password field and
+        // reported the control failed on every run. The canonical
+        // sign-in route is /auth/signin.
         test: async () => {
-          await page.goto(`${this.baseUrl}/login`);
-          const passwordField = await page.$('input[type="password"]');
-          const secureAuth = passwordField !== null;
+          await page.goto(`${this.baseUrl}/auth/signin`, {
+            waitUntil: 'domcontentloaded',
+          });
+          const passwordField = await page.$('#password');
+          const fieldType = passwordField
+            ? await passwordField.getAttribute('type')
+            : null;
           return {
-            passed: secureAuth,
-            details: 'Must implement secure authentication',
+            // A masked password input on the canonical sign-in route.
+            // Fails if the field is removed or downgraded to type="text".
+            passed: fieldType === 'password',
+            details: `Sign-in must collect the password in a masked field (got type=${fieldType ?? 'no field'})`,
           };
         },
       },
@@ -375,6 +412,17 @@ class GDPRComplianceTest {
         },
       },
     ];
+
+    if (!targetIsHttps) {
+      this.results.violations.push({
+        category: 'Environment',
+        test: 'HTTPS Enforcement',
+        error: `TLS enforcement cannot be observed against ${this.baseUrl}. Re-run with an https BASE_URL (e.g. the deployed environment) to exercise this control.`,
+      });
+      this.results.recommendations.push(
+        'Run the GDPR suite against an https deployment so HTTPS Enforcement is actually exercised.',
+      );
+    }
 
     for (const test of tests) {
       try {

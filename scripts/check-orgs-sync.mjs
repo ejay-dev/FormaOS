@@ -89,29 +89,61 @@ async function main() {
       pass('public.org_subscriptions is intact.');
     }
 
-    // Sentinel: ensure foreign keys on a representative dependent are
-    // not silently re-added pointing at a fictitious orgs table. Best
-    // effort — try inserting a row with an unknown org_id and expect
-    // the FK error message to reference organizations, not orgs.
+    // Sentinel: prove the org-id foreign keys on a representative
+    // dependent still resolve to organizations(id) — and that they are
+    // still ENFORCED.
+    //
+    // The probe row must be complete apart from the org id. org_subscriptions
+    // has NOT NULL org_id / plan_code / plan_key plus an FK on plan_code →
+    // billing_plans(code); a partial row fails on one of those long before
+    // Postgres evaluates the organization FK. The previous version inserted
+    // only { organization_id, plan_key } and treated ANY error as proof of
+    // enforcement, so a dropped organization FK still reported PASS.
+    //
+    // The insert is expected to abort, so nothing is written to the target
+    // database. If it ever succeeds we delete the row and fail loudly.
     const fakeOrgId = '00000000-0000-4000-8000-000000000000';
     const probe = await admin
       .from('org_subscriptions')
-      .insert({ organization_id: fakeOrgId, plan_key: 'basic' })
-      .select('id')
+      .insert({
+        org_id: fakeOrgId,
+        organization_id: fakeOrgId,
+        plan_code: 'starter',
+        plan_key: 'basic',
+        status: 'trialing',
+      })
+      .select('org_id')
       .single();
+
     if (probe.error) {
-      const msg = String(probe.error.message || '').toLowerCase();
-      if (msg.includes('"orgs"') || msg.includes("'orgs'") || msg.includes(' orgs ')) {
+      const detail = `${probe.error.message ?? ''} ${probe.error.details ?? ''}`;
+      const isForeignKeyViolation = probe.error.code === '23503';
+      const namesOrgs = /\borgs\b/.test(detail) && !/organizations/.test(detail);
+      const namesOrganizations =
+        /is not present in table "organizations"/i.test(detail) ||
+        /org_subscriptions_(org_id|organization_id)_fkey/i.test(detail);
+
+      if (namesOrgs) {
         fail(
           `org_subscriptions FK still references orgs — got: ${probe.error.message}`,
         );
+      } else if (isForeignKeyViolation && namesOrganizations) {
+        pass(
+          'org_subscriptions.org_id is still an enforced FK onto organizations(id).',
+        );
+      } else if (isForeignKeyViolation) {
+        fail(
+          `org_subscriptions probe tripped a different foreign key before reaching the organization FK — the sentinel row is stale. code=${probe.error.code} detail=${detail.trim()}`,
+        );
       } else {
-        pass('org_subscriptions FK error path no longer mentions orgs.');
+        fail(
+          `org_subscriptions probe failed before the organization FK could be evaluated (expected SQLSTATE 23503). code=${probe.error.code} detail=${detail.trim()}`,
+        );
       }
-    } else if (probe.data?.id) {
-      // Unexpected — insert succeeded with a fake org. Clean up and
-      // flag because this means the FK isn't enforcing anymore.
-      await admin.from('org_subscriptions').delete().eq('id', probe.data.id);
+    } else {
+      // Insert succeeded with a non-existent organization. Clean up and
+      // flag — the FK is no longer enforcing.
+      await admin.from('org_subscriptions').delete().eq('org_id', fakeOrgId);
       fail(
         'org_subscriptions accepted a row with a non-existent organization_id — FK enforcement broken.',
       );

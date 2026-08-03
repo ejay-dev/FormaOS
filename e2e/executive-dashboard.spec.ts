@@ -52,44 +52,38 @@ test.describe('Executive Dashboard Access', () => {
     }
   });
 
+  // These three tests previously probed with `isVisible().catch(() => false)`
+  // and then only console.log'd inside an `if`, so they passed when the
+  // section was missing entirely. Each executive widget has exactly two
+  // settled states — populated or explicit-empty — and both carry distinct
+  // copy, so asserting "one of the two is visible" fails if the widget stops
+  // rendering (empty shell, crash, or removal) while staying data-independent.
+
   test('Framework rollup displays multiple frameworks', async ({ page }) => {
     await gotoAppRoute(page, '/app/executive');
 
-    // Check if framework rollup section exists
-    const frameworkSection = page.locator('[data-testid="framework-rollup"], text=/framework/i');
-    const hasFrameworks = await frameworkSection.first().isVisible({ timeout: 5000 }).catch(() => false);
-
-    if (hasFrameworks) {
-      // Should show framework cards with scores
-      const frameworkCards = page.locator('.rounded-xl.border');
-      const count = await frameworkCards.count();
-      expect(count).toBeGreaterThan(0);
-      console.log(`Framework rollup shows ${count} framework cards`);
-    }
+    // FrameworkRollupWidget: "<n> frameworks tracked" or the empty state.
+    const populated = page.getByText(/^\d+ frameworks tracked$/);
+    const empty = page.getByText('No compliance frameworks enabled.');
+    await expect(populated.or(empty).first()).toBeVisible({ timeout: 20000 });
   });
 
   test('Critical controls table loads', async ({ page }) => {
     await gotoAppRoute(page, '/app/executive');
 
-    // Check for critical controls section
-    const criticalSection = page.locator('text=/critical|attention|action required/i');
-    const hasCritical = await criticalSection.first().isVisible({ timeout: 5000 }).catch(() => false);
-
-    if (hasCritical) {
-      console.log('Critical controls section displayed');
-    }
+    // CriticalControlsTable: "<n> controls require attention" or "No Critical Gaps".
+    const populated = page.getByText(/^\d+ controls? require attention$/);
+    const empty = page.getByText('No Critical Gaps');
+    await expect(populated.or(empty).first()).toBeVisible({ timeout: 20000 });
   });
 
   test('Deadline calendar shows upcoming deadlines', async ({ page }) => {
     await gotoAppRoute(page, '/app/executive');
 
-    // Check for deadline section
-    const deadlineSection = page.locator('text=/deadline|due|upcoming/i');
-    const hasDeadlines = await deadlineSection.first().isVisible({ timeout: 5000 }).catch(() => false);
-
-    if (hasDeadlines) {
-      console.log('Deadline section displayed');
-    }
+    // DeadlineCalendar: "<n> upcoming" or "No Upcoming Deadlines".
+    const populated = page.getByText(/^\d+ upcoming$/);
+    const empty = page.getByText('No Upcoming Deadlines');
+    await expect(populated.or(empty).first()).toBeVisible({ timeout: 20000 });
   });
 });
 

@@ -113,6 +113,65 @@ async function drainFlush() {
   }
 }
 
+type CapturedInsert = { table: string; rows: any };
+
+/**
+ * Record every `.insert()` the flush pipeline performs, per table, so tests
+ * can assert the rows that actually reach the database instead of only that
+ * the enqueue call did not throw.
+ */
+function captureInserts(
+  results: Record<string, any> = {},
+): CapturedInsert[] {
+  const captured: CapturedInsert[] = [];
+  mockAdminClient.from.mockImplementation((table: string) => {
+    const builder = createBuilder(
+      results[table] ?? { data: [{ id: `${table}-row` }], error: null },
+    );
+    const originalInsert = builder.insert;
+    builder.insert = jest.fn((rows: any) => {
+      captured.push({ table, rows });
+      return originalInsert(rows);
+    });
+    return builder;
+  });
+  return captured;
+}
+
+function securityRows(captured: CapturedInsert[]) {
+  return captured
+    .filter((e) => e.table === 'security_events' && Array.isArray(e.rows))
+    .flatMap((e) => e.rows as any[]);
+}
+
+/**
+ * Dispatch one security event, run the flush pipeline, and return the row
+ * written to security_events. Types must be unique per test so a row left
+ * over from a previous test cannot satisfy the lookup.
+ */
+async function flushSecurityRow(payload: any) {
+  const captured = captureInserts();
+  dispatchSecurityEventEnhanced(payload);
+  await drainFlush();
+  const row = securityRows(captured).find((r) => r.type === payload.type);
+  expect(row).toBeDefined();
+  return row as Record<string, any>;
+}
+
+async function flushActivityRow(payload: any) {
+  const captured = captureInserts({
+    organizations: { data: [{ id: payload.orgId }], error: null },
+  });
+  dispatchUserActivity(payload);
+  await drainFlush();
+  const row = captured
+    .filter((e) => e.table === 'user_activity' && Array.isArray(e.rows))
+    .flatMap((e) => e.rows as any[])
+    .find((r) => r.action === payload.action);
+  expect(row).toBeDefined();
+  return row as Record<string, any>;
+}
+
 describe('security/event-logger', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -155,21 +214,25 @@ describe('security/event-logger', () => {
       ).not.toThrow();
     });
 
-    it('handles payload with sensitive metadata keys', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'login_failure',
-          ip: '10.0.0.1',
-          userAgent: 'Agent',
-          severity: 'medium',
-          metadata: {
-            password: 'secret123',
-            token: 'abc',
-            email: 'user@example.com',
-            safe: 'ok',
-          },
-        }),
-      ).not.toThrow();
+    it('redacts sensitive metadata keys before the row is written', async () => {
+      const row = await flushSecurityRow({
+        type: 'dispatch_sensitive_metadata',
+        ip: '10.0.0.1',
+        userAgent: 'Agent',
+        severity: 'medium',
+        metadata: {
+          password: 'secret123',
+          token: 'abc',
+          email: 'user@example.com',
+          safe: 'ok',
+        },
+      });
+
+      expect(row.metadata.password).toBe('[REDACTED]');
+      expect(row.metadata.token).toBe('[REDACTED]');
+      expect(row.metadata.email).toBe('us***@example.com');
+      expect(row.metadata.safe).toBe('ok');
+      expect(JSON.stringify(row.metadata)).not.toContain('secret123');
     });
 
     it('handles payload with all optional fields set', () => {
@@ -213,14 +276,17 @@ describe('security/event-logger', () => {
       ).not.toThrow();
     });
 
-    it('sanitizes metadata containing sensitive keys', () => {
-      expect(() =>
-        dispatchUserActivity({
-          userId: 'u3',
-          action: 'update',
-          metadata: { authorization: 'Bearer xxx', info: 'ok' },
-        }),
-      ).not.toThrow();
+    it('sanitizes metadata containing sensitive keys', async () => {
+      const row = await flushActivityRow({
+        userId: 'u3',
+        orgId: 'org-activity-sensitive',
+        action: 'activity_sensitive_metadata',
+        metadata: { authorization: 'Bearer xxx', info: 'ok' },
+      });
+
+      expect(row.metadata.authorization).toBe('[REDACTED]');
+      expect(row.metadata.info).toBe('ok');
+      expect(JSON.stringify(row.metadata)).not.toContain('Bearer xxx');
     });
   });
 
@@ -334,72 +400,107 @@ describe('security/event-logger', () => {
   // ─── Flush pipeline integration ───────────────────────────────
   describe('flush pipeline', () => {
     it('flushes security events to supabase after timer', async () => {
-      const insertBuilder = createBuilder({
-        data: [{ id: 'ev1' }],
-        error: null,
-      });
-      mockAdminClient.from.mockReturnValue(insertBuilder);
-
-      dispatchSecurityEventEnhanced({
-        type: 'login_success',
+      const row = await flushSecurityRow({
+        type: 'flush_security_row',
         ip: '1.1.1.1',
         userAgent: 'Chrome',
         userId: 'u1',
+        orgId: 'org1',
+        path: '/api/x',
+        method: 'GET',
+        statusCode: 200,
       });
 
-      await drainFlush();
-
-      expect(mockAdminClient.from).toHaveBeenCalled();
+      expect(row).toMatchObject({
+        type: 'flush_security_row',
+        severity: 'info',
+        user_id: 'u1',
+        org_id: 'org1',
+        ip_address: '1.1.1.1',
+        user_agent: 'Chrome',
+        request_path: '/api/x',
+        request_method: 'GET',
+        status_code: 200,
+        geo_country: 'AU',
+        geo_city: 'Sydney',
+      });
     });
 
     it('flushes user activity events', async () => {
-      const insertBuilder = createBuilder({ data: null, error: null });
-      mockAdminClient.from.mockReturnValue(insertBuilder);
+      const row = await flushActivityRow({
+        userId: 'u1',
+        action: 'flush_activity_row',
+        orgId: 'org1',
+        entityType: 'page',
+        entityId: 'p1',
+        route: '/app/dashboard',
+      });
+
+      expect(row).toMatchObject({
+        user_id: 'u1',
+        org_id: 'org1',
+        action: 'flush_activity_row',
+        entity_type: 'page',
+        entity_id: 'p1',
+        route: '/app/dashboard',
+      });
+    });
+
+    it('drops activity rows whose org no longer exists', async () => {
+      const captured = captureInserts({
+        organizations: { data: [], error: null },
+      });
 
       dispatchUserActivity({
         userId: 'u1',
-        action: 'page_view',
-        orgId: 'org1',
+        action: 'activity_orphan_org',
+        orgId: 'org-does-not-exist',
       });
 
       await drainFlush();
 
-      expect(mockAdminClient.from).toHaveBeenCalled();
+      const activityRows = captured
+        .filter((e) => e.table === 'user_activity' && Array.isArray(e.rows))
+        .flatMap((e) => e.rows as any[]);
+      expect(
+        activityRows.some((r) => r.action === 'activity_orphan_org'),
+      ).toBe(false);
     });
 
     it('handles enrichGeoData failure gracefully', async () => {
       mockEnrichGeoData.mockRejectedValueOnce(new Error('Geo fail'));
-      const insertBuilder = createBuilder({
-        data: [{ id: 'ev2' }],
-        error: null,
-      });
-      mockAdminClient.from.mockReturnValue(insertBuilder);
 
-      dispatchSecurityEventEnhanced({
-        type: 'login_failure',
+      const row = await flushSecurityRow({
+        type: 'flush_geo_failure',
         ip: '9.9.9.9',
         userAgent: 'Chrome',
       });
 
-      await drainFlush();
-
-      expect(mockAdminClient.from).toHaveBeenCalled();
+      // The event is still persisted, just without geo enrichment.
+      expect(row.geo_country).toBeUndefined();
+      expect(row.ip_address).toBe('9.9.9.9');
     });
 
     it('handles insert error gracefully (best-effort)', async () => {
-      const errorBuilder = createBuilder({
-        data: null,
-        error: { message: 'db error' },
+      const captured = captureInserts({
+        security_events: { data: null, error: { message: 'db error' } },
       });
-      mockAdminClient.from.mockReturnValue(errorBuilder);
 
       dispatchSecurityEventEnhanced({
-        type: 'login_success',
+        type: 'flush_insert_error',
+        severity: 'critical',
         ip: '1.1.1.1',
         userAgent: 'X',
       });
 
       await drainFlush();
+
+      // The insert was attempted, but nothing downstream runs on failure:
+      // no alert row is created off an event that was never stored.
+      expect(
+        securityRows(captured).some((r) => r.type === 'flush_insert_error'),
+      ).toBe(true);
+      expect(captured.some((e) => e.table === 'security_alerts')).toBe(false);
     });
 
     it('triggers detection rules for login_failure events', async () => {
@@ -523,11 +624,7 @@ describe('security/event-logger', () => {
         metadata: {},
       });
 
-      const insertBuilder = createBuilder({
-        data: [{ id: 'ev-alert' }],
-        error: null,
-      });
-      mockAdminClient.from.mockReturnValue(insertBuilder);
+      const captured = captureInserts();
 
       dispatchSecurityEventEnhanced({
         type: 'login_failure',
@@ -539,207 +636,218 @@ describe('security/event-logger', () => {
 
       await drainFlush();
 
-      const fromCalls = mockAdminClient.from.mock.calls.map((c: any) => c[0]);
-      expect(fromCalls).toContain('security_events');
+      const alertInsert = captured.find(
+        (e) => e.table === 'security_alerts',
+      );
+      expect(alertInsert).toBeDefined();
+      expect(alertInsert!.rows).toEqual([
+        {
+          event_id: 'security_events-row',
+          notes: 'Auto-generated: Brute force detected',
+        },
+      ]);
     });
 
     it('skips brute force by user when no userId on login_failure', async () => {
-      const insertBuilder = createBuilder({
-        data: [{ id: 'ev-no-uid' }],
-        error: null,
-      });
-      mockAdminClient.from.mockReturnValue(insertBuilder);
-
-      dispatchSecurityEventEnhanced({
+      await flushSecurityRow({
         type: 'login_failure',
         ip: '8.8.8.8',
         userAgent: 'UA',
       });
 
-      await drainFlush();
-
-      expect(mockDetectBruteForce).toHaveBeenCalled();
+      // Only the IP-scoped check runs when the attempt is anonymous.
+      expect(mockDetectBruteForce).toHaveBeenCalledTimes(1);
+      expect(mockDetectBruteForce).toHaveBeenCalledWith(
+        expect.objectContaining({ ip: '8.8.8.8' }),
+        { by: 'ip', value: '8.8.8.8' },
+      );
     });
 
     it('skips session anomaly when no sessionId for token_refresh', async () => {
-      const insertBuilder = createBuilder({
-        data: [{ id: 'ev-no-ses' }],
-        error: null,
-      });
-      mockAdminClient.from.mockReturnValue(insertBuilder);
-
-      dispatchSecurityEventEnhanced({
+      await flushSecurityRow({
         type: 'token_refresh',
         ip: '9.9.9.9',
         userAgent: 'UA',
         metadata: {},
       });
 
-      await drainFlush();
+      expect(mockDetectSessionAnomaly).not.toHaveBeenCalled();
     });
 
     it('handles privilege escalation with non-string userRole', async () => {
-      const insertBuilder = createBuilder({
-        data: [{ id: 'ev-nr' }],
-        error: null,
-      });
-      mockAdminClient.from.mockReturnValue(insertBuilder);
-
-      dispatchSecurityEventEnhanced({
+      await flushSecurityRow({
         type: 'unauthorized_access_attempt',
         ip: '10.10.10.10',
         userAgent: 'UA',
         metadata: { userRole: 123 },
       });
 
-      await drainFlush();
+      expect(mockDetectPrivilegeEscalation).toHaveBeenCalledWith(
+        expect.objectContaining({ ip: '10.10.10.10' }),
+        undefined,
+      );
     });
   });
 
   // ─── Metadata sanitization branches ────────────────────────────
+  // These assert the metadata column as written to security_events: if the
+  // redaction/masking/truncation logic is removed, raw secrets reach the DB
+  // and every one of these fails.
   describe('metadata sanitization', () => {
-    it('sanitizes deeply nested objects (depth > 3 => TRUNCATED)', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: {
-            nested: { level2: { level3: { level4: { tooDeep: true } } } },
-          },
-        }),
-      ).not.toThrow();
+    it('sanitizes deeply nested objects (depth > 3 => TRUNCATED)', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_depth',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: {
+          nested: { level2: { level3: { level4: { tooDeep: true } } } },
+        },
+      });
+
+      expect(row.metadata.nested.level2.level3.level4.tooDeep).toBe(
+        '[TRUNCATED]',
+      );
     });
 
-    it('sanitizes arrays in metadata (slices to 20)', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: {
-            items: Array.from({ length: 30 }, (_, i) => i),
-          },
-        }),
-      ).not.toThrow();
+    it('sanitizes arrays in metadata (slices to 20)', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_array',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: {
+          items: Array.from({ length: 30 }, (_, i) => i),
+        },
+      });
+
+      expect(row.metadata.items).toHaveLength(20);
+      expect(row.metadata.items[19]).toBe(19);
     });
 
-    it('sanitizes boolean and number values', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: {
-            count: 42,
-            active: true,
-            nullable: null,
-            undefinedVal: undefined,
-          },
-        }),
-      ).not.toThrow();
+    it('sanitizes boolean and number values', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_primitives',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: {
+          count: 42,
+          active: true,
+          nullable: null,
+          undefinedVal: undefined,
+        },
+      });
+
+      expect(row.metadata.count).toBe(42);
+      expect(row.metadata.active).toBe(true);
+      expect(row.metadata.nullable).toBeNull();
+      expect(row.metadata.undefinedVal).toBeUndefined();
     });
 
-    it('partially masks email addresses', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: {
-            email: 'john.doe@example.com',
-            contactEmail: 'ab@cd.com',
-          },
-        }),
-      ).not.toThrow();
+    it('partially masks email addresses', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_email',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: {
+          email: 'john.doe@example.com',
+          contactEmail: 'ab@cd.com',
+        },
+      });
+
+      expect(row.metadata.email).toBe('jo***@example.com');
+      expect(row.metadata.contactEmail).toBe('ab***@cd.com');
     });
 
-    it('handles email with short local part (<= 1 char → REDACTED)', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: { email: 'a@example.com' },
-        }),
-      ).not.toThrow();
+    it('handles email with short local part (<= 1 char → REDACTED)', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_short_email',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: { email: 'a@example.com' },
+      });
+
+      expect(row.metadata.email).toBe('[REDACTED]');
     });
 
-    it('redacts values matching sensitive pattern', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: { cookie: 'x', secret: 'y', refresh: 'z' },
-        }),
-      ).not.toThrow();
+    it('redacts values matching sensitive pattern', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_sensitive_keys',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: { cookie: 'x', secret: 'y', refresh: 'z', safe: 'keep-me' },
+      });
+
+      expect(row.metadata.cookie).toBe('[REDACTED]');
+      expect(row.metadata.secret).toBe('[REDACTED]');
+      expect(row.metadata.refresh).toBe('[REDACTED]');
+      expect(row.metadata.safe).toBe('keep-me');
     });
 
-    it('handles strings containing @ that are not emails', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: { mention: '@username' },
-        }),
-      ).not.toThrow();
+    it('handles strings containing @ that are not emails', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_mention',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: { mention: '@username' },
+      });
+
+      expect(row.metadata.mention).toBe('[REDACTED]');
     });
 
-    it('truncates very long strings to 1000 chars', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: { longKey: 'x'.repeat(2000) },
-        }),
-      ).not.toThrow();
+    it('truncates very long strings to 1000 chars', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_long_string',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: { longKey: 'x'.repeat(2000) },
+      });
+
+      expect(row.metadata.longKey).toHaveLength(1000);
     });
 
-    it('handles non-primitive non-object values (Symbol, Function → String)', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: { sym: Symbol('test') as any, fn: (() => {}) as any },
-        }),
-      ).not.toThrow();
+    it('handles non-primitive non-object values (Symbol, Function → String)', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_symbol',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: { sym: Symbol('marker') as any, fn: (() => {}) as any },
+      });
+
+      expect(row.metadata.sym).toBe('Symbol(marker)');
+      expect(typeof row.metadata.fn).toBe('string');
     });
 
-    it('handles undefined metadata', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: undefined,
-        }),
-      ).not.toThrow();
+    it('handles undefined metadata', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_undefined',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: undefined,
+      });
+
+      // Only the parsed device info survives.
+      expect(row.metadata).toEqual({ browser: 'Chrome', os: 'macOS' });
     });
 
-    it('handles email with no domain part', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: { email: 'nodomain@' },
-        }),
-      ).not.toThrow();
+    it('handles email with no domain part', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_no_domain',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: { email: 'nodomain@' },
+      });
+
+      expect(row.metadata.email).toBe('[REDACTED]');
     });
 
-    it('handles string values that contain sensitive keywords in value', () => {
-      expect(() =>
-        dispatchSecurityEventEnhanced({
-          type: 'test',
-          ip: '0.0.0.0',
-          userAgent: 'T',
-          metadata: { note: 'Uses a secret token pattern' },
-        }),
-      ).not.toThrow();
+    it('handles string values that contain sensitive keywords in value', async () => {
+      const row = await flushSecurityRow({
+        type: 'sanitize_sensitive_value',
+        ip: '0.0.0.0',
+        userAgent: 'T',
+        metadata: { note: 'Uses a secret token pattern' },
+      });
+
+      expect(row.metadata.note).toBe('[REDACTED]');
     });
   });
 

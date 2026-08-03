@@ -185,16 +185,37 @@ describe('In-memory cache operations', () => {
   });
 
   describe('getCachedSWR', () => {
+    // Audit 2026-08-02: this only asserted the stale value came back, which
+    // is plain cache-hit behaviour identical to getCached — deleting the
+    // background-refresh block from getCachedSWR left the suite green. It now
+    // asserts both halves of stale-while-revalidate.
     it('returns stale data and revalidates in background', async () => {
       // Prime the cache
       await getCached('swr:key', () => Promise.resolve('stale'), 60);
 
-      const result = await getCachedSWR(
-        'swr:key',
-        () => Promise.resolve('fresh'),
-        60,
-      );
+      const fresh = jest.fn().mockResolvedValue('fresh');
+      const result = await getCachedSWR('swr:key', fresh, 60);
       expect(result).toBe('stale'); // returns stale immediately
+
+      // Revalidation is fire-and-forget; drain the microtask queue.
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(fresh).toHaveBeenCalledTimes(1);
+
+      // ...and the refreshed value replaced the stale entry.
+      const afterRefresh = jest.fn().mockResolvedValue('should-not-run');
+      expect(await getCached('swr:key', afterRefresh, 60)).toBe('fresh');
+      expect(afterRefresh).not.toHaveBeenCalled();
+    });
+
+    it('does not revalidate when the key is cold', async () => {
+      const fetcher = jest.fn().mockResolvedValue('new');
+      const result = await getCachedSWR('swr:cold', fetcher, 60);
+      await new Promise((resolve) => setImmediate(resolve));
+      // Cold key falls through to getCached — exactly one fetch, no second
+      // background pass on top of it.
+      expect(result).toBe('new');
+      expect(fetcher).toHaveBeenCalledTimes(1);
     });
 
     it('falls back to getCached when no stale data', async () => {

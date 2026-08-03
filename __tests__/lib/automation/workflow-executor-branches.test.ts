@@ -68,6 +68,14 @@ jest.mock('@/lib/security/url-validator', () => ({
   validateWebhookUrl: jest.fn().mockResolvedValue(undefined),
 }));
 
+// Hoisted so it actually replaces the module the executor dynamically
+// imports. Declaring this inside an it() body registered nothing — the
+// real engine ran against the generic supabase mock instead.
+const mockUpdateComplianceScore = jest.fn().mockResolvedValue(undefined);
+jest.mock('@/lib/automation/compliance-score-engine', () => ({
+  updateComplianceScore: (...args: any[]) => mockUpdateComplianceScore(...args),
+}));
+
 const mockCreateApprovalRequest = jest.fn().mockResolvedValue(undefined);
 const mockCreateExecution = jest.fn();
 const mockCreateWorkflowExecution = jest.fn();
@@ -176,10 +184,6 @@ describe('workflow-executor branches', () => {
   });
 
   it('executes calculate_compliance_score action', async () => {
-    jest.mock('@/lib/automation/compliance-score-engine', () => ({
-      updateComplianceScore: jest.fn().mockResolvedValue(undefined),
-    }));
-
     const workflow = makeWorkflow([
       {
         id: 's1',
@@ -194,6 +198,10 @@ describe('workflow-executor branches', () => {
       { persist: false },
     );
     expect(result.execution.status).toBe('completed');
+    // The action's whole job is to invoke the score engine for the
+    // workflow's org — a step that silently no-ops would pass without this.
+    expect(mockUpdateComplianceScore).toHaveBeenCalledWith('org-1');
+    expect(result.trace.steps[0].output).toEqual({ recalculated: true });
   });
 
   it('executes generate_report action', async () => {
@@ -377,8 +385,14 @@ describe('workflow-executor branches', () => {
       { trigger: { type: 'manual', data: {} } },
       { persist: false },
     );
-    // With waitForAll=false, parallel still reports failure but doesn't throw
-    expect(result.execution.status).toBeDefined();
+    // waitForAll=false must NOT fail the run: the parallel step records the
+    // failed branch but execution continues to completion. A regression that
+    // made a fire-and-forget branch failure abort the workflow flips
+    // execution.status to 'failed' and fails here.
+    expect(result.execution.status).toBe('completed');
+    const parallelStep = result.trace.steps.find((s: any) => s.stepId === 's1');
+    expect(parallelStep.status).toBe('failed');
+    expect(parallelStep.output).toEqual({ branches: 1, failedBranches: 1 });
   });
 
   it('delay step with zero duration is skipped', async () => {

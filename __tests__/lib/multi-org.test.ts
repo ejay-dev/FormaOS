@@ -95,6 +95,7 @@ import {
 } from '@/lib/multi-org';
 import { findAuthUserByEmail } from '@/lib/users/admin-profile-directory';
 import { createInvitation } from '@/lib/invitations/create-invitation';
+import { invalidateCache } from '@/lib/cache';
 
 const mockClient = jest.requireMock<any>('@/lib/supabase/server').__client;
 
@@ -217,8 +218,40 @@ describe('multi-org', () => {
       });
 
       const result = await getCurrentOrganization('u1');
-      // May return the org or null depending on internal flow
-      expect(result).toBeDefined();
+      // The fallback must resolve the user's first membership AND persist it
+      // as the new default — `toBeDefined()` used to pass on a null return.
+      expect(result).toEqual({ id: 'org2', name: 'Org2' });
+      expect(orgBuilder.eq).toHaveBeenCalledWith('id', 'org2');
+      expect(upsertBuilder.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          user_id: 'u1',
+          current_organization_id: 'org2',
+        }),
+        { onConflict: 'user_id' },
+      );
+    });
+
+    it('does not re-persist a preference that is already set', async () => {
+      const prefBuilder = createBuilder({
+        data: { current_organization_id: 'org1' },
+        error: null,
+      });
+      const orgBuilder = createBuilder({
+        data: { id: 'org1', name: 'Org1' },
+        error: null,
+      });
+      const memberBuilder = createBuilder({ data: [], error: null });
+
+      mockClient.from.mockImplementation((table: string) => {
+        if (table === 'user_preferences') return prefBuilder;
+        if (table === 'org_members') return memberBuilder;
+        if (table === 'organizations') return orgBuilder;
+        return createBuilder();
+      });
+
+      await getCurrentOrganization('u1');
+      expect(prefBuilder.upsert).not.toHaveBeenCalled();
+      expect(mockClient.from).not.toHaveBeenCalledWith('org_members');
     });
   });
 
@@ -311,7 +344,34 @@ describe('multi-org', () => {
         name: 'New Org',
         slug: 'new-org',
       });
-      expect(result).toBeDefined();
+      expect(result).toEqual({
+        id: 'new-org',
+        name: 'New Org',
+        slug: 'new-org',
+      });
+      expect(insertBuilder.insert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'New Org',
+          slug: 'new-org',
+          owner_id: 'u1',
+          subscription_tier: 'free',
+          subscription_status: 'active',
+        }),
+      );
+      // The creator must land as an active owner, or the new org is
+      // immediately inaccessible to the person who made it.
+      expect(memberListBuilder.insert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          organization_id: 'new-org',
+          user_id: 'u1',
+          role: 'owner',
+          status: 'active',
+        }),
+      );
+      expect(upsertBuilder.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({ current_organization_id: 'new-org' }),
+        { onConflict: 'user_id' },
+      );
     });
 
     it('throws when slug is already taken', async () => {
@@ -377,7 +437,14 @@ describe('multi-org', () => {
       const result = await updateOrganization('org1', 'u1', {
         name: 'Updated',
       });
-      expect(result).toBeDefined();
+      expect(result).toEqual({ id: 'org1', name: 'Updated' });
+      expect(updateBuilder.update).toHaveBeenCalledWith({ name: 'Updated' });
+      expect(updateBuilder.eq).toHaveBeenCalledWith('id', 'org1');
+      // The role check must be scoped to both the org and the caller.
+      expect(memberBuilder.eq).toHaveBeenCalledWith('organization_id', 'org1');
+      expect(memberBuilder.eq).toHaveBeenCalledWith('user_id', 'u1');
+      // Every member's org cache is invalidated after the write.
+      expect(invalidateCache).toHaveBeenCalledWith('user:u1:organizations');
     });
 
     it('throws when user is not admin/owner', async () => {

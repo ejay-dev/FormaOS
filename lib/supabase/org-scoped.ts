@@ -85,13 +85,18 @@ const TENANT_TABLE_SCOPES = {
   report_export_jobs: { column: 'organization_id' },
   compliance_export_jobs: { column: 'organization_id' },
   enterprise_export_jobs: { column: 'organization_id' },
-  org_care_plans: { column: 'organization_id' },
-  org_care_goals: { column: 'organization_id' },
+  org_care_plans: { column: 'organization_id' },  // Verified against prod 2026-08-03: this table uses org_id, not
+  // organization_id. The registry said organization_id, so every org-client
+  // write silently failed on a non-existent column.
+
+  org_care_goals: { column: 'org_id' },
   org_patients: { column: 'organization_id' },
-  org_incidents: { column: 'organization_id' },
-  org_notifications: { column: 'organization_id' },
+  org_incidents: { column: 'organization_id' },  // Verified against prod 2026-08-03: this table uses org_id, not
+  // organization_id. The registry said organization_id, so every org-client
+  // write silently failed on a non-existent column.
+
+  org_notifications: { column: 'org_id' },
   org_user_notifications: { column: 'organization_id' },
-  notification_preferences: { column: 'organization_id' },
   control_tasks: { column: 'organization_id' },
   org_control_attestations: { column: 'organization_id' },
   org_workflows: { column: 'organization_id' },
@@ -113,25 +118,33 @@ const TENANT_TABLE_SCOPES = {
   api_key_usage_log: { column: 'org_id' },
   org_invitations: { column: 'organization_id' },
   org_user_roles: { column: 'organization_id' },
-  org_settings: { column: 'organization_id' },
-  org_integrations: { column: 'organization_id' },
-  user_preferences: { column: 'organization_id' },
+  org_settings: { column: 'organization_id' },  // Verified against prod 2026-08-03: this table uses org_id, not
+  // organization_id. The registry said organization_id, so every org-client
+  // write silently failed on a non-existent column.
+
+  org_integrations: { column: 'org_id' },
   org_capa_items: { column: 'organization_id' },
   org_compliance_scores: { column: 'organization_id' },
   org_evidence_versions: { column: 'organization_id' },
   org_audit_packs: { column: 'organization_id' },
   org_reports: { column: 'organization_id' },
   org_dashboards: { column: 'organization_id' },
-  org_dashboard_layouts: { column: 'organization_id' },
-  audit_export_jobs: { column: 'organization_id' },
+  org_dashboard_layouts: { column: 'organization_id' },  // Verified against prod 2026-08-03: this table uses org_id, not
+  // organization_id. The registry said organization_id, so every org-client
+  // write silently failed on a non-existent column.
+
+  audit_export_jobs: { column: 'org_id' },
   org_framework_links: { column: 'organization_id' },
   org_controls: { column: 'organization_id' },
   ai_conversations: { column: 'organization_id' },
   ai_chat_messages: { column: 'organization_id' },
   org_obligations: { column: 'organization_id' },
   evidence_attachments: { column: 'organization_id' },
-  org_capa: { column: 'organization_id' },
-  saved_searches: { column: 'organization_id' },
+  org_capa: { column: 'organization_id' },  // Verified against prod 2026-08-03: this table uses org_id, not
+  // organization_id. The registry said organization_id, so every org-client
+  // write silently failed on a non-existent column.
+
+  saved_searches: { column: 'org_id' },
   org_dnp_imports: { column: 'organization_id' },
   org_ndis_claims: { column: 'organization_id' },
   // org_progress_notes was used via the org client by lib/onboarding/
@@ -193,6 +206,13 @@ const TENANT_TABLE_SCOPES = {
   org_module_entitlements: { column: 'org_id' },
   org_audit_log: { column: 'org_id' },
   org_registers: { column: 'org_id' },
+  // Removed 2026-08-03 after verifying every registry entry against prod:
+  // notification_preferences and user_preferences are per-USER tables with no
+  // tenant column (notification_preferences is keyed by user_id;
+  // user_preferences.current_organization_id is a pointer, not a scope). They
+  // were never reached through the org client — only the admin/server clients —
+  // so removing them changes no call site, and the registry no longer claims a
+  // tenant scope that does not exist.
 } as const satisfies Record<string, { column: string }>;
 
 type TenantTable = keyof typeof TENANT_TABLE_SCOPES;

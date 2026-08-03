@@ -1,18 +1,19 @@
 import fs from 'fs';
-import path from 'path';
 import { config } from 'dotenv';
 import {
   getTestCredentials,
   createPasswordSession,
   createMagicLinkSession,
+  ensureE2ECacheDir,
+  E2E_SESSION_CACHE_PATH,
+  E2E_LEGACY_CACHE_PATHS,
 } from './helpers/test-auth';
 import type { Session } from '@supabase/supabase-js';
 
-const SESSION_CACHE_PATH = path.join(
-  process.cwd(),
-  'test-results',
-  'e2e-session-cache.json',
-);
+// The cache location is owned by e2e/helpers/test-auth.ts — the workers
+// read the pre-warmed session from that same constant, so it must not be
+// re-derived here.
+const SESSION_CACHE_PATH = E2E_SESSION_CACHE_PATH;
 
 // (Cookie-consent storageState is now written at playwright.config.ts
 // load time so it exists before contexts spawn; see CONSENT_STATE_PATH
@@ -29,6 +30,13 @@ const SESSION_CACHE_PATH = path.join(
  */
 export default async function globalSetup(): Promise<void> {
   config({ path: '.env.local' });
+
+  // Credentials written under test-results/ by an earlier revision are
+  // still picked up by the CI artifact uploads on any workspace that is
+  // not freshly cloned.
+  for (const legacyPath of E2E_LEGACY_CACHE_PATHS) {
+    fs.rmSync(legacyPath, { force: true });
+  }
 
   const baseUrl =
     process.env.PLAYWRIGHT_BASE_URL ||
@@ -109,8 +117,10 @@ async function prewarmSession(): Promise<void> {
   }
 
   if (session) {
-    fs.mkdirSync(path.dirname(SESSION_CACHE_PATH), { recursive: true });
-    fs.writeFileSync(SESSION_CACHE_PATH, JSON.stringify(session, null, 2));
+    ensureE2ECacheDir();
+    fs.writeFileSync(SESSION_CACHE_PATH, JSON.stringify(session, null, 2), {
+      mode: 0o600,
+    });
     console.log(
       `[e2e/global-setup] Session pre-warmed, expires at ${new Date((session.expires_at ?? 0) * 1000).toISOString()}`,
     );

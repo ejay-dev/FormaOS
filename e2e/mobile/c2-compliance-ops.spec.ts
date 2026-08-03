@@ -9,22 +9,20 @@
  * (e2e/mobile/c1-care-ops.spec.ts) so this PR can land in any order.
  */
 import fs from 'node:fs';
-import path from 'node:path';
 import type { Session } from '@supabase/supabase-js';
 import { devices, expect, test } from '@playwright/test';
-import { setPlaywrightSession } from '../helpers/test-auth';
+import {
+  E2E_SESSION_CACHE_PATH,
+  setPlaywrightSession,
+} from '../helpers/test-auth';
 
 test.use({ ...devices['iPhone 14'] });
 
-const SESSION_CACHE_PATH = path.join(
-  process.cwd(),
-  'test-results',
-  'e2e-session-cache.json',
-);
-
 function loadCachedSession(): Session | null {
   try {
-    return JSON.parse(fs.readFileSync(SESSION_CACHE_PATH, 'utf8')) as Session;
+    return JSON.parse(
+      fs.readFileSync(E2E_SESSION_CACHE_PATH, 'utf8'),
+    ) as Session;
   } catch {
     return null;
   }

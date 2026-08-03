@@ -111,6 +111,30 @@ export function listAvailableIntegrations(): IntegrationCatalogItem[] {
   return INTEGRATION_CATALOG;
 }
 
+// Credential-bearing keys across every provider in getRequiredConfigKeys().
+// Everything returned by listConnectedIntegrations/getIntegrationStatus/
+// connectIntegration reaches a browser (RSC payload or /api/v1/integrations,
+// which any member can call with the `integrations:read` scope), so those
+// paths only ever expose the redacted projection. Outbound senders in
+// lib/integrations/<provider>.ts read and decode the stored row themselves.
+const SECRET_CONFIG_KEYS = new Set([
+  'webhook_url',
+  'access_token',
+  'refresh_token',
+  'api_key',
+]);
+
+function redactIntegrationConfig(
+  config: Record<string, unknown> | null | undefined,
+): Record<string, unknown> | null {
+  if (!config || typeof config !== 'object') return null;
+  const redacted: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(config)) {
+    redacted[key] = SECRET_CONFIG_KEYS.has(key) && value ? '***' : value;
+  }
+  return redacted;
+}
+
 async function getProviderConfigRow(orgId: string, provider: string) {
   const admin = createSupabaseOrgClient(orgId);
   const { data } = await admin
@@ -134,7 +158,9 @@ export async function listConnectedIntegrations(orgId: string) {
     organization_id: row.organization_id as string,
     provider: row.provider as IntegrationType,
     enabled: Boolean(row.enabled),
-    config: decodeIntegrationConfig<Record<string, unknown>>(row.config),
+    config: redactIntegrationConfig(
+      decodeIntegrationConfig<Record<string, unknown>>(row.config),
+    ),
     created_at: row.created_at as string,
     updated_at: row.updated_at as string,
   }));
@@ -182,8 +208,18 @@ export async function connectIntegration(args: {
     throw new Error(`Unsupported integration type: ${args.type}`);
   }
 
+  // The settings dialog omits credentials the operator did not re-type, so
+  // an edit that only changes a non-secret field arrives without them. Merge
+  // over the stored config before validating, otherwise every such edit fails
+  // the required-field check and would blank the stored secret.
+  const existingRow = await getProviderConfigRow(args.orgId, args.type);
+  const existingConfig = existingRow
+    ? decodeIntegrationConfig<Record<string, unknown>>(existingRow.config)
+    : {};
+  const mergedConfig = { ...existingConfig, ...args.config };
+
   const missing = getRequiredConfigKeys(args.type).filter((key) => {
-    const value = args.config[key];
+    const value = mergedConfig[key];
     return typeof value !== 'string' || !value.trim();
   });
 
@@ -198,7 +234,7 @@ export async function connectIntegration(args: {
       {
         organization_id: args.orgId,
         provider: args.type,
-        config: encodeIntegrationConfig(args.config),
+        config: encodeIntegrationConfig(mergedConfig),
         enabled: true,
         updated_at: new Date().toISOString(),
       },
@@ -226,7 +262,9 @@ export async function connectIntegration(args: {
 
   return {
     ...data,
-    config: decodeIntegrationConfig<Record<string, unknown>>(data.config),
+    config: redactIntegrationConfig(
+      decodeIntegrationConfig<Record<string, unknown>>(data.config),
+    ),
   };
 }
 

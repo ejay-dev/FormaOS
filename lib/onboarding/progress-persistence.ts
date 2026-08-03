@@ -34,6 +34,18 @@ export function getCachedProgress(
     // Validate orgId matches
     if (data.orgId !== orgId) return null;
 
+    // Audit 2026-08-03. The freshness check alone is not enough to trust the
+    // entry: with `timestamp` absent, `Date.now() - undefined` is NaN and
+    // `NaN > CACHE_DURATION_MS` is false, so a malformed entry fell straight
+    // through and returned `data.counts` — i.e. `undefined`, not the `null`
+    // this function's return type promises. hasFreshCache then evaluated
+    // `undefined !== null` and reported a fresh cache for an entry carrying no
+    // counts at all, so the caller skipped its fetch and rendered nothing.
+    if (typeof data.timestamp !== 'number' || !Number.isFinite(data.timestamp)) {
+      return null;
+    }
+    if (!data.counts || typeof data.counts !== 'object') return null;
+
     // Check if cache is still fresh
     const age = Date.now() - data.timestamp;
     if (age > CACHE_DURATION_MS) return null;

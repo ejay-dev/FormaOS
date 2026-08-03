@@ -354,6 +354,13 @@ export async function getMembershipData(preloadedUser?: {
     `,
     )
     .eq('user_id', user.id)
+    // Audit 2026-08-02: SCIM/directory deprovisioning sets
+    // org_members.compliance_status = 'inactive'. This resolver gates the /app
+    // shell, so without the filter a deactivated member regained full access
+    // simply by signing in again with their existing password. `.or` rather
+    // than `.neq` because the column is nullable and NULL means active
+    // everywhere else; a bare .neq would drop every legacy row.
+    .or('compliance_status.is.null,compliance_status.neq.inactive')
     .limit(50);
 
   const membership = normalizeMembershipResult(
@@ -380,6 +387,13 @@ export async function getMembershipData(preloadedUser?: {
     `,
     )
     .eq('user_id', user.id)
+    // Audit 2026-08-02: SCIM/directory deprovisioning sets
+    // org_members.compliance_status = 'inactive'. This resolver gates the /app
+    // shell, so without the filter a deactivated member regained full access
+    // simply by signing in again with their existing password. `.or` rather
+    // than `.neq` because the column is nullable and NULL means active
+    // everywhere else; a bare .neq would drop every legacy row.
+    .or('compliance_status.is.null,compliance_status.neq.inactive')
     .limit(50);
 
   const adminMembership = normalizeMembershipResult(

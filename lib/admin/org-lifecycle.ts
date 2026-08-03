@@ -19,6 +19,23 @@ type AdminClient = ReturnType<typeof createSupabaseAdminClient>;
 
 export type OrganizationLifecycleStatus = 'active' | 'suspended' | 'retired';
 
+// org_subscriptions.status is the subscription_status enum.
+const SUBSCRIPTION_STATUSES = [
+  'trialing',
+  'active',
+  'past_due',
+  'canceled',
+  'pending_checkout',
+  'incomplete',
+] as const;
+
+type SubscriptionStatus = (typeof SUBSCRIPTION_STATUSES)[number];
+
+// The lock overwrites org_subscriptions.status, destroying the state the org
+// was in. Record that state in the admin audit trail so the unlock can put the
+// exact value back instead of re-deriving one from billing fields.
+const LOCK_SNAPSHOT_ACTION = 'org_access_lock_snapshot';
+
 type SubscriptionSnapshot = {
   stripe_subscription_id?: string | null;
   trial_expires_at?: string | null;
@@ -45,7 +62,11 @@ export function resolveSubscriptionStatusForRestore(
   if (trialActive) {
     return 'trialing';
   }
-  return 'pending';
+  // org_subscriptions.status is the subscription_status enum
+  // (trialing|active|past_due|canceled|pending_checkout|incomplete) — there is
+  // no 'pending' member. pending_checkout is the pre-payment state, and with no
+  // live trial deadline requireActiveSubscription still denies it.
+  return 'pending_checkout';
 }
 
 export function getEffectiveOrganizationStatus(args: {
@@ -79,35 +100,146 @@ export function getEffectiveOrganizationStatus(args: {
   };
 }
 
-export async function lockOrganizationAccess(admin: AdminClient, orgId: string) {
-  await admin.from('org_subscriptions').upsert({
-    organization_id: orgId,
-    status: 'blocked',
-    updated_at: new Date().toISOString(),
-  });
+async function readLockStatusSnapshot(
+  admin: AdminClient,
+  orgId: string,
+): Promise<SubscriptionStatus | null> {
+  const { data, error } = await admin
+    .from('admin_audit_log')
+    .select('metadata')
+    .eq('action', LOCK_SNAPSHOT_ACTION)
+    .eq('target_type', 'organization')
+    .eq('target_id', orgId)
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  if (error) {
+    exportLogger.warn('org_lock_snapshot_read_failed', {
+      orgId,
+      error: error.message,
+    });
+    return null;
+  }
+
+  const row = data?.[0] as
+    | { metadata?: Record<string, unknown> | null }
+    | undefined;
+  const previous = row?.metadata?.previous_subscription_status;
+
+  return typeof previous === 'string' &&
+    (SUBSCRIPTION_STATUSES as readonly string[]).includes(previous)
+    ? (previous as SubscriptionStatus)
+    : null;
+}
+
+export async function lockOrganizationAccess(
+  admin: AdminClient,
+  orgId: string,
+  actorUserId?: string,
+) {
+  // org_id is NOT NULL on org_subscriptions; organization_id is nullable and
+  // is not populated by every insert path, so filtering on it can silently
+  // match nothing.
+  const { data: current, error: readError } = await admin
+    .from('org_subscriptions')
+    .select('status')
+    .eq('org_id', orgId)
+    .maybeSingle();
+
+  if (readError) {
+    throw new Error(
+      `Failed to read organization subscription: ${readError.message}`,
+    );
+  }
+
+  // 'canceled' is the deny state requireActiveSubscription rejects; the
+  // subscription_status enum has no 'blocked' member. An UPDATE rather than an
+  // upsert because org_id/plan_code/plan_key are NOT NULL with no defaults —
+  // and an org with no subscription row is already denied access.
+  const { data: locked, error } = await admin
+    .from('org_subscriptions')
+    .update({
+      status: 'canceled',
+      updated_at: new Date().toISOString(),
+    })
+    .eq('org_id', orgId)
+    .select('org_id');
+
+  if (error) {
+    throw new Error(`Failed to lock organization access: ${error.message}`);
+  }
+
+  if (!locked || locked.length === 0) {
+    exportLogger.warn('org_lock_matched_no_subscription_row', { orgId });
+    return;
+  }
+
+  const previousStatus = (current as { status?: string } | null)?.status;
+  // A second lock without an intervening unlock would otherwise read the
+  // deny state written by the first lock and snapshot THAT, so restore would
+  // set the org back to 'canceled' and lock it out permanently. The snapshot
+  // from the first lock is the authoritative one; leave it alone.
+  const alreadyLocked = previousStatus === 'canceled';
+  if (actorUserId && previousStatus && !alreadyLocked) {
+    const { error: snapshotError } = await admin
+      .from('admin_audit_log')
+      .insert({
+        actor_user_id: actorUserId,
+        action: LOCK_SNAPSHOT_ACTION,
+        target_type: 'organization',
+        target_id: orgId,
+        metadata: { previous_subscription_status: previousStatus },
+      });
+
+    if (snapshotError) {
+      exportLogger.warn('org_lock_snapshot_write_failed', {
+        orgId,
+        error: snapshotError.message,
+      });
+    }
+  }
 }
 
 export async function unlockOrganizationAccess(
   admin: AdminClient,
   orgId: string,
 ) {
-  const { data: subscription } = await admin
-    .from('org_subscriptions')
-    .select(
-      'stripe_subscription_id, trial_expires_at, current_period_end, payment_failures',
-    )
-    .eq('organization_id', orgId)
-    .maybeSingle();
+  let status: string | null = await readLockStatusSnapshot(admin, orgId);
 
-  const status = resolveSubscriptionStatusForRestore(subscription);
+  if (!status) {
+    const { data: subscription, error: readError } = await admin
+      .from('org_subscriptions')
+      .select(
+        'stripe_subscription_id, trial_expires_at, current_period_end, payment_failures',
+      )
+      .eq('org_id', orgId)
+      .maybeSingle();
 
-  await admin
+    if (readError) {
+      throw new Error(
+        `Failed to read organization subscription: ${readError.message}`,
+      );
+    }
+
+    status = resolveSubscriptionStatusForRestore(subscription);
+  }
+
+  const { data: unlocked, error } = await admin
     .from('org_subscriptions')
     .update({
       status,
       updated_at: new Date().toISOString(),
     })
-    .eq('organization_id', orgId);
+    .eq('org_id', orgId)
+    .select('org_id');
+
+  if (error) {
+    throw new Error(`Failed to unlock organization access: ${error.message}`);
+  }
+
+  if (!unlocked || unlocked.length === 0) {
+    exportLogger.warn('org_unlock_matched_no_subscription_row', { orgId });
+  }
 }
 
 export async function suspendOrganizationLifecycle(args: {
@@ -118,7 +250,11 @@ export async function suspendOrganizationLifecycle(args: {
 }) {
   const nowIso = new Date().toISOString();
 
-  await args.admin
+  // Deny access first: it is the write that actually enforces the suspension,
+  // so it must land even if the lifecycle bookkeeping below fails.
+  await lockOrganizationAccess(args.admin, args.orgId, args.actorUserId);
+
+  const { error } = await args.admin
     .from('organizations')
     .update({
       lifecycle_status: 'suspended',
@@ -131,7 +267,9 @@ export async function suspendOrganizationLifecycle(args: {
     })
     .eq('id', args.orgId);
 
-  await lockOrganizationAccess(args.admin, args.orgId);
+  if (error) {
+    throw new Error(`Failed to suspend organization: ${error.message}`);
+  }
 }
 
 export async function retireOrganizationLifecycle(args: {
@@ -197,7 +335,11 @@ export async function retireOrganizationLifecycle(args: {
     );
   }
 
-  await args.admin
+  // Deny access first: it is the write that actually enforces the retirement,
+  // so it must land even if the lifecycle bookkeeping below fails.
+  await lockOrganizationAccess(args.admin, args.orgId, args.actorUserId);
+
+  const { error } = await args.admin
     .from('organizations')
     .update({
       lifecycle_status: 'retired',
@@ -212,7 +354,9 @@ export async function retireOrganizationLifecycle(args: {
     })
     .eq('id', args.orgId);
 
-  await lockOrganizationAccess(args.admin, args.orgId);
+  if (error) {
+    throw new Error(`Failed to retire organization: ${error.message}`);
+  }
 
   return {
     retiredAt: nowIso,
@@ -230,7 +374,11 @@ export async function restoreOrganizationLifecycle(args: {
 }) {
   const nowIso = new Date().toISOString();
 
-  await args.admin
+  // Restore access first, for the same reason suspend locks first: it is the
+  // write that actually changes what the org can do.
+  await unlockOrganizationAccess(args.admin, args.orgId);
+
+  const { error } = await args.admin
     .from('organizations')
     .update({
       lifecycle_status: 'active',
@@ -241,5 +389,7 @@ export async function restoreOrganizationLifecycle(args: {
     })
     .eq('id', args.orgId);
 
-  await unlockOrganizationAccess(args.admin, args.orgId);
+  if (error) {
+    throw new Error(`Failed to restore organization: ${error.message}`);
+  }
 }

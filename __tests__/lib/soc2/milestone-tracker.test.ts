@@ -9,19 +9,54 @@ jest.mock('server-only', () => ({}));
 
 const mockQuery: any = {};
 
+// Ordered log of every builder call, so an `.update()` can be paired with the
+// `.eq()` filters that follow it — asserting "update was called" says nothing
+// about WHICH milestone was written.
+let callLog: Array<{ method: string; args: any[] }> = [];
+
 function resetMock() {
-  mockQuery.from = jest.fn().mockReturnValue(mockQuery);
-  mockQuery.select = jest.fn().mockReturnValue(mockQuery);
-  mockQuery.insert = jest.fn().mockReturnValue(mockQuery);
-  mockQuery.update = jest.fn().mockReturnValue(mockQuery);
-  mockQuery.upsert = jest.fn().mockReturnValue(mockQuery);
-  mockQuery.eq = jest.fn().mockReturnValue(mockQuery);
-  mockQuery.ilike = jest.fn().mockReturnValue(mockQuery);
-  mockQuery.order = jest.fn().mockReturnValue(mockQuery);
-  mockQuery.limit = jest.fn().mockReturnValue(mockQuery);
+  callLog = [];
+  const record = (name: string) =>
+    jest.fn((...args: any[]) => {
+      callLog.push({ method: name, args });
+      return mockQuery;
+    });
+
+  mockQuery.from = record('from');
+  mockQuery.select = record('select');
+  mockQuery.insert = record('insert');
+  mockQuery.update = record('update');
+  mockQuery.upsert = record('upsert');
+  mockQuery.eq = record('eq');
+  mockQuery.ilike = record('ilike');
+  mockQuery.order = record('order');
+  mockQuery.limit = record('limit');
   mockQuery.then = jest.fn((resolve: any) =>
     resolve({ data: [], error: null }),
   );
+}
+
+type RecordedUpdate = {
+  payload: Record<string, unknown>;
+  filters: Record<string, unknown>;
+};
+
+function recordedUpdates(): RecordedUpdate[] {
+  const updates: RecordedUpdate[] = [];
+  let current: RecordedUpdate | null = null;
+
+  for (const entry of callLog) {
+    if (entry.method === 'from') {
+      current = null;
+    } else if (entry.method === 'update') {
+      current = { payload: entry.args[0], filters: {} };
+      updates.push(current);
+    } else if (entry.method === 'eq' && current) {
+      current.filters[entry.args[0]] = entry.args[1];
+    }
+  }
+
+  return updates;
 }
 
 jest.mock('@/lib/supabase/admin', () => ({
@@ -118,8 +153,23 @@ describe('evaluateMilestones', () => {
 
     await evaluateMilestones('org-1', baseReadiness);
 
-    // Should have called update for frameworks_enabled (auto-complete)
-    expect(mockQuery.update).toHaveBeenCalled();
+    const updates = recordedUpdates();
+    const frameworks = updates.filter(
+      (u) => u.filters.milestone_key === 'frameworks_enabled',
+    );
+    expect(frameworks).toHaveLength(1);
+    expect(frameworks[0].payload).toEqual({
+      status: 'completed',
+      completed_at: expect.any(String),
+    });
+    // Writes stay scoped to the caller's org.
+    expect(frameworks[0].filters.organization_id).toBe('org-1');
+    // Score is 85, so readiness_80 completes too — and nothing else is
+    // touched, because no other milestone row exists for this org.
+    expect(updates.map((u) => u.filters.milestone_key).sort()).toEqual([
+      'frameworks_enabled',
+      'readiness_80',
+    ]);
   });
 
   it('handles no existing milestones gracefully', async () => {
@@ -127,8 +177,33 @@ describe('evaluateMilestones', () => {
       resolve({ data: [], error: null }),
     );
 
-    // Should not throw
     await evaluateMilestones('org-1', baseReadiness);
+
+    // Nothing to update when the org has no milestone rows yet.
+    expect(recordedUpdates()).toEqual([]);
+  });
+
+  it('sets readiness_80 to in_progress for a mid-range score', async () => {
+    let callCount = 0;
+    mockQuery.then = jest.fn((resolve: any) => {
+      callCount++;
+      if (callCount === 1) {
+        return resolve({
+          data: [{ milestone_key: 'readiness_80', status: 'pending' }],
+          error: null,
+        });
+      }
+      return resolve({ data: [], error: null });
+    });
+
+    await evaluateMilestones('org-1', { ...baseReadiness, overallScore: 55 });
+
+    expect(recordedUpdates()).toEqual([
+      {
+        payload: { status: 'in_progress' },
+        filters: { organization_id: 'org-1', milestone_key: 'readiness_80' },
+      },
+    ]);
   });
 
   it('does not re-complete already completed milestones', async () => {
@@ -146,8 +221,10 @@ describe('evaluateMilestones', () => {
 
     await evaluateMilestones('org-1', baseReadiness);
 
-    // frameworks_enabled is already completed, so update should only be called for other milestones
-    // Not for frameworks_enabled
+    // Re-stamping completed_at on an already-completed milestone would show
+    // up here as an update row.
+    expect(recordedUpdates()).toEqual([]);
+    expect(mockQuery.update).not.toHaveBeenCalled();
   });
 });
 

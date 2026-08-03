@@ -194,8 +194,15 @@ describe('GET /api/admin/trials', () => {
     const res = await GET(makeRequest());
     expect(res.status).toBe(200);
     const body = await res.json();
-    const expired = body.trials?.find((t: any) => t.status === 'expired');
-    expect(expired || body.trials.length >= 0).toBeTruthy();
+    // The seeded subscription expired one day ago, so the route must map it
+    // to status 'expired' with a negative day count. Asserting the row is
+    // present AND classified pins the diffDays <= 0 branch — an off-by-one
+    // that reclassified it as 'expiring' would fail here.
+    expect(body.trials).toHaveLength(1);
+    const expired = body.trials[0];
+    expect(expired.organization_id).toBe('org1');
+    expect(expired.status).toBe('expired');
+    expect(expired.days_remaining).toBe(-1);
   });
 
   it('handles trial expiring within 3 days', async () => {
@@ -230,6 +237,11 @@ describe('GET /api/admin/trials', () => {
     });
     const res = await GET(makeRequest());
     expect(res.status).toBe(200);
+    const body = await res.json();
+    // 2 days out → 'expiring' (diffDays <= 3), not 'active'.
+    expect(body.trials).toHaveLength(1);
+    expect(body.trials[0].status).toBe('expiring');
+    expect(body.trials[0].organization_name).toBe('Expiring Org');
   });
 
   it('handles null trial_expires_at with current_period_end', async () => {
@@ -264,6 +276,12 @@ describe('GET /api/admin/trials', () => {
     });
     const res = await GET(makeRequest());
     expect(res.status).toBe(200);
+    const body = await res.json();
+    // trial_expires_at is null, so current_period_end (5 days out) is the
+    // fallback end date and the row stays 'active'.
+    expect(body.trials).toHaveLength(1);
+    expect(body.trials[0].status).toBe('active');
+    expect(body.trials[0].days_remaining).toBe(5);
   });
 
   it('skips rows with null trial end dates', async () => {

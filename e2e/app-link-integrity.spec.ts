@@ -120,7 +120,17 @@ test.describe('App link integrity', () => {
         redirects,
         `Route ${route} triggered ${redirects} redirects (expected <= 2)`,
       ).toBeLessThanOrEqual(2);
-      expect([200, 201, 204, 302, 303, 307, 308, 401, 403]).toContain(status);
+      // 2026-08-02: 401 and 403 used to count as success. `beforeEach` logs
+      // in via `loginAs`, so an unauthorized status on a critical /app route
+      // IS the auth/entitlement regression this gate exists to catch — a
+      // broken session or a bad RLS change would have kept the suite green.
+      expect(
+        [200, 201, 204, 302, 303, 307, 308],
+        `Route ${route} returned ${status} for an authenticated session`,
+      ).toContain(status);
+      // A 200 that renders the sign-in form is the same regression wearing a
+      // different status code.
+      expect(text).not.toContain('Access FormaOS');
       expect(text).not.toContain('This page could not be found');
       expect(text).not.toContain("FormaOS couldn't load");
       expect(text).not.toContain('Minified React error #310');

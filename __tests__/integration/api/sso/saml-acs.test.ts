@@ -29,13 +29,32 @@ jest.mock('@/lib/sso/saml', () => ({
 }));
 jest.mock('@/lib/sso/jit-provisioning', () => ({
   provisionJitUser: jest.fn(),
+  // The ACS route resolves the asserted address through the auth admin API,
+  // not public.user_profiles — that table's `email` column is NULL for every
+  // production row, so a lookup against it would reject every real login.
+  findUserByEmail: jest.fn(),
 }));
 jest.mock('@/lib/supabase/admin', () => {
   const generateLink = jest.fn();
-  const client = { auth: { admin: { generateLink } } };
+  // Audit 2026-08-02: the route now resolves the asserted email to an
+  // org_members row before minting a session, so the admin client needs a
+  // query-builder stub. Each builder is thenable and resolves with whatever
+  // __tableData holds for that table.
+  const tableData: Record<string, { data: unknown; error: unknown }> = {};
+  function builder(table: string) {
+    const chain: Record<string, unknown> = {};
+    for (const method of ['select', 'ilike', 'eq', 'in', 'limit', 'order', 'maybeSingle', 'single']) {
+      chain[method] = () => chain;
+    }
+    chain.then = (resolve: (v: unknown) => unknown) =>
+      Promise.resolve(tableData[table] ?? { data: [], error: null }).then(resolve);
+    return chain;
+  }
+  const client = { auth: { admin: { generateLink } }, from: (t: string) => builder(t) };
   return {
     createSupabaseAdminClient: () => client,
     __generateLink: generateLink,
+    __tableData: tableData,
   };
 });
 jest.mock('@/lib/identity/audit', () => ({
@@ -45,13 +64,14 @@ jest.mock('@/lib/identity/audit', () => ({
 import { POST } from '@/app/api/sso/saml/acs/[orgId]/route';
 import { getOrgSsoConfig } from '@/lib/sso/org-sso';
 import { validateSamlResponse } from '@/lib/sso/saml';
-import { provisionJitUser } from '@/lib/sso/jit-provisioning';
+import { provisionJitUser, findUserByEmail } from '@/lib/sso/jit-provisioning';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logIdentityEvent } from '@/lib/identity/audit';
 
 const mockGetOrgSsoConfig = getOrgSsoConfig as jest.Mock;
 const mockValidateSamlResponse = validateSamlResponse as jest.Mock;
 const mockProvisionJitUser = provisionJitUser as jest.Mock;
+const mockFindUserByEmail = findUserByEmail as jest.Mock;
 const mockLogIdentityEvent = logIdentityEvent as jest.Mock;
 const mockGenerateLink = (
   jest.requireMock('@/lib/supabase/admin') as { __generateLink: jest.Mock }
@@ -70,8 +90,19 @@ function makeRequest(samlResponse: string | null, relayState = '/app/dashboard')
 
 const validResponse = 'a'.repeat(100);
 
+const mockTableData = (
+  jest.requireMock('@/lib/supabase/admin') as {
+    __tableData: Record<string, { data: unknown; error: unknown }>;
+  }
+).__tableData;
+
 beforeEach(() => {
   jest.clearAllMocks();
+  // Audit 2026-08-02: default to the asserted user genuinely being a member of
+  // org-1, so the pre-existing happy-path tests still describe a legitimate
+  // login. The rejection path has its own test below.
+  mockFindUserByEmail.mockResolvedValue({ id: 'user-1', email: 'user@example.com' });
+  mockTableData.org_members = { data: { user_id: 'user-1' }, error: null };
   // v4-031: the ACS route now defensively refuses IdP-initiated
   // assertions (those without an InResponseTo attribute matching a
   // cached request id) unless the org has explicitly set
@@ -185,6 +216,39 @@ describe('POST /api/sso/saml/acs/[orgId]', () => {
         result: 'failure',
       }),
     );
+  });
+
+  // Audit 2026-08-02 — the assertion must be bound to THIS organisation.
+  // Every trust anchor in validateSamlResponse is supplied by the org's own
+  // admin (the signing certificate and idpEntityId come from idp_metadata_xml
+  // they upload, and isAllowedDomain returns true on an empty list), and
+  // nothing verifies they control the asserted domain. Without this check an
+  // admin of any tenant could sign an assertion naming a victim on another
+  // tenant and receive a magic link that logs them in as that user.
+  it('refuses to mint a session for an email that is not a member of the org', async () => {
+    mockTableData.org_members = { data: null, error: null };
+
+    const res = await POST(makeRequest(validResponse), {
+      params: Promise.resolve({ orgId: 'org-1' }),
+    });
+
+    expect(mockGenerateLink).not.toHaveBeenCalled();
+    expect(res.status).toBe(307);
+    expect(res.headers.get('location')).toContain('error=sso_failed');
+    expect(mockLogIdentityEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ eventType: 'sso.login', result: 'failure' }),
+    );
+  });
+
+  it('refuses when the asserted email matches no known account', async () => {
+    mockFindUserByEmail.mockResolvedValue(null);
+
+    const res = await POST(makeRequest(validResponse), {
+      params: Promise.resolve({ orgId: 'org-1' }),
+    });
+
+    expect(mockGenerateLink).not.toHaveBeenCalled();
+    expect(res.headers.get('location')).toContain('error=sso_failed');
   });
 
   it('permits SP-initiated assertions even when allow_idp_initiated is off', async () => {

@@ -13,6 +13,7 @@ import {
   type NotificationEvent,
   type NotificationPreferenceRow,
   type NotificationRecipients,
+  type NotificationRecord,
   type NotificationUserContext,
 } from './types';
 
@@ -279,101 +280,132 @@ export async function notify(
       event,
       'in_app',
     );
+    let inAppRecord: NotificationRecord | null = null;
+
     if (inAppPreference.enabled) {
       try {
-        const notification = await createInAppNotification(recipient, event);
+        inAppRecord = await createInAppNotification(recipient, event);
         deliveredChannels.push('in_app');
-
-        const emailPreference = getPreferenceForChannel(
-          preferences,
-          event,
-          'email',
-        );
-        if (
-          emailPreference.enabled &&
-          !isWithinQuietHours(
-            emailPreference.quiet_hours,
-            recipient.timezone || 'UTC',
-          )
-        ) {
-          try {
-            await deliverEmailNotification({
-              recipient,
-              event,
-              notification,
-              digestFrequency:
-                event.priority === 'critical'
-                  ? 'instant'
-                  : emailPreference.digest_frequency,
-            });
-            deliveredChannels.push('email');
-          } catch (error) {
-            deliveryFailed = true;
-            logNotificationDeliveryFailure('email', userId, orgId, error);
-          }
-        } else if (emailPreference.enabled && event.priority === 'critical') {
-          try {
-            await deliverEmailNotification({
-              recipient,
-              event,
-              notification,
-              digestFrequency: 'instant',
-            });
-            deliveredChannels.push('email');
-          } catch (error) {
-            deliveryFailed = true;
-            logNotificationDeliveryFailure('email', userId, orgId, error);
-          }
-        }
-
-        const slackPreference = getPreferenceForChannel(
-          preferences,
-          event,
-          'slack',
-        );
-        if (slackPreference.enabled) {
-          const slackChannel =
-            channels.find((channel) => channel.channel_type === 'slack') ??
-            null;
-          try {
-            await deliverSlackNotification({
-              recipient,
-              channel: slackChannel,
-              notification,
-              event,
-            });
-            deliveredChannels.push('slack');
-          } catch (error) {
-            deliveryFailed = true;
-            logNotificationDeliveryFailure('slack', userId, orgId, error);
-          }
-        }
-
-        const teamsPreference = getPreferenceForChannel(
-          preferences,
-          event,
-          'teams',
-        );
-        if (teamsPreference.enabled) {
-          const teamsChannel =
-            channels.find((channel) => channel.channel_type === 'teams') ??
-            null;
-          try {
-            await deliverTeamsNotification({
-              recipient,
-              channel: teamsChannel,
-              notification,
-              event,
-            });
-            deliveredChannels.push('teams');
-          } catch (error) {
-            deliveryFailed = true;
-            logNotificationDeliveryFailure('teams', userId, orgId, error);
-          }
-        }
       } catch (error) {
         deliveryFailed = true;
         logNotificationDeliveryFailure('in_app', userId, orgId, error);
+      }
+    }
+
+    // Preferences are stored per (user, org, channel, event_type), so a
+    // recipient can disable in_app while leaving email/Slack/Teams on. Those
+    // channels are resolved independently of the in-app row; when no row was
+    // persisted they render from an in-memory record.
+    const notification: NotificationRecord = inAppRecord ?? {
+      id: `unpersisted:${userId}:${event.type}`,
+      org_id: orgId,
+      user_id: userId,
+      type: event.type,
+      title: event.title,
+      body: event.body ?? null,
+      data: event.data ?? {},
+      priority: event.priority ?? 'normal',
+      read_at: null,
+      archived_at: null,
+      created_at: new Date().toISOString(),
+    };
+
+    const emailPreference = getPreferenceForChannel(
+      preferences,
+      event,
+      'email',
+    );
+    // `inAppRecord` is null for two materially different reasons, and they must
+    // not be treated alike: the recipient DISABLED in-app, or in-app delivery
+    // was attempted and THREW. Collapsing them re-introduces the bug this
+    // module was just fixed for — an in-app outage silently suppressing every
+    // other channel.
+    const inAppDeliveryFailed = inAppPreference.enabled && !inAppRecord;
+
+    const emailDigestFrequency =
+      event.priority === 'critical' || inAppDeliveryFailed
+        ? 'instant'
+        : emailPreference.digest_frequency;
+
+    // Digest queueing references a persisted notification id, so with in-app
+    // switched off a digest email genuinely cannot be queued; escalating it to
+    // instant would override the recipient's stored digest_frequency, so hold
+    // it back and report it. When in-app FAILED we escalate to instant instead
+    // (above) — briefly overriding a digest preference is better than dropping
+    // the notification on every channel.
+    const emailDigestUnavailable =
+      emailPreference.enabled &&
+      emailDigestFrequency !== 'instant' &&
+      !inAppRecord;
+
+    if (
+      emailPreference.enabled &&
+      !emailDigestUnavailable &&
+      !isWithinQuietHours(
+        emailPreference.quiet_hours,
+        recipient.timezone || 'UTC',
+      )
+    ) {
+      try {
+        await deliverEmailNotification({
+          recipient,
+          event,
+          notification,
+          digestFrequency: emailDigestFrequency,
+        });
+        deliveredChannels.push('email');
+      } catch (error) {
+        deliveryFailed = true;
+        logNotificationDeliveryFailure('email', userId, orgId, error);
+      }
+    } else if (emailPreference.enabled && event.priority === 'critical') {
+      try {
+        await deliverEmailNotification({
+          recipient,
+          event,
+          notification,
+          digestFrequency: 'instant',
+        });
+        deliveredChannels.push('email');
+      } catch (error) {
+        deliveryFailed = true;
+        logNotificationDeliveryFailure('email', userId, orgId, error);
+      }
+    }
+
+    const slackPreference = getPreferenceForChannel(preferences, event, 'slack');
+    if (slackPreference.enabled) {
+      const slackChannel =
+        channels.find((channel) => channel.channel_type === 'slack') ?? null;
+      try {
+        await deliverSlackNotification({
+          recipient,
+          channel: slackChannel,
+          notification,
+          event,
+        });
+        deliveredChannels.push('slack');
+      } catch (error) {
+        deliveryFailed = true;
+        logNotificationDeliveryFailure('slack', userId, orgId, error);
+      }
+    }
+
+    const teamsPreference = getPreferenceForChannel(preferences, event, 'teams');
+    if (teamsPreference.enabled) {
+      const teamsChannel =
+        channels.find((channel) => channel.channel_type === 'teams') ?? null;
+      try {
+        await deliverTeamsNotification({
+          recipient,
+          channel: teamsChannel,
+          notification,
+          event,
+        });
+        deliveredChannels.push('teams');
+      } catch (error) {
+        deliveryFailed = true;
+        logNotificationDeliveryFailure('teams', userId, orgId, error);
       }
     }
 
@@ -387,7 +419,9 @@ export async function notify(
           : undefined
         : deliveryFailed
           ? 'delivery_failed'
-          : 'all_channels_disabled',
+          : emailDigestUnavailable
+            ? 'digest_unavailable'
+            : 'all_channels_disabled',
     });
   }
 

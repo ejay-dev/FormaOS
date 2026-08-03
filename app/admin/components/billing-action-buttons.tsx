@@ -20,18 +20,27 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
   const [days, setDays] = useState(14)
   const { reportSuccess, reportError } = useComplianceAction()
 
+  // Admin change control rejects reasons shorter than 8 characters.
   function promptReason(message: string) {
-    const reason = window.prompt(message)
-    return reason?.trim() || null
+    const reason = window.prompt(`${message} (at least 8 characters)`)
+    const trimmed = reason?.trim() || null
+    if (!trimmed) return null
+    if (trimmed.length < 8) {
+      reportError({ title: "Reason too short", message: "Provide a reason of at least 8 characters" })
+      return null
+    }
+    return trimmed
   }
 
   async function handleExtendTrial() {
+    const reason = promptReason("Reason for trial extension")
+    if (!reason) return
     setLoading("extend")
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/trial/extend`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ days }),
+        body: JSON.stringify({ days, reason }),
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -47,11 +56,14 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
   }
 
   async function handleResetTrial() {
+    const reason = promptReason("Reason for trial reset")
+    if (!reason) return
     setLoading("reset")
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/trial/reset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason }),
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -67,11 +79,14 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
   }
 
   async function handleResyncStripe() {
+    const reason = promptReason("Reason for Stripe resync")
+    if (!reason) return
     setLoading("resync")
     try {
       const res = await fetch(`/api/admin/subscriptions/${orgId}/resync-stripe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason }),
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -93,7 +108,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/billing/retry-invoice`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-reason": reason },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),
       })
       const data = await res.json().catch(() => ({}))
@@ -124,7 +139,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/billing/refund`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-reason": reason },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),
       })
       const data = await res.json().catch(() => ({}))

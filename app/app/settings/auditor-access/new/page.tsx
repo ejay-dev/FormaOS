@@ -1,10 +1,18 @@
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createAuditorAccess } from '@/lib/auditor/portal';
+import { brand } from '@/config/brand';
 
 export const metadata = { title: 'Grant Auditor Access | FormaOS' };
+
+// The raw token is only ever produced once. It is handed back through a
+// short-lived httpOnly cookie rather than a query string so it stays out of
+// browser history, referrers and proxy/access logs.
+const ISSUED_TOKEN_COOKIE = 'formaos_auditor_issued_token';
+const ISSUED_TOKEN_TTL_SECONDS = 600;
 
 async function grantAccess(formData: FormData) {
   'use server';
@@ -23,37 +31,138 @@ async function grantAccess(formData: FormData) {
     redirect('/app/settings/auditor-access/new?error=name-and-email-required');
   }
 
-  try {
-    const { token } = await createAuditorAccess(
-      state.organization.id,
-      state.user.id,
-      {
-        auditorName,
-        auditorEmail,
-        auditorCompany: auditorCompany || undefined,
-        scopes: {},
-        expiresInDays: Number.isFinite(expiresInDays) ? expiresInDays : 30,
-      },
-    );
-    redirect(
-      `/app/settings/auditor-access?granted=${encodeURIComponent(token)}`,
-    );
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to grant access';
+  // redirect() signals by throwing NEXT_REDIRECT, so only the create call is
+  // guarded — a catch spanning the success redirect would swallow it.
+  const { token } = await createAuditorAccess(
+    state.organization.id,
+    state.user.id,
+    {
+      auditorName,
+      auditorEmail,
+      auditorCompany: auditorCompany || undefined,
+      scopes: {},
+      expiresInDays: Number.isFinite(expiresInDays) ? expiresInDays : 30,
+    },
+  ).catch((err: unknown): never => {
+    const message =
+      err instanceof Error ? err.message : 'Failed to grant access';
     redirect(
       `/app/settings/auditor-access/new?error=${encodeURIComponent(message)}`,
     );
-  }
+  });
+
+  const cookieStore = await cookies();
+  cookieStore.set(ISSUED_TOKEN_COOKIE, token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/app/settings/auditor-access',
+    maxAge: ISSUED_TOKEN_TTL_SECONDS,
+  });
+
+  redirect('/app/settings/auditor-access/new?issued=1');
+}
+
+async function dismissIssuedToken() {
+  'use server';
+  const cookieStore = await cookies();
+  cookieStore.delete({
+    name: ISSUED_TOKEN_COOKIE,
+    path: '/app/settings/auditor-access',
+  });
+  redirect('/app/settings/auditor-access');
 }
 
 export default async function NewAuditorAccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; issued?: string }>;
 }) {
   const state = await fetchSystemState();
   if (!state) redirect('/auth/signin');
-  const { error } = await searchParams;
+  const { error, issued } = await searchParams;
+
+  const issuedToken = issued
+    ? ((await cookies()).get(ISSUED_TOKEN_COOKIE)?.value ?? null)
+    : null;
+
+  if (issuedToken) {
+    const portalUrl = `${brand.seo.appUrl.replace(/\/$/, '')}/audit-portal/${issuedToken}`;
+
+    return (
+      <div className="mx-auto max-w-2xl space-y-6 p-6">
+        <div>
+          <h1 className="text-2xl font-bold">Auditor Access Granted</h1>
+          <p className="text-sm text-muted-foreground">
+            Send this link to the auditor. It is shown once and cannot be
+            retrieved later.
+          </p>
+        </div>
+
+        <div className="space-y-3 rounded-lg border border-border bg-card p-5">
+          <label
+            htmlFor="auditor_portal_url"
+            className="block text-sm font-medium"
+          >
+            Auditor portal link
+          </label>
+          <input
+            id="auditor_portal_url"
+            readOnly
+            value={portalUrl}
+            className="w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-xs"
+          />
+          <p className="text-xs text-muted-foreground">
+            Anyone holding this link has read-only access to your compliance
+            data until it expires.
+          </p>
+        </div>
+
+        <form action={dismissIssuedToken} className="flex justify-end">
+          <button
+            type="submit"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            I&rsquo;ve copied the link
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  // The grant was created but the cookie carrying the one-time link is gone
+  // (past its 10 minute life, a different browser, or cookies blocked). The
+  // raw token is unrecoverable, so say so instead of falling through to a
+  // blank form that reads as if nothing happened.
+  if (issued && !issuedToken) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-6 p-6">
+        <div>
+          <h1 className="text-2xl font-bold">Link No Longer Available</h1>
+          <p className="text-sm text-muted-foreground">
+            The auditor access grant was created, but its one-time link can no
+            longer be shown. Revoke the grant on the access list and issue a new
+            one.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Link
+            href="/app/settings/auditor-access"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            Back to auditor access
+          </Link>
+          <Link
+            href="/app/settings/auditor-access/new"
+            className="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted"
+          >
+            Issue a new grant
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6">

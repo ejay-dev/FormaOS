@@ -59,21 +59,41 @@ test.describe('CRITICAL: User Journey Validation', () => {
   test('CRITICAL: Navigation links work', async ({ page }) => {
     await page.goto(SITE_URL, { waitUntil: 'domcontentloaded' });
 
-    // Check that internal links don't lead to 404s
+    // 2026-08-02: the comment promised "internal links don't lead to 404s"
+    // but the body only collected hrefs into a Set and asserted the Set was
+    // non-empty. No request was ever made, so every internal link on the
+    // homepage could 404 and the test still passed. Now each collected link
+    // is actually fetched.
     const links = await page.locator('a[href^="/"]').all();
     const checkedLinks = new Set<string>();
 
-    // Check up to 5 unique internal links
-    for (const link of links.slice(0, 10)) {
+    for (const link of links) {
       const href = await link.getAttribute('href');
-      if (href && !checkedLinks.has(href) && !href.includes('#')) {
+      if (
+        href &&
+        !checkedLinks.has(href) &&
+        !href.includes('#') &&
+        // API routes are auth-gated by design and are not navigation.
+        !href.startsWith('/api/')
+      ) {
         checkedLinks.add(href);
-        if (checkedLinks.size >= 5) break;
+        if (checkedLinks.size >= 8) break;
       }
     }
 
-    // Navigation should contain at least one internal link
-    expect(checkedLinks.size).toBeGreaterThan(0);
+    expect(
+      checkedLinks.size,
+      'Homepage exposed no internal navigation links',
+    ).toBeGreaterThanOrEqual(3);
+
+    for (const href of checkedLinks) {
+      const target = new URL(href, SITE_URL).toString();
+      const response = await page.request.get(target, { timeout: 30_000 });
+      expect(
+        response.status(),
+        `Homepage link ${href} resolved to ${response.status()}`,
+      ).toBeLessThan(400);
+    }
   });
 
   test('CRITICAL: Non-founder cannot access admin routes', async ({ page }) => {
@@ -94,28 +114,32 @@ test.describe('CRITICAL: User Journey Validation', () => {
     expect(isBlocked).toBeTruthy();
   });
 
-  test('CRITICAL: Existing user login resumes properly', async ({ page }) => {
-    // Visit login page
-    const loginUrls = [
-      `${APP_URL}/login`,
-      `${APP_URL}/auth/login`,
-      `${APP_URL}/sign-in`,
-      `${SITE_URL}/login`,
-    ];
+  test('CRITICAL: Existing user login surface is usable', async ({ page }) => {
+    // 2026-08-02: this test never performed a login and never inspected the
+    // page — it walked four candidate URLs and passed as soon as one
+    // returned <400, so a sign-in page rendering an empty error boundary
+    // still counted as "login resumes properly". The canonical route is
+    // /auth/signin (app/auth/login and app/signin are redirect aliases), and
+    // the form is rendered by components/auth/SignInPageContent.
+    const response = await page.goto(`${APP_URL}/auth/signin`, {
+      waitUntil: 'domcontentloaded',
+    });
+    expect(response?.status() ?? 0).toBeLessThan(400);
 
-    let successfulLogin = 0;
-    for (const url of loginUrls) {
-      const response = await page.goto(url, { waitUntil: 'domcontentloaded' });
-      if (response && response.status() < 400) {
-        successfulLogin++;
-        break;
-      }
-    }
+    await expect(page.locator('input#email[type="email"]')).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(page.locator('input#password[type="password"]')).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /Access FormaOS/i }),
+    ).toBeEnabled();
 
-    // At least one auth URL should be accessible
-    const pageContent = await page.textContent('body');
-    expect(pageContent).toBeTruthy();
-    expect(successfulLogin).toBeGreaterThan(0);
+    // The legacy alias must keep landing on the same canonical form.
+    await page.goto(`${APP_URL}/auth/login`, { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/\/auth\/signin(\?|$)/);
+    await expect(page.locator('input#email[type="email"]')).toBeVisible({
+      timeout: 15_000,
+    });
   });
 });
 

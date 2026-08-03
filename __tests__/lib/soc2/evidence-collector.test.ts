@@ -116,32 +116,89 @@ describe('runAutomatedChecks', () => {
     }
   });
 
-  it('covers SOC2-S2 MFA check branches', async () => {
-    // MFA evidence exists but no access review
-    let callCount = 0;
+  // Each check filters by an ilike title pattern, so drive the mock off the
+  // pattern instead of a call index — the call order is an implementation
+  // detail and an index-based mock silently drifts when checks are reordered.
+  function setupPatternClient(
+    matcher: (table: string, pattern: string) => any[],
+  ) {
+    const filters: Array<{ table: string; column: string; value: string }> = [];
     const client = {
       from: jest.fn((table: string) => {
-        callCount++;
-        if (table === 'org_evidence' && callCount === 3) {
-          // MFA evidence found
-          return createBuilder({ data: [{ id: 'mfa1' }], error: null });
-        }
-        if (table === 'org_evidence' && callCount === 4) {
-          // Access review not found
-          return createBuilder({ data: [], error: null });
-        }
-        if (table === 'org_policies' && callCount === 1) {
-          return createBuilder({ data: [{ id: 'p1' }], error: null });
-        }
-        return createBuilder({ data: [], error: null });
+        const b = createBuilder();
+        let pattern = '';
+        b.eq = jest.fn((column: string, value: string) => {
+          filters.push({ table, column, value });
+          return b;
+        });
+        b.ilike = jest.fn((_column: string, value: string) => {
+          pattern = value;
+          return b;
+        });
+        b.then = (resolve: (v: any) => void) =>
+          resolve({ data: matcher(table, pattern), error: null });
+        return b;
       }),
     };
     createSupabaseAdminClient.mockReturnValue(client);
+    return { client, filters };
+  }
+
+  it('reports the missing half of the SOC2-S2 MFA check', async () => {
+    // MFA evidence exists; access review evidence does not.
+    setupPatternClient((table, pattern) =>
+      table === 'org_evidence' && pattern === '%mfa%' ? [{ id: 'mfa1' }] : [],
+    );
 
     const results = await runAutomatedChecks('org-1');
     const s2 = results.find((r) => r.controlCode === 'SOC2-S2');
-    if (s2) {
-      expect(s2.detail).toContain('Upload evidence');
-    }
+    expect(s2).toBeDefined();
+    expect(s2!.passed).toBe(false);
+    expect(s2!.detail).toBe(
+      'Missing: access review logs. Upload evidence with relevant titles.',
+    );
+  });
+
+  it('lists both gaps when neither SOC2-S2 artifact exists', async () => {
+    setupPatternClient(() => []);
+
+    const results = await runAutomatedChecks('org-1');
+    const s2 = results.find((r) => r.controlCode === 'SOC2-S2');
+    expect(s2).toBeDefined();
+    expect(s2!.detail).toBe(
+      'Missing: MFA enforcement report, access review logs. Upload evidence with relevant titles.',
+    );
+  });
+
+  it('passes SOC2-S2 when both MFA and access review evidence exist', async () => {
+    setupPatternClient((table, pattern) =>
+      table === 'org_evidence' &&
+      (pattern === '%mfa%' || pattern === '%access review%')
+        ? [{ id: 'ev1' }]
+        : [],
+    );
+
+    const results = await runAutomatedChecks('org-1');
+    const s2 = results.find((r) => r.controlCode === 'SOC2-S2');
+    expect(s2).toBeDefined();
+    expect(s2!.passed).toBe(true);
+    expect(s2!.detail).toBe(
+      'MFA enforcement report and access review evidence found.',
+    );
+  });
+
+  it('scopes every check query to the requesting organization', async () => {
+    const { filters } = setupPatternClient(() => []);
+
+    await runAutomatedChecks('org-1');
+
+    expect(filters.length).toBeGreaterThan(0);
+    // The org-scoped client must stamp organization_id on every read; a
+    // check that queried unfiltered would read another tenant's evidence.
+    expect(
+      filters.every(
+        (f) => f.column === 'organization_id' && f.value === 'org-1',
+      ),
+    ).toBe(true);
   });
 });

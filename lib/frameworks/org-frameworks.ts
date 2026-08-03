@@ -28,10 +28,12 @@ async function getOrgFrameworkLimit(
   admin: ReturnType<typeof createSupabaseAdminClient>,
   orgId: string,
 ): Promise<number | null> {
+  // Single-org plan lookup during framework-provisioning sync; orgId is
+  // server-derived, not request input.
+  // eslint-disable-next-line formaos/no-admin-client-with-org-filter
   const { data } = await admin
     .from('org_subscriptions')
     .select('plan_key')
-    // eslint-disable-next-line formaos/no-admin-client-with-org-filter -- single-org plan lookup during framework-provisioning sync; orgId is server-derived, not request input.
     .eq('organization_id', orgId)
     .maybeSingle();
   const planKey = resolvePlanKey(data?.plan_key) ?? 'basic';
@@ -97,10 +99,12 @@ export async function syncOrgFrameworksFromOrgRecord(orgId: string) {
       ? await getOrgFrameworkLimit(admin, orgId)
       : null;
   if (limit !== null && slugs.length > limit) {
+    // Single-org read to retain already-enabled frameworks under the plan cap;
+    // orgId is server-derived.
+    // eslint-disable-next-line formaos/no-admin-client-with-org-filter
     const { data: existing } = await admin
       .from('org_frameworks')
       .select('framework_slug')
-      // eslint-disable-next-line formaos/no-admin-client-with-org-filter -- single-org read to retain already-enabled frameworks under the plan cap; orgId is server-derived.
       .eq('organization_id', orgId);
     const existingSlugs = new Set(
       (existing ?? []).map((r: { framework_slug: string }) => r.framework_slug),
@@ -361,13 +365,62 @@ export async function getCurrentOrgId() {
 
   if (!user) throw new Error('Unauthorized');
 
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('organization_id')
+  // A multi-org user matches more than one org_members row, and an unfiltered
+  // .maybeSingle() then fails with PGRST116 instead of returning a row. Resolve
+  // the active org from user_preferences first (same rule as requireOrgContext
+  // in lib/identity/org-access.ts) and cap the membership lookup at one row.
+  const { data: preference } = await supabase
+    .from('user_preferences')
+    .select('current_organization_id')
     .eq('user_id', user.id)
     .maybeSingle();
 
-  if (!membership?.organization_id) throw new Error('Organization not found');
+  const preferredOrgId =
+    (preference as { current_organization_id?: string } | null)
+      ?.current_organization_id ?? null;
 
-  return membership.organization_id as string;
+  let membershipQuery = supabase
+    .from('org_members')
+    .select('organization_id')
+    .eq('user_id', user.id)
+    .limit(1);
+
+  if (preferredOrgId) {
+    membershipQuery = membershipQuery.eq('organization_id', preferredOrgId);
+  }
+
+  const { data: membership, error: membershipError } =
+    await membershipQuery.maybeSingle();
+
+  if (membershipError) {
+    throw new Error('Organization not found');
+  }
+
+  let organizationId =
+    (membership?.organization_id as string | undefined) ?? undefined;
+
+  // The stored preference can point at an org the user has since been removed
+  // from (or one that was retired). Fall back to any remaining membership
+  // instead of hard-failing the whole page.
+  if (!organizationId && preferredOrgId) {
+    const { data: fallback, error: fallbackError } = await supabase
+      .from('org_members')
+      .select('organization_id')
+      .eq('user_id', user.id)
+      .limit(1)
+      .maybeSingle();
+
+    if (fallbackError) {
+      throw new Error('Organization not found');
+    }
+
+    organizationId =
+      (fallback?.organization_id as string | undefined) ?? undefined;
+  }
+
+  if (!organizationId) {
+    throw new Error('Organization not found');
+  }
+
+  return organizationId;
 }

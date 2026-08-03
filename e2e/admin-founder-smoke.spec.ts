@@ -137,37 +137,31 @@ test.describe('Admin founder smoke', () => {
 
     await gotoWithRetry(page, '/admin/dashboard');
 
-    try {
-      for (const route of CORE_ADMIN_ROUTES) {
-        const response = await gotoWithRetry(page, route.path);
+    // 2026-08-02: the assertion block used to be wrapped in a try/catch that
+    // turned any error whose message contained "timeout" into `test.skip`.
+    // A slow-bootstrap admin console (the known prod symptom this gate was
+    // written for) therefore reported as skipped and the gate could never go
+    // red on the exact regression it exists to detect. `gotoWithRetry` /
+    // `getApiWithRetry` already absorb transient network flakes; anything
+    // that survives all three attempts is a real failure and must fail.
+    for (const route of CORE_ADMIN_ROUTES) {
+      const response = await gotoWithRetry(page, route.path);
 
-        expect(response?.status(), `${route.path} should return 200`).toBe(200);
-        await expect(page).toHaveURL(new RegExp(`${route.path}$`));
-        await expect(
-          page.getByRole('heading', { name: route.heading }),
-        ).toBeVisible();
+      expect(response?.status(), `${route.path} should return 200`).toBe(200);
+      await expect(page).toHaveURL(new RegExp(`${route.path}$`));
+      await expect(
+        page.getByRole('heading', { name: route.heading }),
+      ).toBeVisible();
 
-        const bodyText = (await page.locator('body').textContent()) ?? '';
-        expect(bodyText).not.toContain('This page could not be found');
-        expect(bodyText).not.toContain("FormaOS couldn't load");
-        expect(bodyText).not.toContain('Minified React error #310');
-      }
+      const bodyText = (await page.locator('body').textContent()) ?? '';
+      expect(bodyText).not.toContain('This page could not be found');
+      expect(bodyText).not.toContain("FormaOS couldn't load");
+      expect(bodyText).not.toContain('Minified React error #310');
+    }
 
-      for (const apiPath of CORE_ADMIN_APIS) {
-        const response = await getApiWithRetry(page.request, apiPath);
-        expect(response.status(), `${apiPath} should return 200`).toBe(200);
-      }
-    } catch (outerError) {
-      const msg =
-        outerError instanceof Error ? outerError.message : String(outerError);
-      if (msg.toLowerCase().includes('timeout')) {
-        test.skip(
-          true,
-          `Admin pages not loading within timeout — Supabase SSR may be slow: ${msg.slice(0, 120)}`,
-        );
-        return;
-      }
-      throw outerError;
+    for (const apiPath of CORE_ADMIN_APIS) {
+      const response = await getApiWithRetry(page.request, apiPath);
+      expect(response.status(), `${apiPath} should return 200`).toBe(200);
     }
   });
 });

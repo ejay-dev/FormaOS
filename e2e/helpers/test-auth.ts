@@ -9,6 +9,7 @@
 import './_node20-ws-shim';
 
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { createClient, type Session } from '@supabase/supabase-js';
 import { config } from 'dotenv';
@@ -123,12 +124,34 @@ export function isE2EAuthBootstrapError(
 
 // Test user state (module-level for cleanup)
 let createdTestUser: TestUser | null = null;
-const E2E_CACHE_DIR = path.join(process.cwd(), 'test-results');
+// Both cache files hold live credentials for a user that owns a real
+// organization: e2e-auth-user.json carries the plaintext password,
+// e2e-session-cache.json a replayable refresh_token. They must never
+// live under `test-results/` — CI uploads that directory wholesale as a
+// downloadable build artifact. Keep them in the runner's temp dir
+// instead: outside the repo, outside every artifact upload glob.
+const E2E_CACHE_DIR = path.join(os.tmpdir(), 'formaos-e2e');
 const E2E_AUTH_CACHE_PATH = path.join(E2E_CACHE_DIR, 'e2e-auth-user.json');
-const E2E_SESSION_CACHE_PATH = path.join(
+export const E2E_SESSION_CACHE_PATH = path.join(
   E2E_CACHE_DIR,
   'e2e-session-cache.json',
 );
+
+/** Create the cache dir owner-only, tightening it if it already exists. */
+export function ensureE2ECacheDir(): string {
+  fs.mkdirSync(E2E_CACHE_DIR, { recursive: true, mode: 0o700 });
+  // mkdirSync's mode is ignored when the directory already exists, so a
+  // leftover world-readable dir on a shared /tmp keeps its old modes.
+  fs.chmodSync(E2E_CACHE_DIR, 0o700);
+  return E2E_CACHE_DIR;
+}
+
+// Paths the pre-move code wrote to. Removed once per run so a workspace
+// that is not freshly cloned stops shipping them in the CI artifact.
+export const E2E_LEGACY_CACHE_PATHS = [
+  path.join(process.cwd(), 'test-results', 'e2e-auth-user.json'),
+  path.join(process.cwd(), 'test-results', 'e2e-session-cache.json'),
+];
 let cachedAuthWriteAvailability: AuthWriteAvailability | null = null;
 
 function loadCachedTestUser(): TestUser | null {
@@ -152,8 +175,10 @@ function loadCachedTestUser(): TestUser | null {
 }
 
 function persistCachedTestUser(user: TestUser) {
-  fs.mkdirSync(E2E_CACHE_DIR, { recursive: true });
-  fs.writeFileSync(E2E_AUTH_CACHE_PATH, JSON.stringify(user, null, 2));
+  ensureE2ECacheDir();
+  fs.writeFileSync(E2E_AUTH_CACHE_PATH, JSON.stringify(user, null, 2), {
+    mode: 0o600,
+  });
 }
 
 function clearCachedTestUser() {

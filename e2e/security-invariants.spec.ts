@@ -4,12 +4,14 @@
  */
 
 import { test, expect, type Page } from '@playwright/test';
+import { randomUUID } from 'crypto';
 import {
   getTestCredentials,
   cleanupTestUser,
   E2EAuthBootstrapError,
   isE2EAuthBootstrapError,
 } from './helpers/test-auth';
+import { getWorkspaceSeedContext, seedTask } from './helpers/workspace-seed';
 
 let testCredentials: { email: string; password: string } | null = null;
 
@@ -172,28 +174,60 @@ test.describe('Organization Isolation', () => {
   });
 
   test('Cannot access other org data via API', async ({ page }) => {
-    // Try to access a random org ID (should fail or return empty)
-    const randomOrgId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+    // This test had no assertions at all: it hit /api/compliance/controls
+    // (a route that does not exist in the app router, so it always 404'd) and
+    // console.log'd on both branches. A regression that made an org-scoped
+    // endpoint honour a caller-supplied org id passed unchanged.
+    //
+    // Seed a uniquely-titled obligation in the caller's own org, then ask the
+    // same endpoint for a *different* tenant. The org scope must come from the
+    // session (requireActiveOrgContext), never from the query string, so the
+    // response must be identical and must still contain our marker.
+    const context = await getWorkspaceSeedContext();
+    const marker = `Isolation Probe ${randomUUID().slice(0, 8)}`;
+    const obligation = await seedTask(context, {
+      title: marker,
+      priority: 'low',
+    });
+    const foreignOrgId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
 
-    // Try various endpoints with fake org ID
-    const response = await page.request.get(
-      `/api/compliance/controls?org_id=${randomOrgId}`,
-    );
+    const readTitles = async (url: string) => {
+      const response = await page.request.get(url);
+      expect(response.status(), `${url} should answer 200`).toBe(200);
+      const body = (await response.json()) as {
+        obligations?: Array<{ title?: string }>;
+      };
+      expect(Array.isArray(body.obligations)).toBe(true);
+      return (body.obligations ?? [])
+        .map((row) => row.title ?? '')
+        .sort();
+    };
 
-    // Should either:
-    // 1. Return 403/404 (access denied)
-    // 2. Return empty results (RLS filtering)
-    // 3. Ignore the org_id param entirely and return user's own data
-    if (response.status() === 200) {
-      const data = await response.json();
-      // If 200, data should be empty or from user's own org
-      if (Array.isArray(data)) {
-        console.log(
-          `Query returned ${data.length} items (should be 0 or from own org)`,
-        );
-      }
-    } else {
-      console.log(`Query blocked with status ${response.status()}`);
+    try {
+      const ownTitles = await readTitles('/api/v1/compliance/obligations');
+      expect(
+        ownTitles,
+        'own-org request should return the obligation seeded for this org',
+      ).toContain(marker);
+
+      const spoofedTitles = await readTitles(
+        `/api/v1/compliance/obligations?org_id=${foreignOrgId}&organization_id=${foreignOrgId}`,
+      );
+
+      // If the endpoint honoured the caller-supplied org id it would answer
+      // with that other tenant's rows and this marker would disappear. (Full
+      // list equality is deliberately not asserted — sibling suites mutate
+      // org_tasks in the same org in parallel.)
+      expect(
+        spoofedTitles,
+        'caller-supplied org_id changed the tenant scope — cross-tenant leak',
+      ).toContain(marker);
+    } finally {
+      await context.admin
+        .from('org_tasks')
+        .delete()
+        .eq('id', obligation.id as string)
+        .eq('organization_id', context.orgId);
     }
   });
 
@@ -257,8 +291,11 @@ test.describe('Authentication Invariants', () => {
     // Clear session
     await page.context().clearCookies();
 
+    // /api/compliance/controls was listed here but has no route file, so it
+    // 404s rather than 401s — the assertion below could never hold for it.
+    // Use the real session-scoped compliance endpoint instead.
     const apiEndpoints = [
-      '/api/compliance/controls',
+      '/api/v1/compliance/obligations',
       '/api/executive/posture',
       '/api/customer-health/score',
     ];

@@ -157,12 +157,30 @@ async function runKeyboardNavigationTest(browser, url, options = {}) {
         if (!activeEl) return null;
 
         const rect = activeEl.getBoundingClientRect();
+        const style = getComputedStyle(activeEl);
+
+        // getComputedStyle().outline resolves to the shorthand triple
+        // (e.g. "rgb(0, 0, 0) none 0px"), which is never exactly the
+        // string "none" — the previous `outline !== 'none'` check was
+        // therefore true for every element, including ones styled with
+        // `outline: none`. Read the longhands instead, and accept a
+        // box-shadow ring as an equivalent indicator.
+        const outlineWidth = parseFloat(style.outlineWidth) || 0;
+        const hasOutline =
+          style.outlineStyle !== 'none' &&
+          outlineWidth > 0 &&
+          style.outlineColor !== 'transparent';
+        const hasShadowRing =
+          Boolean(style.boxShadow) && style.boxShadow !== 'none';
+
         return {
           tagName: activeEl.tagName,
           id: activeEl.id || '',
           className: activeEl.className || '',
           visible: rect.width > 0 && rect.height > 0,
-          focusVisible: getComputedStyle(activeEl).outline !== 'none',
+          focusVisible: hasOutline || hasShadowRing,
+          outlineStyle: style.outlineStyle,
+          outlineWidth: style.outlineWidth,
         };
       });
 
@@ -207,6 +225,9 @@ async function generateAccessibilityReport(results) {
       criticalIssues: 0,
       warnings: 0,
       passes: 0,
+      focusIndicatorsChecked: 0,
+      focusIndicatorsMissing: 0,
+      pagesWithNoFocusIndicator: [],
     },
     results: results,
     recommendations: [],
@@ -223,6 +244,22 @@ async function generateAccessibilityReport(results) {
           report.summary.warnings++;
         }
       });
+    } else if (result.tool === 'keyboard-navigation') {
+      // A page that hands the user focusable controls but paints no focus
+      // indicator on any of them is WCAG 2.4.7 broken outright — almost
+      // always a global `*:focus { outline: none }` regression. Count it,
+      // so this sweep can actually fail.
+      const tested = result.testedElements || 0;
+      const accessible = result.accessibleElements || 0;
+      report.summary.focusIndicatorsChecked += tested;
+      report.summary.focusIndicatorsMissing += Math.max(0, tested - accessible);
+      if (tested > 0 && accessible === 0) {
+        report.summary.totalIssues += 1;
+        report.summary.criticalIssues += 1;
+        report.summary.pagesWithNoFocusIndicator.push(
+          `${result.page ?? result.url} (${result.browser ?? 'unknown browser'})`,
+        );
+      }
     } else if (result.tool === 'axe-core') {
       result.violations.forEach((violation) => {
         report.summary.totalIssues += violation.nodes?.length || 1;
@@ -246,6 +283,16 @@ async function generateAccessibilityReport(results) {
   if (report.summary.warnings > 10) {
     report.recommendations.push(
       'High number of accessibility warnings. Review and fix to improve user experience.',
+    );
+  }
+
+  if (report.summary.pagesWithNoFocusIndicator.length > 0) {
+    report.recommendations.push(
+      `No visible keyboard focus indicator on any control for: ${report.summary.pagesWithNoFocusIndicator.join(', ')}. Restore a :focus-visible outline or ring.`,
+    );
+  } else if (report.summary.focusIndicatorsMissing > 0) {
+    report.recommendations.push(
+      `${report.summary.focusIndicatorsMissing} of ${report.summary.focusIndicatorsChecked} focused elements had no visible focus indicator.`,
     );
   }
 
@@ -289,15 +336,11 @@ async function runAccessibilityAudit() {
           `  📱 Viewport: ${viewport.name} (${viewport.width}x${viewport.height})`,
         );
 
-        // Pa11y test (legacy compat shim — see runPa11yTest)
-        const pa11yResult = await runPa11yTest(fullUrl, { viewport });
-
-        allResults.push({
-          ...pa11yResult,
-          page: pageConfig.name,
-          viewport: viewport.name,
-          browser: 'chromium',
-        });
+        // Pa11y is retired here (see runPa11yTest). Its placeholder result
+        // used to be pushed into allResults for every page/viewport pair,
+        // inflating report.summary.totalTests by 21 checks that performed
+        // no work. The shim stays exported for old report consumers but is
+        // no longer counted as a test.
 
         // Axe-core tests for each browser
         for (const browserName of config.browsers) {

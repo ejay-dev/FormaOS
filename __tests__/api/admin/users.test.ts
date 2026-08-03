@@ -10,10 +10,23 @@ jest.mock('@/app/app/admin/access', () => ({
   requireAdminAccess: (...args: any[]) => mockRequireAdminAccess(...args),
 }));
 
+// Mirrors the real handleAdminError contract (app/api/admin/_helpers.ts):
+// Unauthorized/Forbidden → 403 with a generic body, everything else → 500.
+// A mock that returned 500 for every error would let an authz regression
+// (stack-trace 500 instead of a clean 403) through unnoticed.
 jest.mock('@/app/api/admin/_helpers', () => ({
-  handleAdminError: jest.fn((err: any, _route: string) => {
+  handleAdminError: jest.fn((err: any, route: string) => {
     const message = err instanceof Error ? err.message : String(err);
-    return Response.json({ error: message }, { status: 500 });
+    if (message === 'Unauthorized' || message === 'Forbidden') {
+      return Response.json(
+        { error: 'Unavailable (permission)' },
+        { status: 403 },
+      );
+    }
+    return Response.json(
+      { error: `Failed to process ${route}` },
+      { status: 500 },
+    );
   }),
 }));
 
@@ -83,7 +96,9 @@ describe('GET /api/admin/users', () => {
     mockRequireAdminAccess.mockRejectedValue(new Error('Forbidden'));
     const req = new Request('http://localhost/api/admin/users');
     const res = await GET(req);
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual({ error: 'Unavailable (permission)' });
+    expect(mockListUsers).not.toHaveBeenCalled();
   });
 
   it('returns 429 when rate limited', async () => {

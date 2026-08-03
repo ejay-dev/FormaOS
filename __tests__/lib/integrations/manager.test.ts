@@ -582,8 +582,17 @@ describe('integrations/manager', () => {
 
   /* ---- dispatchIntegrationEvent ---- */
   describe('dispatchIntegrationEvent', () => {
+    /** Chains handed out for a given table, in call order. */
+    function chainsFor(admin: ReturnType<typeof makeAdmin>, table: string) {
+      return admin.from.mock.calls
+        .map((call, index) =>
+          call[0] === table ? admin.from.mock.results[index].value : null,
+        )
+        .filter(Boolean);
+    }
+
     function makeConnected(providers: string[]) {
-      makeAdmin({
+      return makeAdmin({
         integration_configs: {
           data: providers.map((p) => ({
             id: `${p}-id`,
@@ -795,11 +804,27 @@ describe('integrations/manager', () => {
     });
 
     it('records event for google_drive', async () => {
-      makeConnected(['google_drive']);
+      const admin = makeConnected(['google_drive']);
       await dispatchIntegrationEvent('org-1', 'evidence.uploaded', {
         file: 'f1',
       });
-      // Should call from('integration_events') for recording
+
+      const eventChains = chainsFor(admin, 'integration_events');
+      expect(eventChains).toHaveLength(1);
+      expect(eventChains[0].insert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          organization_id: 'org-1',
+          event_type: 'evidence.uploaded',
+        }),
+      );
+    });
+
+    it('does not record an integration event for a disconnected provider', async () => {
+      const admin = makeConnected([]);
+      await dispatchIntegrationEvent('org-1', 'evidence.uploaded', {
+        file: 'f1',
+      });
+      expect(admin.from).not.toHaveBeenCalledWith('integration_events');
     });
 
     it('dispatches to all connected providers', async () => {
@@ -827,13 +852,18 @@ describe('integrations/manager', () => {
     });
 
     it('handles evidence.uploaded event (no explicit dispatch for slack)', async () => {
-      makeConnected(['slack']);
+      const admin = makeConnected(['slack']);
       await dispatchIntegrationEvent('org-1', 'evidence.uploaded', {
         file: 'f1',
       });
       // evidence.uploaded does not call specific slack helpers, just records the event
       expect(sendTaskNotification).not.toHaveBeenCalled();
       expect(sendCertificateNotification).not.toHaveBeenCalled();
+      const eventChains = chainsFor(admin, 'integration_events');
+      expect(eventChains).toHaveLength(1);
+      expect(eventChains[0].insert).toHaveBeenCalledWith(
+        expect.objectContaining({ event_type: 'evidence.uploaded' }),
+      );
     });
   });
 });

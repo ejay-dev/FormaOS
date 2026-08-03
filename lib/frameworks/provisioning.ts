@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import {
   ensureFrameworkPacksInstalled,
@@ -7,10 +8,23 @@ import {
 import { getEvidenceSuggestions } from './evidence-suggestions';
 import type { FrameworkControlRow } from './types';
 import { getServerSideFeatureFlags } from '@/lib/feature-flags';
+import { apiLogger } from '@/lib/observability/structured-logger';
 import {
   detectComplianceControlsSchema,
   riskLevelFromWeight,
 } from './compliance-controls-schema';
+
+// Rows per statement. Provisioning runs on the onboarding path, where a
+// round-trip per control blows the serverless function budget.
+const PROVISION_BATCH_SIZE = 100;
+
+function chunkRows<T>(rows: T[], size = PROVISION_BATCH_SIZE): T[][] {
+  const chunks: T[][] = [];
+  for (let index = 0; index < rows.length; index += size) {
+    chunks.push(rows.slice(index, index + size));
+  }
+  return chunks;
+}
 
 const DEFAULT_TASK_PRIORITY_BY_RISK: Record<string, string> = {
   low: 'low',
@@ -174,11 +188,17 @@ export async function provisionFrameworkControls(
     risk_level?: string;
     framework_control_id?: string;
   };
-  for (const control of complianceControls as ComplianceControlRow[]) {
-    if (existingControlIds.has(control.id)) {
-      continue;
-    }
 
+  type PendingProvision = {
+    task: Record<string, unknown>;
+    link: Record<string, unknown>;
+    evaluation: Record<string, unknown>;
+  };
+
+  const pendingProvisions: PendingProvision[] = [];
+  const linkedEvaluationsByKey = new Map<string, Record<string, unknown>>();
+
+  for (const control of complianceControls as ComplianceControlRow[]) {
     const frameworkControl = control.framework_control_id
       ? (frameworkControlById.get(control.framework_control_id) as
           | FrameworkControlRow
@@ -207,32 +227,7 @@ export async function provisionFrameworkControls(
       template.priority ??
       DEFAULT_TASK_PRIORITY_BY_RISK[riskKey(control.risk_level)];
 
-    const { data: taskRow, error: taskError } = await admin
-      .from('org_tasks')
-      .insert({
-        organization_id: orgId,
-        title: template.title,
-        description: template.description ?? control.description ?? null,
-        status: 'pending',
-        priority,
-        due_date: defaultDueDate(
-          control.risk_level ?? frameworkControl?.default_risk_level,
-        ),
-      })
-      .select('id')
-      .maybeSingle();
-
-    if (taskError || !taskRow?.id) {
-      continue;
-    }
-
-    await admin.from('control_tasks').insert({
-      organization_id: orgId,
-      control_id: control.id,
-      task_id: taskRow.id,
-    });
-
-    evaluations.push({
+    const evaluation = {
       organization_id: orgId,
       control_type: 'framework_control',
       control_key: `control:${control.id}`,
@@ -249,12 +244,189 @@ export async function provisionFrameworkControls(
         evidence_types: suggestions.evidenceTypes,
         automation_triggers: suggestions.automationTriggers,
       },
+    };
+
+    if (existingControlIds.has(control.id)) {
+      // Task already provisioned by an earlier run. Keep the baseline aside —
+      // it is written only if that run died before reaching the evaluation
+      // upsert, so a real evaluation status is never reset to 'at_risk'.
+      linkedEvaluationsByKey.set(evaluation.control_key, evaluation);
+      continue;
+    }
+
+    // Task ids are generated here so the control_tasks rows can be batched
+    // alongside the tasks instead of waiting on a per-row RETURNING id.
+    const taskId = randomUUID();
+
+    pendingProvisions.push({
+      task: {
+        id: taskId,
+        organization_id: orgId,
+        title: template.title,
+        description: template.description ?? control.description ?? null,
+        status: 'pending',
+        priority,
+        due_date: defaultDueDate(
+          control.risk_level ?? frameworkControl?.default_risk_level,
+        ),
+      },
+      link: {
+        organization_id: orgId,
+        control_id: control.id,
+        task_id: taskId,
+      },
+      evaluation,
     });
   }
 
-  if (evaluations.length) {
-    await admin.from('org_control_evaluations').upsert(evaluations, {
-      onConflict: 'organization_id,control_type,control_key',
-    });
+  for (const batch of chunkRows(pendingProvisions)) {
+    // A multi-row insert is a single statement, so a batch error means nothing
+    // landed. Retry row by row so one bad control costs one control instead of
+    // the whole batch.
+    let provisioned = batch;
+
+    const { error: taskError } = await admin
+      .from('org_tasks')
+      .insert(batch.map((pending) => pending.task));
+
+    if (taskError) {
+      apiLogger.error('framework_provisioning_task_insert_failed', taskError, {
+        orgId,
+        frameworkSlug,
+        batchSize: batch.length,
+      });
+
+      const insertedTasks: PendingProvision[] = [];
+      for (const pending of batch) {
+        const { error: taskRowError } = await admin
+          .from('org_tasks')
+          .insert(pending.task);
+
+        if (taskRowError) {
+          apiLogger.error(
+            'framework_provisioning_task_row_insert_failed',
+            taskRowError,
+            { orgId, frameworkSlug, controlId: pending.link.control_id },
+          );
+          continue;
+        }
+
+        insertedTasks.push(pending);
+      }
+
+      provisioned = insertedTasks;
+    }
+
+    if (provisioned.length === 0) continue;
+
+    const { error: linkError } = await admin
+      .from('control_tasks')
+      .insert(provisioned.map((pending) => pending.link));
+
+    if (linkError) {
+      apiLogger.error('framework_provisioning_link_insert_failed', linkError, {
+        orgId,
+        frameworkSlug,
+        batchSize: provisioned.length,
+      });
+
+      const linkedProvisions: PendingProvision[] = [];
+      const orphanedTaskIds: string[] = [];
+
+      for (const pending of provisioned) {
+        const { error: linkRowError } = await admin
+          .from('control_tasks')
+          .insert(pending.link);
+
+        if (linkRowError) {
+          apiLogger.error(
+            'framework_provisioning_link_row_insert_failed',
+            linkRowError,
+            { orgId, frameworkSlug, controlId: pending.link.control_id },
+          );
+          orphanedTaskIds.push(pending.task.id as string);
+          continue;
+        }
+
+        linkedProvisions.push(pending);
+      }
+
+      // The re-run guard keys off control_tasks, so a task left without its link
+      // would be re-created on every subsequent run. Drop the unlinked ones.
+      if (orphanedTaskIds.length) {
+        const { error: cleanupError } = await admin
+          .from('org_tasks')
+          .delete()
+          .eq('organization_id', orgId)
+          .in('id', orphanedTaskIds);
+
+        if (cleanupError) {
+          apiLogger.error(
+            'framework_provisioning_orphan_task_cleanup_failed',
+            cleanupError,
+            { orgId, frameworkSlug, orphanCount: orphanedTaskIds.length },
+          );
+        }
+      }
+
+      provisioned = linkedProvisions;
+    }
+
+    for (const pending of provisioned) {
+      evaluations.push(pending.evaluation);
+    }
+  }
+
+  if (linkedEvaluationsByKey.size) {
+    const linkedKeys = [...linkedEvaluationsByKey.keys()];
+    for (const batch of chunkRows(linkedKeys)) {
+      const { data: existingEvaluations, error: existingError } = await admin
+        .from('org_control_evaluations')
+        .select('control_key')
+        .eq('organization_id', orgId)
+        .eq('control_type', 'framework_control')
+        .in('control_key', batch);
+
+      if (existingError) {
+        apiLogger.error(
+          'framework_provisioning_evaluation_read_failed',
+          existingError,
+          { orgId, frameworkSlug },
+        );
+        continue;
+      }
+
+      const evaluated = new Set(
+        (existingEvaluations ?? []).map(
+          (row: { control_key?: string }) => row.control_key,
+        ),
+      );
+
+      for (const key of batch) {
+        if (evaluated.has(key)) continue;
+        const evaluation = linkedEvaluationsByKey.get(key);
+        if (evaluation) evaluations.push(evaluation);
+      }
+    }
+  }
+
+  // These rows are a seed baseline only. evaluate-framework-controls.ts owns the
+  // real status for every control, including ones provisioning has never linked
+  // a task to, so an existing row must never be overwritten with 'at_risk'.
+  for (const batch of chunkRows(evaluations)) {
+    const { error: evaluationError } = await admin
+      .from('org_control_evaluations')
+      .upsert(batch, {
+        onConflict: 'organization_id,control_type,control_key',
+        ignoreDuplicates: true,
+      });
+
+    if (evaluationError) {
+      apiLogger.error(
+        'framework_provisioning_evaluation_upsert_failed',
+        evaluationError,
+        { orgId, frameworkSlug, batchSize: batch.length },
+      );
+    }
   }
 }

@@ -5,6 +5,29 @@ import { IntegrationCatalog, type IntegrationCatalogItem } from '@/components/in
 import { fetchSystemState } from '@/lib/system-state/server';
 import { redirect } from 'next/navigation';
 
+// Credential-bearing keys across every provider in FIELD_MAP
+// (components/integrations/integration-config-dialog.tsx).
+const SECRET_CONFIG_KEYS = new Set([
+  'webhook_url',
+  'access_token',
+  'refresh_token',
+  'api_key',
+]);
+
+// IntegrationCatalogItem is spread onto a client component, so anything
+// left on it is serialised into the RSC payload and readable in the
+// browser. The dialog only needs to know whether a secret is set.
+function redactIntegrationConfig(
+  config: Record<string, unknown> | null | undefined,
+): Record<string, unknown> | null {
+  if (!config || typeof config !== 'object') return null;
+  const redacted: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(config)) {
+    redacted[key] = SECRET_CONFIG_KEYS.has(key) && value ? '***' : value;
+  }
+  return redacted;
+}
+
 export default async function IntegrationSettingsPage() {
   const systemState = await fetchSystemState();
   if (!systemState?.organization.id) {
@@ -32,7 +55,9 @@ export default async function IntegrationSettingsPage() {
     return {
       ...item,
       connectedId: connectedRow?.id ?? null,
-      config: (connectedRow?.config as Record<string, unknown> | null) ?? null,
+      config: redactIntegrationConfig(
+        (connectedRow?.config as Record<string, unknown> | null) ?? item.config,
+      ),
     };
   });
 

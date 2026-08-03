@@ -60,24 +60,26 @@ test.describe('SECURITY VERIFICATION: Admin Route Protection', () => {
   });
 
   test('Admin page shows "unauthorized" for non-founders', async ({ page }) => {
-    // Access admin without proper role should be denied
+    // 2026-08-02: `isBlocked` used to accept any page whose body contained
+    // "login" or "sign in" anywhere. A fully rendered admin console carries
+    // those strings in its nav/footer, so an authorization leak passed. The
+    // real contract (proxy.ts, "STEP 2: GATE /admin AT THE EDGE") is that an
+    // unauthenticated /admin request is redirected to /unauthorized — assert
+    // the destination and assert the admin surface did not render.
+    await page.context().clearCookies();
     await page.goto('/admin', {
       waitUntil: 'domcontentloaded',
       timeout: 30000,
     });
 
-    // Page should redirect away from admin or show unauthorized message
-    const url = page.url();
-    const content = await page.textContent('body');
+    await expect(page).toHaveURL(/\/(unauthorized|auth\/signin)(\?|$)/);
 
-    const isBlocked =
-      !url.includes('/admin') ||
-      content?.toLowerCase().includes('unauthorized') ||
-      content?.toLowerCase().includes('access denied') ||
-      content?.toLowerCase().includes('login') ||
-      content?.toLowerCase().includes('sign in');
+    const content = (await page.textContent('body')) ?? '';
+    expect(content).toMatch(/Access Denied|Unauthorized Access|Sign in/i);
 
-    expect(isBlocked).toBeTruthy();
+    // Admin console surface must be absent — this heading only exists on the
+    // real /admin/dashboard page (see e2e/admin-founder-smoke.spec.ts).
+    expect(content).not.toContain('Platform Overview');
   });
 });
 
@@ -128,12 +130,23 @@ expect([200, 301, 302, 304, 307, 308]).toContain(response?.status() ?? 0);
         timeout: 30000,
       });
 
-      const status = response?.status();
+      const status = response?.status() ?? 0;
 
-      // Debug routes should return 404 or be completely inaccessible
+      // 2026-08-02: 500 (and a missing response) used to count as a pass,
+      // which hid a debug route that crashes *after* executing server code.
+      // app/api/debug/_guard.ts returns 404 for every debug route outside
+      // NODE_ENV=development and for non-founders, so 404 is the contract.
       expect(
-        [404, 401, 403, 500].includes(status ?? 0) || status === undefined,
-      ).toBeTruthy();
+        [401, 403, 404],
+        `${route} must be inaccessible (got ${status})`,
+      ).toContain(status);
+
+      // A guard that returns the right status but still serialises config is
+      // the other half of the regression — assert nothing leaked.
+      const body = (await response?.text()) ?? '';
+      expect(body).not.toContain('SUPABASE_SERVICE_ROLE_KEY');
+      expect(body).not.toContain('hasServiceRoleKey');
+      expect(body).not.toContain('cookieDomain');
     }
   });
 });
@@ -158,9 +171,26 @@ test.describe('SECURITY: API Endpoint Protection', () => {
   });
 
   test('CORS headers are properly configured', async ({ request }) => {
+    // 2026-08-02: this test used to assert only `status < 500` and never read
+    // a single header, so a wide-open `Access-Control-Allow-Origin: *` passed.
+    // FormaOS is same-origin only — next.config.ts `headers()` and proxy.ts
+    // deliberately set no CORS allow-origin at all.
     const response = await request.get('/');
+    expect(response.status()).toBeLessThan(400);
 
-    // Basic response check - CORS specifics depend on configuration
-    expect(response.status()).toBeLessThan(500);
+    const headers = response.headers();
+
+    const allowOrigin = headers['access-control-allow-origin'] ?? '';
+    expect(
+      allowOrigin,
+      'Marketing/app root must not advertise a wildcard CORS origin',
+    ).not.toBe('*');
+    expect(headers['access-control-allow-credentials'] ?? '').not.toBe('true');
+
+    // Same-origin companions set unconditionally in next.config.ts headers()
+    // and re-set in proxy.ts step 6.
+    expect(headers['x-frame-options']).toBe('DENY');
+    expect(headers['x-content-type-options']).toBe('nosniff');
+    expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
   });
 });

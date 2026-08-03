@@ -211,29 +211,64 @@ describe('calculateExecutivePosture', () => {
     expect(result.frameworkCoverage).toBe(50);
   });
 
-  it('computes automation effectiveness', async () => {
-    calculateFrameworkReadiness.mockResolvedValue([]);
-    let callIdx = 0;
-    __admin.from = jest.fn(() => {
-      const idx = callIdx++;
-      if (idx === 0) return createBuilder({ data: null, error: null }); // snapshots
-      if (idx === 1)
-        return createBuilder({
-          data: [
-            { id: 'w1', status: 'active' },
-            { id: 'w2', status: 'inactive' },
-          ],
-          error: null,
-        }); // workflows
-      if (idx === 2)
-        return createBuilder({ data: null, error: null, count: 20 }); // workflow runs
-      if (idx === 3) return createBuilder({ data: [], error: null }); // evaluations
-      if (idx === 4) return createBuilder({ data: null, error: null }); // deadlines
-      return createBuilder();
+  /**
+   * Automation effectiveness = min(100, round((runs / activeWorkflows) * 10)).
+   *
+   * NOTE (schema drift, see report): production `org_workflows` has no
+   * `status` column (it has `enabled boolean`) and `org_workflow_runs` does
+   * not exist at all, so this metric reads 0 for every org in prod. These
+   * tests pin the formula the module actually implements so a regression in
+   * the arithmetic is caught; the schema mismatch is tracked separately.
+   */
+  function mockWorkflowTables(
+    workflows: Array<{ id: string; status: string }>,
+    runCount: number,
+  ) {
+    __admin.from = jest.fn((table: string) => {
+      if (table === 'org_workflows')
+        return createBuilder({ data: workflows, error: null });
+      if (table === 'org_workflow_runs')
+        return createBuilder({ data: null, error: null, count: runCount });
+      return createBuilder({ data: null, error: null, count: 0 });
     });
+  }
+
+  it('saturates automation effectiveness at 100', async () => {
+    calculateFrameworkReadiness.mockResolvedValue([]);
+    mockWorkflowTables(
+      [
+        { id: 'w1', status: 'active' },
+        { id: 'w2', status: 'inactive' },
+      ],
+      20,
+    );
     const result = await calculateExecutivePosture('org-1');
-    // 1 active workflow, 20 triggers -> min(100, (20/1)*10) = min(100, 200) = 100
-    expect(result.automationEffectiveness).toBeGreaterThanOrEqual(0);
+    // 1 active workflow, 20 runs -> min(100, round((20 / 1) * 10)) = 100
+    expect(result.automationEffectiveness).toBe(100);
+  });
+
+  it('scales automation effectiveness below the ceiling and rounds the final value', async () => {
+    calculateFrameworkReadiness.mockResolvedValue([]);
+    mockWorkflowTables(
+      [
+        { id: 'w1', status: 'active' },
+        { id: 'w2', status: 'active' },
+        { id: 'w3', status: 'paused' },
+      ],
+      7,
+    );
+    const result = await calculateExecutivePosture('org-1');
+    // 2 active workflows, 7 runs -> round((7 / 2) * 10) = round(35) = 35.
+    // A value that is always a multiple of 10 means the rounding regressed
+    // back outside the multiplication (see the bug note in the source).
+    expect(result.automationEffectiveness).toBe(35);
+  });
+
+  it('reports zero automation effectiveness when no workflow is active', async () => {
+    calculateFrameworkReadiness.mockResolvedValue([]);
+    mockWorkflowTables([{ id: 'w1', status: 'inactive' }], 40);
+    const result = await calculateExecutivePosture('org-1');
+    expect(result.automationEffectiveness).toBe(0);
   });
 
   it('handles missing deadlines table', async () => {

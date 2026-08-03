@@ -1,6 +1,13 @@
 /**
  * Smart Upgrade Gate E2E Tests
  * Tests: Feature gating, upgrade modals, plan comparison, checkout flow
+ *
+ * Every test in this file used to follow the shape
+ *   `const hasX = await locator.isVisible().catch(() => false); if (hasX) { … }`
+ * so the whole suite reported green whenever the paywall it is named after
+ * stopped rendering. The assertions below are unconditional, or branch on
+ * *data* (the org's real plan / entitlements read from Supabase) with a
+ * failing assertion on every branch.
  */
 
 import { test, expect, type Page } from '@playwright/test';
@@ -9,6 +16,10 @@ import {
   cleanupTestUser,
   E2EAuthBootstrapError,
 } from './helpers/test-auth';
+import { getWorkspaceSeedContext } from './helpers/workspace-seed';
+import { PLAN_CATALOG, resolvePlanKey, type PlanKey } from '../lib/plans';
+
+const PLAN_ORDER: PlanKey[] = ['basic', 'pro', 'scale', 'enterprise'];
 
 let testCredentials: { email: string; password: string } | null = null;
 
@@ -78,11 +89,25 @@ async function gotoAppRoute(page: Page, route: string) {
   ).toBeVisible({ timeout: 15000 });
 }
 
+/** The plan tier the client store (and therefore the plan picker) sees. */
+async function readClientPlan(page: Page): Promise<string> {
+  const response = await page.request.get('/api/system-state');
+  expect(response.status(), '/api/system-state should answer 200').toBe(200);
+  const state = (await response.json()) as {
+    organization?: { plan?: string };
+  };
+  return state.organization?.plan ?? 'trial';
+}
+
 // =========================================================
 // FEATURE GATE DISPLAY TESTS
 // =========================================================
 test.describe('Smart Upgrade Gate', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, browserName }) => {
+    // The plan comparison table is `hidden lg:block`; the mobile projects
+    // can't see it. Authenticated coverage is a chromium-only gate here as
+    // it is everywhere else in this suite.
+    test.skip(browserName !== 'chromium', 'Runs once on chromium');
     const creds = await getCredentials();
     await loginAs(page, creds.email, creds.password);
   });
@@ -97,56 +122,72 @@ test.describe('Smart Upgrade Gate', () => {
     page,
   }) => {
     await gotoAppRoute(page, '/app/workflows');
+    await expect(
+      page.getByRole('heading', { name: 'Workflow Engine' }),
+    ).toBeVisible({ timeout: 15000 });
 
-    // Look for locked feature indicators
-    const lockedFeature = page.locator(
-      '[data-testid="locked-feature"], text=/upgrade|unlock|pro|enterprise/i',
-    );
-    const hasLocked = await lockedFeature
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    // app/app/workflows/page.tsx renders exactly one of three states:
+    // the entitlement paywall, the missing-schema notice, or the builder.
+    const paywall = page.locator('[data-testid="workflow-entitlement-disabled"]');
+    const schemaGate = page.locator('[data-testid="workflow-schema-disabled"]');
+    const builderCta = page.getByRole('button', { name: 'Blank Workflow' });
 
-    if (hasLocked) {
-      console.log('Feature gate displayed for locked feature');
+    const [paywallCount, schemaCount, builderCount] = await Promise.all([
+      paywall.count(),
+      schemaGate.count(),
+      builderCta.count(),
+    ]);
+
+    expect(
+      paywallCount + schemaCount + builderCount,
+      'workflows page rendered neither the gate nor the builder',
+    ).toBeGreaterThan(0);
+
+    if (paywallCount > 0) {
+      await expect(
+        paywall.getByRole('heading', {
+          name: 'Workflow automation is an Enterprise feature',
+        }),
+      ).toBeVisible();
+      await expect(
+        paywall.getByRole('link', { name: 'Review Billing' }),
+      ).toHaveAttribute('href', '/app/billing');
+      // The paywall must actually block the action, not just describe it.
+      await expect(
+        paywall.getByRole('button', { name: 'Create workflow' }),
+      ).toBeDisabled();
+      await expect(builderCta).toHaveCount(0);
+    } else if (schemaCount > 0) {
+      await expect(
+        schemaGate.getByRole('button', { name: 'Create workflow' }),
+      ).toBeDisabled();
+      await expect(builderCta).toHaveCount(0);
     } else {
-      console.log('Feature may be unlocked or user has premium plan');
+      // Entitlement granted — the builder must actually be usable.
+      await expect(builderCta).toBeEnabled();
+      await expect(page.getByText('Total Workflows')).toBeVisible();
     }
   });
 
   test('Upgrade modal shows feature-specific benefits', async ({ page }) => {
-    await gotoAppRoute(page, '/app/workflows');
+    await gotoAppRoute(page, '/app/billing');
 
-    // Look for upgrade button and click it
-    const upgradeBtn = page.locator(
-      'button:has-text("Upgrade"), [data-testid="upgrade-btn"]',
-    );
-    const hasUpgradeBtn = await upgradeBtn
-      .first()
-      .isVisible({ timeout: 3000 })
-      .catch(() => false);
+    // PlanComparisonTable renders unconditionally on /app/billing, so every
+    // tier and its benefit bullets must be present. If billing stops listing
+    // plans this fails on the first missing card.
+    await expect(
+      page.getByRole('heading', {
+        name: /Choose Your Plan|Reactivate Your Account/,
+      }),
+    ).toBeVisible({ timeout: 15000 });
 
-    if (hasUpgradeBtn) {
-      await upgradeBtn.first().click();
-
-      // Modal should appear with benefits
-      const modal = page.locator(
-        '[data-testid="upgrade-modal"], [role="dialog"]',
-      );
-      const hasModal = await modal
-        .isVisible({ timeout: 5000 })
-        .catch(() => false);
-
-      if (hasModal) {
-        // Should show benefits
-        const benefits = page.locator('text=/benefit|feature|include/i');
-        const hasBenefits = await benefits
-          .first()
-          .isVisible({ timeout: 3000 })
-          .catch(() => false);
-        expect(hasBenefits).toBe(true);
-        console.log('Upgrade modal shows feature-specific benefits');
-      }
+    for (const planKey of PLAN_ORDER) {
+      const plan = PLAN_CATALOG[planKey];
+      await expect(
+        page.getByRole('heading', { name: plan.name, level: 3 }).first(),
+      ).toBeVisible();
+      // Each card lists the catalog's benefit bullets verbatim.
+      await expect(page.getByText(plan.features[0], { exact: true })).toBeVisible();
     }
   });
 
@@ -155,37 +196,56 @@ test.describe('Smart Upgrade Gate', () => {
   }) => {
     await gotoAppRoute(page, '/app/billing');
 
-    // Look for plan comparison
-    const planComparison = page.locator(
-      '[data-testid="plan-comparison"], text=/basic|pro|enterprise/i',
-    );
-    const hasComparison = await planComparison
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    const comparison = page.locator('table').filter({ hasText: 'Feature' }).first();
+    await expect(comparison).toBeVisible({ timeout: 15000 });
 
-    if (hasComparison) {
-      // Should show multiple plans
-      const plans = page.locator('text=/basic|pro|enterprise/i');
-      const planCount = await plans.count();
-      expect(planCount).toBeGreaterThan(1);
-      console.log(`Plan comparison shows ${planCount} plan options`);
+    for (const planKey of PLAN_ORDER) {
+      await expect(
+        comparison.locator('thead th', {
+          hasText: PLAN_CATALOG[planKey].name,
+        }),
+      ).toHaveCount(1);
     }
+
+    // Workflow Automation is gated: unavailable on Foundation, available from
+    // Growth up. The cells render a lucide check/x rather than text.
+    const workflowRow = comparison
+      .locator('tbody tr')
+      .filter({ hasText: 'Workflow Automation' })
+      .first();
+    await expect(workflowRow.locator('td').nth(1).locator('svg.lucide-x')).toHaveCount(1);
+    await expect(
+      workflowRow.locator('td').nth(4).locator('svg.lucide-check'),
+    ).toHaveCount(1);
   });
 
   test('Usage metrics are displayed in upgrade context', async ({ page }) => {
+    const context = await getWorkspaceSeedContext();
+    const { data: org } = await context.admin
+      .from('organizations')
+      .select('plan_key')
+      .eq('id', context.orgId)
+      .maybeSingle();
+
     await gotoAppRoute(page, '/app/billing');
 
-    // Look for usage indicators
-    const usageMetrics = page.locator('text=/used|limit|remaining|of/i');
-    const hasUsage = await usageMetrics
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    // The "Current plan" card must render the org's real plan, resolved the
+    // same way the page resolves it. A billing page that stops binding to
+    // org data now fails instead of logging "no usage metrics".
+    const planKey = resolvePlanKey(
+      (org?.plan_key as string | null) ?? null,
+    );
+    const expectedPlanName = planKey
+      ? PLAN_CATALOG[planKey].name
+      : 'Plan not set';
 
-    if (hasUsage) {
-      console.log('Usage metrics displayed in billing/upgrade context');
-    }
+    // Innermost <div> that *contains* the "Current plan" label — i.e. the
+    // block holding both the label and the resolved plan name.
+    const currentPlanCard = page
+      .locator('div', { has: page.getByText('Current plan', { exact: true }) })
+      .last();
+    await expect(currentPlanCard).toBeVisible({ timeout: 15000 });
+    await expect(currentPlanCard).toContainText(expectedPlanName);
   });
 });
 
@@ -193,56 +253,58 @@ test.describe('Smart Upgrade Gate', () => {
 // CHECKOUT FLOW TESTS
 // =========================================================
 test.describe('Checkout Flow', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Runs once on chromium');
     const creds = await getCredentials();
     await loginAs(page, creds.email, creds.password);
   });
 
   test('Upgrade CTA navigates to checkout or billing', async ({ page }) => {
+    const plan = await readClientPlan(page);
     await gotoAppRoute(page, '/app/billing');
+    await expect(
+      page.getByRole('heading', {
+        name: /Choose Your Plan|Reactivate Your Account/,
+      }),
+    ).toBeVisible({ timeout: 15000 });
 
-    // Find upgrade/checkout button
-    const checkoutBtn = page.locator(
-      'button:has-text("Upgrade"), button:has-text("Choose"), a:has-text("Upgrade")',
-    );
-    const hasCheckout = await checkoutBtn
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    const contactSales = page.getByRole('link', { name: 'Contact sales' });
 
-    if (hasCheckout) {
-      // Click and verify navigation (may go to Stripe)
-      await Promise.all([
-        page
-          .waitForResponse(
-            (resp) =>
-              resp.url().includes('stripe') || resp.url().includes('billing'),
-            { timeout: 10000 },
-          )
-          .catch(() => null),
-        checkoutBtn.first().click(),
-      ]);
-
-      // Should either navigate to Stripe or stay on billing page
-      console.log('Checkout CTA triggers navigation');
+    if (plan === 'enterprise') {
+      // Top tier: the card shows the current-plan state and offers no upsell.
+      await expect(page.getByText('CURRENT PLAN')).toHaveCount(1);
+      await expect(contactSales).toHaveCount(0);
+    } else {
+      // Enterprise is a custom-priced upgrade for every other tier, so its
+      // CTA must be rendered and must point at the sales funnel.
+      await expect(contactSales).toHaveCount(1);
+      await expect(contactSales).toHaveAttribute(
+        'href',
+        '/contact?intent=enterprise',
+      );
     }
   });
 
   test('Contact sales button appears for enterprise', async ({ page }) => {
     await gotoAppRoute(page, '/app/billing');
 
-    // Look for contact sales option
-    const contactSales = page.locator(
-      'text=/contact sales|talk to sales|enterprise/i',
-    );
-    const hasContactSales = await contactSales
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    const comparison = page.locator('table').filter({ hasText: 'Feature' }).first();
+    await expect(comparison).toBeVisible({ timeout: 15000 });
 
-    if (hasContactSales) {
-      console.log('Contact sales option available for enterprise');
+    // SSO & SAML is enterprise-only: X on Foundation/Growth/Scale, check on
+    // Enterprise. This is the paywall boundary the "contact sales" path sells.
+    const ssoRow = comparison
+      .locator('tbody tr')
+      .filter({ hasText: 'SSO & SAML' })
+      .first();
+    for (const columnIndex of [1, 2, 3]) {
+      await expect(
+        ssoRow.locator('td').nth(columnIndex).locator('svg.lucide-x'),
+      ).toHaveCount(1);
     }
+    await expect(
+      ssoRow.locator('td').nth(4).locator('svg.lucide-check'),
+    ).toHaveCount(1);
   });
 });
 
@@ -250,44 +312,62 @@ test.describe('Checkout Flow', () => {
 // FEATURE BENEFITS TESTS
 // =========================================================
 test.describe('Feature Benefits Display', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'Runs once on chromium');
     const creds = await getCredentials();
     await loginAs(page, creds.email, creds.password);
   });
 
   test('Locked feature shows specific value proposition', async ({ page }) => {
-    await gotoAppRoute(page, '/app/workflows');
+    await gotoAppRoute(page, '/app/billing');
 
-    // Look for feature-specific benefits
-    const benefits = page.locator(
-      '[data-testid="feature-benefits"], text=/automate|workflow|time|effort/i',
-    );
-    const hasBenefits = await benefits
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
-
-    if (hasBenefits) {
-      console.log('Feature-specific value proposition displayed');
+    // Enterprise-only value props must appear on the Enterprise card and
+    // nowhere else — that difference is the whole upgrade proposition.
+    const enterpriseOnly = [
+      'SSO & SAML authentication',
+      'Custom compliance frameworks',
+    ];
+    for (const benefit of enterpriseOnly) {
+      expect(PLAN_CATALOG.enterprise.features).toContain(benefit);
+      expect(PLAN_CATALOG.basic.features).not.toContain(benefit);
+      await expect(
+        page.getByText(benefit, { exact: true }),
+      ).toHaveCount(1);
     }
   });
 
   test('Approaching limit shows usage warning', async ({ page }) => {
-    await gotoAppRoute(page, '/app');
+    const context = await getWorkspaceSeedContext();
+    const { data: entitlements } = await context.admin
+      .from('org_entitlements')
+      .select('feature_key, enabled')
+      .eq('organization_id', context.orgId);
 
-    // Look for limit warnings
-    const limitWarning = page.locator(
-      'text=/approaching|limit|quota|80%|90%/i',
-    );
-    const hasWarning = await limitWarning
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    await gotoAppRoute(page, '/app/billing');
 
-    if (hasWarning) {
-      console.log('Approaching limit warning displayed');
+    const entitlementsCard = page
+      .locator('div', {
+        has: page.getByRole('heading', { name: 'Entitlements' }),
+      })
+      .last();
+    await expect(entitlementsCard).toBeVisible({ timeout: 15000 });
+
+    const rows = (entitlements ?? []) as Array<{
+      feature_key: string;
+      enabled: boolean;
+    }>;
+
+    if (rows.length === 0) {
+      await expect(entitlementsCard).toContainText('No entitlements active yet.');
     } else {
-      console.log('No limit warnings (usage within limits)');
+      // Every entitlement row the org actually holds must be surfaced with
+      // its enabled/disabled state — this is the data the upgrade gates read.
+      for (const row of rows) {
+        await expect(entitlementsCard).toContainText(row.feature_key);
+      }
+      await expect(entitlementsCard).toContainText(
+        rows.some((row) => row.enabled) ? 'Enabled' : 'Disabled',
+      );
     }
   });
 });

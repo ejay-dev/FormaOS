@@ -185,10 +185,13 @@ maybeDescribe('Audit 2026-05-26: cross-org WRITE isolation under RLS', () => {
           .select(`${spec.idColumn}`)
           .single();
         if (insertErr) {
-          console.warn(
-            `[adversarial RLS] skipping ${spec.table}: ${insertErr.message}`,
+          // Fail loudly. A skipped seed means the WITH CHECK probes below
+          // execute zero assertions while the suite reports green — the
+          // exact silence this file exists to break. Schema drift (a new
+          // NOT NULL column) must be fixed in the spec, not tolerated.
+          throw new Error(
+            `[adversarial RLS] seed insert failed for ${spec.table}: ${insertErr.message}`,
           );
-          continue;
         }
         seededRows.push({
           table: spec.table,
@@ -234,15 +237,20 @@ maybeDescribe('Audit 2026-05-26: cross-org WRITE isolation under RLS', () => {
           .select(spec.idColumn)
           .eq(spec.orgColumn, seedB.orgId)
           .single();
-        if (!orgBRow.data) {
-          return; // table didn't accept the seed; skip silently.
-        }
+        // Fail loudly if the org-B row is missing — returning here would
+        // pass this WITH CHECK regression gate without probing anything.
+        expect(orgBRow.error).toBeNull();
+        expect(orgBRow.data).toBeTruthy();
+        if (!orgBRow.data) return; // satisfies TS narrowing; unreachable
 
         const attackerClient = jwtClient(seedA);
         const { data: updated, error } = await attackerClient
           .from(spec.table)
           .update(spec.benignUpdate)
-          .eq(spec.idColumn, (orgBRow.data as Record<string, unknown>)[spec.idColumn] as string)
+          .eq(
+            spec.idColumn,
+            (orgBRow.data as Record<string, unknown>)[spec.idColumn] as string,
+          )
           .select(spec.idColumn);
 
         // Successful RLS denial: either an error code, or zero rows
@@ -265,7 +273,10 @@ maybeDescribe('Audit 2026-05-26: cross-org WRITE isolation under RLS', () => {
         const after = await admin
           .from(spec.table)
           .select('*')
-          .eq(spec.idColumn, (orgBRow.data as Record<string, unknown>)[spec.idColumn] as string)
+          .eq(
+            spec.idColumn,
+            (orgBRow.data as Record<string, unknown>)[spec.idColumn] as string,
+          )
           .single();
         const benignKey = Object.keys(spec.benignUpdate)[0];
         expect((after.data as Record<string, unknown>)[benignKey]).not.toBe(
@@ -304,9 +315,10 @@ maybeDescribe('Audit 2026-05-26: cross-org WRITE isolation under RLS', () => {
           .from(spec.table)
           .select(spec.idColumn)
           .eq(spec.orgColumn, seedB.orgId);
-        // Original seed (1 row) is allowed. If we now see more, the
-        // attacker wrote one through.
-        expect((after.data ?? []).length).toBeLessThanOrEqual(1);
+        // beforeAll seeded exactly one org-B row (and fails the suite if it
+        // couldn't). Anything more means the attacker's INSERT landed.
+        expect(after.error).toBeNull();
+        expect(after.data ?? []).toHaveLength(1);
       });
 
       it('user A cannot DELETE a row owned by org B (USING)', async () => {
@@ -316,7 +328,11 @@ maybeDescribe('Audit 2026-05-26: cross-org WRITE isolation under RLS', () => {
           .select(spec.idColumn)
           .eq(spec.orgColumn, seedB.orgId)
           .single();
-        if (!orgBRow.data) return;
+        // Same rule as the UPDATE probe: no seed row means no coverage, so
+        // surface it as a failure instead of a silent pass.
+        expect(orgBRow.error).toBeNull();
+        expect(orgBRow.data).toBeTruthy();
+        if (!orgBRow.data) return; // satisfies TS narrowing; unreachable
 
         const attackerClient = jwtClient(seedA);
         const targetId = (orgBRow.data as Record<string, unknown>)[

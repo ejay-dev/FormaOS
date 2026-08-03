@@ -93,30 +93,93 @@ test.describe('Care Operations Scorecard', () => {
     }
   });
 
+  // 2026-08-02: "Scorecard displays credential alerts" and "Scorecard shows
+  // visit completion rate" used to probe /app for a scorecard widget,
+  // console.log both branches and assert nothing. They could not be repaired
+  // as dashboard tests: components/dashboard/CareOperationsScorecard.tsx is
+  // orphaned — no page imports it, so /app renders no scorecard at all (see
+  // the report note). The behaviour these tests were named for lives in
+  // /api/care-operations/scorecard, so they now assert the alert composition
+  // and the visit-completion arithmetic that endpoint actually performs.
   test('Scorecard displays credential alerts', async ({ page }) => {
-    await gotoAppRoute(page, '/app');
+    const response = await getApiWithRetry(
+      page,
+      '/api/care-operations/scorecard',
+    );
+    const status = response.status();
+    expect([200, 403]).toContain(status);
 
-    // Look for alert indicators
-    const alerts = page.locator('[data-testid="credential-alert"], .bg-amber-500, .bg-red-500, text=/expir/i');
-    const hasAlerts = await alerts.first().isVisible({ timeout: 5000 }).catch(() => false);
+    const body = await response.json();
+    if (status === 403) {
+      expect(['INDUSTRY_NOT_SUPPORTED', 'INDUSTRY_NOT_SET']).toContain(
+        body.code,
+      );
+      return;
+    }
 
-    if (hasAlerts) {
-      console.log('Credential alerts displayed on scorecard');
-    } else {
-      console.log('No credential alerts (all credentials may be current)');
+    expect(Array.isArray(body.alerts)).toBe(true);
+    for (const alert of body.alerts) {
+      expect(['critical', 'warning', 'info']).toContain(alert.type);
+      expect(typeof alert.category).toBe('string');
+      expect(typeof alert.message).toBe('string');
+      expect(alert.message.length).toBeGreaterThan(0);
+    }
+
+    // The route sorts critical → warning → info before responding.
+    const priority: Record<string, number> = {
+      critical: 0,
+      warning: 1,
+      info: 2,
+    };
+    const order = body.alerts.map(
+      (alert: { type: string }) => priority[alert.type],
+    );
+    expect(order).toEqual([...order].sort((a, b) => a - b));
+
+    // Every overdue-follow-up incident must raise a critical alert.
+    if (body.scorecard.incidents.overdueFollowUp > 0) {
+      expect(
+        body.alerts.some(
+          (alert: { category: string; type: string }) =>
+            alert.category === 'incidents' && alert.type === 'critical',
+        ),
+      ).toBe(true);
     }
   });
 
   test('Scorecard shows visit completion rate', async ({ page }) => {
-    await gotoAppRoute(page, '/app');
+    const response = await getApiWithRetry(
+      page,
+      '/api/care-operations/scorecard',
+    );
+    const status = response.status();
+    expect([200, 403]).toContain(status);
 
-    // Look for visit metrics
-    const visitMetrics = page.locator('text=/visit/i');
-    const hasVisitMetrics = await visitMetrics.first().isVisible({ timeout: 5000 }).catch(() => false);
-
-    if (hasVisitMetrics) {
-      console.log('Visit completion metrics displayed');
+    const body = await response.json();
+    if (status === 403) {
+      expect(['INDUSTRY_NOT_SUPPORTED', 'INDUSTRY_NOT_SET']).toContain(
+        body.code,
+      );
+      return;
     }
+
+    const visits = body.scorecard.visits;
+    expect(typeof visits.completionRate).toBe('number');
+    expect(visits.completionRate).toBeGreaterThanOrEqual(0);
+    expect(visits.completionRate).toBeLessThanOrEqual(100);
+
+    // lib/care-scorecard/scorecard-service.ts:
+    // completionRate = round(completed / (scheduled + completed + missed +
+    // cancelled + inProgress) * 100), 0 when the denominator is 0.
+    const total =
+      visits.scheduled +
+      visits.completed +
+      visits.missed +
+      visits.cancelled +
+      visits.inProgress;
+    const expected =
+      total > 0 ? Math.round((visits.completed / total) * 100) : 0;
+    expect(visits.completionRate).toBe(expected);
   });
 });
 
@@ -192,19 +255,38 @@ test.describe('Industry-Specific Visibility', () => {
   });
 
   test('Scorecard hidden for non-care industries', async ({ page }) => {
-    // This test checks that the scorecard API returns 403 for non-care industries
+    // 2026-08-02: this was nominally the authorization test for the care
+    // scorecard, but it asserted nothing about the status code — it only
+    // console.logged both branches, so a scorecard leak to a non-care org
+    // would not have been caught.
     const response = await getApiWithRetry(
       page,
       '/api/care-operations/scorecard',
     );
+    const status = response.status();
+    expect(
+      [200, 403],
+      `Authenticated scorecard request returned ${status}`,
+    ).toContain(status);
 
-    // If 403, scorecard is correctly hidden for non-care industry
-    // If 200, user is in a care industry
-    if (response.status() === 403) {
-      console.log('Scorecard correctly hidden for non-care industry');
-    } else {
-      console.log('User is in care industry - scorecard shown');
+    const body = await response.json();
+
+    if (status === 403) {
+      // Blocked: the only legitimate reasons are the industry guard, and no
+      // scorecard payload may accompany the denial.
+      expect(['INDUSTRY_NOT_SUPPORTED', 'INDUSTRY_NOT_SET']).toContain(
+        body.code,
+      );
+      expect(body).not.toHaveProperty('scorecard');
+      expect(body).not.toHaveProperty('alerts');
+      return;
     }
+
+    // Allowed: the org's industry must be on the route's allow list
+    // (CARE_INDUSTRIES in app/api/care-operations/scorecard/route.ts).
+    expect(['ndis', 'healthcare', 'aged_care', 'childcare']).toContain(
+      body.scorecard.industry,
+    );
   });
 
   test('Scorecard shows for NDIS industry', async ({ page }) => {

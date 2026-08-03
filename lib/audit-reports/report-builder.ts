@@ -17,15 +17,165 @@ import type {
   NdisPracticeStandard,
 } from './types';
 
- 
-type EvalRow = Record<string, any> & {
-  compliance_score?: number;
-  evidence_count?: number;
-  last_evaluated_at?: string;
-  gap_description?: string;
-  created_at?: string;
-  control_id?: string;
+type EvaluationRow = {
+  control_key: string | null;
+  status: string | null;
+  compliance_score: number | null;
+  last_evaluated_at: string | null;
+  details: Record<string, unknown> | null;
 };
+
+type ControlEvaluation = {
+  controlCode: string;
+  controlTitle: string;
+  category: string | null;
+  complianceScore: number;
+  /**
+   * False for provisioning baseline rows, which carry no assessed verdict —
+   * treating them as scored results asserts gaps that were never measured.
+   */
+  evaluated: boolean;
+  approvedEvidenceCount: number;
+  requiredEvidenceCount: number;
+  lastEvaluatedAt: string | null;
+};
+
+/**
+ * org_control_evaluations.compliance_score is never written for
+ * control_type='framework_control' rows — neither lib/frameworks/provisioning.ts
+ * nor lib/compliance/evaluate-framework-controls.ts sets the column, so it keeps
+ * its 0 default and the verdict lives in `status`.
+ */
+const STATUS_SCORES: Record<string, number> = {
+  compliant: 100,
+  satisfied: 100,
+  met: 100,
+  partial: 50,
+  in_progress: 50,
+  at_risk: 50,
+  non_compliant: 0,
+  failed: 0,
+};
+
+function scoreFromStatus(status: string | null): number {
+  return STATUS_SCORES[(status ?? '').toLowerCase()] ?? 0;
+}
+
+/**
+ * compliance_controls / compliance_frameworks are global catalog tables with
+ * no tenant column, so they are read through the raw admin client. Returns
+ * compliance_controls.id -> domain for one framework.
+ */
+async function loadControlDomains(
+  admin: ReturnType<typeof createSupabaseOrgClient>,
+  frameworkCode: string,
+): Promise<Map<string, string | null>> {
+  const catalog = admin.unsafeAdmin();
+
+  const { data: frameworks, error: frameworkError } = await catalog
+    .from('compliance_frameworks')
+    .select('id')
+    .eq('code', frameworkCode);
+
+  if (frameworkError) {
+    consoleShim.warn(
+      '[report-builder] framework catalog lookup failed:',
+      frameworkError.message,
+    );
+    return new Map();
+  }
+  if (!frameworks?.length) return new Map();
+
+  const { data: controls, error: controlError } = await catalog
+    .from('compliance_controls')
+    .select('id, domain')
+    .in(
+      'framework_id',
+      frameworks.map((framework: { id: string }) => framework.id),
+    );
+
+  if (controlError) {
+    consoleShim.warn(
+      '[report-builder] control catalog lookup failed:',
+      controlError.message,
+    );
+    return new Map();
+  }
+
+  return new Map<string, string | null>(
+    (controls ?? []).map(
+      (control: { id: string; domain: string | null }) =>
+        [control.id, control.domain ?? null] as [string, string | null],
+    ),
+  );
+}
+
+/**
+ * Load per-control evaluations for a framework.
+ *
+ * org_control_evaluations has no foreign key to compliance_controls — it
+ * links by the text column `control_key` ('control:<compliance_controls.id>')
+ * and carries the control's code/title/evidence counts in `details`. The two
+ * writers use different detail keys: lib/frameworks/provisioning.ts writes
+ * control_code/control_title, lib/compliance/evaluate-framework-controls.ts
+ * writes code/title/category.
+ */
+async function loadControlEvaluations(
+  admin: ReturnType<typeof createSupabaseOrgClient>,
+  options: { frameworkCode?: string; withCategory?: boolean } = {},
+): Promise<ControlEvaluation[]> {
+  let query = admin
+    .from('org_control_evaluations')
+    .select('control_key, status, compliance_score, last_evaluated_at, details')
+    .eq('control_type', 'framework_control');
+
+  if (options.frameworkCode) {
+    query = query.eq('details->>framework_code', options.frameworkCode);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    consoleShim.warn(
+      '[report-builder] control evaluation lookup failed:',
+      error.message,
+    );
+    return [];
+  }
+
+  const rows = (data ?? []) as EvaluationRow[];
+  const domains =
+    options.withCategory && options.frameworkCode
+      ? await loadControlDomains(admin, options.frameworkCode)
+      : new Map<string, string | null>();
+
+  return rows
+    .filter((row) => (row.status ?? '').toLowerCase() !== 'not_applicable')
+    .map((row) => {
+      const details = (row.details ?? {}) as Record<string, unknown>;
+      const controlId = row.control_key?.startsWith('control:')
+        ? row.control_key.slice('control:'.length)
+        : null;
+      const category =
+        typeof details.category === 'string' && details.category
+          ? details.category
+          : ((controlId ? domains.get(controlId) : null) ?? null);
+      const rawScore = Number(row.compliance_score ?? 0);
+
+      return {
+        controlCode: String(details.control_code ?? details.code ?? ''),
+        controlTitle: String(details.control_title ?? details.title ?? ''),
+        category,
+        complianceScore: rawScore > 0 ? rawScore : scoreFromStatus(row.status),
+        // Only evaluate-framework-controls.ts writes `code`; the provisioning
+        // baseline writes `control_code` and has never been assessed.
+        evaluated: typeof details.code === 'string' || rawScore > 0,
+        approvedEvidenceCount: Number(details.approved_evidence_count ?? 0),
+        requiredEvidenceCount: Number(details.required_evidence_count ?? 0),
+        lastEvaluatedAt: row.last_evaluated_at ?? null,
+      };
+    });
+}
 
 /**
  * Build a report for any supported framework
@@ -245,39 +395,36 @@ async function buildIso27001Report(
   const admin = createSupabaseOrgClient(orgId);
 
   // Get control evaluations for SoA
-  const { data: evaluations } = await admin
-    .from('org_control_evaluations')
-    .select(
-      `
-      control_id,
-      compliance_score,
-      evidence_count,
-      compliance_controls!inner(code, title)
-    `,
-    )
-    .eq('control_type', 'control_snapshot');
+  const evaluations = await loadControlEvaluations(admin, {
+    frameworkCode: 'ISO27001',
+  });
 
   // Build SoA entries
-  const statementOfApplicability: SoaEntry[] = (evaluations || []).map(
-    (eval_: EvalRow) => {
-      const score = eval_.compliance_score || 0;
-      let status: SoaEntry['implementationStatus'] = 'not_implemented';
-      if (score >= 80) status = 'implemented';
-      else if (score >= 40) status = 'partial';
+  const statementOfApplicability: SoaEntry[] = evaluations.map((evaluation) => {
+    const score = evaluation.evaluated ? evaluation.complianceScore : 0;
+    let status: SoaEntry['implementationStatus'] = 'not_implemented';
+    if (!evaluation.evaluated) status = 'not_assessed';
+    else if (score >= 80) status = 'implemented';
+    else if (score >= 40) status = 'partial';
 
-      return {
-        clauseNumber: eval_.compliance_controls?.code || 'A.X.X',
-        controlName: eval_.compliance_controls?.title || 'Unknown Control',
-        applicable: true,
-        justification:
-          score >= 80
-            ? 'Control fully implemented with evidence'
-            : 'Control requires additional implementation',
-        implementationStatus: status,
-        evidenceCount: eval_.evidence_count || 0,
-      };
-    },
-  );
+    let justification: string;
+    if (!evaluation.evaluated) {
+      justification = 'Not yet assessed — no control evaluation has been run';
+    } else if (score >= 80) {
+      justification = 'Control fully implemented with evidence';
+    } else {
+      justification = 'Control requires additional implementation';
+    }
+
+    return {
+      clauseNumber: evaluation.controlCode || 'A.X.X',
+      controlName: evaluation.controlTitle || 'Unknown Control',
+      applicable: true,
+      justification,
+      implementationStatus: status,
+      evidenceCount: evaluation.approvedEvidenceCount,
+    };
+  });
 
   // Get risk assessment summary
   const { data: risks } = await admin
@@ -322,33 +469,26 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
   const admin = createSupabaseOrgClient(orgId);
 
   // Get NDIS practice standards evaluations
-  const { data: evaluations } = await admin
-    .from('org_control_evaluations')
-    .select(
-      `
-      control_id,
-      compliance_score,
-      evidence_count,
-      last_evaluated_at,
-      compliance_controls!inner(code, title, category)
-    `,
-    )
-    .eq('control_type', 'control_snapshot');
+  const evaluations = await loadControlEvaluations(admin, {
+    frameworkCode: 'NDIS',
+    withCategory: true,
+  });
 
-  const practiceStandards: NdisPracticeStandard[] = (evaluations || []).map(
-    (eval_: EvalRow) => {
-      const score = eval_.compliance_score || 0;
+  const practiceStandards: NdisPracticeStandard[] = evaluations.map(
+    (evaluation) => {
+      const score = evaluation.evaluated ? evaluation.complianceScore : 0;
       let status: NdisPracticeStandard['complianceStatus'] = 'non_compliant';
-      if (score >= 80) status = 'compliant';
+      if (!evaluation.evaluated) status = 'not_assessed';
+      else if (score >= 80) status = 'compliant';
       else if (score >= 40) status = 'partial';
 
       return {
-        standardCode: eval_.compliance_controls?.code || 'PS.X',
-        standardName: eval_.compliance_controls?.title || 'Unknown Standard',
-        category: eval_.compliance_controls?.category || 'Core',
+        standardCode: evaluation.controlCode || 'PS.X',
+        standardName: evaluation.controlTitle || 'Unknown Standard',
+        category: evaluation.category || 'Core',
         complianceStatus: status,
-        evidenceCount: eval_.evidence_count || 0,
-        lastReviewDate: eval_.last_evaluated_at ?? null,
+        evidenceCount: evaluation.approvedEvidenceCount,
+        lastReviewDate: evaluation.evaluated ? evaluation.lastEvaluatedAt : null,
       };
     },
   );
@@ -452,6 +592,31 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
   };
 }
 
+type HipaaRule = 'privacy' | 'security' | 'breach';
+
+/**
+ * The installed HIPAA pack is the Security Rule catalogue: codes are prefixed
+ * HIPAA-ADM, HIPAA-PHY and HIPAA-TECH under domains Administrative, Physical
+ * and Technical. Security incident procedures (HIPAA-ADM-4) is the requirement
+ * that drives breach response; the Privacy Rule has no controls in this pack,
+ * so it reports 0 requirements rather than a score derived from nothing.
+ */
+const HIPAA_BREACH_CONTROL_CODES = new Set(['HIPAA-ADM-4']);
+const HIPAA_SECURITY_RULE_DOMAINS = new Set([
+  'administrative',
+  'physical',
+  'technical',
+]);
+
+function hipaaRuleForControl(evaluation: ControlEvaluation): HipaaRule | null {
+  const code = evaluation.controlCode.toUpperCase();
+  if (HIPAA_BREACH_CONTROL_CODES.has(code)) return 'breach';
+  if (HIPAA_SECURITY_RULE_DOMAINS.has((evaluation.category ?? '').toLowerCase()))
+    return 'security';
+  if (/^HIPAA-(ADM|PHY|TECH)-/.test(code)) return 'security';
+  return null;
+}
+
 /**
  * Build HIPAA compliance report
  */
@@ -460,38 +625,32 @@ async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
   const admin = createSupabaseOrgClient(orgId);
 
   // Get control evaluations grouped by category
-  const { data: evaluations } = await admin
-    .from('org_control_evaluations')
-    .select(
-      `
-      control_id,
-      compliance_score,
-      compliance_controls!inner(category)
-    `,
-    )
-    .eq('control_type', 'control_snapshot');
+  const evaluations = await loadControlEvaluations(admin, {
+    frameworkCode: 'HIPAA',
+    withCategory: true,
+  });
 
   // Calculate rule compliance
-  const calculateRuleCompliance = (category: string) => {
-    const ruleEvals = (evaluations || []).filter((e: EvalRow) =>
-      e.compliance_controls?.category
-        ?.toLowerCase()
-        .includes(category.toLowerCase()),
+  const calculateRuleCompliance = (rule: HipaaRule) => {
+    const ruleEvals = evaluations.filter(
+      (evaluation) => hipaaRuleForControl(evaluation) === rule,
     );
-    const totalReqs = ruleEvals.length || 1;
+    const effectiveScore = (evaluation: ControlEvaluation) =>
+      evaluation.evaluated ? evaluation.complianceScore : 0;
+    const totalReqs = ruleEvals.length;
     const satisfiedReqs = ruleEvals.filter(
-      (e: EvalRow) => (e.compliance_score || 0) >= 80,
+      (evaluation) => effectiveScore(evaluation) >= 80,
     ).length;
     const avgScore = ruleEvals.length
       ? Math.round(
           ruleEvals.reduce(
-            (sum: number, e: EvalRow) => sum + (e.compliance_score || 0),
+            (sum, evaluation) => sum + effectiveScore(evaluation),
             0,
           ) / ruleEvals.length,
         )
       : 0;
     const criticalGaps = ruleEvals.filter(
-      (e: EvalRow) => (e.compliance_score || 0) < 40,
+      (evaluation) => evaluation.evaluated && evaluation.complianceScore < 40,
     ).length;
 
     return {
@@ -581,31 +740,29 @@ async function getPhiInventorySummary(
 async function getCriticalGaps(
   orgId: string,
   admin: ReturnType<typeof createSupabaseOrgClient>,
-  _frameworkCode: string,
+  frameworkCode: string,
 ): Promise<CriticalGap[]> {
-  const { data: evaluations } = await admin
-    .from('org_control_evaluations')
-    .select(
-      `
-      control_id,
-      compliance_score,
-      gap_description,
-      compliance_controls!inner(code, title)
-    `,
-    )
-    .eq('control_type', 'control_snapshot')
-    .lt('compliance_score', 50)
-    .order('compliance_score', { ascending: true })
-    .limit(10);
-
-  return (evaluations || []).map((eval_: EvalRow) => {
-    const score = eval_.compliance_score || 0;
-    return {
-      controlCode: eval_.compliance_controls?.code || 'UNKNOWN',
-      controlTitle: eval_.compliance_controls?.title || 'Unknown Control',
-      reason:
-        eval_.gap_description || 'Evidence gap or control not implemented',
-      priority: score < 25 ? 'critical' : score < 40 ? 'high' : 'medium',
-    } as CriticalGap;
+  const evaluations = await loadControlEvaluations(admin, {
+    // TRUST is the cross-framework buyer packet, not a catalog framework.
+    frameworkCode: frameworkCode === 'TRUST' ? undefined : frameworkCode,
   });
+
+  return evaluations
+    .filter(
+      (evaluation) => evaluation.evaluated && evaluation.complianceScore < 50,
+    )
+    .sort((left, right) => left.complianceScore - right.complianceScore)
+    .slice(0, 10)
+    .map((evaluation) => {
+      const score = evaluation.complianceScore;
+      return {
+        controlCode: evaluation.controlCode || 'UNKNOWN',
+        controlTitle: evaluation.controlTitle || 'Unknown Control',
+        reason:
+          evaluation.approvedEvidenceCount < evaluation.requiredEvidenceCount
+            ? `Evidence gap: ${evaluation.approvedEvidenceCount} of ${evaluation.requiredEvidenceCount} required items approved`
+            : 'Control not implemented',
+        priority: score < 25 ? 'critical' : score < 40 ? 'high' : 'medium',
+      } as CriticalGap;
+    });
 }

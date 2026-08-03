@@ -3,86 +3,94 @@ package com.formaos.tests;
 import com.formaos.base.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * UAT for /accept-invite/[token].
+ *
+ * Audit 2026-08-02: this test used to set a single `conditionalPass` flag if
+ * the page showed the accept UI, OR an invalid/expired/revoked error, OR an
+ * email-mismatch error, OR the URL was /auth/signin or /app — mutually
+ * exclusive outcomes that cannot all be correct for one token. A revoked
+ * invite being wrongly ACCEPTED scored as a pass, and so did a valid invite
+ * being wrongly rejected. Only an unrecognised page could fail.
+ *
+ * BaseTest builds a fresh WebDriver per method and provides no sign-in
+ * helper, so this driver is always anonymous. The contract that is
+ * actually observable — and the one that matters for authorization — is
+ * that an anonymous visitor holding a token must NOT be able to accept the
+ * invite or read its contents; they must be bounced to sign-in with a
+ * return path back to the invite. Assert exactly that.
+ */
 public class AcceptInviteUAT extends BaseTest {
 
-    @Test(description = "UAT: Accept organization invite and verify onboarding, security, and error handling")
-    public void testAcceptInviteFlow() {
-        // Step 1: Login as a user with a valid invite (simulate or use test account)
-        navigateTo("/auth/signin");
-        // ...simulate login (implement login helper if needed)...
+    private void captureEvidence(String name, String pageSource) {
+        try {
+            byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            Files.createDirectories(Paths.get("test-results/screenshots"));
+            Files.write(Paths.get("test-results/screenshots/" + name + ".png"), screenshot);
+            Files.write(Paths.get("test-results/screenshots/" + name + ".html"), pageSource.getBytes());
+        } catch (Exception ex) {
+            System.out.println("Evidence capture failed: " + ex.getMessage());
+        }
+    }
 
-        // Step 2: Visit the accept-invite page with a valid token
+    @Test(description = "UAT: an anonymous visitor holding an invite token cannot accept it or read it")
+    public void testAnonymousVisitorCannotAcceptInvite() {
         String inviteToken = System.getenv("UAT_INVITE_TOKEN");
         Assert.assertNotNull(inviteToken, "UAT_INVITE_TOKEN must be set in environment");
+        Assert.assertFalse(inviteToken.isBlank(), "UAT_INVITE_TOKEN must not be blank");
+
         navigateTo("/accept-invite/" + inviteToken);
+        waitForPageLoad();
 
-        boolean conditionalPass = false;
-        String pageSource = driver.getPageSource();
         String currentUrl = getCurrentUrl();
-        String authState = "unknown"; // Simulate or fetch auth state if possible
-        try {
-            // Success: Welcome/onboarding UI
-            WebElement welcomeHeader = driver.findElement(By.xpath("//h1[contains(text(),'Welcome to') or contains(text(),'Welcome')]"));
-            WebElement dashboardLink = driver.findElement(By.xpath("//a[contains(@href, '/app') and contains(.,'Go to Dashboard')]"));
-            if (welcomeHeader.isDisplayed() && dashboardLink.isDisplayed()) {
-                conditionalPass = true;
-            }
-        } catch (Exception e1) {
-            try {
-                // Token expired/invalid message
-                WebElement errorHeader = driver.findElement(By.xpath("//h1[contains(text(),'Invalid Invitation') or contains(text(),'Expired') or contains(text(),'Revoked') or contains(text(),'Already Accepted') or contains(text(),'Error')]") );
-                WebElement errorMsg = driver.findElement(By.xpath("//p[contains(.,'expired') or contains(.,'invalid') or contains(.,'revoked') or contains(.,'already accepted') or contains(.,'Failed to accept invitation')]"));
-                if (errorHeader.isDisplayed() && errorMsg.isDisplayed()) {
-                    conditionalPass = true;
-                }
-            } catch (Exception e2) {
-                try {
-                    // Email mismatch message
-                    WebElement mismatchHeader = driver.findElement(By.xpath("//h1[contains(text(),'Email Mismatch')]") );
-                    WebElement mismatchMsg = driver.findElement(By.xpath("//p[contains(.,'signed in as')]") );
-                    if (mismatchHeader.isDisplayed() && mismatchMsg.isDisplayed()) {
-                        conditionalPass = true;
-                    }
-                } catch (Exception e3) {
-                    try {
-                        // Redirect to login/dashboard
-                        if (currentUrl.contains("/auth/signin") || currentUrl.contains("/app")) {
-                            conditionalPass = true;
-                        }
-                    } catch (Exception e4) {
-                        // No valid state found
-                    }
-                }
-            }
-        }
+        String pageSource = driver.getPageSource();
+        captureEvidence("uat_invite_anonymous", pageSource);
 
-        // On any failure, capture evidence
-        if (!conditionalPass) {
-            // Capture screenshot
-            try {
-                byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-                Files.createDirectories(Paths.get("test-results/screenshots"));
-                Files.write(Paths.get("test-results/screenshots/uat_invite_flow.png"), screenshot);
-            } catch (Exception ex) {
-                System.out.println("Screenshot capture failed: " + ex.getMessage());
-            }
-            // Log page HTML
-            try {
-                Files.write(Paths.get("test-results/screenshots/uat_invite_flow.html"), pageSource.getBytes());
-            } catch (Exception ex) {
-                System.out.println("HTML capture failed: " + ex.getMessage());
-            }
-            System.out.println("Current URL: " + currentUrl);
-            System.out.println("Auth state: " + authState);
-        }
+        System.out.println("Current URL: " + currentUrl);
 
-        Assert.assertTrue(conditionalPass, "Invite flow is security-compliant and did not crash. See evidence for details.");
+        // 1. The accept affordance must never render without a session.
+        Assert.assertFalse(
+            pageSource.contains("Accept Invitation"),
+            "SECURITY: the accept-invite form rendered for an anonymous visitor at " + currentUrl);
+
+        // 2. The invite must not be silently accepted (which would land the
+        //    visitor on the dashboard or the employee onboarding wizard).
+        Assert.assertFalse(
+            currentUrl.contains("/app") || currentUrl.contains("/onboarding"),
+            "SECURITY: an anonymous invite token was accepted — landed on " + currentUrl);
+
+        // 3. The expected outcome is the sign-in bounce, carrying the invite
+        //    as the post-login destination.
+        Assert.assertTrue(
+            currentUrl.contains("/auth/signin"),
+            "Anonymous invite visit should redirect to /auth/signin but landed on " + currentUrl);
+        Assert.assertTrue(
+            currentUrl.contains("redirect=") && currentUrl.contains("accept-invite"),
+            "Sign-in redirect should return the user to the invite; got " + currentUrl);
+    }
+
+    @Test(description = "UAT: a garbage invite token is not treated as a valid invite")
+    public void testUnknownInviteTokenIsNotAccepted() {
+        navigateTo("/accept-invite/definitely-not-a-real-invite-token");
+        waitForPageLoad();
+
+        String currentUrl = getCurrentUrl();
+        String pageSource = driver.getPageSource();
+        captureEvidence("uat_invite_unknown_token", pageSource);
+
+        Assert.assertFalse(
+            pageSource.contains("Accept Invitation"),
+            "SECURITY: an unknown token rendered the accept-invite form at " + currentUrl);
+        Assert.assertFalse(
+            currentUrl.contains("/onboarding"),
+            "SECURITY: an unknown token was accepted — landed on " + currentUrl);
+        Assert.assertTrue(
+            currentUrl.contains("/auth/signin"),
+            "Anonymous visit with an unknown token should redirect to /auth/signin but landed on " + currentUrl);
     }
 }

@@ -48,6 +48,18 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
+/**
+ * `YYYY-MM` bucket key `monthsBack` months before now, built the same way
+ * getLastMonths() does (local month start -> ISO slice) so the fixture lines
+ * up with the implementation's buckets in any timezone.
+ */
+function monthKey(monthsBack: number) {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth() - monthsBack, 1)
+    .toISOString()
+    .slice(0, 7);
+}
+
 function mockSupabaseWith(overrides: Record<string, any> = {}) {
   const _now = new Date();
   const defaults = {
@@ -133,13 +145,31 @@ describe('getDashboardMetrics', () => {
     expect(result.evidenceCompletionRate).toBe(0);
   });
 
+  // Audit 2026-08-02: this used to assert only `complianceScore >= 0`, which
+  // the 0-100 clamp guarantees no matter what the penalty does — removing the
+  // min(overdue*2, 15) cap entirely left the test green. Now pinned to the
+  // exact score the cap produces.
   it('caps overdue penalty at 15', async () => {
     mockSupabaseWith({
       overdueTasks: { count: 20 },
     });
     const result = await getDashboardMetrics('org-1');
-    // Penalty should be min(20*2, 15) = 15
-    expect(result.complianceScore).toBeGreaterThanOrEqual(0);
+    // Policy: 8/10 * 35 = 28
+    // Evidence: 25/30 * 40 = 33.33
+    // Tasks: 15/20 * 25 = 18.75
+    // Penalty: min(20*2, 15) = 15  (uncapped it would be 40 -> score 40)
+    // Total: 28 + 33.33 + 18.75 - 15 = 65.08 -> rounded = 65
+    expect(result.complianceScore).toBe(65);
+    expect(result.overdueTasks).toBe(20);
+  });
+
+  it('applies the uncapped penalty while it is below 15', async () => {
+    mockSupabaseWith({
+      overdueTasks: { count: 3 },
+    });
+    const result = await getDashboardMetrics('org-1');
+    // Penalty: min(3*2, 15) = 6 -> 80.08 - 6 = 74.08 -> 74
+    expect(result.complianceScore).toBe(74);
   });
 
   it('clamps compliance score to 0-100', async () => {
@@ -268,10 +298,43 @@ describe('getDashboardMetrics', () => {
     expect(result.anomalies).toContain('Evidence backlog detected');
   });
 
-  it('calculates compliance trend', async () => {
-    mockSupabaseWith();
+  // Audit 2026-08-02: the trend test used to assert only that the value was
+  // one of the three enum members, which any implementation returning the
+  // enum satisfies. The three cases below pin the actual comparison of the
+  // last two months of history.
+  it('reports UP when the latest month scores above the previous one', async () => {
+    mockSupabaseWith({
+      policyHistory: { data: [{ created_at: `${monthKey(0)}-15T00:00:00Z` }] },
+    });
     const result = await getDashboardMetrics('org-1');
-    expect(['UP', 'DOWN', 'FLAT']).toContain(result.complianceTrend);
+    expect(result.complianceHistory[5].score).toBe(35);
+    expect(result.complianceHistory[4].score).toBe(0);
+    expect(result.complianceTrend).toBe('UP');
+  });
+
+  it('reports DOWN when the latest month scores below the previous one', async () => {
+    mockSupabaseWith({
+      policyHistory: { data: [{ created_at: `${monthKey(1)}-15T00:00:00Z` }] },
+    });
+    const result = await getDashboardMetrics('org-1');
+    expect(result.complianceHistory[5].score).toBe(0);
+    expect(result.complianceHistory[4].score).toBe(35);
+    expect(result.complianceTrend).toBe('DOWN');
+  });
+
+  it('reports FLAT when the last two months score the same', async () => {
+    mockSupabaseWith({
+      policyHistory: {
+        data: [
+          { created_at: `${monthKey(0)}-15T00:00:00Z` },
+          { created_at: `${monthKey(1)}-15T00:00:00Z` },
+        ],
+      },
+    });
+    const result = await getDashboardMetrics('org-1');
+    expect(result.complianceHistory[5].score).toBe(35);
+    expect(result.complianceHistory[4].score).toBe(35);
+    expect(result.complianceTrend).toBe('FLAT');
   });
 
   it('builds monthly history', async () => {

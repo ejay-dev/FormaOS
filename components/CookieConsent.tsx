@@ -2,28 +2,24 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import {
+  ANALYTICS_CONSENT_COOKIE,
+  applyAnalyticsConsent,
+  readAnalyticsConsent,
+} from '@/lib/monitoring/analytics';
 
-const CONSENT_COOKIE = 'formaos_cookie_consent';
 const CONSENT_MAX_AGE_DAYS = 365;
 
 type ConsentValue = 'accepted' | 'rejected';
-
-function readConsent(): ConsentValue | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith(`${CONSENT_COOKIE}=`));
-  if (!match) return null;
-  const value = match.split('=')[1];
-  if (value === 'accepted' || value === 'rejected') return value;
-  return null;
-}
 
 function writeConsent(value: ConsentValue) {
   if (typeof document === 'undefined') return;
   const maxAge = CONSENT_MAX_AGE_DAYS * 24 * 60 * 60;
   const secure = window.location.protocol === 'https:' ? '; Secure' : '';
-  document.cookie = `${CONSENT_COOKIE}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+  document.cookie = `${ANALYTICS_CONSENT_COOKIE}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+  // The banner is the surface most visitors use, so it has to move PostHog
+  // itself — the cookie alone does not stop capture on the current page.
+  applyAnalyticsConsent(value);
   window.dispatchEvent(
     new CustomEvent('formaos:cookie-consent', { detail: { value } }),
   );
@@ -47,7 +43,7 @@ export default function CookieConsent() {
   const rejectButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const current = readConsent();
+    const current = readAnalyticsConsent();
     if (current) return;
 
     setVisible(true);
@@ -147,6 +143,4 @@ export default function CookieConsent() {
   );
 }
 
-export function hasAnalyticsConsent(): boolean {
-  return readConsent() === 'accepted';
-}
+export { hasAnalyticsConsent } from '@/lib/monitoring/analytics';

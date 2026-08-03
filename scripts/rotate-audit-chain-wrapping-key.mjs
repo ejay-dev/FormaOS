@@ -99,15 +99,43 @@ function encryptEnvelope(rawKey, key) {
 console.log('=== AUDIT_CHAIN_HMAC_KEY rotation ===');
 console.log(`mode: ${confirm ? 'EXECUTE' : 'DRY RUN (pass --confirm to apply)'}`);
 
-const { data: rows, error } = await admin
+// Paginate: an unbounded select is silently truncated at PostgREST's row cap,
+// and any row left un-rotated becomes permanently unwrappable once the
+// operator swaps AUDIT_CHAIN_HMAC_KEY. Ordered by the primary key (org_id) so
+// page boundaries are stable.
+const PAGE_SIZE = 500;
+
+const { count: expectedTotal, error: countErr } = await admin
   .from('audit_chain_secrets')
-  .select('org_id, encrypted_key, algorithm')
-  .order('created_at', { ascending: true });
-if (error) {
-  console.error(`read failed: ${error.message}`);
+  .select('org_id', { count: 'exact', head: true });
+if (countErr) {
+  console.error(`count failed: ${countErr.message}`);
   exit(1);
 }
-const total = rows?.length ?? 0;
+
+const rows = [];
+for (let offset = 0; ; ) {
+  const { data: page, error } = await admin
+    .from('audit_chain_secrets')
+    .select('org_id, encrypted_key, algorithm')
+    .order('org_id', { ascending: true })
+    .range(offset, offset + PAGE_SIZE - 1);
+  if (error) {
+    console.error(`read failed: ${error.message}`);
+    exit(1);
+  }
+  if (!page?.length) break;
+  rows.push(...page);
+  // Advance by the rows actually returned, not by PAGE_SIZE: the server may
+  // cap a page below the requested window.
+  offset += page.length;
+}
+const total = rows.length;
+
+if (typeof expectedTotal === 'number' && total !== expectedTotal) {
+  console.error(`read incomplete: fetched ${total} of ${expectedTotal} audit_chain_secrets rows. Refusing to rotate a partial set.`);
+  exit(1);
+}
 console.log(`rows to rotate: ${total}`);
 
 if (total === 0) {

@@ -32,6 +32,11 @@ const EMPTY_COUNTS: ChecklistCompletionCounts = {
   orgProfileComplete: false,
 };
 
+/**
+ * Every completion criterion satisfied. `incidents` used to be 0 here, which
+ * left the NDIS `incident-system` item permanently pending — the reason the
+ * "returns 100%" test could only assert `progress > 0`.
+ */
 const FULL_COUNTS: ChecklistCompletionCounts = {
   tasks: 10,
   tasksCompleted: 10,
@@ -42,8 +47,8 @@ const FULL_COUNTS: ChecklistCompletionCounts = {
   reports: 2,
   frameworks: 3,
   policies: 5,
-  incidents: 0,
-  incidentsClosed: 0,
+  incidents: 2,
+  incidentsClosed: 1,
   registers: 2,
   workflows: 3,
   patients: 10,
@@ -101,8 +106,34 @@ describe('getChecklistProgress', () => {
   it('returns 100% when everything is complete', () => {
     const checklist = generateIndustryChecklist('ndis');
     const progress = getChecklistProgress(checklist, FULL_COUNTS);
-    expect(progress.progress).toBeGreaterThan(0);
-    expect(progress.completedItems.length).toBeGreaterThan(0);
+    expect(progress.progress).toBe(100);
+    expect(progress.completedCount).toBe(checklist.length);
+    expect(progress.completedItems).toEqual(checklist.map((item) => item.id));
+    expect(progress.pendingItems).toEqual([]);
+  });
+
+  it('leaves the incident item pending when no incident has been logged', () => {
+    const checklist = generateIndustryChecklist('ndis');
+    const progress = getChecklistProgress(checklist, {
+      ...FULL_COUNTS,
+      incidents: 0,
+    });
+    // 7 of the 8 NDIS items satisfied -> round(7/8 * 100) = 88.
+    expect(progress.pendingItems).toEqual(['incident-system']);
+    expect(progress.progress).toBe(88);
+  });
+
+  it('scores a partially complete checklist proportionally', () => {
+    const checklist = generateIndustryChecklist('ndis');
+    const progress = getChecklistProgress(checklist, {
+      ...EMPTY_COUNTS,
+      orgProfileComplete: true, // provider-details
+      members: 5, // staff-setup
+      patients: 1, // participant-onboarding
+      registers: 1, // location-setup + credential-register
+    });
+    expect(progress.completedCount).toBe(5);
+    expect(progress.progress).toBe(63); // round(5/8 * 100)
   });
 
   it('returns correct total count', () => {
@@ -138,6 +169,9 @@ describe('getItemsByCategory', () => {
   it('filters by setup category', () => {
     const checklist = generateIndustryChecklist('ndis');
     const setupItems = getItemsByCategory(checklist, 'setup');
+    // An empty result would make the per-item loop vacuous.
+    expect(setupItems.length).toBeGreaterThan(0);
+    expect(setupItems.length).toBeLessThan(checklist.length);
     for (const item of setupItems) {
       expect(item.category).toBe('setup');
     }
@@ -157,6 +191,7 @@ describe('getItemsByPriority', () => {
   it('filters by critical priority', () => {
     const checklist = generateIndustryChecklist('ndis');
     const criticalItems = getItemsByPriority(checklist, 'critical');
+    expect(criticalItems.length).toBeGreaterThan(0);
     for (const item of criticalItems) {
       expect(item.priority).toBe('critical');
     }

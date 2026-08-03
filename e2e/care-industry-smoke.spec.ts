@@ -60,37 +60,61 @@ test.describe('Care Industry Navigation', () => {
   });
 
   test('Sidebar navigation items are clickable', async ({ page }) => {
+    // app/app/layout.tsx:246 renders the sidebar as `hidden md:flex`, so below
+    // 768px the nav links are in the DOM but never visible, and the Mobile
+    // Chrome (Pixel 5, 393px) / Mobile Safari projects in playwright.config.ts
+    // would fail on visibility rather than on any regression. The mobile
+    // surface is components/mobile/bottom-nav.tsx, which carries no nav-*
+    // testids, so there is nothing here to assert on a narrow viewport.
+    const width = page.viewportSize()?.width ?? 0;
+    test.skip(width < 768, 'Sidebar is desktop-only (hidden below the md breakpoint)');
+
     await gotoAppRoute(page, '/app');
 
     // Dismiss Product Tour if it appears
     await dismissProductTour(page);
 
-    // Check for common nav items (these exist across industries)
+    // 2026-08-02: every assertion used to sit inside
+    // `if (await navElement.isVisible())`. A sidebar that failed to render —
+    // the exact regression this test is named for — skipped the loop body
+    // for all four items and passed with zero assertions.
+
+    // The sidebar must render *something*: the thinnest of the eleven
+    // industry variants in lib/navigation/industry-sidebar.ts still ships
+    // well over five nav entries.
+    const sidebarLinks = page.locator('[data-testid^="nav-"]');
+    expect(
+      await sidebarLinks.count(),
+      'Sidebar rendered no navigation items',
+    ).toBeGreaterThanOrEqual(5);
+
+    // nav-dashboard and nav-vault are the two testIds present in ALL
+    // industry navigation sets, so they can be asserted unconditionally.
     const navItems = [
       { testId: 'nav-dashboard', expectedUrl: '/app' },
-      { testId: 'nav-registers', expectedUrl: '/app/registers' },
       { testId: 'nav-vault', expectedUrl: '/app/vault' },
-      { testId: 'nav-settings', expectedUrl: '/app/settings' },
     ];
 
     for (const item of navItems) {
-      await gotoAppRoute(page, item.expectedUrl === '/app' ? '/app/settings' : '/app');
+      // Start somewhere else so the click is a genuine navigation.
+      const startRoute = item.expectedUrl === '/app' ? '/app/vault' : '/app';
+      await gotoAppRoute(page, startRoute);
       await dismissProductTour(page);
 
       const navElement = page.getByTestId(item.testId).first();
-      if (await navElement.isVisible()) {
-        await expect(navElement).toHaveAttribute('href', item.expectedUrl);
-        await navElement.click();
-        await page.waitForURL(
-          (url) => url.pathname === item.expectedUrl,
-          { timeout: 30_000 },
-        );
-        await waitForAppReady(page, {
-          expectedPath: item.expectedUrl,
-          timeout: 30_000,
-        });
-        console.log(`✓ ${item.testId} navigates correctly`);
-      }
+      await expect(
+        navElement,
+        `${item.testId} is missing from the sidebar`,
+      ).toBeVisible({ timeout: 30_000 });
+      await expect(navElement).toHaveAttribute('href', item.expectedUrl);
+      await navElement.click();
+      await page.waitForURL((url) => url.pathname === item.expectedUrl, {
+        timeout: 30_000,
+      });
+      await waitForAppReady(page, {
+        expectedPath: item.expectedUrl,
+        timeout: 30_000,
+      });
     }
   });
 });
@@ -305,20 +329,38 @@ test.describe('Registers Page', () => {
   test('Care registers grid shows for care industries', async ({ page }) => {
     await gotoAppRoute(page, '/app/registers');
 
-    // Check if care registers grid exists (depends on org industry)
-    const careGrid = page.getByTestId('care-registers-grid');
-    const hasCareGrid = await careGrid.isVisible().catch(() => false);
+    await expect(page.getByTestId('registers-title').first()).toBeVisible({
+      timeout: 10000,
+    });
 
-    if (hasCareGrid) {
-      // Verify register links
-      await expect(page.getByTestId('register-clients').first()).toBeVisible();
-      await expect(page.getByTestId('register-incidents').first()).toBeVisible();
-      await expect(page.getByTestId('register-visits').first()).toBeVisible();
-      await expect(page.getByTestId('register-staff').first()).toBeVisible();
-      console.log('✓ Care registers grid displayed');
+    // 2026-08-02: every register-link assertion used to live inside
+    // `if (hasCareGrid)`, so a care org that stopped rendering the grid
+    // silently took the else branch and passed. The page subtitle is driven
+    // by the same `isCareIndustry` flag as the grid (app/app/registers/
+    // page.tsx), so it tells us which branch is authoritative — and both
+    // branches now assert.
+    const careSubtitle = page.getByText(
+      'Access client, incident, service, and compliance registers.',
+    );
+    const assetSubtitle = page.getByText(
+      'Monitor asset health and security risk levels.',
+    );
+    await expect(careSubtitle.or(assetSubtitle).first()).toBeVisible();
+
+    const careGrid = page.getByTestId('care-registers-grid');
+
+    if ((await careSubtitle.count()) > 0) {
+      await expect(careGrid).toBeVisible();
+      for (const register of ['clients', 'incidents', 'visits', 'staff']) {
+        await expect(
+          page.getByTestId(`register-${register}`).first(),
+          `care register link "${register}" missing`,
+        ).toBeVisible();
+      }
     } else {
-      // Non-care industry - should show asset registers
-      console.log('ℹ Org is not care industry - showing asset registers');
+      // Non-care industry: the care grid must not leak onto the page.
+      await expect(assetSubtitle).toBeVisible();
+      await expect(careGrid).toHaveCount(0);
     }
   });
 });
