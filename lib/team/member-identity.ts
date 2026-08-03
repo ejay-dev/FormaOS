@@ -54,6 +54,11 @@ export async function getOrgMemberIdentities(): Promise<MemberIdentityMap> {
   if (!membership) return {};
 
   const db = await createSupabaseServerClient();
+  // Flagged only because this FILE also constructs an admin client further
+  // down. This read is on the cookie-bound server client and is subject to RLS;
+  // the admin client below never touches a tenant table — it calls
+  // auth.admin.getUserById, which takes a user id and no org filter at all.
+  // eslint-disable-next-line formaos/no-admin-client-with-org-filter
   const { data: memberRows, error: memberError } = await db
     .from('org_members')
     .select('user_id')
@@ -79,6 +84,11 @@ export async function getOrgMemberIdentities(): Promise<MemberIdentityMap> {
 
   if (userIds.length === 0) return {};
 
+  // Service role is required for auth.admin.getUserById; auth.users is not
+  // reachable through PostgREST. It reads one user id at a time, and the id
+  // list was already narrowed to the caller's own organisation above, so there
+  // is no org filter for createSupabaseOrgClient to stamp.
+  // eslint-disable-next-line formaos/no-admin-client-with-org-filter
   const admin = createSupabaseAdminClient();
   const resolved = await Promise.all(
     userIds.map(async (userId) => {
