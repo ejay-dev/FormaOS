@@ -1,18 +1,19 @@
 import type { Metadata } from 'next';
 import { OutcomeJourneyPage } from '../components/outcome-journey-page';
 import { siteUrl } from '@/lib/seo';
+import { CLAIM_PHRASES } from '@/lib/marketing/claims';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Govern Compliance',
   description:
-    'Govern enterprise compliance with executive visibility, risk prioritization, and cross-workflow orchestration.',
+    'Govern enterprise compliance with executive visibility, risk prioritisation, and cross-workflow orchestration.',
   alternates: {
     canonical: `${siteUrl}/govern`,
   },
   openGraph: {
     title: 'Govern Compliance | FormaOS',
     description:
-      'Govern enterprise compliance with executive visibility, risk prioritization, and cross-workflow orchestration.',
+      'Govern enterprise compliance with executive visibility, risk prioritisation, and cross-workflow orchestration.',
     type: 'website',
     url: `${siteUrl}/govern`,
     locale: 'en_AU',
@@ -22,26 +23,26 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Govern Compliance | FormaOS',
     description:
-      'Govern enterprise compliance with executive visibility, risk prioritization, and cross-workflow orchestration.',
+      'Govern enterprise compliance with executive visibility, risk prioritisation, and cross-workflow orchestration.',
   },
 };
 
 export default function GovernPage() {
   return (
     <OutcomeJourneyPage
-      badge="Outcome Journey · Govern"
-      title="Govern Compliance From a Single Enterprise Command View"
+      badge="Last of four: Govern"
+      title="Govern compliance from a single view"
       description="Turn fragmented status updates into a unified operating picture for executives, operators, and audit stakeholders."
-      proofLabel="Governance signal"
-      proofValue="Shared visibility"
+      proofLabel="Behind every posture view"
+      proofValue={CLAIM_PHRASES.evaluators}
       proofNote="Built for leaders who need a single posture view across teams, obligations, evidence, and unresolved exceptions."
       workflow={[
         'Aggregate posture by framework and team',
-        'Prioritize risk and unblock critical controls',
+        'Prioritise risk and unblock critical controls',
         'Track remediation and accountability cadence',
         'Report readiness to leadership and customers',
       ]}
-      pillarsEyebrow="Govern In FormaOS"
+      pillarsEyebrow="Govern in FormaOS"
       pillarsTitle="Give leadership one operating view of compliance"
       pillarsDescription="Govern helps executives, risk leaders, and assurance teams review posture without waiting for manual rollups."
       pillars={[
@@ -66,6 +67,13 @@ export default function GovernPage() {
           href: '/trust',
           cta: 'Open the trust center',
         },
+        {
+          title: 'Back to the start: Evaluate',
+          detail:
+            'These four pages read in order: evaluate, prove, operate, govern. Govern is the last of them.',
+          href: '/evaluate',
+          cta: 'Read Evaluate',
+        },
       ]}
       trustArtifacts={[
         'Framework-level posture',
@@ -75,7 +83,7 @@ export default function GovernPage() {
       ]}
       outcomes={[
         'Create one source of compliance truth across teams and entities.',
-        'Improve leadership decision speed with risk-prioritized visibility.',
+        'Improve leadership decision speed with risk-prioritised visibility.',
         'Accelerate board, customer, and regulator readiness updates.',
         'Strengthen governance with measurable control-operating confidence.',
       ]}

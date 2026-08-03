@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Frameworks" cards={2} tableRows={4} />;
+export default function AppComplianceFrameworksLoading() {
+  return <PageSkeleton hero label="frameworks" cards={2} tableRows={0} />;
 }

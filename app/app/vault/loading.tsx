@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function VaultLoading() {
-  return <PageSkeleton title="Evidence Vault" cards={2} tableRows={5} />;
+export default function AppVaultLoading() {
+  return <PageSkeleton hero label="the evidence vault" heroMetrics={4} cards={2} tableRows={5} />;
 }

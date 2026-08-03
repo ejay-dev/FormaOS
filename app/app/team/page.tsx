@@ -5,6 +5,7 @@ import { Users, Mail, Clock, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { hasPermission, normalizeRole } from "@/app/app/actions/rbac";
+import { getOrgMemberIdentities } from "@/lib/team/member-identity";
 import { PageHero, type PageHeroMetric } from "@/components/ui/page-hero";
 import {
   RecordCard,
@@ -96,12 +97,14 @@ export default async function TeamPage() {
     { data: subscription },
     { data: entitlements },
     { data: actorRow },
+    identities,
   ] = await Promise.all([
     supabase.from('org_members').select('id, user_id, role, created_at').eq('organization_id', orgId).order('created_at', { ascending: true }).limit(100),
     supabase.from('team_invitations').select('id, email, role, created_at').eq('organization_id', orgId).eq('status', 'pending').order('created_at', { ascending: false }).limit(50),
     supabase.from('org_subscriptions').select('status').eq('organization_id', orgId).maybeSingle(),
     supabase.from('org_entitlements').select('feature_key, enabled, limit_value').eq('organization_id', orgId),
     supabase.from('org_members').select('role').eq('organization_id', orgId).eq('user_id', user?.id ?? '').maybeSingle(),
+    getOrgMemberIdentities(),
   ]);
 
   const actorRoleRaw = String((actorRow as { role?: string } | null)?.role ?? '').toLowerCase();
@@ -138,23 +141,37 @@ export default async function TeamPage() {
   return (
     <div className="flex flex-col h-full">
       <PageHero
-        eyebrow="Administration · Team"
-        title="Team Management"
-        subtitle="Manage access, roles, and pending invitations."
+        title="Team"
+        subtitle="Who has access to this workspace, their role, and any invitations still pending."
         metrics={heroMetrics}
-        actions={orgId ? <InviteButton orgId={orgId} disabled={!hasSubscription || reachedLimit} /> : undefined}
+        actions={
+          <>
+            <Link
+              href="/app/team/org-chart"
+              className="inline-flex items-center rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Org chart
+            </Link>
+            {orgId ? (
+              <InviteButton
+                orgId={orgId}
+                disabled={!hasSubscription || reachedLimit}
+              />
+            ) : null}
+          </>
+        }
       />
 
       <div className="page-content space-y-4">
       {!hasSubscription ? (
-        <div className="flex items-center gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
+        <div className="flex items-center gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
           Subscription required to invite team members.{" "}
           <Link href="/app/billing" className="underline">Upgrade</Link>
         </div>
       ) : null}
 
       {hasSubscription && reachedLimit ? (
-        <div className="flex items-center gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
+        <div className="flex items-center gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
           Team limit reached ({memberCount + inviteCount}/{teamLimit}).{" "}
           <Link href="/app/billing" className="underline">Upgrade</Link>
         </div>
@@ -162,9 +179,9 @@ export default async function TeamPage() {
 
       {/* Active Members */}
       <section className="space-y-2">
-        <h2 className="section-label flex items-center gap-2">
+        <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
           <Users className="h-3.5 w-3.5" />
-          Active Members ({memberRows.length})
+          Members ({memberRows.length})
         </h2>
         {memberRows.length === 0 ? (
           <div className="rounded-lg border border-border bg-card">
@@ -177,9 +194,8 @@ export default async function TeamPage() {
             {memberRows.map((member) => (
               <RecordCard
                 key={member.id}
-                title={
-                  <span className="font-mono text-xs">{member.user_id}</span>
-                }
+                title={identities[member.user_id ?? '']?.name ?? 'Unknown member'}
+                subtitle={identities[member.user_id ?? '']?.email ?? undefined}
                 status={
                   <span className="status-pill status-pill-green">Active</span>
                 }
@@ -214,17 +230,24 @@ export default async function TeamPage() {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                {memberRows.map((member) => (
+                {memberRows.map((member) => {
+                    const identity = identities[member.user_id ?? ''];
+                    return (
                     <tr key={member.id} className="hover:bg-muted/30 transition-colors">
                     <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                         <div className="h-7 w-7 rounded-full bg-muted text-foreground flex items-center justify-center text-xs font-medium uppercase">
-                            {member.user_id?.slice(0, 2) || "??"}
+                            {identity?.initials ?? "?"}
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-sm font-medium text-foreground truncate max-w-[200px]">
-                                {member.user_id}
+                            <span className="text-sm font-medium text-foreground truncate max-w-[220px]">
+                                {identity?.name ?? "Unknown member"}
                             </span>
+                            {identity?.email ? (
+                                <span className="text-xs text-muted-foreground truncate max-w-[220px]">
+                                    {identity.email}
+                                </span>
+                            ) : null}
                         </div>
                         </div>
                     </td>
@@ -243,7 +266,8 @@ export default async function TeamPage() {
                         </span>
                     </td>
                     </tr>
-                ))}
+                    );
+                })}
                 </tbody>
             </table>
           </div>
@@ -253,9 +277,9 @@ export default async function TeamPage() {
       {/* Pending Invites */}
       {inviteRows.length > 0 && (
         <section className="space-y-2">
-          <h2 className="section-label flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <Clock className="h-3.5 w-3.5" />
-            Pending Invitations ({inviteRows.length})
+            Pending invitations ({inviteRows.length})
           </h2>
           {/* Mobile cards */}
           <div className="md:hidden">

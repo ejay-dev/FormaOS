@@ -298,45 +298,41 @@ export default async function AdminSupportPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-100">Support</h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <h1 className="text-3xl font-bold text-foreground">Support</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           Inbound requests and contact queue.
         </p>
       </div>
 
       <section className="grid gap-4 xl:grid-cols-3">
         <div className="rounded-2xl border border-edge-2 bg-surface-1 p-5">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
-            Billing Watch
-          </div>
-          <div className="mt-3 text-2xl font-semibold text-slate-100">
+          <div className="text-sm font-medium text-muted-foreground">Billing watch</div>
+          <div className="mt-3 text-2xl font-semibold text-foreground">
             {billingSummary?.issuesCount ?? 0}
           </div>
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-muted-foreground">
             Open billing anomalies across{' '}
             {billingSummary?.totalSubscriptions ?? 0} subscriptions.
           </p>
         </div>
         <div className="rounded-2xl border border-edge-2 bg-surface-1 p-5">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
-            Automation Failures
+          <div className="text-sm font-medium text-muted-foreground">
+            Automation failures
           </div>
-          <div className="mt-3 text-2xl font-semibold text-slate-100">
+          <div className="mt-3 text-2xl font-semibold text-foreground">
             {automationSummary?.totalFailures ?? 0}
           </div>
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-muted-foreground">
             {automationSummary?.uniqueJobs ?? 0} failing job families in the last
             72 hours.
           </p>
         </div>
         <div className="rounded-2xl border border-edge-2 bg-surface-1 p-5">
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
-            Active Alerts
-          </div>
-          <div className="mt-3 text-2xl font-semibold text-slate-100">
+          <div className="text-sm font-medium text-muted-foreground">Active alerts</div>
+          <div className="mt-3 text-2xl font-semibold text-foreground">
             {automationSummary?.activeAlerts ?? 0}
           </div>
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-muted-foreground">
             Support and platform signals requiring follow-up.
           </p>
         </div>
@@ -344,8 +340,8 @@ export default async function AdminSupportPage({
 
       <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-300">
-            <thead className="text-xs uppercase text-slate-500">
+          <table className="w-full text-left text-sm text-muted-foreground">
+            <thead className="text-xs font-semibold text-muted-foreground">
               <tr>
                 <th className="py-2">Requester</th>
                 <th className="py-2">Subject</th>
@@ -358,14 +354,14 @@ export default async function AdminSupportPage({
               {rows.map((row) => (
                 <tr key={row.id}>
                   <td className="py-3">
-                    <div className="text-slate-100">
+                    <div className="text-foreground">
                       {row.name ?? row.email}
                     </div>
-                    <div className="text-xs text-slate-500">{row.email}</div>
+                    <div className="text-xs text-muted-foreground">{row.email}</div>
                   </td>
                   <td className="py-3">
-                    <div className="text-slate-100">{row.subject}</div>
-                    <div className="text-xs text-slate-500 line-clamp-2">
+                    <div className="text-foreground">{row.subject}</div>
+                    <div className="text-xs text-muted-foreground line-clamp-2">
                       {row.message}
                     </div>
                   </td>
@@ -383,7 +379,7 @@ export default async function AdminSupportPage({
                 <tr>
                   <td
                     colSpan={4}
-                    className="py-6 text-center text-sm text-slate-500"
+                    className="py-6 text-center text-sm text-muted-foreground"
                   >
                     No support requests logged.
                   </td>
@@ -398,18 +394,18 @@ export default async function AdminSupportPage({
         <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold text-slate-100">
-                Billing Timeline
+              <h2 className="text-xl font-semibold text-foreground">
+                Billing timeline
               </h2>
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Subscription health and trial drift surfaced for support.
               </p>
             </div>
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-muted-foreground">
               Events {billingSummary?.totalEvents ?? 0}
             </div>
           </div>
-          <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-400">
+          <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
             {Object.entries(billingSummary?.statusCounts ?? {}).map(
               ([status, count]) => (
                 <span
@@ -425,16 +421,16 @@ export default async function AdminSupportPage({
             {billingIssues.slice(0, 6).map((issue) => (
               <div
                 key={`${issue.type}:${issue.orgId ?? issue.message}`}
-                className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4"
+                className="rounded-xl border border-warning/20 bg-warning/10 p-4"
               >
-                <p className="text-sm font-medium text-amber-100">
+                <p className="text-sm font-medium text-warning">
                   {issue.orgName ?? issue.orgId ?? issue.type}
                 </p>
-                <p className="mt-1 text-xs text-amber-100/80">{issue.message}</p>
+                <p className="mt-1 text-xs text-warning">{issue.message}</p>
               </div>
             ))}
             {billingIssues.length === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 No billing anomalies detected in the last 30 days.
               </p>
             ) : null}
@@ -444,14 +440,14 @@ export default async function AdminSupportPage({
         <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold text-slate-100">
-                Automation Failures
+              <h2 className="text-xl font-semibold text-foreground">
+                Automation failures
               </h2>
-              <p className="mt-1 text-sm text-slate-400">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Job failures and error signatures from the last 72 hours.
               </p>
             </div>
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-muted-foreground">
               Alerts {automationSummary?.activeAlerts ?? 0}
             </div>
           </div>
@@ -459,26 +455,26 @@ export default async function AdminSupportPage({
             {failureRows.slice(0, 6).map((failure) => (
               <div
                 key={failure.id}
-                className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-4"
+                className="rounded-xl border border-destructive/20 bg-destructive/10 p-4"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium text-rose-100">
+                  <p className="text-sm font-medium text-destructive">
                     {failure.jobName}
                   </p>
-                  <span className="text-[11px] uppercase tracking-wide text-rose-200/80">
+                  <span className="text-[11px] text-destructive">
                     {failure.errorCode}
                   </span>
                 </div>
-                <p className="mt-1 text-xs text-rose-100/80">
+                <p className="mt-1 text-xs text-destructive">
                   {failure.errorMessage}
                 </p>
-                <p className="mt-2 text-[11px] text-rose-200/70">
+                <p className="mt-2 text-[11px] text-destructive">
                   {formatDate(failure.timestamp)}
                 </p>
               </div>
             ))}
             {failureRows.length === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 No automation failures recorded in the last 72 hours.
               </p>
             ) : null}
@@ -488,8 +484,8 @@ export default async function AdminSupportPage({
 
       <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 space-y-5">
         <div>
-          <h2 className="text-xl font-semibold text-slate-100">Account Repair</h2>
-          <p className="text-sm text-slate-400">
+          <h2 className="text-xl font-semibold text-foreground">Account repair</h2>
+          <p className="text-sm text-muted-foreground">
             Search by user email or organization name to verify subscription and entitlements.
           </p>
         </div>
@@ -500,12 +496,12 @@ export default async function AdminSupportPage({
             name="q"
             defaultValue={resolved?.q ?? ''}
             placeholder="Search by email, org name, or ID"
-            className="w-full rounded-lg border border-edge-2 bg-surface-1 px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-cyan-400/40 focus:outline-none"
+            className="w-full rounded-lg border border-edge-2 bg-surface-1 px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none"
           />
           {resolved?.status ? (
             <input type="hidden" name="status" value={resolved.status} />
           ) : null}
-          <button className="rounded-lg bg-cyan-500/80 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-cyan-400 transition-colors">
+          <button className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
             Search
           </button>
         </form>
@@ -513,37 +509,35 @@ export default async function AdminSupportPage({
         {resolved?.q ? (
           <div className="space-y-6">
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-slate-200 uppercase tracking-wide">
-                User Matches
-              </h3>
+              <h3 className="text-sm font-semibold text-foreground">User matches</h3>
               {provision.users.length === 0 ? (
-                <p className="text-sm text-slate-500">No users found.</p>
+                <p className="text-sm text-muted-foreground">No users found.</p>
               ) : (
                 <div className="space-y-4">
                   {provision.users.map((user) => (
                     <div
                       key={user.id}
-                      className="rounded-xl border border-edge-2 bg-slate-900/40 p-4 space-y-3"
+                      className="rounded-xl border border-edge-2 bg-card p-4 space-y-3"
                     >
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                          <div className="text-sm font-semibold text-slate-100">
+                          <div className="text-sm font-semibold text-foreground">
                             {user.email ?? 'Unknown user'}
                           </div>
-                          <div className="text-xs text-slate-500">
+                          <div className="text-xs text-muted-foreground">
                             {user.id}
                           </div>
                         </div>
                         <form action={repairUserProvisioning}>
                           <input type="hidden" name="userId" value={user.id} />
-                          <button className="rounded-lg border border-cyan-400/40 px-3 py-1.5 text-xs font-semibold text-cyan-200 hover:bg-cyan-400/10">
+                          <button className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-muted">
                             Repair user
                           </button>
                         </form>
                       </div>
 
                       {user.orgs.length === 0 ? (
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-muted-foreground">
                           No organization memberships found.
                         </p>
                       ) : (
@@ -551,20 +545,20 @@ export default async function AdminSupportPage({
                           {user.orgs.map((org) => (
                             <div
                               key={org.id}
-                              className="rounded-lg border border-edge-1 bg-surface-1 px-3 py-2 text-xs text-slate-300"
+                              className="rounded-lg border border-edge-1 bg-surface-1 px-3 py-2 text-xs text-muted-foreground"
                             >
                               <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                                <div className="font-semibold text-slate-100">
+                                <div className="font-semibold text-foreground">
                                   {org.name ?? 'Unnamed organization'}
                                 </div>
                                 <form action={repairOrgProvisioning}>
                                   <input type="hidden" name="orgId" value={org.id} />
-                                  <button className="text-[11px] font-semibold text-cyan-200 hover:text-cyan-100">
+                                  <button className="text-[11px] font-semibold text-foreground underline-offset-2 hover:underline">
                                     Repair org
                                   </button>
                                 </form>
                               </div>
-                              <div className="flex flex-wrap gap-3 text-[11px] text-slate-500 mt-1">
+                              <div className="flex flex-wrap gap-3 text-[11px] text-muted-foreground mt-1">
                                 <span>Role: {org.role ?? 'unknown'}</span>
                                 <span>Plan: {org.plan_key ?? 'unset'}</span>
                                 <span>Status: {org.subscription_status ?? 'none'}</span>
@@ -587,33 +581,33 @@ export default async function AdminSupportPage({
             </div>
 
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-slate-200 uppercase tracking-wide">
-                Organization Matches
+              <h3 className="text-sm font-semibold text-foreground">
+                Organization matches
               </h3>
               {provision.orgs.length === 0 ? (
-                <p className="text-sm text-slate-500">No organizations found.</p>
+                <p className="text-sm text-muted-foreground">No organizations found.</p>
               ) : (
                 <div className="space-y-3">
                   {provision.orgs.map((org) => (
                     <div
                       key={org.id}
-                      className="rounded-xl border border-edge-2 bg-slate-900/40 p-4 text-sm text-slate-300"
+                      className="rounded-xl border border-edge-2 bg-card p-4 text-sm text-muted-foreground"
                     >
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                          <div className="font-semibold text-slate-100">
+                          <div className="font-semibold text-foreground">
                             {org.name ?? 'Unnamed organization'}
                           </div>
-                          <div className="text-xs text-slate-500">{org.id}</div>
+                          <div className="text-xs text-muted-foreground">{org.id}</div>
                         </div>
                         <form action={repairOrgProvisioning}>
                           <input type="hidden" name="orgId" value={org.id} />
-                          <button className="rounded-lg border border-cyan-400/40 px-3 py-1.5 text-xs font-semibold text-cyan-200 hover:bg-cyan-400/10">
+                          <button className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-muted">
                             Repair org
                           </button>
                         </form>
                       </div>
-                      <div className="flex flex-wrap gap-3 text-xs text-slate-500 mt-2">
+                      <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mt-2">
                         <span>Plan: {org.plan_key ?? 'unset'}</span>
                         <span>Status: {org.subscription_status ?? 'none'}</span>
                         <span>

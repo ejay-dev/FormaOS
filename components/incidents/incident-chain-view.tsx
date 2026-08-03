@@ -31,47 +31,43 @@ const NODE_ICONS: Record<string, typeof Clock> = {
   regulatory: Shield,
 };
 
+const DONE_STATUSES = [
+  'resolved',
+  'closed',
+  'verified',
+  'submitted',
+  'acknowledged',
+  'effective',
+];
+const IN_FLIGHT_STATUSES = [
+  'in_progress',
+  'findings_ready',
+  'implemented',
+  'draft',
+];
+const FAILED_STATUSES = ['overdue', 'ineffective', 'needs_revision'];
+
 function statusColor(status: string): string {
-  if (
-    [
-      'resolved',
-      'closed',
-      'verified',
-      'submitted',
-      'acknowledged',
-      'effective',
-    ].includes(status)
-  ) {
-    return 'border-green-500 bg-green-50 dark:bg-green-950/20';
+  if (DONE_STATUSES.includes(status)) {
+    return 'border-success bg-success/10';
   }
-  if (
-    ['in_progress', 'findings_ready', 'implemented', 'draft'].includes(status)
-  ) {
-    return 'border-blue-500 bg-blue-50 dark:bg-blue-950/20';
+  if (IN_FLIGHT_STATUSES.includes(status)) {
+    return 'border-info bg-info/10';
   }
-  if (['overdue', 'ineffective', 'needs_revision'].includes(status)) {
-    return 'border-red-500 bg-red-50 dark:bg-red-950/20';
+  if (FAILED_STATUSES.includes(status)) {
+    return 'border-destructive bg-destructive/10';
   }
-  return 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20';
+  return 'border-warning bg-warning/10';
 }
 
 function StatusIndicator({ status }: { status: string }) {
-  if (
-    [
-      'resolved',
-      'closed',
-      'verified',
-      'submitted',
-      'acknowledged',
-      'effective',
-    ].includes(status)
-  ) {
-    return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+  if (DONE_STATUSES.includes(status)) {
+    return <CheckCircle2 className="h-4 w-4 text-success" />;
   }
   if (['overdue', 'ineffective'].includes(status)) {
-    return <AlertCircle className="h-4 w-4 text-red-500" />;
+    return <AlertCircle className="h-4 w-4 text-destructive" />;
   }
-  return <Clock className="h-4 w-4 text-yellow-500" />;
+  return <Clock className="h-4 w-4 text-warning" />;
 }
 
 export function IncidentChainView({

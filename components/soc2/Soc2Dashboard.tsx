@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import { Play, FileDown, RefreshCw } from 'lucide-react';
 import { ReadinessScoreRing } from './ReadinessScoreRing';
 import { DomainBreakdown } from './DomainBreakdown';
@@ -39,13 +40,19 @@ export function Soc2Dashboard({
   const [isAssessing, startAssessment] = useTransition();
   const [isGenerating, startGenerate] = useTransition();
   const [reportStatus, setReportStatus] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleRunAssessment = () => {
     startAssessment(async () => {
       const result = await runSoc2Assessment();
-      if (!('error' in result)) setAssessment(result);
-      // Refresh the page data after assessment
-      window.location.reload();
+      if ('error' in result) {
+        setReportStatus(result.error);
+        return;
+      }
+      setAssessment(result);
+      // Re-fetch the server components rather than reloading the document,
+      // so the state this component just set survives.
+      router.refresh();
     });
   };
 
@@ -80,64 +87,63 @@ export function Soc2Dashboard({
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <div className="flex flex-col h-full">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">
-            SOC 2 Readiness
-          </h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="page-title">SOC 2 readiness</h1>
+          <p className="page-description">
             Automated evidence collection, gap analysis, and certification
             readiness tracking.
+            {assessment?.assessedAt
+              ? ` Last assessed ${new Date(assessment.assessedAt).toLocaleString()}.`
+              : ''}
           </p>
-          {assessment?.assessedAt && (
-            <p className="text-xs text-muted-foreground/60 mt-2">
-              Last assessed: {new Date(assessment.assessedAt).toLocaleString()}
-            </p>
-          )}
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <button
             onClick={handleRunAssessment}
             disabled={isAssessing}
-            className="inline-flex items-center gap-2 rounded-xl border border-primary bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {isAssessing ? (
-              <RefreshCw className="h-4 w-4 animate-spin" />
+              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <Play className="h-4 w-4" />
+              <Play className="h-3.5 w-3.5" />
             )}
-            {isAssessing ? 'Assessing...' : 'Run Assessment'}
+            {isAssessing ? 'Assessing…' : 'Run assessment'}
           </button>
           <button
             onClick={handleGenerateReport}
             disabled={isGenerating || !assessment}
-            className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface-2 px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-sm font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-50"
           >
             {isGenerating ? (
-              <RefreshCw className="h-4 w-4 animate-spin" />
+              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <FileDown className="h-4 w-4" />
+              <FileDown className="h-3.5 w-3.5" />
             )}
-            {isGenerating ? 'Generating...' : 'Generate Report'}
+            {isGenerating ? 'Generating…' : 'Generate report'}
           </button>
         </div>
       </div>
 
+      <div className="page-content space-y-6">
       {reportStatus && (
-        <div className="rounded-xl border border-border bg-surface-1 p-4 text-sm text-foreground">
+        <div
+          role="status"
+          className="rounded-lg border border-border bg-card p-4 text-sm text-foreground"
+        >
           {reportStatus}
         </div>
       )}
 
       {!assessment ? (
-        <div className="rounded-2xl border border-border bg-card p-12 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-surface-1">
-            <Play className="h-6 w-6 text-muted-foreground" />
+        <div className="rounded-xl border border-border bg-card p-12 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-surface-1">
+            <Play className="h-5 w-5 text-muted-foreground" />
           </div>
-          <h2 className="mt-4 text-lg font-semibold text-foreground/90">
-            No Assessment Yet
+          <h2 className="mt-4 text-lg font-semibold text-foreground">
+            No assessment yet
           </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
             Run your first SOC 2 readiness assessment to see your compliance
@@ -146,21 +152,21 @@ export function Soc2Dashboard({
           <button
             onClick={handleRunAssessment}
             disabled={isAssessing}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {isAssessing ? (
               <RefreshCw className="h-4 w-4 animate-spin" />
             ) : (
               <Play className="h-4 w-4" />
             )}
-            {isAssessing ? 'Running Assessment...' : 'Run First Assessment'}
+            {isAssessing ? 'Running assessment…' : 'Run first assessment'}
           </button>
         </div>
       ) : (
         <>
           {/* Score + Domains */}
           <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
-            <div className="rounded-2xl border border-border bg-card p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] flex items-center justify-center">
+            <div className="rounded-xl border border-border bg-card p-8 flex items-center justify-center">
               <ReadinessScoreRing score={assessment.overallScore} />
             </div>
             <div className="space-y-4">
@@ -187,6 +193,7 @@ export function Soc2Dashboard({
           <RemediationTracker actions={actions} />
         </>
       )}
+      </div>
     </div>
   );
 }

@@ -82,7 +82,7 @@ function StepProgress({
   return (
     <div className="w-full space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground tabular-nums">
+        <span className="text-xs font-medium text-muted-foreground tabular-nums">
           Step {currentStep + 1} of {totalSteps}
         </span>
         <span className="text-[10px] font-semibold text-muted-foreground">

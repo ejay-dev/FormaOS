@@ -20,6 +20,11 @@ import {
 } from '@/app/app/actions/policies';
 import { ArtifactSidebar } from '@/components/policies/artifact-sidebar';
 import { getLatestVersion } from '@/lib/policies/lifecycle';
+import { getOrgMemberIdentities } from '@/lib/team/member-identity';
+import {
+  StatusBadge,
+  documentStatus,
+} from '@/components/compliance/StatusBadge';
 
 export default async function PolicyDetailPage({
   params,
@@ -144,6 +149,8 @@ export default async function PolicyDetailPage({
         { data: [] },
       ];
 
+  const identities = await getOrgMemberIdentities();
+
   const totalPolicyMembers = memberCount ?? 0;
   const acknowledgedPolicies = acknowledgmentCount ?? 0;
   const acknowledgmentPercent =
@@ -154,36 +161,29 @@ export default async function PolicyDetailPage({
     latestVersion?.status === 'published' && !myAcknowledgment;
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-700">
-      {/* Navigation Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <Link
-          href="/app/policies"
-          className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all group"
-        >
-          <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          Policy Library
-        </Link>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest">
-            <History className="h-3 w-3" />
-            <span>
-              Last modified:{' '}
-              {new Date(
-                policy.last_updated_at || policy.created_at,
-              ).toLocaleDateString()}
-            </span>
-          </div>
-          <div className="h-4 w-px bg-border" />
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-success/10 text-success rounded-full text-xs font-black uppercase tracking-widest border border-success/20">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            Verified Template
-          </div>
+    <div className="space-y-6 pb-20">
+      <div className="page-header flex-col items-start gap-3 px-0 sm:flex-row sm:items-center">
+        <div className="min-w-0">
+          <Link
+            href="/app/policies"
+            className="group inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ChevronLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+            Policy Library
+          </Link>
+          <h1 className="page-title mt-1 truncate">{policy.title}</h1>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <History className="h-3.5 w-3.5" />
+          <span>
+            Last modified{' '}
+            {new Date(
+              policy.last_updated_at || policy.created_at,
+            ).toLocaleDateString()}
+          </span>
         </div>
       </div>
 
-      {/* Main Form Surface */}
-      {/* Main Form Surface */}
       <form
         action={async (formData) => {
           'use server';
@@ -198,23 +198,31 @@ export default async function PolicyDetailPage({
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* LEFT: Main Editor */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-surface-1 border border-edge-2 rounded-[2rem] shadow-sm overflow-hidden flex flex-col h-[70vh] md:h-[800px]">
-              <div className="p-6 sm:p-8 border-b border-edge-2 bg-surface-1">
+            <div className="bg-card border border-border rounded-xl overflow-hidden flex flex-col h-[70vh] md:h-[800px]">
+              <div className="p-4 sm:p-5 border-b border-border">
+                <label
+                  htmlFor="policy-title"
+                  className="text-sm font-medium text-muted-foreground"
+                >
+                  Title
+                </label>
                 <input
+                  id="policy-title"
                   name="title"
                   defaultValue={policy.title}
                   disabled={!isAdmin}
-                  placeholder="Policy Title..."
-                  className="w-full bg-transparent text-2xl sm:text-3xl font-black text-foreground outline-none placeholder:text-muted-foreground tracking-tight disabled:opacity-50"
+                  placeholder="Policy title"
+                  className="mt-1 w-full bg-transparent text-xl font-semibold tracking-tight text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-50"
                 />
               </div>
-              <div className="p-6 sm:p-8 flex-1">
+              <div className="p-4 sm:p-5 flex-1">
                 <textarea
                   name="content"
                   defaultValue={policy.content}
                   disabled={!isAdmin}
-                  placeholder="# Write your policy content here..."
-                  className="w-full h-full bg-transparent text-sm leading-relaxed text-muted-foreground outline-none resize-none font-mono disabled:opacity-50"
+                  placeholder="Write the policy content here"
+                  aria-label="Policy content"
+                  className="w-full h-full bg-transparent text-sm leading-relaxed text-foreground outline-none resize-none disabled:opacity-50"
                 />
               </div>
             </div>
@@ -231,67 +239,60 @@ export default async function PolicyDetailPage({
             />
 
             {/* Document Controls */}
-            <div className="bg-surface-1 border border-edge-2 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-8 md:sticky md:top-6">
-              <div className="space-y-3">
+            <div className="bg-card border border-border rounded-xl p-5 space-y-5 md:sticky md:top-6">
+              <div className="space-y-2">
                 <label
-                  htmlFor="field-206"
-                  className="text-xs font-black uppercase text-muted-foreground tracking-[0.2em] ml-1"
+                  htmlFor="policy-status"
+                  className="text-sm font-medium text-muted-foreground"
                 >
-                  Lifecycle Stage
+                  Lifecycle stage
                 </label>
                 <div className="relative">
                   <select
-                    name="status" // Ensure our Server Action handles 'status' update if intended
+                    id="policy-status"
+                    name="status"
                     defaultValue={policy.status}
                     disabled={!isAdmin}
-                    className="w-full p-4 rounded-2xl border border-edge-2 text-xs font-black bg-surface-2 cursor-pointer outline-none focus:bg-surface-1 focus-visible:ring-2 focus-visible:ring-ring transition-all appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full appearance-none rounded-lg border border-border bg-background px-3 py-2 pr-9 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <option value="draft">Drafting Mode</option>
-                    <option value="review">Under Review</option>
-                    <option value="published">Active & Enforced</option>
+                    <option value="draft">Draft</option>
+                    <option value="review">In review</option>
+                    <option value="published">Published</option>
                     <option value="archived">Archived</option>
                   </select>
-                  <ShieldCheck className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <ShieldCheck className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4 py-6 border-y border-edge-2">
-                <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
+              <div className="flex flex-col gap-2 border-y border-border py-4 text-sm">
+                <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Version</span>
-                  <span className="text-foreground bg-surface-2 px-2 py-1 rounded-lg tabular-nums">
+                  <span className="font-medium tabular-nums text-foreground">
                     {latestVersion
                       ? `v${latestVersion.version_number}`
                       : policy.version || 'v1.0'}
                   </span>
                 </div>
                 {latestVersion ? (
-                  <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
+                  <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Lifecycle</span>
-                    <span className="text-foreground bg-surface-2 px-2 py-1 rounded-lg">
-                      {latestVersion.status.replace(/_/g, ' ')}
-                    </span>
+                    <StatusBadge {...documentStatus(latestVersion.status)} />
                   </div>
                 ) : null}
-                <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
-                  <span className="text-muted-foreground">Governance ID</span>
-                  <span className="font-mono text-muted-foreground">
-                    POL-{policy.id.slice(0, 4).toUpperCase()}
-                  </span>
-                </div>
               </div>
 
               {isAdmin ? (
                 <button
                   type="submit"
-                  className="w-full bg-surface-2 text-foreground py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-surface-3 transition-all shadow-sm motion-safe:active:scale-95 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <Save className="h-4 w-4 transition-transform group-hover:scale-110" />
-                  Save Draft
+                  <Save className="h-3.5 w-3.5" />
+                  Save draft
                 </button>
               ) : (
-                <div className="p-4 bg-surface-2 rounded-2xl border border-edge-2 text-xs font-black text-muted-foreground text-center uppercase tracking-widest flex items-center justify-center gap-2">
-                  <ShieldCheck className="h-4 w-4" />
-                  Read Only Mode
+                <div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Read only
                 </div>
               )}
             </div>
@@ -304,18 +305,16 @@ export default async function PolicyDetailPage({
           (i.e., createPolicy/updatePolicy seeded one) and the user has the
           right role. */}
       {latestVersion ? (
-        <div className="mt-6 bg-surface-1 border border-edge-2 rounded-[2rem] p-6 sm:p-8 shadow-sm">
+        <div className="mt-6 bg-card border border-border rounded-xl p-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
-              <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                Approval Workflow
+              <p className="text-sm font-semibold text-foreground">
+                Approval workflow
               </p>
-              <p className="text-sm text-foreground">
-                Latest version{' '}
-                <span className="font-mono">v{latestVersion.version_number}</span>{' '}
-                is currently{' '}
-                <span className="font-bold">
-                  {latestVersion.status.replace(/_/g, ' ')}
+              <p className="text-sm text-muted-foreground">
+                Latest version v{latestVersion.version_number} is currently{' '}
+                <span className="font-medium text-foreground">
+                  {documentStatus(latestVersion.status).label.toLowerCase()}
                 </span>
                 .
                 {isAuthorOfPending
@@ -334,9 +333,9 @@ export default async function PolicyDetailPage({
                   <input type="hidden" name="policyId" value={policy.id} />
                   <button
                     type="submit"
-                    className="bg-surface-2 text-foreground px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-surface-3 transition-all shadow-sm motion-safe:active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    Submit for Review
+                    Submit for review
                   </button>
                 </form>
               ) : null}
@@ -355,13 +354,14 @@ export default async function PolicyDetailPage({
                       type="text"
                       name="comment"
                       placeholder="Approval note (optional)"
-                      className="text-xs px-3 py-2 rounded-xl border border-edge-2 bg-surface-2 text-foreground placeholder:text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      aria-label="Approval note"
+                      className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
                     />
                     <button
                       type="submit"
-                      className="bg-success/10 text-success border border-success/20 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-success/20 transition-all motion-safe:active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="rounded-lg border border-success/20 bg-success/10 px-3 py-2 text-sm font-medium text-success transition-colors hover:bg-success/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      Approve & Publish
+                      Approve and publish
                     </button>
                   </form>
                   <form
@@ -376,11 +376,12 @@ export default async function PolicyDetailPage({
                       type="text"
                       name="comment"
                       placeholder="Rejection reason"
-                      className="text-xs px-3 py-2 rounded-xl border border-edge-2 bg-surface-2 text-foreground placeholder:text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      aria-label="Rejection reason"
+                      className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
                     />
                     <button
                       type="submit"
-                      className="bg-destructive/10 text-destructive border border-destructive/20 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-destructive/20 transition-all motion-safe:active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       Reject
                     </button>
@@ -394,28 +395,28 @@ export default async function PolicyDetailPage({
 
       {latestVersion ? (
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="bg-surface-1 border border-edge-2 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-5">
+          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                  Staff Acknowledgment
+                <p className="text-sm font-semibold text-foreground">
+                  Staff acknowledgement
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Published policies collect named staff sign-off for audit
                   evidence.
                 </p>
               </div>
-              <div className="rounded-2xl border border-edge-2 bg-surface-2 px-4 py-3 text-right">
-                <p className="text-xl font-black text-foreground tabular-nums">
+              <div className="rounded-lg border border-border bg-muted px-3 py-2 text-right">
+                <p className="text-xl font-semibold tabular-nums text-foreground">
                   {acknowledgmentPercent}%
                 </p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground tabular-nums">
+                <p className="text-xs tabular-nums text-muted-foreground">
                   {acknowledgedPolicies}/{totalPolicyMembers}
                 </p>
               </div>
             </div>
 
-            <div className="h-2 overflow-hidden rounded-full bg-surface-2">
+            <div className="h-1.5 overflow-hidden rounded-full bg-muted">
               <div
                 className="h-full rounded-full bg-success"
                 style={{ width: `${acknowledgmentPercent}%` }}
@@ -423,8 +424,8 @@ export default async function PolicyDetailPage({
             </div>
 
             {myAcknowledgment ? (
-              <div className="flex items-center gap-3 rounded-2xl border border-success/20 bg-success/10 px-4 py-3 text-sm text-success">
-                <CheckCircle2 className="h-4 w-4" />
+              <div className="flex items-center gap-2 rounded-lg border border-success/20 bg-success/10 px-3 py-2 text-sm text-success">
+                <CheckCircle2 className="h-3.5 w-3.5" />
                 <span>
                   You acknowledged this version on{' '}
                   {new Date(
@@ -443,22 +444,22 @@ export default async function PolicyDetailPage({
                 <input type="hidden" name="policyId" value={policy.id} />
                 <button
                   type="submit"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-success/20 bg-success/10 px-5 py-3 text-xs font-black uppercase tracking-widest text-success transition-all hover:bg-success/20 motion-safe:active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-success/20 bg-success/10 px-4 py-2 text-sm font-medium text-success transition-colors hover:bg-success/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <CheckCircle2 className="h-4 w-4" />
-                  Acknowledge Current Version
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Acknowledge current version
                 </button>
               </form>
             ) : (
-              <div className="rounded-2xl border border-edge-2 bg-surface-2 px-4 py-3 text-xs font-bold text-muted-foreground">
-                Acknowledgment opens after the policy is approved and
+              <div className="rounded-lg border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
+                Acknowledgement opens after the policy is approved and
                 published.
               </div>
             )}
 
             <div className="space-y-2">
-              <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                Review Decisions
+              <p className="text-sm font-medium text-muted-foreground">
+                Review decisions
               </p>
               {(approvalRows ?? []).length > 0 ? (
                 <div className="space-y-2">
@@ -472,15 +473,20 @@ export default async function PolicyDetailPage({
                     }) => (
                       <div
                         key={approval.id}
-                        className="rounded-2xl border border-edge-2 bg-surface-2 px-4 py-3 text-xs"
+                        className="rounded-lg border border-border bg-muted px-3 py-2 text-sm"
                       >
                         <div className="flex items-center justify-between gap-3">
-                          <span className="font-mono text-muted-foreground">
-                            {approval.approver_id.slice(0, 8)}
+                          <span className="text-foreground">
+                            {identities[approval.approver_id]?.name ??
+                              'Unknown member'}
                           </span>
-                          <span className="font-black uppercase tracking-widest text-foreground">
-                            {approval.decision ?? 'pending'}
-                          </span>
+                          <StatusBadge
+                            {...(approval.decision === 'approved'
+                              ? { label: 'Approved', tone: 'success' as const }
+                              : approval.decision === 'rejected'
+                                ? { label: 'Rejected', tone: 'danger' as const }
+                                : { label: 'Pending', tone: 'neutral' as const })}
+                          />
                         </div>
                         {approval.comment ? (
                           <p className="mt-2 text-muted-foreground">
@@ -488,7 +494,7 @@ export default async function PolicyDetailPage({
                           </p>
                         ) : null}
                         {approval.decided_at ? (
-                          <p className="mt-1 text-[10px] text-muted-foreground">
+                          <p className="mt-1 text-xs text-muted-foreground">
                             {new Date(approval.decided_at).toLocaleString()}
                           </p>
                         ) : null}
@@ -497,28 +503,28 @@ export default async function PolicyDetailPage({
                   )}
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   No review decision has been recorded for this version yet.
                 </p>
               )}
             </div>
           </div>
 
-          <div className="bg-surface-1 border border-edge-2 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-5">
+          <div className="bg-card border border-border rounded-xl p-5 space-y-4">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                  Review Schedule
+                <p className="text-sm font-semibold text-foreground">
+                  Review schedule
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Keep policy reviews explicit so no lifecycle action ends in a
-                  dead end.
+                  Set when this policy comes back for review and who signs it
+                  off.
                 </p>
               </div>
-              <CalendarClock className="h-5 w-5 text-muted-foreground" />
+              <CalendarClock className="h-4 w-4 text-muted-foreground" />
             </div>
 
-            <div className="rounded-2xl border border-edge-2 bg-surface-2 px-4 py-3 text-sm">
+            <div className="rounded-lg border border-border bg-muted px-3 py-2 text-sm">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-muted-foreground">Next review</span>
                 <span className="font-semibold text-foreground">
@@ -549,14 +555,14 @@ export default async function PolicyDetailPage({
               >
                 <input type="hidden" name="policyId" value={policy.id} />
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <label className="space-y-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  <label className="space-y-1 text-sm font-medium text-muted-foreground">
                     <span>Frequency</span>
                     <select
                       name="frequency"
                       defaultValue={
                         String(reviewSchedule?.review_frequency ?? 'annual')
                       }
-                      className="w-full rounded-2xl border border-edge-2 bg-background px-3 py-2 text-sm font-medium normal-case tracking-normal text-foreground"
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-normal text-foreground"
                     >
                       <option value="quarterly">Quarterly</option>
                       <option value="semi_annual">Semi annual</option>
@@ -564,8 +570,8 @@ export default async function PolicyDetailPage({
                       <option value="biennial">Biennial</option>
                     </select>
                   </label>
-                  <label className="space-y-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    <span>Next Review</span>
+                  <label className="space-y-1 text-sm font-medium text-muted-foreground">
+                    <span>Next review</span>
                     <input
                       type="date"
                       name="nextReviewDate"
@@ -577,14 +583,14 @@ export default async function PolicyDetailPage({
                               .toISOString()
                               .slice(0, 10)
                       }
-                      className="w-full rounded-2xl border border-edge-2 bg-background px-3 py-2 text-sm font-medium normal-case tracking-normal text-foreground"
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-normal text-foreground"
                     />
                   </label>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground">
-                    <Users className="h-3 w-3" />
+                  <p className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
+                    <Users className="h-3.5 w-3.5" />
                     Reviewers
                   </p>
                   <div className="grid gap-2 sm:grid-cols-2">
@@ -600,7 +606,7 @@ export default async function PolicyDetailPage({
                         return (
                           <label
                             key={reviewer.user_id}
-                            className="flex items-center gap-2 rounded-2xl border border-edge-2 bg-surface-2 px-3 py-2 text-xs"
+                            className="flex items-center gap-2 rounded-lg border border-border bg-muted px-3 py-2 text-sm"
                           >
                             <input
                               type="checkbox"
@@ -610,10 +616,14 @@ export default async function PolicyDetailPage({
                               className="h-3.5 w-3.5"
                             />
                             <span className="min-w-0">
-                              <span className="block truncate font-mono">
-                                {reviewer.user_id.slice(0, 8)}
+                              <span className="block truncate font-medium">
+                                {identities[reviewer.user_id]?.name ??
+                                  'Unknown member'}
                               </span>
-                              <span className="block text-[10px] uppercase tracking-widest text-muted-foreground">
+                              <span className="block truncate text-xs text-muted-foreground">
+                                {identities[reviewer.user_id]?.email
+                                  ? `${identities[reviewer.user_id]?.email} · `
+                                  : ''}
                                 {reviewer.role ?? 'member'}
                               </span>
                             </span>
@@ -626,14 +636,14 @@ export default async function PolicyDetailPage({
 
                 <button
                   type="submit"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-edge-2 bg-surface-2 px-5 py-3 text-xs font-black uppercase tracking-widest text-foreground transition-all hover:bg-surface-3 motion-safe:active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <CalendarClock className="h-4 w-4" />
-                  Save Review Schedule
+                  <CalendarClock className="h-3.5 w-3.5" />
+                  Save review schedule
                 </button>
               </form>
             ) : (
-              <div className="rounded-2xl border border-edge-2 bg-surface-2 px-4 py-3 text-xs font-bold text-muted-foreground">
+              <div className="rounded-lg border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
                 Review schedules are managed by owners and admins.
               </div>
             )}

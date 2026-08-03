@@ -5,7 +5,6 @@ import {
   Briefcase,
   ShieldCheck,
   AlertCircle,
-  FileText,
   Clock,
 } from 'lucide-react';
 import { PageHero } from '@/components/ui/page-hero';
@@ -31,27 +30,39 @@ export default async function EmployeeProfilePage() {
 
   if (!profile) return null;
 
-  const _statusColors = {
-    active: 'bg-emerald-400/10 text-emerald-700 border-emerald-400/30',
-    at_risk: 'bg-amber-400/10 text-amber-300 border-amber-400/30',
-    non_compliant: 'bg-rose-500/10 text-red-700 border-rose-400/30',
-  };
+  const { data: credentials } = await supabase
+    .from('org_credentials')
+    .select('expiry_date, verification_status')
+    .eq('organization_id', profile.organization_id)
+    .eq('user_id', profile.user_id);
+
+  const credentialRows = (credentials ?? []) as Array<{
+    expiry_date: string | null;
+    verification_status: string | null;
+  }>;
+  const verifiedCredentials = credentialRows.filter(
+    (row) => row.verification_status === 'verified',
+  ).length;
+  const nextExpiry = credentialRows
+    .map((row) => row.expiry_date)
+    .filter((value): value is string => Boolean(value))
+    .sort()
+    .find((value) => new Date(value) >= new Date());
 
   const status = profile.compliance_status ?? 'active';
   const statusTone =
     status === 'active'
-      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+      ? 'bg-success/10 text-success border-success/30'
       : status === 'at_risk'
-        ? 'bg-amber-500/10 text-amber-500 border-amber-500/30'
-        : 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+        ? 'bg-warning/10 text-warning border-warning/30'
+        : 'bg-destructive/10 text-destructive border-destructive/30';
   const StatusIcon = status === 'active' ? ShieldCheck : AlertCircle;
 
   return (
     <div className="flex flex-col h-full">
       <PageHero
-        eyebrow={`Administration · ${profile.organizations.name}`}
-        title="Personal Profile"
-        subtitle="Manage your contact details, organization identity, and credential record."
+        title="Your profile"
+        subtitle={`Your contact details and record at ${profile.organizations.name}.`}
         actions={
           <span
             className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold capitalize ${statusTone}`}
@@ -80,7 +91,9 @@ export default async function EmployeeProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           {/* Personal Governance Card */}
           <div className="lg:col-span-8 rounded-lg border border-border bg-card p-4 space-y-4">
-            <h3 className="section-label">Organizational Record</h3>
+            <h3 className="text-sm font-semibold text-foreground">
+              Your record
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center gap-3">
                 <Briefcase className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -94,7 +107,7 @@ export default async function EmployeeProfilePage() {
               <div className="flex items-center gap-3">
                 <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Start Date</p>
+                  <p className="text-xs text-muted-foreground">Start date</p>
                   <p className="text-sm font-medium">
                     {profile.start_date
                       ? new Date(profile.start_date).toLocaleDateString(
@@ -108,41 +121,48 @@ export default async function EmployeeProfilePage() {
               <div className="flex items-center gap-3">
                 <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Access Tier</p>
+                  <p className="text-xs text-muted-foreground">Role</p>
                   <p className="text-sm font-medium capitalize">
                     {profile.role}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Employee ID</p>
-                  <p className="text-sm font-mono font-medium">
-                    USR-{profile.user_id.slice(0, 8).toUpperCase()}
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Credential Integrity */}
           <div className="lg:col-span-4 rounded-lg border border-border bg-card p-4 space-y-3">
-            <h3 className="section-label">Credential Integrity</h3>
+            <h3 className="text-sm font-semibold text-foreground">
+              Credentials
+            </h3>
             <p className="text-xs text-muted-foreground">
-              Professional licenses and identity documents are managed by the
-              organization vault.
+              Professional licences and identity documents are held in the
+              organisation vault.
             </p>
             <div className="pt-3 border-t border-border space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">Document Status</span>
-                <span className="text-emerald-500 font-medium">
-                  Audit Ready
-                </span>
-              </div>
-              <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
-                <div className="h-full bg-emerald-500 w-full" />
-              </div>
+              {credentialRows.length === 0 ? (
+                <p className="text-xs text-muted-foreground">
+                  No documents on file yet.
+                </p>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Documents</span>
+                    <span className="font-medium">
+                      {verifiedCredentials} of {credentialRows.length} verified
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Next expiry</span>
+                    <span className="font-medium">
+                      {nextExpiry
+                        ? new Date(nextExpiry).toLocaleDateString(undefined, {
+                            dateStyle: 'medium',
+                          })
+                        : 'None recorded'}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

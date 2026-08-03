@@ -123,7 +123,7 @@ export function FeedbackWidget() {
               rows={3}
               className={cn(
                 'w-full resize-none rounded-xl border border-edge-1 bg-surface-1 px-4 py-3',
-                'text-sm text-foreground/90 placeholder:text-muted-foreground/40',
+                'text-sm text-foreground/90 placeholder:text-muted-foreground',
                 'focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-ring',
               )}
             />
@@ -136,7 +136,7 @@ export function FeedbackWidget() {
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 sentiment
                   ? 'bg-primary/10 text-primary ring-1 ring-primary/20 hover:bg-primary/20'
-                  : 'cursor-not-allowed bg-surface-1 text-muted-foreground/40',
+                  : 'cursor-not-allowed bg-surface-1 text-muted-foreground',
               )}
             >
               <Send className="h-4 w-4" />

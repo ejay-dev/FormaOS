@@ -7,16 +7,23 @@ interface ReadinessScoreRingProps {
   score: number;
 }
 
-function getScoreColor(score: number) {
-  if (score >= 80) return { stroke: '#34d399', text: 'text-emerald-400', label: 'text-emerald-300' };
-  if (score >= 50) return { stroke: '#fbbf24', text: 'text-amber-400', label: 'text-amber-300' };
-  return { stroke: '#fb7185', text: 'text-rose-400', label: 'text-rose-300' };
+// Tokens, not hexes: the ring has to read on both the light and dark ramp.
+function getScoreBand(score: number) {
+  if (score >= 80)
+    return { stroke: 'stroke-success', text: 'text-success', label: 'On track' };
+  if (score >= 50)
+    return { stroke: 'stroke-warning', text: 'text-warning', label: 'Partial' };
+  return {
+    stroke: 'stroke-destructive',
+    text: 'text-destructive',
+    label: 'At risk',
+  };
 }
 
 export function ReadinessScoreRing({ score }: ReadinessScoreRingProps) {
   const [mounted, setMounted] = useState(false);
   const clamped = Math.max(0, Math.min(100, Math.round(score)));
-  const colors = getScoreColor(clamped);
+  const band = getScoreBand(clamped);
 
   const size = 200;
   const strokeWidth = 12;
@@ -45,8 +52,8 @@ export function ReadinessScoreRing({ score }: ReadinessScoreRingProps) {
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="rgba(255,255,255,0.08)"
             strokeWidth={strokeWidth}
+            className="stroke-border"
           />
           {/* Score ring */}
           <circle
@@ -54,11 +61,11 @@ export function ReadinessScoreRing({ score }: ReadinessScoreRingProps) {
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke={colors.stroke}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
+            className={band.stroke}
             style={{
               transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
@@ -67,7 +74,9 @@ export function ReadinessScoreRing({ score }: ReadinessScoreRingProps) {
 
         {/* Center content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={`text-5xl font-black tabular-nums tracking-tight ${colors.text}`}>
+          <span
+            className={`text-5xl font-bold tabular-nums tracking-tight ${band.text}`}
+          >
             {clamped}
           </span>
           <span className="text-lg font-semibold text-muted-foreground">%</span>
@@ -75,8 +84,10 @@ export function ReadinessScoreRing({ score }: ReadinessScoreRingProps) {
       </div>
 
       <div className="flex items-center gap-2">
-        <ShieldCheck className={`h-4 w-4 ${colors.label}`} />
-        <span className="text-sm font-semibold text-foreground/70">Readiness Score</span>
+        <ShieldCheck className={`h-4 w-4 ${band.text}`} />
+        <span className="text-sm font-medium text-muted-foreground">
+          Readiness score · {band.label}
+        </span>
       </div>
     </div>
   );

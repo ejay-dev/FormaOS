@@ -43,6 +43,7 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
         <h3 className="text-lg font-semibold text-foreground">Control Status</h3>
         <div className="flex gap-2">
           <select
+            aria-label="Filter by domain"
             value={domainFilter}
             onChange={(e) => setDomainFilter(e.target.value)}
             className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs text-foreground/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -53,6 +54,7 @@ export function ControlGapTable({ controls }: ControlGapTableProps) {
             ))}
           </select>
           <select
+            aria-label="Filter by status"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs text-foreground/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -127,11 +129,24 @@ function ControlRow({
         onClick={onToggle}
       >
         <td className="px-3 py-3">
-          {isExpanded ? (
-            <ChevronDown className="h-4 w-4 text-muted-foreground/60" />
-          ) : (
-            <ChevronRight className="h-4 w-4 text-muted-foreground/60" />
-          )}
+          {/* The row click is a mouse convenience; this button is the
+              keyboard-operable control that owns the expanded state. */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
+            aria-expanded={isExpanded}
+            aria-label={`${isExpanded ? 'Hide' : 'Show'} detail for ${control.controlCode}`}
+            className="rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {isExpanded ? (
+              <ChevronDown aria-hidden="true" className="h-4 w-4 text-muted-foreground/60" />
+            ) : (
+              <ChevronRight aria-hidden="true" className="h-4 w-4 text-muted-foreground/60" />
+            )}
+          </button>
         </td>
         <td className="px-3 py-3">
           <div className="font-semibold text-foreground">{control.controlCode}</div>

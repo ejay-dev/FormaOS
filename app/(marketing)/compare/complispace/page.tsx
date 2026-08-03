@@ -11,27 +11,28 @@ import {
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'FormaOS vs CompliSpace: Compliance Comparison | FormaOS',
+    'FormaOS vs Ideagen CompliSpace: Compliance Comparison | FormaOS',
   description:
-    'FormaOS vs CompliSpace: operational compliance execution across 5 regulated industries vs compliance training and policy management for education and childcare.',
+    'FormaOS vs Ideagen CompliSpace (formerly CompliSpace): operational compliance execution across five regulated industries vs compliance training and policy management for education and childcare.',
   alternates: {
     canonical: `${siteUrl}/compare/complispace`,
   },
   openGraph: {
     title:
-      'FormaOS vs CompliSpace: Compliance Comparison | FormaOS',
+      'FormaOS vs Ideagen CompliSpace: Compliance Comparison | FormaOS',
     description:
-      'FormaOS vs CompliSpace: operational compliance execution across 5 regulated industries vs compliance training and policy management for education and childcare.',
+      'FormaOS vs Ideagen CompliSpace (formerly CompliSpace): operational compliance execution across five regulated industries vs compliance training and policy management for education and childcare.',
     type: 'website',
     url: `${siteUrl}/compare/complispace`,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FormaOS vs CompliSpace: Compare Australian Compliance Platforms',
+    title: 'FormaOS vs Ideagen CompliSpace: Compare Australian Compliance Platforms',
     description:
-      'FormaOS vs CompliSpace: operational compliance execution across 5 regulated industries vs compliance training and policy management for education and childcare.',
+      'FormaOS vs Ideagen CompliSpace (formerly CompliSpace): operational compliance execution across five regulated industries vs compliance training and policy management for education and childcare.',
   },
   keywords: [
+    'FormaOS vs Ideagen CompliSpace',
     'FormaOS vs CompliSpace',
     'Australian compliance platform',
     'compliance training comparison',
@@ -46,12 +47,12 @@ const points = [
   {
     title: 'Operational compliance execution, not just training and policies',
     detail:
-      'CompliSpace helps organisations distribute policies and deliver compliance training. FormaOS goes further, executing compliance as governed workflows where every control is tied to tasks, named owners, and verified evidence. Training awareness becomes proven operational compliance.',
+      'Ideagen CompliSpace helps organisations distribute policies and deliver compliance training. FormaOS goes further, executing compliance as governed workflows where every control is tied to tasks, named owners, and verified evidence. Training awareness becomes proven operational compliance.',
   },
   {
     title: 'Five regulated industries, not just education',
     detail:
-      'FormaOS ships with pre-built frameworks for NDIS, aged care, healthcare, childcare, and construction. CompliSpace has deep expertise in education and childcare compliance. FormaOS covers the full spectrum of AU-regulated sectors with operational workflows for each.',
+      'FormaOS ships with pre-built frameworks for NDIS, aged care, healthcare, childcare, and construction. Ideagen CompliSpace has deep expertise in education and childcare compliance. FormaOS covers the full spectrum of AU-regulated sectors with operational workflows for each.',
   },
   {
     title: 'Evidence chains that prove compliance execution',
@@ -71,7 +72,7 @@ const points = [
   {
     title: 'Multi-framework governance in one platform',
     detail:
-      'FormaOS manages compliance across multiple regulatory frameworks simultaneously, NDIS Practice Standards, NQF/NQS, WHS, Privacy Act, and more, with cross-framework control mapping. CompliSpace focuses on sector-specific policy and training needs.',
+      'FormaOS manages compliance across multiple regulatory frameworks simultaneously, NDIS Practice Standards, NQF/NQS, WHS, Privacy Act, and more, with cross-framework control mapping. Ideagen CompliSpace focuses on sector-specific policy and training needs.',
   },
 ] as const;
 
@@ -178,13 +179,16 @@ export default function CompareCompliSpacePage() {
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Compare', path: '/compare' },
-              { name: 'FormaOS vs CompliSpace', path: '/compare/complispace' },
+              {
+                name: 'FormaOS vs Ideagen CompliSpace',
+                path: '/compare/complispace',
+              },
             ]),
             softwareApplicationSchema(),
           ]} />
       <ComparePageTemplate
-        competitor="CompliSpace"
-        heroDescription="CompliSpace is an Australian compliance platform with deep expertise in education and childcare sector training and policy management. FormaOS takes a different approach, built to execute compliance as operational workflows across five regulated industries, with named ownership, evidence verification chains, and audit-ready posture dashboards."
+        competitor="Ideagen CompliSpace"
+        heroDescription="Ideagen CompliSpace, formerly CompliSpace, is an Australian platform with deep expertise in education and childcare sector training and policy management. FormaOS takes a different approach, built to execute compliance as operational workflows across five regulated industries, with named ownership, evidence verification chains, and audit-ready posture dashboards."
         points={points}
         idealIf={idealIf}
         procurementChecks={procurementChecks}

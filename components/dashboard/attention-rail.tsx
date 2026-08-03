@@ -26,8 +26,6 @@ export interface ActionQueueItem {
   href: string;
   icon: typeof CheckSquare;
   priority: ActionPriority;
-  ownerLabel?: string;
-  slaLabel?: string;
 }
 
 export function PriorityActionQueue({ items }: { items: ActionQueueItem[] }) {
@@ -37,10 +35,14 @@ export function PriorityActionQueue({ items }: { items: ActionQueueItem[] }) {
     normal: 'Normal',
   };
 
+  // Every row is derived from a live count, so an empty queue means there is
+  // genuinely nothing outstanding — rendering an empty card would invent work.
+  if (items.length === 0) return null;
+
   return (
     <DashboardSectionCard
-      title="Operator Action Queue"
-      description="Owner-routed actions with explicit SLAs to improve readiness now"
+      title="Needs action"
+      description="Derived from your current tasks, credentials, and readiness score"
       icon={AlertCircle}
     >
       <div className="space-y-2">
@@ -52,28 +54,19 @@ export function PriorityActionQueue({ items }: { items: ActionQueueItem[] }) {
           >
             <item.icon className="h-4 w-4 shrink-0 text-muted-foreground" />
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-foreground truncate">
+              <p className="truncate text-sm font-medium text-foreground">
                 {item.title}
               </p>
-              <div className="flex items-center gap-2 mt-0.5">
-                {item.ownerLabel && (
-                  <span className="text-[10px] text-muted-foreground">
-                    {item.ownerLabel}
-                  </span>
-                )}
-                {item.slaLabel && (
-                  <span className="text-[10px] font-mono text-muted-foreground">
-                    SLA {item.slaLabel}
-                  </span>
-                )}
-              </div>
+              <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                {item.detail}
+              </p>
             </div>
             <span
               className={`status-pill ${item.priority === 'critical' ? 'status-pill-red' : item.priority === 'high' ? 'status-pill-amber' : 'status-pill-blue'}`}
             >
               {label[item.priority]}
             </span>
-            <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/40 transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
           </Link>
         ))}
       </div>
@@ -94,10 +87,10 @@ export function MobileReadinessCheckpoint({
     <div className="rounded-2xl border border-border bg-card p-4 lg:hidden">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Readiness Checkpoint
+          <p className="text-sm font-semibold text-foreground">
+            Readiness checkpoint
           </p>
-          <p className="mt-1 text-sm text-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             One-screen status before you dive into workflows.
           </p>
         </div>
@@ -109,23 +102,17 @@ export function MobileReadinessCheckpoint({
           <p className="text-lg font-bold tabular-nums text-foreground">
             {complianceScore}%
           </p>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
-            Score
-          </p>
+          <p className="text-xs text-muted-foreground">Score</p>
         </div>
         <div className="rounded-lg border border-border bg-surface-1 px-2 py-3">
           <p className="text-lg font-bold tabular-nums text-foreground">{openTasksCount}</p>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
-            Open Tasks
-          </p>
+          <p className="text-xs text-muted-foreground">Open tasks</p>
         </div>
         <div className="rounded-lg border border-border bg-surface-1 px-2 py-3">
           <p className="text-lg font-bold tabular-nums text-foreground">
             {expiringCertsCount}
           </p>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
-            Expiring
-          </p>
+          <p className="text-xs text-muted-foreground">Expiring</p>
         </div>
       </div>
 
@@ -140,13 +127,13 @@ export function MobileReadinessCheckpoint({
           href="/app/vault/review"
           className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          Evidence Review
+          Evidence review
         </Link>
         <Link
           href="/app/audit-trail"
           className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          Audit Stream
+          Audit trail
         </Link>
       </div>
     </div>
@@ -297,7 +284,7 @@ export function AttentionRail({
 
   return (
     <section aria-label="Needs your attention" className="space-y-1.5">
-      <p className="px-1 text-xs font-medium uppercase tracking-widest text-muted-foreground/80">
+      <p className="px-1 text-sm font-medium text-muted-foreground">
         Needs your attention
       </p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">

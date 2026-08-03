@@ -40,7 +40,7 @@ export default async function NewParticipantPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Add New {label}</h1>
+          <h1 className="page-title">Add new {label.toLowerCase()}</h1>
           <p className="text-muted-foreground">
             Enter {label.toLowerCase()} details
           </p>
@@ -65,7 +65,7 @@ export default async function NewParticipantPage() {
                 htmlFor="field-34"
                 className="block text-sm font-medium mb-1"
               >
-                Full Name <span className="text-red-500">*</span>
+                Full Name <span className="text-destructive">*</span>
               </label>
               <input
                 id="field-34"

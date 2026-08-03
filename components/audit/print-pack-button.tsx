@@ -5,11 +5,11 @@ import { Download } from "lucide-react";
 export default function PrintPackButton() {
   return (
     <button
-      className="flex items-center gap-2 bg-surface-2 text-foreground px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl"
+      className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
       onClick={() => window.print()}
     >
-      <Download className="h-4 w-4" />
-      Print Pack
+      <Download className="h-3.5 w-3.5" />
+      Print pack
     </button>
   );
 }

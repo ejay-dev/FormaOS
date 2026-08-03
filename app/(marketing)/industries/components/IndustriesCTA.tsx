@@ -3,7 +3,11 @@
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 export function IndustriesCTA() {
   return (
@@ -13,25 +17,12 @@ export function IndustriesCTA() {
           <div className="bg-white/[0.04] rounded-3xl border border-white/[0.08] shadow-2xl overflow-hidden">
             {/* Header */}
             <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/[0.08] px-4 sm:px-6 md:px-8 py-6 sm:py-8 text-center">
-              <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
-                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Ready for Enterprise
-                </p>
-              </ScrollReveal>
-
               <ScrollReveal variant="blurIn" range={[0.04, 0.35]}>
                 <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-6 text-white">
-                  If your organization operates under regulation,
+                  If your organisation operates under regulation,
                   <br className="hidden lg:inline" />
-                  <span className="text-foreground">
-                    FormaOS provides the system to run compliance as part of
-                    daily operations.
-                  </span>
+                  compliance belongs in daily operations
                 </h2>
-              </ScrollReveal>
-
-              <ScrollReveal variant="scaleUp" range={[0.08, 0.4]}>
-                <div className="w-24 h-1 bg-zinc-700 mx-auto rounded-full" />
               </ScrollReveal>
             </div>
 
@@ -109,7 +100,8 @@ export function IndustriesCTA() {
                     </div>
 
                     <p className="text-xs text-slate-500">
-                      Assessment-led onboarding • Industry framework mapping • Procurement-ready review
+                      Assessment-led onboarding • Industry framework mapping •
+                      Procurement-ready review
                     </p>
                   </div>
                 </ScrollReveal>

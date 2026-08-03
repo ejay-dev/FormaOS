@@ -7,52 +7,21 @@ import {
 } from './helpers/workspace-seed';
 import { cleanupTestUser, isE2EAuthBootstrapError } from './helpers/test-auth';
 
-const ROUTES_TO_VALIDATE = [
-  {
-    href: '/app/settings/security',
-    expected:
-      /Security Controls|Multi-Factor Authentication|SSO Configuration/i,
-  },
-  {
-    href: '/app/settings/notifications',
-    expected: /Delivery Preferences|Delivery Matrix/i,
-  },
-  {
-    href: '/app/settings/email-preferences',
-    expected: /Email Preferences|Manage which emails/i,
-  },
-  {
-    href: '/app/settings/email-history',
-    expected: /Email Delivery History|transactional communications/i,
-  },
-  {
-    href: '/app/settings/executive-digest',
-    expected: /Executive Digest|automated compliance summary/i,
-  },
-  {
-    href: '/app/settings/roles',
-    expected: /Roles & Permissions|Default Roles|Custom Roles/i,
-  },
-  {
-    href: '/app/settings/auditor-access',
-    expected: /Auditor Access|Access Grants|Grant Access/i,
-  },
-  {
-    href: '/app/settings/retention',
-    expected: /Document Retention|Retention Policies|Legal Holds/i,
-  },
-  {
-    href: '/app/settings/integrations',
-    expected: /Integration Control Plane|Connected|Healthy/i,
-  },
-  {
-    href: '/app/settings/ai',
-    expected: /AI Settings|Usage Overview|Document Indexing/i,
-  },
-  {
-    href: '/app/billing',
-    expected: /Billing|Subscription|Plan|Trial/i,
-  },
+// Every settings subpage renders its title through one SettingsPageHeader, so
+// the destination check is the level-1 heading rather than body copy that
+// keeps being rewritten. Navigation is driven by href, which outlives the
+// card titles above the links.
+const SETTINGS_DESTINATIONS = [
+  { href: '/app/settings/security', heading: 'Security' },
+  { href: '/app/settings/notifications', heading: 'Communications' },
+  { href: '/app/settings/email-history', heading: 'Email history' },
+  { href: '/app/settings/executive-digest', heading: 'Executive digest' },
+  { href: '/app/settings/roles', heading: 'Roles' },
+  { href: '/app/settings/auditor-access', heading: 'Auditor access' },
+  { href: '/app/settings/retention', heading: 'Retention' },
+  { href: '/app/settings/integrations', heading: 'Integrations' },
+  { href: '/app/settings/ai', heading: 'AI assistant' },
+  { href: '/app/billing', heading: 'Billing and plan' },
 ] as const;
 
 async function assertNoPageFailure(page: Page) {
@@ -140,29 +109,32 @@ test.describe('Settings hub', () => {
     ).toBeVisible();
     // Live state renders once, badged on the configuration-area cards (the
     // former snapshot rail and Communication defaults card echoed the same
-    // values a second time and were removed).
-    await expect(page.getByText('Security & identity').first()).toBeVisible();
+    // values a second time and were removed). Each area is asserted by the
+    // link it exposes, which survives the card being retitled.
+    for (const destination of SETTINGS_DESTINATIONS) {
+      await expect(
+        page.locator(`a[href="${destination.href}"]`).first(),
+        `${destination.href} link should be on the hub`,
+      ).toBeVisible();
+    }
+    await expect(page.locator('[data-testid="delete-account"]')).toBeVisible();
     await expect(
-      page.getByText('Email & executive digests').first(),
+      page.getByRole('heading', { name: 'Language and accessibility' }).first(),
     ).toBeVisible();
     await expect(
-      page.getByText('Retention & governance').first(),
+      page.getByRole('heading', { name: 'Appearance' }).first(),
     ).toBeVisible();
-    await expect(page.getByText('Account & data').first()).toBeVisible();
-    await expect(
-      page.getByText('Language & Accessibility').first(),
-    ).toBeVisible();
-    await expect(page.getByText('Appearance').first()).toBeVisible();
 
     await page.getByLabel('Legal entity name').fill(updatedName);
     await page.getByLabel('Industry').fill(updatedIndustry);
     await page.getByLabel('Team size').fill(updatedTeamSize);
     // Use force:true to bypass any modal overlay that may intercept the click
     await page
-      .getByRole('button', { name: /Commit Profile/i })
+      .getByRole('button', { name: 'Save changes' })
+      .first()
       .click({ force: true });
     await expect(
-      page.getByRole('button', { name: /Commit Profile|Saving/i }),
+      page.getByRole('button', { name: 'Save changes' }).first(),
     ).toBeEnabled({ timeout: 20_000 });
 
     await expect
@@ -202,21 +174,37 @@ test.describe('Settings hub', () => {
   test('all hub links click through to functional settings destinations', async ({
     page,
   }) => {
-    for (const route of ROUTES_TO_VALIDATE) {
+    for (const destination of SETTINGS_DESTINATIONS) {
       await openSettings(page);
 
-      const link = page.locator(`a[href="${route.href}"]`).first();
-      await expect(link, `${route.href} link should exist`).toBeVisible();
+      const link = page.locator(`a[href="${destination.href}"]`).first();
+      await expect(link, `${destination.href} link should exist`).toBeVisible();
       await link.click();
-      await page.waitForURL(new RegExp(`${route.href.replace(/\//g, '\\/')}`), {
-        timeout: 20_000,
-      });
+      await page.waitForURL(
+        new RegExp(`${destination.href.replace(/\//g, '\\/')}`),
+        { timeout: 20_000 },
+      );
 
-      await expect(page.locator('body')).toContainText(route.expected, {
-        timeout: 25_000,
-      });
+      await expect(
+        page.getByRole('heading', { name: destination.heading }).first(),
+      ).toBeVisible({ timeout: 25_000 });
       await assertNoPageFailure(page);
     }
+  });
+
+  test('the retired email preferences route lands on Communications', async ({
+    page,
+  }) => {
+    await page.goto('/app/settings/email-preferences', {
+      waitUntil: 'domcontentloaded',
+      timeout: 45_000,
+    });
+
+    await expect(page).toHaveURL(/\/app\/settings\/notifications/);
+    await expect(
+      page.getByRole('heading', { name: 'Communications' }).first(),
+    ).toBeVisible({ timeout: 25_000 });
+    await assertNoPageFailure(page);
   });
 
   test('root-page preference controls respond without breaking the hub', async ({

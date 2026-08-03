@@ -48,7 +48,7 @@ export function WelcomeStep({
       {/* Context cards */}
       <div className="grid grid-cols-2 gap-3 w-full max-w-sm">
         <div className="rounded-2xl border border-edge-2 bg-surface-1 px-4 py-3 text-left space-y-1">
-          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs font-medium text-muted-foreground">
             Your industry
           </p>
           <p className="text-sm font-semibold text-foreground">
@@ -56,7 +56,7 @@ export function WelcomeStep({
           </p>
         </div>
         <div className="rounded-2xl border border-edge-2 bg-surface-1 px-4 py-3 text-left space-y-1">
-          <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs font-medium text-muted-foreground">
             Your role
           </p>
           <p className="text-sm font-semibold text-foreground">{roleLabel}</p>
@@ -67,7 +67,7 @@ export function WelcomeStep({
       <div className="w-full max-w-sm rounded-2xl border border-edge-2 bg-card p-5 text-left space-y-3">
         <div className="flex items-center gap-2">
           <Building2 className="h-4 w-4 text-muted-foreground" />
-          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+          <span className="text-xs font-medium text-muted-foreground">
             This takes 3 minutes
           </span>
         </div>

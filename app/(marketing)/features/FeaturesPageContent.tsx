@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useRef, useState, useMemo } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import {
   motion,
   useScroll,
@@ -30,16 +30,10 @@ import {
   Sparkles,
   ArrowRight,
   CheckCircle2,
-  ChevronDown,
-  ExternalLink,
   Eye,
   Database,
   Server,
   Key,
-  Fingerprint,
-  Clock,
-  AlertTriangle,
-  TrendingUp,
   GitBranch,
   Monitor,
   Bot,
@@ -58,9 +52,21 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import {
   compliancePlanHref,
+  demoHref,
   PUBLIC_CTA_LABELS,
-  salesHref,
 } from '@/lib/marketing/cta';
+import {
+  AUTOMATED_EVALUATOR_COUNT,
+  CLAIM_PHRASES,
+  DISTINCT_FRAMEWORK_NAMES,
+  EVALUATOR_COUNT,
+  FRAMEWORK_CONTROL_COUNT,
+  FRAMEWORK_PACK_COUNT,
+  FRAMEWORK_PACKS,
+  getPackClaim,
+  getPackShortName,
+  MANUAL_ATTESTATION_COUNT,
+} from '@/lib/marketing/claims';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 
 const stickyPlanHref = compliancePlanHref('features_sticky');
@@ -86,7 +92,7 @@ function MobileStickyPlanCta() {
           animate={{ y: 0 }}
           exit={reduce ? undefined : { y: '110%' }}
           transition={{ duration: reduce ? 0 : 0.3, ease: EASE_OUT_EXPO }}
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0a0f1c]/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur-md md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-marketing-bg px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 md:hidden"
         >
           <Link
             href={stickyPlanHref}
@@ -100,7 +106,7 @@ function MobileStickyPlanCta() {
                 variant: 'primary',
               })
             }
-            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-slate-900 transition active:bg-slate-100"
+            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-zinc-900 transition active:bg-zinc-100"
           >
             {PUBLIC_CTA_LABELS.compliancePlan}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -115,19 +121,16 @@ function MobileStickyPlanCta() {
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /* ─── Section Headers ─────────────────────────────────────────
-   Centred-minimal and editorial left-aligned header treatments.
-   Sections alternate so the page reads as composed editorial rather
-   than one repeated eyebrow-pill template.
+   Two treatments, centred and left-bar, neither carrying a label
+   above the headline. The headline states the claim on its own.
    ──────────────────────────────────────────────────────────── */
 
 function CenteredHeader({
-  label,
   title,
   emphasis,
   description,
   className = 'mb-14',
 }: {
-  label: string;
   title: string;
   emphasis: string;
   description: string;
@@ -139,29 +142,22 @@ function CenteredHeader({
       range={[0, 0.3]}
       className={`text-center ${className}`}
     >
-      <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-        {label}
-      </p>
       <h2 className="mb-4 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-        {title} <span className="text-slate-400">{emphasis}</span>
+        {title} <span className="text-zinc-400">{emphasis}</span>
       </h2>
-      <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+      <p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto">
         {description}
       </p>
     </ScrollReveal>
   );
 }
 
-// Left vertical-bar header, third variant so the centered template
-// never repeats on adjacent sections.
 function BarHeader({
-  label,
   title,
   emphasis,
   description,
   className = 'mb-14',
 }: {
-  label: string;
   title: string;
   emphasis: string;
   description: string;
@@ -175,52 +171,10 @@ function BarHeader({
     >
       <span className="mt-1.5 hidden h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent sm:block" />
       <div className="max-w-2xl">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
-          {label}
-        </p>
         <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          {title} <span className="text-slate-400">{emphasis}</span>
+          {title} <span className="text-zinc-400">{emphasis}</span>
         </h2>
-        <p className="mt-4 text-base leading-7 text-slate-400">{description}</p>
-      </div>
-    </ScrollReveal>
-  );
-}
-
-function EditorialHeader({
-  label,
-  title,
-  emphasis,
-  description,
-  className = 'mb-14',
-}: {
-  label: string;
-  title: string;
-  emphasis: string;
-  description: string;
-  className?: string;
-}) {
-  return (
-    <ScrollReveal
-      variant="fadeUp"
-      range={[0, 0.3]}
-      className={`grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:grid-cols-12 lg:items-end ${className}`}
-    >
-      <div className="lg:col-span-7">
-        <div className="mb-5 flex items-center gap-3">
-          <span className="h-px w-8 bg-white/25" />
-          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            {label}
-          </span>
-        </div>
-        <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
-          {title} <span className="text-slate-400">{emphasis}</span>
-        </h2>
-      </div>
-      <div className="lg:col-span-5">
-        <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
-          {description}
-        </p>
+        <p className="mt-4 text-base leading-7 text-zinc-400">{description}</p>
       </div>
     </ScrollReveal>
   );
@@ -238,14 +192,27 @@ interface PlatformFeature {
   capabilities: string[];
 }
 
+/* SOC 2 numbers come from the pack itself. When a pack is missing the copy
+   drops the number rather than printing a stale one. */
+const soc2Tsc = getPackClaim('soc2-tsc');
+
+const soc2Summary = soc2Tsc
+  ? `${soc2Tsc.controlCount} SOC 2 Trust Services Criteria controls mapped, ${soc2Tsc.automatedEvaluatorCount} of them evaluated automatically against your live data`
+  : 'SOC 2 Trust Services Criteria controls mapped, with automatic evaluation wherever a live signal exists';
+
+const soc2Capabilities = soc2Tsc
+  ? [
+      `${soc2Tsc.controlCount} SOC 2 TSC controls mapped`,
+      `${soc2Tsc.automatedEvaluatorCount} auto-evaluated against live data`,
+    ]
+  : ['SOC 2 TSC controls mapped', 'Auto-evaluated against live data'];
+
 const features: PlatformFeature[] = [
   {
     icon: Layers,
-    title: '8 Pre-Built Framework Packs',
-    description:
-      'SOC 2 TSC, ISO 27001:2022, NIST CSF 2.0, CIS v8, HIPAA, GDPR, PCI DSS 4.0, and NDIS Practice Standards, each with mapped controls and evaluator coverage in lib/compliance/evaluators/register.ts.',
-    longDescription:
-      'Each Framework Pack ships with pre-mapped controls, evidence templates, and an evaluator implementation. 252 total controls across the 8 packs: 102 auto-evaluate against your live data, 150 require human attestation. Controls are mapped cross-framework (40+ seeded mappings) so evidence collected for ISO 27001 cascades credit to overlapping SOC 2 and HIPAA requirements.',
+    title: `${FRAMEWORK_PACK_COUNT} Pre-Built Framework Packs`,
+    description: `${CLAIM_PHRASES.frameworks} across ${FRAMEWORK_PACK_COUNT} installable packs: ${DISTINCT_FRAMEWORK_NAMES.join(', ')}. Every evaluator is registered in code, so a security reviewer can check the coverage instead of taking our word for it.`,
+    longDescription: `Each framework pack ships with pre-mapped controls, evidence templates, and an evaluator implementation. ${CLAIM_PHRASES.coverageSentence} Controls are mapped across frameworks, so evidence collected for ISO 27001 cascades credit to overlapping SOC 2 and HIPAA requirements.`,
     category: 'Compliance Core',
     highlight: 'Most popular',
     capabilities: [
@@ -531,15 +498,16 @@ const features: PlatformFeature[] = [
   {
     icon: ShieldCheck,
     title: 'SOC 2 readiness + report generator',
-    description:
-      '61 SOC 2 Trust Service Criteria controls mapped, automated evaluators for ~28 of them, milestone tracking through audit readiness, and a downloadable report.',
-    longDescription:
-      'SOC 2 Type II readiness across all 61 Trust Service Criteria (CC, A, C, PI, P) per lib/compliance/evaluators/register.ts. ~28 controls auto-evaluate against your live data (MFA coverage, audit-log freshness, policy cadence, etc.); the remaining ~33 require human attestation. Milestone tracker at /app/compliance/soc2 guides you from framework enablement through evidence collection to a readiness report. Score weights are not fixed marketing percentages. They reflect the actual count of passing vs. failing evaluators in each TSC category.',
+    description: `${soc2Summary}, milestone tracking through audit readiness, and a downloadable report.`,
+    longDescription: `SOC 2 Type II readiness across the Trust Services Criteria (CC, A, C, PI, P). ${
+      soc2Tsc
+        ? `${soc2Tsc.automatedEvaluatorCount} controls auto-evaluate against your live data (MFA coverage, audit-log freshness, policy cadence, and similar signals); the remaining ${soc2Tsc.manualAttestationCount} are tracked as human attestations.`
+        : 'Controls auto-evaluate against your live data wherever a signal exists; the rest are tracked as human attestations.'
+    } A milestone tracker in the app guides you from framework enablement through evidence collection to a readiness report. Score weights are not fixed marketing percentages. They reflect the actual count of passing and failing evaluators in each TSC category.`,
     category: 'AI & Certification',
     highlight: 'Shipping',
     capabilities: [
-      '61 SOC 2 TSC controls mapped',
-      '~28 auto-evaluated against live data',
+      ...soc2Capabilities,
       'Milestone tracker for readiness',
       'Downloadable readiness report',
     ],
@@ -548,9 +516,9 @@ const features: PlatformFeature[] = [
     icon: Network,
     title: 'Framework Cross-Mapping',
     description:
-      'Map controls across frameworks with strength scoring. 40+ pre-loaded cross-mappings seeded between ISO 27001, SOC 2, HIPAA, and NIST CSF.',
+      'Map controls across frameworks with strength scoring. 40+ cross-mappings ship pre-loaded between ISO 27001, SOC 2, HIPAA, and NIST CSF.',
     longDescription:
-      'Framework Cross-Mapping manages the relationships between controls across compliance frameworks. Each mapping carries a strength label (exact, partial, or related) so teams can judge overlap quality. 40+ cross-mappings are seeded by migration 20260403003 covering ISO 27001, SOC 2, HIPAA, and NIST CSF, and the engine walks both forward and reverse relationships so a satisfied control on one framework can cascade credit to its mapped peers on others.',
+      'Framework Cross-Mapping manages the relationships between controls across compliance frameworks. Each mapping carries a strength label (exact, partial, or related) so teams can judge overlap quality. 40+ cross-mappings ship pre-loaded across ISO 27001, SOC 2, HIPAA, and NIST CSF, and the engine walks both forward and reverse relationships so a satisfied control on one framework can cascade credit to its mapped peers on others.',
     category: 'Compliance Core',
     highlight: 'Shipping',
     capabilities: [
@@ -626,6 +594,9 @@ const features: PlatformFeature[] = [
   },
 ];
 
+/* Exported so the route metadata quotes the catalog rather than a copy of it. */
+export const FEATURE_COUNT = features.length;
+
 const categories = [
   'Compliance Core',
   'Workflow & Operations',
@@ -638,153 +609,42 @@ type CategoryName = (typeof categories)[number];
 
 interface CategoryConfig {
   description: string;
-  gradient: string;
-  accent: string;
-  accentRgb: string;
   icon: LucideIcon;
   dotColor: string;
-  bgGlow: string;
-  borderHover: string;
-  iconBg: string;
-  iconBorder: string;
-  textColor: string;
-  badgeBg: string;
-  badgeBorder: string;
-  badgeText: string;
 }
 
 const categoryMeta: Record<CategoryName, CategoryConfig> = {
   'Compliance Core': {
     description:
-      'Framework coverage, control enforcement, evidence management, and posture scoring: the operational backbone of your compliance program.',
-    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
-    accent: 'slate',
-    accentRgb: '203,213,225',
+      'Framework coverage, control enforcement, evidence management, and posture scoring: the operational backbone of your compliance programme.',
     icon: Shield,
-    dotColor: 'bg-slate-300',
-    bgGlow: 'bg-white/[0.04]',
-    borderHover: 'hover:border-white/20',
-    iconBg: 'bg-white/[0.06]',
-    iconBorder: 'border-white/10',
-    textColor: 'text-slate-200',
-    badgeBg: 'bg-white/[0.06]',
-    badgeBorder: 'border-white/10',
-    badgeText: 'text-slate-300',
+    dotColor: 'bg-zinc-300',
   },
   'Workflow & Operations': {
     description:
-      'Automation, incident management, bulk operations, and care delivery workflows that eliminate manual compliance overhead.',
-    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
-    accent: 'slate',
-    accentRgb: '148,163,184',
+      'Automation, incident management, bulk operations, and care delivery workflows that remove manual compliance overhead.',
     icon: Workflow,
-    dotColor: 'bg-slate-400',
-    bgGlow: 'bg-white/[0.04]',
-    borderHover: 'hover:border-white/20',
-    iconBg: 'bg-white/[0.06]',
-    iconBorder: 'border-white/10',
-    textColor: 'text-slate-300',
-    badgeBg: 'bg-white/[0.06]',
-    badgeBorder: 'border-white/10',
-    badgeText: 'text-slate-300',
+    dotColor: 'bg-zinc-400',
   },
   'Identity & Security': {
     description:
-      'Enterprise identity governance, data residency, immutable audit trails, and risk visualization for regulated environments.',
-    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
-    accent: 'zinc',
-    accentRgb: '161,161,170',
+      'Enterprise identity governance, data residency, immutable audit trails, and risk visualisation for regulated environments.',
     icon: Lock,
     dotColor: 'bg-zinc-400',
-    bgGlow: 'bg-white/[0.04]',
-    borderHover: 'hover:border-white/20',
-    iconBg: 'bg-white/[0.06]',
-    iconBorder: 'border-white/10',
-    textColor: 'text-zinc-300',
-    badgeBg: 'bg-white/[0.06]',
-    badgeBorder: 'border-white/10',
-    badgeText: 'text-zinc-300',
   },
   'Collaboration & UX': {
     description:
       'Real-time collaboration, intelligent search, contextual help, and keyboard-first workflows for compliance teams.',
-    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
-    accent: 'zinc',
-    accentRgb: '113,113,122',
     icon: MessageSquare,
     dotColor: 'bg-zinc-500',
-    bgGlow: 'bg-white/[0.04]',
-    borderHover: 'hover:border-white/20',
-    iconBg: 'bg-white/[0.06]',
-    iconBorder: 'border-white/10',
-    textColor: 'text-slate-300',
-    badgeBg: 'bg-white/[0.06]',
-    badgeBorder: 'border-white/10',
-    badgeText: 'text-slate-300',
   },
   'AI & Certification': {
     description:
-      'AI-powered compliance intelligence and automated self-certification engines that accelerate audit readiness.',
-    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
-    accent: 'slate',
-    accentRgb: '203,213,225',
+      'Compliance intelligence and self-certification engines that shorten the path to audit readiness.',
     icon: Bot,
-    dotColor: 'bg-slate-300',
-    bgGlow: 'bg-white/[0.04]',
-    borderHover: 'hover:border-white/20',
-    iconBg: 'bg-white/[0.06]',
-    iconBorder: 'border-white/10',
-    textColor: 'text-slate-200',
-    badgeBg: 'bg-white/[0.06]',
-    badgeBorder: 'border-white/10',
-    badgeText: 'text-slate-300',
+    dotColor: 'bg-zinc-300',
   },
 };
-
-/* ─── Comparison Data ───────────────────────────────────── */
-
-const comparisonItems = [
-  {
-    legacy: 'Spreadsheet-based control tracking',
-    formaos: 'Structured control libraries with framework mapping',
-    icon: ClipboardCheck,
-  },
-  {
-    legacy: 'Evidence stored in shared drives',
-    formaos: 'SHA-256 verified Evidence Vault with chain-of-custody',
-    icon: FileCheck,
-  },
-  {
-    legacy: 'Manual audit preparation over weeks',
-    formaos: 'Mapped audit packet export without rebuilding evidence manually',
-    icon: Clock,
-  },
-  {
-    legacy: 'No enforcement of compliance workflows',
-    formaos: 'Compliance Gates block progress until requirements met',
-    icon: Shield,
-  },
-  {
-    legacy: 'Disconnected identity management',
-    formaos: 'SAML 2.0 SSO + centralized access controls',
-    icon: Key,
-  },
-  {
-    legacy: 'Reactive risk discovery during audits',
-    formaos: 'Continuous risk scoring with real-time heatmap',
-    icon: AlertTriangle,
-  },
-  {
-    legacy: 'No clear ownership or accountability',
-    formaos: 'Named control owners with escalation chains',
-    icon: Users,
-  },
-  {
-    legacy: 'Point-in-time compliance snapshots',
-    formaos: 'Continuous compliance with daily automated checks',
-    icon: TrendingUp,
-  },
-];
 
 /* ─── Architecture Layers ───────────────────────────────── */
 
@@ -794,52 +654,56 @@ const architectureLayers = [
     detail:
       'React compliance gates with real-time validation. Controls render-blocked UI when prerequisites are unmet.',
     icon: Monitor,
-    accent: 'slate',
-    accentRgb: '203,213,225',
   },
   {
     label: 'API Guards',
     detail:
       'Server-side middleware enforcing permission checks, rate limiting, and compliance state validation on every request.',
     icon: Server,
-    accent: 'slate',
-    accentRgb: '148,163,184',
   },
   {
     label: 'Business Logic',
     detail:
       'Workflow engine processing automation rules, scoring calculations, and cross-framework evidence mapping.',
     icon: GitBranch,
-    accent: 'zinc',
-    accentRgb: '113,113,122',
   },
   {
     label: 'Database RLS',
     detail:
       'Row-Level Security policies ensure tenant isolation at the database layer. Every query is scoped by organization.',
     icon: Database,
-    accent: 'zinc',
-    accentRgb: '161,161,170',
   },
   {
     label: 'Environment Isolation',
     detail:
       'Infrastructure-level tenant isolation with dedicated encryption keys and configurable data residency.',
     icon: Key,
-    accent: 'slate',
-    accentRgb: '148,163,184',
   },
 ];
 
 /* ─── Stats ─────────────────────────────────────────────── */
 
+/* Every tile is a count the reader can check: the last two sum to the
+   evaluator total, which is why they are labelled separately from controls. */
 const platformStats = [
-  { value: '23', label: 'Platform Features', suffix: '' },
-  { value: '7', label: 'Framework Packs', suffix: '+' },
-  { value: '12', label: 'Automation Triggers', suffix: '+' },
-  { value: '5', label: 'Security Layers', suffix: '' },
-  { value: 'AU', label: 'Default Hosting Region', suffix: '' },
-  { value: 'Audit', label: 'Evidence Export', suffix: '-ready' },
+  { value: String(features.length), label: 'Platform features', suffix: '' },
+  { value: String(FRAMEWORK_PACK_COUNT), label: 'Framework packs', suffix: '' },
+  {
+    value: String(FRAMEWORK_CONTROL_COUNT),
+    label: 'Mapped controls',
+    suffix: '',
+  },
+  { value: String(EVALUATOR_COUNT), label: 'Control evaluators', suffix: '' },
+  {
+    value: String(AUTOMATED_EVALUATOR_COUNT),
+    label: 'Checked automatically',
+    suffix: '',
+  },
+  {
+    value: String(MANUAL_ATTESTATION_COUNT),
+    label: 'Tracked as attestations',
+    suffix: '',
+  },
 ];
 
 /* ─── Animated Counter ──────────────────────────────────── */
@@ -868,244 +732,12 @@ function AnimatedStat({
     >
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-1">
         {value}
-        <span className="text-slate-400">{suffix}</span>
+        <span className="text-zinc-400">{suffix}</span>
       </div>
-      <div className="text-xs sm:text-sm text-slate-400 font-medium">
+      <div className="text-xs sm:text-sm text-zinc-400 font-medium">
         {label}
       </div>
     </motion.div>
-  );
-}
-
-/* ─── Feature Card ──────────────────────────────────────── */
-
-function FeatureCard({
-  feature,
-  index,
-  categoryConfig,
-}: {
-  feature: PlatformFeature;
-  index: number;
-  categoryConfig: CategoryConfig;
-}) {
-  const [expanded, setExpanded] = useState(false);
-  const Icon = feature.icon;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{
-        duration: 0.5,
-        delay: index * 0.06,
-        ease: EASE_OUT_EXPO,
-      }}
-      className="group relative"
-    >
-      <div
-        className={`relative rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 sm:p-7
-          transition-all duration-300 cursor-pointer
-          hover:bg-white/[0.04] ${categoryConfig.borderHover}
-          hover:shadow-[0_0_40px_rgba(${categoryConfig.accentRgb},0.06)]`}
-        onClick={() => setExpanded(!expanded)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            setExpanded(!expanded);
-          }
-        }}
-      >
-        {/* Hover glow underlay */}
-        <div
-          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{
-            background: `radial-gradient(ellipse at 50% 0%, rgba(${categoryConfig.accentRgb}, 0.08), transparent 70%)`,
-          }}
-        />
-
-        {/* Header row */}
-        <div className="relative flex items-start gap-4 mb-4">
-          <div
-            className={`shrink-0 w-11 h-11 rounded-xl border ${categoryConfig.iconBorder} ${categoryConfig.iconBg}
-              flex items-center justify-center transition-all duration-300
-              group-hover:shadow-[0_0_20px_rgba(${categoryConfig.accentRgb},0.15)]`}
-          >
-            <Icon className={`w-5 h-5 ${categoryConfig.textColor}`} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1.5">
-              <h3 className="text-base font-semibold text-white leading-snug">
-                {feature.title}
-              </h3>
-              {feature.highlight && (
-                <span
-                  className={`shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full
-                    border ${categoryConfig.badgeBorder} ${categoryConfig.badgeBg} ${categoryConfig.badgeText}`}
-                >
-                  {feature.highlight}
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-slate-400 leading-relaxed">
-              {feature.description}
-            </p>
-          </div>
-          <motion.div
-            animate={{ rotate: expanded ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-            className="shrink-0 mt-1"
-          >
-            <ChevronDown className="w-4 h-4 text-slate-500" />
-          </motion.div>
-        </div>
-
-        {/* Expanded content */}
-        <AnimatePresence>
-          {expanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.35, ease: EASE_OUT_EXPO }}
-              className="overflow-hidden"
-            >
-              <div className="pt-4 border-t border-white/[0.06]">
-                <p className="text-sm text-slate-300 leading-relaxed mb-5">
-                  {feature.longDescription}
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {feature.capabilities.map((cap, ci) => (
-                    <motion.div
-                      key={cap}
-                      initial={{ opacity: 0, x: -12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{
-                        delay: ci * 0.06,
-                        duration: 0.4,
-                        ease: EASE_OUT_EXPO,
-                      }}
-                      className="flex items-start gap-2"
-                    >
-                      <CheckCircle2
-                        className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${categoryConfig.textColor}`}
-                      />
-                      <span className="text-xs text-slate-300">{cap}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── Category Navigation ───────────────────────────────── */
-
-function CategoryNav({
-  activeCategory,
-  onSelect,
-}: {
-  activeCategory: CategoryName | null;
-  onSelect: (cat: CategoryName | null) => void;
-}) {
-  return (
-    <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
-      <div className="flex flex-wrap justify-center gap-2 mb-12">
-        <button
-          onClick={() => onSelect(null)}
-          className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 border
-            ${
-              activeCategory === null
-                ? 'bg-white/[0.08] border-white/[0.15] text-white'
-                : 'bg-white/[0.02] border-white/[0.06] text-slate-400 hover:text-white hover:bg-white/[0.04]'
-            }`}
-        >
-          All Features
-          <span className="ml-1.5 text-xs text-slate-500">
-            {features.length}
-          </span>
-        </button>
-        {categories.map((cat) => {
-          const meta = categoryMeta[cat];
-          const count = features.filter((f) => f.category === cat).length;
-          return (
-            <button
-              key={cat}
-              onClick={() => onSelect(cat)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 border flex items-center gap-2
-                ${
-                  activeCategory === cat
-                    ? `bg-white/[0.08] border-white/[0.15] text-white shadow-[0_0_20px_rgba(${meta.accentRgb},0.1)]`
-                    : 'bg-white/[0.02] border-white/[0.06] text-slate-400 hover:text-white hover:bg-white/[0.04]'
-                }`}
-            >
-              <span className={`w-2 h-2 rounded-full ${meta.dotColor}`} />
-              {cat}
-              <span className="text-xs text-slate-500">{count}</span>
-            </button>
-          );
-        })}
-      </div>
-    </ScrollReveal>
-  );
-}
-
-/* ─── Category Section ──────────────────────────────────── */
-
-function CategorySection({
-  category,
-  categoryFeatures,
-}: {
-  category: CategoryName;
-  categoryFeatures: PlatformFeature[];
-}) {
-  const config = categoryMeta[category];
-  const CategoryIcon = config.icon;
-
-  return (
-    <section className="mb-20">
-      <ScrollReveal variant="fadeUp" range={[0, 0.3]}>
-        <div className="flex items-center gap-4 mb-3">
-          <div
-            className={`w-10 h-10 rounded-xl border ${config.iconBorder} ${config.iconBg}
-              flex items-center justify-center`}
-          >
-            <CategoryIcon className={`w-5 h-5 ${config.textColor}`} />
-          </div>
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white">
-              {category}
-            </h2>
-          </div>
-        </div>
-        <p className="text-sm text-slate-400 max-w-2xl mb-8 leading-relaxed">
-          {config.description}
-        </p>
-        <div
-          className="h-px mb-8"
-          style={{
-            background: `linear-gradient(to right, rgba(${config.accentRgb}, 0.3), transparent 60%)`,
-          }}
-        />
-      </ScrollReveal>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        {categoryFeatures.map((feature, i) => (
-          <FeatureCard
-            key={feature.title}
-            feature={feature}
-            index={i}
-            categoryConfig={config}
-          />
-        ))}
-      </div>
-    </section>
   );
 }
 
@@ -1117,9 +749,8 @@ function ArchitectureSection() {
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <CenteredHeader
-            label="Platform Architecture"
             title="Five layers of"
-            emphasis="defense in depth"
+            emphasis="defence in depth"
             description="Every request traverses five independent security and compliance verification layers. No single point of failure. No bypass path."
           />
 
@@ -1128,6 +759,7 @@ function ArchitectureSection() {
             stagger={0.08}
             className="relative"
           >
+            {/* The rule carries the order; the layers are not numbered. */}
             <div className="absolute left-8 sm:left-12 top-0 bottom-0 w-px bg-gradient-to-b from-white/25 via-white/10 to-white/25" />
 
             <div className="space-y-4">
@@ -1135,14 +767,7 @@ function ArchitectureSection() {
                 const LayerIcon = layer.icon;
                 return (
                   <div key={layer.label} className="relative pl-20 sm:pl-28">
-                    <div
-                      className="absolute left-6 sm:left-10 top-6 w-4 h-4 rounded-full border-2 z-10"
-                      style={{
-                        borderColor: `rgba(${layer.accentRgb}, 0.6)`,
-                        backgroundColor: `rgba(${layer.accentRgb}, 0.15)`,
-                        boxShadow: `0 0 12px rgba(${layer.accentRgb}, 0.2)`,
-                      }}
-                    />
+                    <div className="absolute left-6 sm:left-10 top-6 z-10 h-4 w-4 rounded-full border-2 border-white/40 bg-white/10" />
 
                     <div
                       className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6
@@ -1150,116 +775,18 @@ function ArchitectureSection() {
                       style={{ marginLeft: `${i * 12}px` }}
                     >
                       <div className="flex items-start gap-4">
-                        <div
-                          className="shrink-0 w-10 h-10 rounded-xl border flex items-center justify-center"
-                          style={{
-                            borderColor: `rgba(${layer.accentRgb}, 0.2)`,
-                            backgroundColor: `rgba(${layer.accentRgb}, 0.08)`,
-                          }}
-                        >
-                          <LayerIcon
-                            className="w-5 h-5"
-                            style={{
-                              color: `rgba(${layer.accentRgb}, 1)`,
-                            }}
-                          />
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06]">
+                          <LayerIcon className="h-5 w-5 text-zinc-300" />
                         </div>
                         <div>
-                          <div className="flex items-center gap-3 mb-1.5">
-                            <span
-                              className="text-xs font-bold uppercase tracking-wider"
-                              style={{
-                                color: `rgba(${layer.accentRgb}, 0.7)`,
-                              }}
-                            >
-                              Layer {i + 1}
-                            </span>
-                            <h3 className="text-base font-semibold text-white">
-                              {layer.label}
-                            </h3>
-                          </div>
-                          <p className="text-sm text-slate-400 leading-relaxed">
+                          <h3 className="mb-1.5 text-base font-semibold text-white">
+                            {layer.label}
+                          </h3>
+                          <p className="text-sm text-zinc-400 leading-relaxed">
                             {layer.detail}
                           </p>
                         </div>
                       </div>
-
-                      <div
-                        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                        style={{
-                          background: `radial-gradient(ellipse at 0% 50%, rgba(${layer.accentRgb}, 0.06), transparent 60%)`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </SectionChoreography>
-        </div>
-      </section>
-    </DeferredSection>
-  );
-}
-
-/* ─── Comparison Section ────────────────────────────────── */
-
-function ComparisonSection() {
-  return (
-    <DeferredSection minHeight={420}>
-      <section className="mk-section relative">
-        <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <EditorialHeader
-            label="Built Different"
-            title="Legacy compliance vs"
-            emphasis="FormaOS"
-            description="See the structural difference between managing compliance in spreadsheets and operating it as infrastructure."
-            className="mb-12"
-          />
-
-          <div className="hidden sm:grid grid-cols-[1fr,auto,1fr] gap-4 mb-6 px-2">
-            <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider text-center">
-              Legacy Approach
-            </div>
-            <div className="w-px" />
-            <div className="text-sm font-semibold text-slate-300 uppercase tracking-wider text-center">
-              FormaOS
-            </div>
-          </div>
-
-          <SectionChoreography pattern="cascade" stagger={0.06}>
-            <div className="space-y-3">
-              {comparisonItems.map((item, i) => {
-                const ItemIcon = item.icon;
-                return (
-                  <div
-                    key={i}
-                    className="group grid grid-cols-1 sm:grid-cols-[1fr,auto,1fr] gap-3 sm:gap-4 items-center
-                      rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 sm:p-5
-                      hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="shrink-0 w-8 h-8 rounded-lg bg-red-500/10 border border-red-400/20 flex items-center justify-center">
-                        <AlertTriangle className="w-4 h-4 text-red-400/70" />
-                      </div>
-                      <span className="text-sm text-slate-400 line-through decoration-slate-600">
-                        {item.legacy}
-                      </span>
-                    </div>
-
-                    <div className="hidden sm:flex items-center justify-center">
-                      <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center">
-                        <ArrowRight className="w-4 h-4 text-slate-300" />
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="shrink-0 w-8 h-8 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center">
-                        <ItemIcon className="w-4 h-4 text-slate-300" />
-                      </div>
-                      <span className="text-sm text-white font-medium">
-                        {item.formaos}
-                      </span>
                     </div>
                   </div>
                 );
@@ -1288,9 +815,9 @@ function StatsSection() {
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
                 The platform at a glance
               </h2>
-              <p className="text-sm text-slate-400 max-w-lg mx-auto">
-                Numbers that reflect the depth and breadth of FormaOS as a
-                compliance operating system.
+              <p className="text-sm text-zinc-400 max-w-lg mx-auto">
+                Every number here is generated from the shipping code, so it
+                stays true as the packs change.
               </p>
             </ScrollReveal>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -1329,13 +856,13 @@ function FeatureCatalogIndex() {
           <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
             <h2 className="text-base font-semibold text-white">
               Feature catalog{' '}
-              <span className="text-slate-400">
+              <span className="text-zinc-400">
                 · {features.length} features across {categories.length}{' '}
                 categories
               </span>
             </h2>
-            <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              Skim · click a category to expand
+            <span className="text-xs text-zinc-500">
+              Click a category to expand
             </span>
           </div>
           <div className="space-y-2.5">
@@ -1347,20 +874,20 @@ function FeatureCatalogIndex() {
                   key={cat}
                   className="group rounded-xl border border-white/[0.06] bg-white/[0.015] open:bg-white/[0.025]"
                 >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm text-slate-300 transition hover:text-white">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm text-zinc-300 transition hover:text-white">
                     <span className="flex items-center gap-2.5">
                       <span
                         className={`h-1.5 w-1.5 rounded-full ${meta.dotColor}`}
                         aria-hidden="true"
                       />
                       <span className="font-medium">{cat}</span>
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-zinc-500">
                         · {items.length} features
                       </span>
                     </span>
                     <span
                       aria-hidden="true"
-                      className="text-slate-500 transition group-open:rotate-90"
+                      className="text-zinc-500 transition group-open:rotate-90"
                     >
                       ›
                     </span>
@@ -1369,7 +896,7 @@ function FeatureCatalogIndex() {
                     {items.map((f) => (
                       <li
                         key={f.title}
-                        className="text-[13px] leading-snug text-slate-400"
+                        className="text-[13px] leading-snug text-zinc-400"
                       >
                         {f.title}
                       </li>
@@ -1387,59 +914,36 @@ function FeatureCatalogIndex() {
 
 /* ─── Framework Coverage Grid ───────────────────────────── */
 
-const frameworks = [
-  {
-    name: 'ISO 27001',
-    controls: '114',
-    status: 'Full Coverage',
-    description:
-      'Information security management system with Annex A controls.',
-    badge: 'Popular',
-  },
-  {
-    name: 'SOC 2',
-    controls: '64',
-    status: 'Full Coverage',
-    description:
-      'Trust Services Criteria across security, availability, and processing integrity.',
-    badge: 'Popular',
-  },
-  {
-    name: 'GDPR',
-    controls: '45',
-    status: 'Full Coverage',
-    description:
-      'EU General Data Protection Regulation compliance with Article mapping.',
-  },
-  {
-    name: 'HIPAA',
-    controls: '72',
-    status: 'Full Coverage',
-    description:
-      'Healthcare data protection with Administrative, Physical, and Technical safeguards.',
-  },
-  {
-    name: 'PCI-DSS',
-    controls: '78',
-    status: 'Full Coverage',
-    description:
-      'Payment card industry data security standard for cardholder data protection.',
-  },
-  {
-    name: 'NIST CSF',
-    controls: '108',
-    status: 'Full Coverage',
-    description:
-      'Cybersecurity framework covering Identify, Protect, Detect, Respond, Recover.',
-  },
-  {
-    name: 'CIS Controls',
-    controls: '153',
-    status: 'Full Coverage',
-    description:
-      'Center for Internet Security prioritized security best practices.',
-  },
-];
+/* Blurbs only. Names and counts come from the packs themselves, so this grid
+   can never disagree with the total quoted above it. */
+const packBlurbs: Record<string, string> = {
+  'iso27001-2022':
+    'Information security management with the full Annex A control set.',
+  'soc2-tsc':
+    'Trust Services Criteria across security, availability, confidentiality, processing integrity, and privacy.',
+  soc2: 'A shorter SOC 2 starting point for teams beginning readiness work.',
+  'financial-services-au':
+    'Australian financial services obligations, including ASIC and AUSTRAC duties.',
+  'cis-controls':
+    'Prioritised security practices from the Center for Internet Security.',
+  'nist-csf':
+    'Govern, identify, protect, detect, respond, and recover, mapped control by control.',
+  'mental-health-au':
+    'National Standards for Mental Health Services, for Australian providers.',
+  'pci-dss': 'Cardholder data protection for organisations that take payments.',
+  gdpr: 'EU personal data obligations with article-level mapping.',
+  hipaa:
+    'Administrative, physical, and technical safeguards under the Security Rule.',
+  ndis: 'NDIS Practice Standards core module, for registered Australian providers.',
+};
+
+const frameworks = FRAMEWORK_PACKS.map((pack) => ({
+  slug: pack.slug,
+  name: getPackShortName(pack.slug),
+  controls: pack.controlCount,
+  automated: pack.automatedEvaluatorCount,
+  description: packBlurbs[pack.slug] ?? pack.name,
+}));
 
 function FrameworkCoverageSection() {
   return (
@@ -1447,10 +951,9 @@ function FrameworkCoverageSection() {
       <section className="mk-section relative">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <BarHeader
-            label="Framework Packs"
             title="Pre-built compliance"
             emphasis="framework libraries"
-            description="Each framework ships with mapped controls, evidence templates, and cross-framework overlap detection. Activate in one click."
+            description={`${CLAIM_PHRASES.coverageSentence} Each pack ships with mapped controls, evidence templates, and cross-framework overlap detection.`}
           />
 
           <SectionChoreography
@@ -1460,7 +963,7 @@ function FrameworkCoverageSection() {
           >
             {frameworks.map((fw) => (
               <div
-                key={fw.name}
+                key={fw.slug}
                 className="group grid grid-cols-1 sm:grid-cols-[1fr,auto,auto] gap-3 sm:gap-6 items-center
                   rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6
                   hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300
@@ -1468,437 +971,31 @@ function FrameworkCoverageSection() {
               >
                 <div className="flex items-center gap-4">
                   <div className="shrink-0 w-10 h-10 rounded-xl border border-white/10 bg-white/[0.06] flex items-center justify-center">
-                    <Shield className="w-5 h-5 text-slate-200" />
+                    <Shield className="w-5 h-5 text-zinc-200" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base font-semibold text-white">
-                        {fw.name}
-                      </h3>
-                      {fw.badge && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-white/10 bg-white/[0.06] text-slate-300">
-                          {fw.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-slate-400 mt-0.5">
+                    <h3 className="text-base font-semibold text-white">
+                      {fw.name}
+                    </h3>
+                    <p className="text-sm text-zinc-400 mt-0.5">
                       {fw.description}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-slate-500">Controls:</span>
+                <div className="flex items-baseline gap-2 text-sm">
+                  <span className="text-zinc-500">Controls</span>
                   <span className="text-white font-semibold">
                     {fw.controls}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-slate-300" />
-                  <span className="text-sm text-slate-300 font-medium">
-                    {fw.status}
+                <div className="flex items-baseline gap-2 text-sm">
+                  <span className="text-zinc-500">Checked automatically</span>
+                  <span className="text-white font-semibold">
+                    {fw.automated}
                   </span>
                 </div>
               </div>
             ))}
-          </SectionChoreography>
-        </div>
-      </section>
-    </DeferredSection>
-  );
-}
-
-/* ─── Capability Deep-Dive Tabs ─────────────────────────── */
-
-const capabilityTabs = [
-  {
-    id: 'evidence',
-    label: 'Evidence Management',
-    icon: FileCheck,
-    accent: 'slate',
-    accentRgb: '203,213,225',
-    heading: 'Tamper-evident evidence at every step',
-    description:
-      'From upload to audit export, every piece of compliance evidence is versioned, hashed, and tracked with full chain-of-custody.',
-    details: [
-      {
-        label: 'Upload & Hash',
-        text: 'SHA-256 checksum generated at upload. Every subsequent access is verified against the original hash.',
-      },
-      {
-        label: 'Version Control',
-        text: 'Full version history with diff comparison. See exactly what changed between evidence revisions.',
-      },
-      {
-        label: 'Chain of Custody',
-        text: 'Immutable record of who uploaded, reviewed, approved, and exported each evidence artifact.',
-      },
-      {
-        label: 'Audit Export',
-        text: 'One-click export of framework-mapped evidence bundles in auditor-ready format with verification metadata.',
-      },
-      {
-        label: 'Expiry Tracking',
-        text: 'Automated alerts when evidence approaches expiration dates. Schedule re-collection workflows automatically.',
-      },
-      {
-        label: 'Bulk Operations',
-        text: 'Upload, tag, assign, and organize evidence in bulk across multiple frameworks and controls.',
-      },
-    ],
-  },
-  {
-    id: 'automation',
-    label: 'Automation Engine',
-    icon: Workflow,
-    accent: 'slate',
-    accentRgb: '148,163,184',
-    heading: 'Compliance workflows that run themselves',
-    description:
-      'Configure event-driven automation rules that create tasks, send notifications, and escalate issues without manual intervention.',
-    details: [
-      {
-        label: 'Event Triggers',
-        text: '12+ trigger types: control status change, evidence expiry, score threshold, credential renewal, and more.',
-      },
-      {
-        label: 'Conditional Logic',
-        text: 'Branch automation paths based on entity state, assignee, framework, severity, and custom attributes.',
-      },
-      {
-        label: 'Action Library',
-        text: 'Task creation, stakeholder notifications, Slack/Teams alerts, email digests, and escalation chains.',
-      },
-      {
-        label: 'Scheduling',
-        text: 'Cron-based scheduling for periodic evidence collection, compliance checks, and report generation.',
-      },
-      {
-        label: 'Audit Trail',
-        text: 'Every automation execution is logged with trigger context, actions taken, and outcomes recorded.',
-      },
-      {
-        label: 'Templates',
-        text: 'Pre-built automation templates for common compliance workflows. Clone and customize in minutes.',
-      },
-    ],
-  },
-  {
-    id: 'identity',
-    label: 'Identity & Access',
-    icon: Fingerprint,
-    accent: 'zinc',
-    accentRgb: '161,161,170',
-    heading: 'Enterprise identity governance built in',
-    description:
-      'SAML 2.0 SSO, role-based access control, and deployment planning for organizations that require centralized identity management.',
-    details: [
-      {
-        label: 'SAML 2.0 SSO',
-        text: 'Single sign-on with Okta, Azure AD, Google Workspace, and any SAML 2.0-compliant identity provider.',
-      },
-      {
-        label: 'Identity Lifecycle',
-        text: 'Provisioning, role-change, and deprovisioning requirements are reviewed during deployment so access controls match your identity model.',
-      },
-      {
-        label: 'JIT Provisioning',
-        text: 'Just-In-Time user creation on first login. Users get correct roles and permissions automatically.',
-      },
-      {
-        label: 'RBAC',
-        text: 'Granular role-based access control with per-framework, per-entity permissions and custom role definitions.',
-      },
-      {
-        label: 'Session Management',
-        text: 'Configurable session timeouts, concurrent session limits, and forced re-authentication policies.',
-      },
-      {
-        label: 'Access Reviews',
-        text: 'Periodic access certification campaigns to verify users retain only the permissions they need.',
-      },
-    ],
-  },
-  {
-    id: 'scoring',
-    label: 'Scoring & Analytics',
-    icon: TrendingUp,
-    accent: 'zinc',
-    accentRgb: '113,113,122',
-    heading: 'Continuous compliance intelligence',
-    description:
-      'Real-time posture scoring, trend analysis, and risk visualization that gives leadership actionable compliance insights.',
-    details: [
-      {
-        label: 'Posture Score',
-        text: 'Real-time aggregate compliance score calculated across all active frameworks with weighted scoring.',
-      },
-      {
-        label: 'Trend Analysis',
-        text: 'Historical score tracking with improvement trajectories and regression detection over configurable periods.',
-      },
-      {
-        label: 'Risk Heatmap',
-        text: 'Visual overlay showing risk concentrations by framework, category, and control with drill-down capability.',
-      },
-      {
-        label: 'Board Reports',
-        text: 'One-click compliance reports formatted for board presentation with executive summary and trend charts.',
-      },
-      {
-        label: 'Threshold Alerts',
-        text: 'Automated notifications when scores drop below configurable thresholds by framework or category.',
-      },
-      {
-        label: 'Peer Benchmarks',
-        text: 'Anonymous benchmarking against organizations of similar size and industry for compliance maturity comparison.',
-      },
-    ],
-  },
-];
-
-function CapabilityDeepDive() {
-  const [activeTab, setActiveTab] = useState(0);
-  const tab = capabilityTabs[activeTab];
-  const TabIcon = tab.icon;
-
-  return (
-    <DeferredSection minHeight={420}>
-      <section className="mk-section relative">
-        <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <EditorialHeader
-            label="Deep Dive"
-            title="Explore core"
-            emphasis="capabilities"
-            description="Four pillars of the FormaOS platform, each engineered for depth, auditability, and operational control."
-            className="mb-12"
-          />
-
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {capabilityTabs.map((t, i) => {
-              const TIcon = t.icon;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => setActiveTab(i)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 border
-                    ${
-                      activeTab === i
-                        ? `bg-white/[0.08] border-white/[0.15] text-white shadow-[0_0_24px_rgba(${t.accentRgb},0.12)]`
-                        : 'bg-white/[0.02] border-white/[0.06] text-slate-400 hover:text-white hover:bg-white/[0.04]'
-                    }`}
-                >
-                  <TIcon className="w-4 h-4" />
-                  {t.label}
-                </button>
-              );
-            })}
-          </div>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={tab.id}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
-              className="rounded-3xl border border-white/[0.06] bg-white/[0.02] p-6 sm:p-8 lg:p-10"
-            >
-              <div className="flex items-start gap-4 mb-8">
-                <div
-                  className="shrink-0 w-12 h-12 rounded-xl border flex items-center justify-center"
-                  style={{
-                    borderColor: `rgba(${tab.accentRgb}, 0.2)`,
-                    backgroundColor: `rgba(${tab.accentRgb}, 0.08)`,
-                  }}
-                >
-                  <TabIcon
-                    className="w-6 h-6"
-                    style={{ color: `rgba(${tab.accentRgb}, 1)` }}
-                  />
-                </div>
-                <div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
-                    {tab.heading}
-                  </h3>
-                  <p className="text-sm text-slate-400 leading-relaxed max-w-xl">
-                    {tab.description}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {tab.details.map((detail, di) => (
-                  <motion.div
-                    key={detail.label}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: di * 0.06,
-                      duration: 0.4,
-                      ease: EASE_OUT_EXPO,
-                    }}
-                    className="group rounded-xl border border-white/[0.06] bg-white/[0.02] p-4
-                      hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle2
-                        className="w-3.5 h-3.5"
-                        style={{
-                          color: `rgba(${tab.accentRgb}, 0.8)`,
-                        }}
-                      />
-                      <h4 className="text-sm font-semibold text-white">
-                        {detail.label}
-                      </h4>
-                    </div>
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      {detail.text}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </section>
-    </DeferredSection>
-  );
-}
-
-/* ─── Platform Workflow Visual ───────────────────────────── */
-
-const workflowSteps = [
-  {
-    step: '01',
-    title: 'Activate Frameworks',
-    description:
-      'Select your applicable compliance frameworks. Controls, evidence requirements, and scoring weights are pre-configured.',
-    accentRgb: '203,213,225',
-    icon: Layers,
-  },
-  {
-    step: '02',
-    title: 'Assign Control Owners',
-    description:
-      'Every control gets a named owner with clear responsibility, review cadence, and escalation path.',
-    accentRgb: '113,113,122',
-    icon: Users,
-  },
-  {
-    step: '03',
-    title: 'Collect & Verify Evidence',
-    description:
-      'Upload evidence with SHA-256 verification, automated expiry tracking, and cross-framework mapping.',
-    accentRgb: '113,113,122',
-    icon: FileCheck,
-  },
-  {
-    step: '04',
-    title: 'Automate Workflows',
-    description:
-      'Configure triggers for task creation, notifications, and escalations. Compliance runs on autopilot.',
-    accentRgb: '161,161,170',
-    icon: Workflow,
-  },
-  {
-    step: '05',
-    title: 'Monitor & Score',
-    description:
-      'Continuous posture scoring with daily checks, drift detection, and real-time risk heatmap visualization.',
-    accentRgb: '148,163,184',
-    icon: BarChart3,
-  },
-  {
-    step: '06',
-    title: 'Export Audit Packets',
-    description:
-      'Export framework-mapped evidence bundles with verification metadata and reviewer-ready context.',
-    accentRgb: '203,213,225',
-    icon: ExternalLink,
-  },
-];
-
-function PlatformWorkflowSection() {
-  return (
-    <DeferredSection minHeight={500}>
-      <section className="mk-section relative">
-        <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <BarHeader
-            label="How It Works"
-            title="From activation to"
-            emphasis="audit-ready"
-            description="Six steps to transform compliance from manual overhead into a continuously operating system with verifiable evidence."
-          />
-
-          <SectionChoreography pattern="cascade" stagger={0.08}>
-            <div className="relative">
-              <div className="absolute left-[2.75rem] sm:left-1/2 sm:-translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-white/25 via-white/10 to-white/25" />
-
-              <div className="space-y-6">
-                {workflowSteps.map((step, i) => {
-                  const StepIcon = step.icon;
-                  const isEven = i % 2 === 0;
-                  return (
-                    <div
-                      key={step.step}
-                      className={`relative flex items-start gap-6 ${
-                        isEven ? 'sm:flex-row' : 'sm:flex-row-reverse'
-                      }`}
-                    >
-                      <div
-                        className="absolute left-[2.75rem] sm:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-2 z-10"
-                        style={{
-                          borderColor: `rgba(${step.accentRgb}, 0.6)`,
-                          backgroundColor: `rgba(${step.accentRgb}, 0.15)`,
-                          boxShadow: `0 0 14px rgba(${step.accentRgb}, 0.2)`,
-                        }}
-                      />
-
-                      <div
-                        className={`ml-20 sm:ml-0 sm:w-[calc(50%-2rem)] ${
-                          isEven ? '' : 'sm:ml-auto'
-                        }`}
-                      >
-                        <div className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6 hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300">
-                          <div className="flex items-start gap-3 mb-3">
-                            <div
-                              className="shrink-0 w-10 h-10 rounded-xl border flex items-center justify-center"
-                              style={{
-                                borderColor: `rgba(${step.accentRgb}, 0.2)`,
-                                backgroundColor: `rgba(${step.accentRgb}, 0.08)`,
-                              }}
-                            >
-                              <StepIcon
-                                className="w-5 h-5"
-                                style={{
-                                  color: `rgba(${step.accentRgb}, 1)`,
-                                }}
-                              />
-                            </div>
-                            <div>
-                              <span
-                                className="text-xs font-bold uppercase tracking-wider"
-                                style={{
-                                  color: `rgba(${step.accentRgb}, 0.6)`,
-                                }}
-                              >
-                                Step {step.step}
-                              </span>
-                              <h3 className="text-base font-semibold text-white mt-0.5">
-                                {step.title}
-                              </h3>
-                            </div>
-                          </div>
-                          <p className="text-sm text-slate-400 leading-relaxed">
-                            {step.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
           </SectionChoreography>
         </div>
       </section>
@@ -1919,19 +1016,14 @@ function EnterpriseCTA() {
           scrim="center"
         />
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
-          <div className="relative rounded-3xl border border-white/[0.06] bg-slate-950/60 overflow-hidden">
+          <div className="relative rounded-3xl border border-white/[0.06] bg-black/50 overflow-hidden">
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Compliance Plan
-                </p>
                 <h2 className="mb-4 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   Ready to operate compliance{' '}
-                  <span className="text-slate-400">
-                    as infrastructure?
-                  </span>
+                  <span className="text-zinc-400">as infrastructure?</span>
                 </h2>
-                <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
+                <p className="text-base sm:text-lg text-zinc-400 max-w-xl mx-auto mb-10">
                   See how FormaOS replaces spreadsheet-based compliance with a
                   structured operating system built for regulated teams.
                 </p>
@@ -1950,19 +1042,30 @@ function EnterpriseCTA() {
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                   <Link
-                    href="/enterprise"
+                    href={demoHref('features_final')}
                     className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
                       border border-white/[0.12] bg-white/[0.04]
                       text-white font-semibold text-sm
                       hover:bg-white/[0.08] hover:border-white/[0.2]
                       transition-all duration-300"
                   >
-                    Enterprise Options
+                    {PUBLIC_CTA_LABELS.bookDemo}
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-slate-500">
+                <p className="mt-6 text-sm text-zinc-400">
+                  Buying for a larger organisation?{' '}
+                  <Link
+                    href="/enterprise"
+                    className="font-semibold text-white underline-offset-4 hover:underline"
+                  >
+                    See the enterprise evaluation path
+                  </Link>
+                  .
+                </p>
+
+                <div className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-zinc-500">
                   {[
                     'SOC 2-aligned workflows',
                     'Privacy review support',
@@ -1970,7 +1073,7 @@ function EnterpriseCTA() {
                     'Assessment-led onboarding',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-slate-400/60" />
+                      <CheckCircle2 className="w-3 h-3 text-zinc-400/60" />
                       <span>{signal}</span>
                     </div>
                   ))}
@@ -2007,34 +1110,10 @@ function FeaturesHero() {
         opacity={0.85}
         scrim="center"
       />
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
-            backgroundSize: '72px 72px',
-          }}
-        />
-      </div>
-
       <motion.div
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
         className="relative z-10 mx-auto max-w-5xl px-6 lg:px-8 py-20 sm:py-40 text-center"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="mb-8 flex items-center justify-center gap-4"
-        >
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
-            Platform Features
-          </span>
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-        </motion.div>
-
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -2043,20 +1122,18 @@ function FeaturesHero() {
         >
           Compliance infrastructure
           <br />
-          <span className="text-slate-400">
-            engineered for accountability
-          </span>
+          <span className="mk-accent">engineered</span> for accountability
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO }}
-          className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+          className="text-base sm:text-lg lg:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          25 features across compliance, workflow, identity, collaboration,
-          and AI, built for regulated teams that need provable control over
-          every obligation.
+          {features.length} features across compliance, workflow, identity,
+          collaboration, and AI, built for regulated teams that need provable
+          control over every obligation.
         </motion.p>
 
         <motion.div
@@ -2078,14 +1155,14 @@ function FeaturesHero() {
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
-            href={salesHref('features_secondary_final')}
+            href={demoHref('features_hero')}
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
               border border-white/[0.12] bg-white/[0.04]
               text-white font-semibold text-sm
               hover:bg-white/[0.08] hover:border-white/[0.2]
               transition-all duration-300"
           >
-            {PUBLIC_CTA_LABELS.talkToSales}
+            {PUBLIC_CTA_LABELS.bookDemo}
             <ChevronRight className="w-4 h-4" />
           </Link>
         </motion.div>
@@ -2102,11 +1179,11 @@ function FeaturesHero() {
             return (
               <div
                 key={cat}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] text-xs text-slate-400"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] text-xs text-zinc-400"
               >
                 <span className={`w-1.5 h-1.5 rounded-full ${meta.dotColor}`} />
                 {cat}
-                <span className="text-slate-600">{count}</span>
+                <span className="text-zinc-600">{count}</span>
               </div>
             );
           })}
@@ -2124,6 +1201,87 @@ function FeaturesHero() {
    Reframes the 25 features as one connected operating loop rather than
    25 isolated cards. Each subsystem node is selectable; the panel shows
    that subsystem's real features + its place in the loop. */
+
+/* The depth that used to sit in a separate four-tab deep-dive section. It is
+   the same claim set, attached to the subsystem it belongs to, so the map is
+   the one place the platform is explained. Subsystems without a depth list
+   simply do not render one. */
+const SUBSYSTEM_DEPTH: Partial<
+  Record<CategoryName, { label: string; text: string }[]>
+> = {
+  'Compliance Core': [
+    {
+      label: 'Upload and hash',
+      text: 'SHA-256 checksum generated at upload. Every later access is verified against the original hash.',
+    },
+    {
+      label: 'Chain of custody',
+      text: 'Immutable record of who uploaded, reviewed, approved, and exported each evidence artifact.',
+    },
+    {
+      label: 'Audit export',
+      text: 'Framework-mapped evidence bundles export in auditor-ready format with verification metadata.',
+    },
+    {
+      label: 'Expiry tracking',
+      text: 'Alerts fire as evidence approaches its expiry date, and re-collection work is scheduled automatically.',
+    },
+  ],
+  'Workflow & Operations': [
+    {
+      label: 'Event triggers',
+      text: 'Control status change, evidence expiry, score threshold and credential renewal all start work.',
+    },
+    {
+      label: 'Conditional logic',
+      text: 'Automation paths branch on entity state, assignee, framework, severity, and custom attributes.',
+    },
+    {
+      label: 'Scheduling',
+      text: 'Cron-based scheduling for periodic evidence collection, compliance checks, and reporting.',
+    },
+    {
+      label: 'Execution trail',
+      text: 'Every automation run is logged with its trigger context, the actions taken, and the outcome.',
+    },
+  ],
+  'Identity & Security': [
+    {
+      label: 'SAML 2.0 SSO',
+      text: 'Single sign-on with Okta, Azure AD, Google Workspace, and any SAML 2.0-compliant provider.',
+    },
+    {
+      label: 'Just-in-time provisioning',
+      text: 'Users are created on first login with the roles and permissions their group already implies.',
+    },
+    {
+      label: 'Role-based access',
+      text: 'Per-framework, per-entity permissions with custom role definitions.',
+    },
+    {
+      label: 'Session policy',
+      text: 'Configurable timeouts, concurrent session limits, and forced re-authentication.',
+    },
+  ],
+  'AI & Certification': [
+    {
+      label: 'Posture score',
+      text: 'Aggregate compliance score calculated across every active framework with weighted scoring.',
+    },
+    {
+      label: 'Trend analysis',
+      text: 'Historical score tracking with improvement trajectories and regression detection.',
+    },
+    {
+      label: 'Threshold alerts',
+      text: 'Notifications when a score drops below a configured threshold, by framework or category.',
+    },
+    {
+      label: 'Board reporting',
+      text: 'Compliance reports formatted for board presentation, generated from live data.',
+    },
+  ],
+};
 
 const SYSTEM_FLOW: Record<CategoryName, string> = {
   'Compliance Core': 'The spine: frameworks, controls, evidence, and posture.',
@@ -2143,6 +1301,7 @@ function FeatureSystemMap() {
   }));
   const sel = subsystems[active];
   const SelIcon = sel.meta.icon;
+  const depth = SUBSYSTEM_DEPTH[sel.name];
   const prevIdx = (active + subsystems.length - 1) % subsystems.length;
   const nextIdx = (active + 1) % subsystems.length;
 
@@ -2153,17 +1312,10 @@ function FeatureSystemMap() {
 
       <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-8">
         <div className="mx-auto mb-12 max-w-2xl text-center">
-          <div className="mb-5 flex items-center justify-center gap-4">
-            <span className="h-px w-10 bg-white/20" />
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              One connected system
-            </span>
-            <span className="h-px w-10 bg-white/20" />
-          </div>
           <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
             {features.length} features, one operating loop.
           </h2>
-          <p className="mt-4 text-base leading-7 text-slate-400">
+          <p className="mt-4 text-base leading-7 text-zinc-400">
             Not {features.length} disconnected tools. Each subsystem feeds the
             next: obligations become controlled work, gated by identity,
             surfaced to your team, and proven to auditors. Select a node to
@@ -2198,21 +1350,21 @@ function FeatureSystemMap() {
                       on ? 'border-white/25 bg-white/[0.08]' : 'border-white/[0.08] bg-white/[0.04]'
                     }`}
                   >
-                    <Icon className={`h-5 w-5 ${on ? 'text-white' : 'text-slate-400'}`} />
+                    <Icon className={`h-5 w-5 ${on ? 'text-white' : 'text-zinc-400'}`} />
                   </span>
                   <span className="min-w-0">
                     <span
                       className={`block text-[13px] font-semibold leading-tight ${
-                        on ? 'text-white' : 'text-slate-300'
+                        on ? 'text-white' : 'text-zinc-300'
                       }`}
                     >
                       {s.name}
                     </span>
-                    <span className="text-[11px] text-slate-500">{s.items.length} features</span>
+                    <span className="text-[11px] text-zinc-500">{s.items.length} features</span>
                   </span>
                 </button>
                 {i < subsystems.length - 1 ? (
-                  <span aria-hidden="true" className="hidden shrink-0 items-center px-1.5 text-slate-600 sm:flex">
+                  <span aria-hidden="true" className="hidden shrink-0 items-center px-1.5 text-zinc-600 sm:flex">
                     <ArrowRight className="h-4 w-4" />
                   </span>
                 ) : null}
@@ -2220,8 +1372,9 @@ function FeatureSystemMap() {
             );
           })}
         </div>
-        <p className="mt-3 text-center text-[11px] uppercase tracking-[0.16em] text-slate-600">
-          ↻ the loop closes, AI &amp; Certification feeds back into Compliance Core
+        <p className="mt-3 text-center text-xs text-zinc-500">
+          The loop closes: AI &amp; Certification feeds back into Compliance
+          Core.
         </p>
 
         {/* Detail panel */}
@@ -2235,51 +1388,73 @@ function FeatureSystemMap() {
           <div>
             <div className="flex items-center gap-3">
               <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/[0.05]">
-                <SelIcon className="h-5 w-5 text-slate-200" />
+                <SelIcon className="h-5 w-5 text-zinc-200" />
               </span>
               <div>
                 <h3 className="font-display text-xl font-bold tracking-tight text-white">
                   {sel.name}
                 </h3>
-                <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">
+                <p className="text-xs text-zinc-400">
                   {sel.items.length} features
                 </p>
               </div>
             </div>
             <p className="mt-4 text-[15px] leading-7 text-white/90">{sel.role}</p>
-            <p className="mt-3 text-sm leading-6 text-slate-400">{sel.meta.description}</p>
+            <p className="mt-3 text-sm leading-6 text-zinc-400">{sel.meta.description}</p>
             <div className="mt-5 flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={() => setActive(prevIdx)}
-                className="rounded-full border border-white/[0.1] bg-white/[0.02] px-3 py-1.5 text-[11px] text-slate-400 transition hover:border-white/[0.2] hover:text-white"
+                className="rounded-full border border-white/[0.1] bg-white/[0.02] px-3 py-1.5 text-[11px] text-zinc-400 transition hover:border-white/[0.2] hover:text-white"
               >
                 ← receives from {subsystems[prevIdx].name}
               </button>
               <button
                 type="button"
                 onClick={() => setActive(nextIdx)}
-                className="rounded-full border border-white/[0.1] bg-white/[0.02] px-3 py-1.5 text-[11px] text-slate-400 transition hover:border-white/[0.2] hover:text-white"
+                className="rounded-full border border-white/[0.1] bg-white/[0.02] px-3 py-1.5 text-[11px] text-zinc-400 transition hover:border-white/[0.2] hover:text-white"
               >
                 feeds {subsystems[nextIdx].name} →
               </button>
             </div>
           </div>
 
-          <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {sel.items.map((f) => {
-              const FIcon = f.icon;
-              return (
-                <li
-                  key={f.title}
-                  className="flex items-start gap-2.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3.5 py-2.5"
-                >
-                  <FIcon className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
-                  <span className="text-[13px] leading-snug text-slate-200">{f.title}</span>
-                </li>
-              );
-            })}
-          </ul>
+          <div>
+            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {sel.items.map((f) => {
+                const FIcon = f.icon;
+                return (
+                  <li
+                    key={f.title}
+                    className="flex items-start gap-2.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3.5 py-2.5"
+                  >
+                    <FIcon
+                      className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400"
+                      aria-hidden="true"
+                    />
+                    <span className="text-[13px] leading-snug text-zinc-200">
+                      {f.title}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {depth ? (
+              <dl className="mt-5 grid gap-x-6 gap-y-4 border-t border-white/[0.07] pt-5 sm:grid-cols-2">
+                {depth.map((item) => (
+                  <div key={item.label}>
+                    <dt className="text-[13px] font-semibold text-white">
+                      {item.label}
+                    </dt>
+                    <dd className="mt-1 text-xs leading-5 text-zinc-400">
+                      {item.text}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            ) : null}
+          </div>
         </motion.div>
       </div>
     </section>
@@ -2287,15 +1462,6 @@ function FeatureSystemMap() {
 }
 
 export default function FeaturesPageContent() {
-  const [activeCategory, setActiveCategory] = useState<CategoryName | null>(
-    null,
-  );
-
-  const filteredCategories = useMemo(() => {
-    if (activeCategory) return [activeCategory];
-    return [...categories];
-  }, [activeCategory]);
-
   return (
     <MarketingPageShell>
       <FeaturesHero />
@@ -2310,8 +1476,9 @@ export default function FeaturesPageContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      {/* Interactive system map: the 25 features as one connected loop */}
-      <DeferredSection minHeight={520}>
+      {/* The one interactive representation of the catalogue: every feature,
+          its subsystem, and the depth behind it, in a single panel. */}
+      <DeferredSection minHeight={620}>
         <FeatureSystemMap />
       </DeferredSection>
 
@@ -2319,67 +1486,9 @@ export default function FeaturesPageContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      {/*
-        Server-rendered feature catalog (audit #28). Lives outside
-        DeferredSection so every feature title is in the initial SSR
-        HTML, crawlers index the names, sighted users get a quick
-        skimmable list before the heavy interactive grid mounts.
-      */}
+      {/* Server-rendered so every feature title is in the initial HTML for
+          crawlers and no-JS visitors. */}
       <FeatureCatalogIndex />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
-      {/* Feature Grid */}
-      <DeferredSection minHeight={560}>
-        <section className="mk-section relative">
-          <div className="mx-auto max-w-6xl px-6 lg:px-8">
-            <ScrollReveal
-              variant="depthScale"
-              range={[0, 0.3]}
-              className="text-center mb-6"
-            >
-              <h2 className="mb-4 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                Every feature, built for{' '}
-                <span className="text-slate-400">
-                  regulated teams
-                </span>
-              </h2>
-              <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
-                25 platform features across five categories, each designed to
-                close the gap between compliance obligations and operational
-                execution.
-              </p>
-            </ScrollReveal>
-
-            <CategoryNav
-              activeCategory={activeCategory}
-              onSelect={setActiveCategory}
-            />
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeCategory ?? 'all'}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
-              >
-                {filteredCategories.map((cat) => (
-                  <CategorySection
-                    key={cat}
-                    category={cat}
-                    categoryFeatures={features.filter(
-                      (f) => f.category === cat,
-                    )}
-                  />
-                ))}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </section>
-      </DeferredSection>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -2391,25 +1500,7 @@ export default function FeaturesPageContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <CapabilityDeepDive />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
       <ArchitectureSection />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
-      <PlatformWorkflowSection />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
-      <ComparisonSection />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />

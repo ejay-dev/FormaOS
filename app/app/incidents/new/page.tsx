@@ -10,11 +10,16 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { createIncident } from '@/app/app/actions/care-operations';
 import { SubmitButton } from '@/components/ui/submit-button';
 
-export default async function NewIncidentPage() {
+export default async function NewIncidentPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ client_id?: string }>;
+}) {
   const systemState = await fetchSystemState();
   if (!systemState) redirect('/auth/signin');
 
   const { organization } = systemState;
+  const resolvedSearchParams = (await searchParams) ?? {};
   const supabase = await createSupabaseServerClient();
 
   // Fetch clients for dropdown
@@ -25,6 +30,15 @@ export default async function NewIncidentPage() {
     .order('full_name');
 
   type Client = NonNullable<typeof clients>[number];
+
+  // Reports are usually raised from a person's profile, which passes the
+  // client through as ?client_id= — the same param care plans and visits use.
+  const requestedClientId = resolvedSearchParams.client_id ?? '';
+  const preselectedClientId = (clients ?? []).some(
+    (client: Client) => client.id === requestedClientId,
+  )
+    ? requestedClientId
+    : '';
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -37,7 +51,7 @@ export default async function NewIncidentPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Report Incident</h1>
+          <h1 className="page-title">Report incident</h1>
           <p className="text-muted-foreground">
             Log a new incident for tracking and follow-up
           </p>
@@ -62,14 +76,21 @@ export default async function NewIncidentPage() {
                 htmlFor="field-16"
                 className="block text-sm font-medium mb-1"
               >
-                Incident Type <span className="text-red-500">*</span>
+                Incident Type <span className="text-destructive">*</span>
               </label>
+              {/* Incident type drives the investigation and regulatory
+                  notification rules downstream, so it has to be an explicit
+                  choice — the form opens with nothing selected. */}
               <select
                 id="field-16"
                 name="incident_type"
                 required
+                defaultValue=""
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
+                <option value="" disabled>
+                  Select type…
+                </option>
                 <option value="general">General</option>
                 <option value="injury">Injury</option>
                 <option value="medication_error">Medication Error</option>
@@ -86,7 +107,7 @@ export default async function NewIncidentPage() {
                 htmlFor="field-15"
                 className="block text-sm font-medium mb-1"
               >
-                Severity <span className="text-red-500">*</span>
+                Severity <span className="text-destructive">*</span>
               </label>
               <select
                 id="field-15"
@@ -113,6 +134,7 @@ export default async function NewIncidentPage() {
               <select
                 id="field-14"
                 name="patient_id"
+                defaultValue={preselectedClientId}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
                 <option value="">No client linked</option>
@@ -128,7 +150,7 @@ export default async function NewIncidentPage() {
                 htmlFor="field-13"
                 className="block text-sm font-medium mb-1"
               >
-                Date & Time Occurred <span className="text-red-500">*</span>
+                Date & Time Occurred <span className="text-destructive">*</span>
               </label>
               <input
                 id="field-13"
@@ -162,7 +184,7 @@ export default async function NewIncidentPage() {
               htmlFor="field-11"
               className="block text-sm font-medium mb-1"
             >
-              Description <span className="text-red-500">*</span>
+              Description <span className="text-destructive">*</span>
             </label>
             <textarea
               id="field-11"

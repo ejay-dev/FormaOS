@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { fetchSystemState } from "@/lib/system-state/server";
+import { getOrgMemberIdentities } from "@/lib/team/member-identity";
 import { updateVisitStatus } from "@/app/app/actions/care-operations";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
@@ -45,8 +46,8 @@ type VisitRow = {
   billable: boolean | null;
   funding_source: string | null;
   created_at: string;
+  staff_id: string | null;
   client: { id: string; full_name: string } | null;
-  staff: { id: string; email: string | null } | null;
 };
 
 export default async function VisitDetailPage({
@@ -83,8 +84,8 @@ export default async function VisitDetailPage({
       billable,
       funding_source,
       created_at,
-      client:client_id(id, full_name),
-      staff:staff_id(id, email)
+      staff_id,
+      client:client_id(id, full_name)
     `,
     )
     .eq("organization_id", orgId)
@@ -94,6 +95,11 @@ export default async function VisitDetailPage({
   const visit = visitData as VisitRow | null;
   if (!visit) notFound();
   const resolvedVisitId = visit.id;
+
+  const identities = await getOrgMemberIdentities();
+  const staffName = visit.staff_id
+    ? (identities[visit.staff_id]?.name ?? 'Unknown member')
+    : 'Unassigned';
 
   const canStart = visit.status === "scheduled";
   const canComplete = visit.status === "in_progress";
@@ -109,10 +115,17 @@ export default async function VisitDetailPage({
     await updateVisitStatus(resolvedVisitId, "completed");
   }
 
-  async function cancelAction() {
+  async function cancelAction(formData: FormData) {
     "use server";
-    await updateVisitStatus(resolvedVisitId, "cancelled");
+    const reason = String(formData.get("cancellation_reason") ?? "").trim();
+    if (!reason) return;
+    await updateVisitStatus(resolvedVisitId, "cancelled", reason);
   }
+
+  const clientName = visit.client?.full_name || "Unassigned client";
+  const visitWhen = visit.scheduled_start
+    ? formatDateTime(visit.scheduled_start)
+    : "Unscheduled";
 
   return (
     <div className="space-y-6">
@@ -124,16 +137,18 @@ export default async function VisitDetailPage({
           <ArrowLeft className="h-4 w-4" />
           Back to visits
         </Link>
-        <h1 className="text-3xl font-bold tracking-tight">Visit Detail</h1>
-        <p className="text-sm text-muted-foreground">
-          Operational details, timeline, and status controls.
+        <h1 className="page-title">
+          {clientName} · {visitWhen}
+        </h1>
+        <p className="text-sm text-muted-foreground capitalize">
+          {(visit.visit_type || "service").replace("_", " ")} visit
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Status</p>
-          <p className="mt-1 text-2xl font-black capitalize">{visit.status.replace("_", " ")}</p>
+          <p className="mt-1 text-2xl font-semibold capitalize">{visit.status.replace("_", " ")}</p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">Client</p>
@@ -185,7 +200,7 @@ export default async function VisitDetailPage({
           <dl className="mt-4 grid gap-3 text-sm">
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">Staff</dt>
-              <dd>{visit.staff?.email || "Unassigned"}</dd>
+              <dd>{staffName}</dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">Service Category</dt>
@@ -208,15 +223,15 @@ export default async function VisitDetailPage({
         </h2>
         <p className="mt-3 whitespace-pre-wrap text-sm">{visit.notes || "No notes provided."}</p>
         {visit.outcomes ? (
-          <div className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm">
-            <div className="font-semibold text-emerald-200">Outcome</div>
-            <div className="mt-1 text-emerald-100">{visit.outcomes}</div>
+          <div className="mt-4 rounded-lg border border-success/30 bg-success/10 p-3 text-sm">
+            <div className="font-semibold text-success">Outcome</div>
+            <div className="mt-1 text-foreground">{visit.outcomes}</div>
           </div>
         ) : null}
         {visit.cancellation_reason ? (
-          <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-sm">
-            <div className="font-semibold text-rose-200">Cancellation Reason</div>
-            <div className="mt-1 text-rose-100">{visit.cancellation_reason}</div>
+          <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm">
+            <div className="font-semibold text-destructive">Cancellation reason</div>
+            <div className="mt-1 text-foreground">{visit.cancellation_reason}</div>
           </div>
         ) : null}
       </section>
@@ -230,36 +245,56 @@ export default async function VisitDetailPage({
             <button
               type="submit"
               disabled={!canStart}
-              className="inline-flex items-center gap-2 rounded-lg border border-blue-500/40 bg-blue-500/10 px-3 py-2 text-sm text-blue-100 disabled:opacity-40"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground hover:bg-muted disabled:opacity-40"
             >
               <PlayCircle className="h-4 w-4" />
-              Start Visit
+              Start visit
             </button>
           </form>
           <form action={completeAction}>
             <button
               type="submit"
               disabled={!canComplete}
-              className="inline-flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-100 disabled:opacity-40"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg border border-success/40 bg-success/10 px-3 py-2 text-sm text-success hover:bg-success/15 disabled:opacity-40"
             >
               <CheckCircle2 className="h-4 w-4" />
-              Mark Completed
-            </button>
-          </form>
-          <form action={cancelAction}>
-            <button
-              type="submit"
-              disabled={!canCancel}
-              className="inline-flex items-center gap-2 rounded-lg border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-100 disabled:opacity-40"
-            >
-              <XCircle className="h-4 w-4" />
-              Cancel Visit
+              Mark completed
             </button>
           </form>
         </div>
-        <p className="mt-2 text-xs text-muted-foreground">
-          Current status transitions: scheduled → in progress → completed.
-        </p>
+
+        {canCancel ? (
+          <details className="mt-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3">
+            <summary className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-destructive">
+              <XCircle className="h-4 w-4" />
+              Cancel visit
+            </summary>
+            <form action={cancelAction} className="mt-3 space-y-2">
+              <label
+                htmlFor="visit-cancellation-reason"
+                className="block text-xs font-medium text-muted-foreground"
+              >
+                Why is this visit not going ahead? Short-notice cancellations
+                are billable under NDIS price limits, so record the reason
+                before cancelling.
+              </label>
+              <textarea
+                id="visit-cancellation-reason"
+                name="cancellation_reason"
+                rows={3}
+                required
+                className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
+                placeholder="e.g. Participant unwell, called 7am to cancel"
+              />
+              <button
+                type="submit"
+                className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/15"
+              >
+                Cancel visit and save reason
+              </button>
+            </form>
+          </details>
+        ) : null}
       </section>
 
       <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">

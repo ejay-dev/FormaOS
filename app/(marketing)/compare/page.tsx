@@ -6,7 +6,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Compare FormaOS vs AU Compliance Platforms',
   description:
-    'Compare FormaOS to HealthMetrics, CompliSpace, Riskware, and 6clicks across pricing, frameworks, evidence integrity, and audit-readiness.',
+    'Compare FormaOS to HealthMetrics, Ideagen CompliSpace, Riskware, and 6clicks across frameworks, evidence integrity, and audit readiness.',
   alternates: {
     canonical: `${siteUrl}/compare`,
   },
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Compare FormaOS vs AU Compliance Platforms',
     description:
-      'See how FormaOS compares against Ideagen Policy Logic, Riskware, 6clicks, and HealthMetrics. Operational execution beats traditional GRC for AU care.',
+      'See how FormaOS compares against Ideagen CompliSpace, Riskware, 6clicks, and HealthMetrics, written as an evaluation aid for AU-regulated buyers.',
   },
 };
 

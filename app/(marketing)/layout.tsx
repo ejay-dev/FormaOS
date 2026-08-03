@@ -7,7 +7,6 @@ import { MobileNav } from './components/MobileNav';
 import { HeaderCTA } from './components/HeaderCTA';
 import { Footer } from './components/Footer';
 import './marketing.css';
-import './snow-field.css';
 import './design-system.css';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';

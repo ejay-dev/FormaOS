@@ -22,6 +22,7 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { SkeletonCard } from '@/components/ui/skeleton';
 import { IndustryReportTemplates } from '@/components/reports/IndustryReportTemplates';
 import { PageHero } from '@/components/ui/page-hero';
+import { ReportsTabs } from './ReportsTabs';
 
 type EntitlementRow = {
   feature_key: string;
@@ -173,21 +174,21 @@ async function ComplianceScoreSection({
 
       {missingCount > 0 && (
         <div className="space-y-2">
-          <h3 className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            <AlertCircle className="h-3.5 w-3.5" /> Priority Gaps
+          <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+            <AlertCircle className="h-3.5 w-3.5" /> Priority gaps
           </h3>
           <div className="rounded-lg border border-border bg-card">
             {missingCodes.slice(0, 5).map((code: string) => (
               <div
                 key={code}
-                className="flex items-center justify-between border-b border-edge-2 px-4 py-3 last:border-b-0"
+                className="flex items-center justify-between border-b border-border px-4 py-3 last:border-b-0"
               >
                 <div className="flex items-center gap-3 text-sm text-foreground">
                   <XCircle className="h-4 w-4 text-destructive" />
                   Control {code} missing approved evidence
                 </div>
                 <Link
-                  href="/app/evidence"
+                  href="/app/evidence/gaps"
                   className="text-xs font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Resolve
@@ -266,9 +267,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
       <div className="rounded-lg border border-border bg-card p-4">
         <div className="flex items-center gap-2 mb-3">
           <FileText className="h-4 w-4 text-muted-foreground" />
-          <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            Certification Reports
-          </span>
+          <h2 className="text-sm font-semibold">Certification reports</h2>
         </div>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {EXPORT_CARDS.map((card) => (
@@ -329,28 +328,10 @@ export default async function ReportsPage() {
   return (
     <div className="flex flex-col h-full">
       <PageHero
-        eyebrow="Intelligence · Reports"
-        title="Reports Center"
+        eyebrow="Intelligence"
+        title="Reports Centre"
         subtitle="Generate audit-ready compliance artifacts and regulatory assessments."
-        actions={
-          <>
-            <span className="inline-flex items-center rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
-              Standard
-            </span>
-            <Link
-              href="/app/reports/custom"
-              className="inline-flex items-center rounded-md px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
-            >
-              My Reports
-            </Link>
-            <Link
-              href="/app/reports/trends"
-              className="inline-flex items-center rounded-md px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Trends
-            </Link>
-          </>
-        }
+        actions={<ReportsTabs current="/app/reports" />}
       />
       <div className="page-content space-y-4">
         {!hasSubscription && (

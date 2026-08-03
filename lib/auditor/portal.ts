@@ -71,6 +71,11 @@ export async function revokeAuditorAccess(tokenId: string, orgId: string) {
  * Intentional admin client: the caller has only the raw token, not an
  * org id. The lookup by token_hash IS the org discovery step. Same
  * pattern as validateApiKey in lib/api-keys/manager.ts.
+ *
+ * Read-only on purpose. A single portal request validates twice — once in
+ * the portal layout and once in the page — so counting here would report
+ * roughly double the auditor's real visits. Access is counted once per
+ * logged action in logAuditorActivity instead.
  */
 export async function validateAuditorToken(token: string) {
   const tokenHash = createHash('sha256').update(token).digest('hex');
@@ -85,15 +90,6 @@ export async function validateAuditorToken(token: string) {
     .single();
 
   if (error || !data) return null;
-
-  // Update access stats
-  await db
-    .from('auditor_access_tokens')
-    .update({
-      last_accessed_at: new Date().toISOString(),
-      access_count: (data.access_count ?? 0) + 1,
-    })
-    .eq('id', data.id);
 
   return data;
 }
@@ -175,6 +171,10 @@ export async function getAuditorActivity(
 
 /**
  * Log an auditor activity event.
+ *
+ * Also carries the access counter: each portal page render logs exactly one
+ * action, so counting here gives the grant list one increment per real
+ * auditor visit.
  */
 export async function logAuditorActivity(
   tokenId: string,
@@ -195,4 +195,23 @@ export async function logAuditorActivity(
     ip_address: ipAddress,
     user_agent: userAgent,
   });
+
+  try {
+    const { data } = await supabase
+      .from('auditor_access_tokens')
+      .select('access_count')
+      .eq('id', tokenId)
+      .maybeSingle();
+
+    await supabase
+      .from('auditor_access_tokens')
+      .update({
+        last_accessed_at: new Date().toISOString(),
+        access_count: ((data?.access_count as number | null) ?? 0) + 1,
+      })
+      .eq('id', tokenId);
+  } catch {
+    // Access stats are reporting only — never fail an auditor page render
+    // because the counter could not be written.
+  }
 }

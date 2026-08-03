@@ -42,7 +42,7 @@ function BlogListHeroVisualInner() {
             return (
               <div
                 key={i}
-                className="absolute rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] overflow-hidden"
+                className="absolute rounded-2xl border border-white/[0.10] bg-white/[0.04] overflow-hidden"
                 style={{
                   width: CARD_W * card.scale,
                   height: CARD_H * card.scale,
@@ -107,7 +107,7 @@ function BlogListHeroVisualInner() {
           return (
             <motion.div
               key={i}
-              className="absolute rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] overflow-hidden"
+              className="absolute rounded-2xl border border-white/[0.10] bg-white/[0.04] overflow-hidden"
               style={{
                 width: CARD_W * card.scale,
                 height: CARD_H * card.scale,

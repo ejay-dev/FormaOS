@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Monitor, FileText, Bell } from 'lucide-react';
+import { FileText, Bell } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 export interface DemoTab {
@@ -23,8 +23,8 @@ export function SeeItInAction({ tabs }: SeeItInActionProps) {
 
   return (
     <section className="relative py-24 lg:py-32">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#080b14] via-[#0d1117] to-[#0a0e1a]" />
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-500/20 to-transparent" />
+      <div className="absolute inset-0 bg-marketing-bg" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -35,10 +35,6 @@ export function SeeItInAction({ tabs }: SeeItInActionProps) {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-slate-500/20 bg-slate-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-6">
-            <Monitor className="h-3.5 w-3.5" />
-            See It In Action
-          </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-[1.1] mb-4">
             Experience the Platform
           </h2>
@@ -60,10 +56,10 @@ export function SeeItInAction({ tabs }: SeeItInActionProps) {
               key={tab.id}
               type="button"
               onClick={() => setActiveId(tab.id)}
-              className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all ${
+              className={`inline-flex min-h-[44px] items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all ${
                 activeId === tab.id
-                  ? 'bg-slate-500/15 border border-slate-500/25 text-white shadow-lg shadow-slate-500/10'
-                  : 'border border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/[0.04]'
+                  ? 'bg-white/[0.06] border border-white/15 text-white'
+                  : 'border border-transparent text-slate-400 hover:text-white hover:bg-white/[0.04]'
               }`}
             >
               {tab.icon}
@@ -105,9 +101,7 @@ export function DemoDashboardContent({
   return (
     <div className="p-6 lg:p-8">
       <div className="mb-4">
-        <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-          {title}
-        </div>
+        <div className="text-sm font-medium text-slate-400">{title}</div>
         <div className="mt-1 text-[10px] text-slate-600">
           Illustrative dashboard · sample data, not a customer posture
         </div>
@@ -124,12 +118,20 @@ export function DemoDashboardContent({
               <span
                 className={`h-2.5 w-2.5 rounded-full ${
                   row.status === 'green'
-                    ? 'bg-emerald-500'
+                    ? 'bg-success'
                     : row.status === 'amber'
-                      ? 'bg-amber-500'
-                      : 'bg-red-500'
+                      ? 'bg-warning'
+                      : 'bg-destructive'
                 }`}
-              />
+              >
+                <span className="sr-only">
+                  {row.status === 'green'
+                    ? 'On track'
+                    : row.status === 'amber'
+                      ? 'Needs attention'
+                      : 'Overdue'}
+                </span>
+              </span>
             </div>
           </div>
         ))}
@@ -146,7 +148,7 @@ export function DemoAuditExport({
   return (
     <div className="p-6 lg:p-8">
       <div className="flex items-center gap-3 mb-6">
-        <FileText className="h-5 w-5 text-cyan-400" />
+        <FileText className="h-5 w-5 text-slate-400" />
         <div>
           <div className="text-sm font-semibold text-white">
             Audit Evidence Pack
@@ -168,7 +170,7 @@ export function DemoAuditExport({
                 {section.items} evidence items attached
               </div>
             </div>
-            <div className="text-sm font-mono text-cyan-400">
+            <div className="text-sm font-medium text-white">
               {section.score}
             </div>
           </div>
@@ -208,9 +210,9 @@ export function DemoNotificationTimeline({
               <div
                 className={`h-3 w-3 rounded-full border-2 mt-1 ${
                   step.status === 'complete'
-                    ? 'border-emerald-500 bg-emerald-500'
+                    ? 'border-success bg-success'
                     : step.status === 'active'
-                      ? 'border-cyan-500 bg-cyan-500 animate-pulse'
+                      ? 'border-white bg-white'
                       : 'border-white/20 bg-transparent'
                 }`}
               />
@@ -218,7 +220,7 @@ export function DemoNotificationTimeline({
                 <div
                   className={`w-px flex-1 min-h-[32px] ${
                     step.status === 'complete'
-                      ? 'bg-emerald-500/30'
+                      ? 'bg-success/30'
                       : 'bg-white/[0.06]'
                   }`}
                 />
@@ -226,9 +228,7 @@ export function DemoNotificationTimeline({
             </div>
             {/* Content */}
             <div className="pb-6">
-              <div className="text-[10px] font-mono text-slate-600">
-                {step.time}
-              </div>
+              <div className="text-xs text-slate-500">{step.time}</div>
               <div
                 className={`text-sm ${step.status === 'pending' ? 'text-slate-500' : 'text-white'}`}
               >

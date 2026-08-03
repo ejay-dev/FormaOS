@@ -301,9 +301,9 @@ export function IndustryGuidancePanel({
 
       {/* Completion */}
       {progress.percentage === 100 && (
-        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-5 text-center">
-          <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/10">
-            <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+        <div className="rounded-lg border border-success/20 bg-success/5 p-5 text-center">
+          <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-success/10">
+            <CheckCircle2 className="h-5 w-5 text-success" />
           </div>
           <h3 className="text-sm font-semibold text-foreground">
             Industry Onboarding Complete

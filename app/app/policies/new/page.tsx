@@ -45,9 +45,10 @@ export default async function NewPolicyPage() {
       <div className="flex items-center gap-4">
         <Link
           href="/app/policies"
+          aria-label="Back to policies"
           className="rounded-lg p-2 transition-colors hover:bg-muted"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft aria-hidden="true" className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-2xl font-bold">Create Policy</h1>
@@ -63,7 +64,7 @@ export default async function NewPolicyPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="title">
-              Policy title <span className="text-red-500">*</span>
+              Policy title <span className="text-destructive">*</span>
             </label>
             <input
               id="title"
@@ -141,7 +142,7 @@ export default async function NewPolicyPage() {
 
           <div>
             <label className="mb-1 block text-sm font-medium" htmlFor="content">
-              Content <span className="text-red-500">*</span>
+              Content <span className="text-destructive">*</span>
             </label>
             <textarea
               id="content"

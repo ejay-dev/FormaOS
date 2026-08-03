@@ -164,8 +164,9 @@ export default async function DashboardPage() {
 
   const firstSession = orgId ? await getFirstSessionState(orgId) : null;
 
-  // Live top-level KPIs — fetched here so the command center receives truthful
-  // counts instead of the previous hard-coded 0 defaults.
+  // Live top-level KPIs. Each count is settled independently so one failing
+  // query cannot report the other three as a confident zero, and a failure is
+  // logged rather than swallowed.
   let teamMemberCount = 0;
   let expiringCertsCount = 0;
   let tasksAssigned = 0;
@@ -174,38 +175,56 @@ export default async function DashboardPage() {
     const expiryHorizon = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
       .toISOString()
       .slice(0, 10);
-    try {
-      const [teamResult, expiringResult, assignedResult, pendingResult] =
-        await Promise.all([
-          supabase
-            .from('org_members')
-            .select('id', { count: 'exact', head: true })
-            .eq('organization_id', orgId),
-          supabase
-            .from('org_staff_credentials')
-            .select('id', { count: 'exact', head: true })
-            .eq('organization_id', orgId)
-            .not('expiry_date', 'is', null)
-            .lte('expiry_date', expiryHorizon),
-          supabase
-            .from('org_tasks')
-            .select('id', { count: 'exact', head: true })
-            .eq('organization_id', orgId)
-            .eq('assigned_to', user.id),
-          supabase
-            .from('org_tasks')
-            .select('id', { count: 'exact', head: true })
-            .eq('organization_id', orgId)
-            .eq('assigned_to', user.id)
-            .eq('status', 'pending'),
-        ]);
-      teamMemberCount = teamResult.count ?? 0;
-      expiringCertsCount = expiringResult.count ?? 0;
-      tasksAssigned = assignedResult.count ?? 0;
-      tasksPending = pendingResult.count ?? 0;
-    } catch {
-      // Leave counts at 0 on RLS/query failure; UI renders "—" if ever needed.
-    }
+
+    const settled = await Promise.allSettled([
+      supabase
+        .from('org_members')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId),
+      supabase
+        .from('org_staff_credentials')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .not('expiry_date', 'is', null)
+        .lte('expiry_date', expiryHorizon),
+      supabase
+        .from('org_tasks')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('assigned_to', user.id),
+      supabase
+        .from('org_tasks')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('assigned_to', user.id)
+        .eq('status', 'pending'),
+    ]);
+
+    const names = [
+      'team members',
+      'expiring credentials',
+      'assigned tasks',
+      'pending tasks',
+    ];
+    const counts = settled.map((result, index) => {
+      if (result.status === 'rejected') {
+        console.error(
+          `[dashboard] ${names[index]} count unavailable:`,
+          result.reason,
+        );
+        return 0;
+      }
+      if (result.value.error) {
+        console.error(
+          `[dashboard] ${names[index]} count unavailable:`,
+          result.value.error.message,
+        );
+        return 0;
+      }
+      return result.value.count ?? 0;
+    });
+
+    [teamMemberCount, expiringCertsCount, tasksAssigned, tasksPending] = counts;
   }
 
   // Normalize and validate role as DatabaseRole type

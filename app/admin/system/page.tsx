@@ -86,7 +86,7 @@ export default async function AdminSystemPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">System Status</h1>
+        <h1 className="text-3xl font-bold text-foreground">System status</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Live infrastructure metrics — all values from database
         </p>
@@ -151,7 +151,7 @@ export default async function AdminSystemPage() {
                 {data.recent_admin_actions_24h}
               </p>
             </div>
-            <FileText className="h-8 w-8 text-muted-foreground/40" />
+            <FileText className="h-8 w-8 text-muted-foreground" />
           </div>
           <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-muted/20">
             <div>
@@ -160,7 +160,7 @@ export default async function AdminSystemPage() {
                 {data.recent_billing_events_24h}
               </p>
             </div>
-            <Zap className="h-8 w-8 text-muted-foreground/40" />
+            <Zap className="h-8 w-8 text-muted-foreground" />
           </div>
           <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-muted/20">
             <div>
@@ -169,7 +169,7 @@ export default async function AdminSystemPage() {
                 {metric(data.total_subscriptions)}
               </p>
             </div>
-            <Activity className="h-8 w-8 text-muted-foreground/40" />
+            <Activity className="h-8 w-8 text-muted-foreground" />
           </div>
         </div>
       </section>
@@ -182,19 +182,19 @@ export default async function AdminSystemPage() {
 
         <div className="grid gap-4 md:grid-cols-3 mb-4">
           <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Samples</p>
+            <p className="text-xs font-medium text-muted-foreground">Samples</p>
             <p className="mt-1 text-2xl font-bold text-foreground">
               {data.route_transition_samples_24h.toLocaleString()}
             </p>
           </div>
           <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Overall P50</p>
+            <p className="text-xs font-medium text-muted-foreground">Overall P50</p>
             <p className="mt-1 text-2xl font-bold text-success">
               {transitionP50 == null ? '—' : `${transitionP50}ms`}
             </p>
           </div>
           <div className="rounded-lg border border-border/50 bg-muted/20 p-4">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Overall P95</p>
+            <p className="text-xs font-medium text-muted-foreground">Overall P95</p>
             <p
               className={`mt-1 text-2xl font-bold ${
                 transitionP95 == null

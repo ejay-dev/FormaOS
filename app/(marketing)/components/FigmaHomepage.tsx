@@ -3,12 +3,7 @@
 import dynamic from 'next/dynamic';
 import { MotionProvider } from './motion/MotionContext';
 import { DeferredSection } from './shared';
-import {
-  HeroSection,
-  ValueProposition,
-  ComplianceNetworkSection,
-} from './homepage';
-import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
+import { HeroSection } from './homepage';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useDeviceTier } from '@/lib/device-tier';
@@ -24,78 +19,26 @@ import {
 } from '@/lib/marketing/homepage-experience';
 import { useHomepageTelemetry } from '@/lib/marketing/homepage-telemetry';
 
-// Lazy-load heavy rendering components
-const ScrollStory = dynamic(
-  () => import('./homepage/ScrollStory').then((m) => m.ScrollStory),
-  {
-    ssr: false,
-    loading: () => null,
-  },
-);
-const ComplianceEngineDemo = dynamic(
-  () =>
-    import('./homepage/ComplianceEngineDemo').then(
-      (m) => m.ComplianceEngineDemo,
-    ),
-  { ssr: false, loading: () => null },
-);
-const CapabilitiesGrid = dynamic(
-  () => import('./homepage/CapabilitiesGrid').then((m) => m.CapabilitiesGrid),
-  { ssr: false, loading: () => null },
-);
+// Below-fold client sections. Each one now has a distinct job: the demo shows
+// the engine running, industries answers "is this built for me", scenarios
+// answer "what does it change", the CTA closes. Sections that re-told the
+// obligation → control → evidence story a second and third time were removed
+// rather than re-skinned.
 const Industries = dynamic(
   () => import('./homepage/Industries').then((m) => m.Industries),
-  {
-    ssr: false,
-    loading: () => null,
-  },
-);
-const SecuritySection = dynamic(
-  () => import('./homepage/SecuritySection').then((m) => m.SecuritySection),
   { ssr: false, loading: () => null },
 );
-const OutcomeProofSection = dynamic(
-  () =>
-    import('./homepage/OutcomeProofSection').then((m) => m.OutcomeProofSection),
-  { ssr: false, loading: () => null },
-);
-const ObjectionHandlingSection = dynamic(
-  () =>
-    import('./homepage/ObjectionHandlingSection').then(
-      (m) => m.ObjectionHandlingSection,
-    ),
-  { ssr: false, loading: () => null },
-);
-// ProcurementFlowSection merged into ObjectionHandlingSection
 const CTASection = dynamic(
   () => import('./homepage/CTASection').then((m) => m.CTASection),
-  {
-    ssr: false,
-    loading: () => null,
-  },
+  { ssr: false, loading: () => null },
 );
-// TrustSection merged into SecuritySection
 const TestimonialsSection = dynamic(
   () =>
     import('./homepage/TestimonialsSection').then((m) => m.TestimonialsSection),
   { ssr: false, loading: () => null },
 );
-const AuditChainSection = dynamic(
-  () =>
-    import('./homepage/AuditChainSection').then((m) => m.AuditChainSection),
-  { ssr: false, loading: () => null },
-);
-// Interactive demo components (lazy-loaded, client-only)
 const InteractiveDemo = dynamic(
   () => import('@/components/marketing/demo/InteractiveDemo'),
-  { ssr: false, loading: () => null },
-);
-const EvidenceShowcase = dynamic(
-  () => import('@/components/marketing/demo/EvidenceShowcase'),
-  { ssr: false, loading: () => null },
-);
-const TaskShowcase = dynamic(
-  () => import('@/components/marketing/demo/TaskShowcase'),
   { ssr: false, loading: () => null },
 );
 
@@ -138,13 +81,6 @@ export default function FormaOSHomepage({
     () => getHomepagePolicyHints(motionPolicy),
     [motionPolicy],
   );
-  const showcaseModules = runtime.showcaseModules;
-  const enabledShowcases = Object.entries(showcaseModules)
-    .filter(([, enabled]) => enabled)
-    .map(([key]) => key);
-  const activeShowcase = enabledShowcases.includes(runtime.activeShowcaseModule)
-    ? runtime.activeShowcaseModule
-    : (enabledShowcases[0] ?? null);
 
   useEffect(() => {
     telemetry.trackRuntimeProfile({
@@ -189,83 +125,20 @@ export default function FormaOSHomepage({
   return (
     <MotionProvider>
       <div className="figma-homepage relative min-h-screen overflow-x-hidden">
-        {/* Page Sections */}
         <div className="mk-marketing-flow relative z-10">
           {!skipHero && renderSection('hero', <HeroSection />)}
-          {renderSection(
-            'framework_trust_strip',
-            <FrameworkTrustStrip />,
-            140,
-          )}
-          {/* Cryptographic audit-chain proof, pulled to position 3
-              (after hero + framework strip) on 2026-05-28 to surface
-              the most code-grounded section early. Before, this sat
-              below 8 marketing-feature sections; a buyer scrolling
-              past the hero saw "compliance SaaS" framing instead of
-              "compliance product with cryptographic infrastructure." */}
-          <DeferredSection minHeight={420}>
-            <AuditChainSection />
-          </DeferredSection>
-          {sectionVisibility.value_proposition !== false
-            ? renderSection('value_proposition', <ValueProposition />)
-            : null}
-          {sectionVisibility.compliance_network !== false
-            ? renderSection(
-                'compliance_network',
-                <ComplianceNetworkSection />,
-                440,
-              )
-            : null}
-          {activeShowcase === 'interactive_demo' &&
-          sectionVisibility.interactive_demo !== false
+          {sectionVisibility.interactive_demo !== false
             ? renderSection('interactive_demo', <InteractiveDemo />, 520)
-            : null}
-          {sectionVisibility.scroll_story !== false
-            ? renderSection('scroll_story', <ScrollStory />, 520)
-            : null}
-          {sectionVisibility.compliance_engine_demo !== false
-            ? renderSection(
-                'compliance_engine_demo',
-                <ComplianceEngineDemo />,
-                520,
-              )
-            : null}
-          {sectionVisibility.capabilities_grid !== false
-            ? renderSection('capabilities_grid', <CapabilitiesGrid />, 460)
-            : null}
-          {activeShowcase === 'evidence_showcase' &&
-          sectionVisibility.evidence_showcase !== false
-            ? renderSection('evidence_showcase', <EvidenceShowcase />, 460)
             : null}
           {sectionVisibility.industries !== false
             ? renderSection('industries', <Industries />, 440)
             : null}
-          {activeShowcase === 'task_showcase' &&
-          sectionVisibility.task_showcase !== false
-            ? renderSection('task_showcase', <TaskShowcase />, 460)
-            : null}
-          {sectionVisibility.security !== false
-            ? renderSection('security', <SecuritySection />, 480)
-            : null}
-          {sectionVisibility.outcome_proof !== false
-            ? renderSection('outcome_proof', <OutcomeProofSection />, 440)
-            : null}
-          {/* Social proof - always shown; not gated by control plane */}
           <DeferredSection minHeight={380}>
             <TestimonialsSection />
           </DeferredSection>
-          {sectionVisibility.objection_handling !== false
-            ? renderSection(
-                'objection_handling',
-                <ObjectionHandlingSection />,
-                440,
-              )
-            : null}
-          {/* Procurement flow merged into ObjectionHandlingSection - skipped */}
           {sectionVisibility.cta !== false
             ? renderSection('cta', <CTASection />, 380)
             : null}
-          {/* TrustSection merged into SecuritySection - skipped */}
         </div>
       </div>
     </MotionProvider>

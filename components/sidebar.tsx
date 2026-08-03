@@ -4,16 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { signOut } from '@/app/app/actions/logout';
-import {
-  LogOut,
-  Command,
-  Shield,
-  HeartPulse,
-  FileText,
-  BarChart3,
-  Settings2,
-  ChevronRight,
-} from 'lucide-react';
+import { LogOut, Command, Shield, ChevronRight } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import Button from './ui/button';
 import { Avatar } from './ui/avatar-stack';
@@ -32,48 +23,30 @@ type ContextMode = {
   icon: React.ElementType;
 };
 
-function resolveContextMode(pathname: string): ContextMode {
-  if (
-    pathname.startsWith('/app/participants') ||
-    pathname.startsWith('/app/visits') ||
-    pathname.startsWith('/app/care-plans') ||
-    pathname.startsWith('/app/progress-notes')
-  ) {
-    return { label: 'Care Operations', icon: HeartPulse };
-  }
-  if (
-    pathname.startsWith('/app/compliance') ||
-    pathname.startsWith('/app/controls') ||
-    pathname.startsWith('/app/frameworks') ||
-    pathname.startsWith('/app/staff-compliance')
-  ) {
-    return { label: 'Compliance', icon: Shield };
-  }
-  if (
-    pathname.startsWith('/app/policies') ||
-    pathname.startsWith('/app/registers') ||
-    pathname.startsWith('/app/incidents') ||
-    pathname.startsWith('/app/vault') ||
-    pathname.startsWith('/app/tasks')
-  ) {
-    return { label: 'Governance', icon: FileText };
-  }
-  if (
-    pathname.startsWith('/app/audit-trail') ||
-    pathname.startsWith('/app/reports') ||
-    pathname.startsWith('/app/executive') ||
-    pathname.startsWith('/app/intelligence')
-  ) {
-    return { label: 'Intelligence', icon: BarChart3 };
-  }
-  if (
-    pathname.startsWith('/app/settings') ||
-    pathname.startsWith('/app/team') ||
-    pathname.startsWith('/app/billing')
-  ) {
-    return { label: 'Administration', icon: Settings2 };
-  }
-  return { label: 'Overview', icon: Shield };
+/**
+ * The chip at the top of the sidebar names the area the user is in.
+ *
+ * It used to carry its own hand-written route-to-area map, which disagreed
+ * with the nav categories rendered directly beneath it: /app/incidents said
+ * "Governance" while the nav filed Incidents under Care Operations, and
+ * /app/team said "Administration" against a Workforce heading. Two
+ * taxonomies, one screen apart.
+ *
+ * It now reads the category off whichever nav item matches the current
+ * route, so there is only one grouping to disagree with.
+ */
+function resolveContextMode(
+  pathname: string,
+  navigation: NavItem[],
+): ContextMode {
+  const match = navigation
+    .filter(
+      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
+    )
+    .sort((a, b) => b.href.length - a.href.length)[0];
+
+  if (!match) return { label: 'Overview', icon: Shield };
+  return { label: match.category, icon: match.icon };
 }
 
 type UserRole = 'viewer' | 'member' | 'admin' | 'owner' | 'staff' | 'auditor';
@@ -123,7 +96,6 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
   const industry = organization?.industry ?? null;
   const prefetchedRoutes = useRef(new Set<string>());
   const warmupScheduled = useRef(false);
-  const contextMode = useMemo(() => resolveContextMode(pathname), [pathname]);
   const { state: onboardingState, isActive: onboardingActive } = useOnboarding();
   const nextStepHref = onboardingState?.nextStep?.href ?? null;
   const { displayName, avatarUrl } = useCurrentUserAvatar(user?.id);
@@ -133,6 +105,11 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
   const { navigation, categories } = useMemo(
     () => getIndustryNavigation(industry, role),
     [industry, role],
+  );
+
+  const contextMode = useMemo(
+    () => resolveContextMode(pathname, navigation),
+    [pathname, navigation],
   );
 
   const prefetchRoute = useCallback(

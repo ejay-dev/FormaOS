@@ -2,7 +2,12 @@ import { SkeletonCard } from '@/components/ui/skeleton';
 
 export default function Soc2Loading() {
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Loading SOC 2"
+      className="space-y-8 animate-in fade-in duration-500"
+    >
       <div>
         <div className="h-8 w-48 rounded-lg bg-surface-2 animate-pulse" />
         <div className="mt-2 h-4 w-96 rounded-lg bg-surface-1 animate-pulse" />
@@ -16,6 +21,7 @@ export default function Soc2Loading() {
         <SkeletonCard className="h-72" />
       </div>
       <SkeletonCard className="h-96" />
+      <span className="sr-only">Loading content, please wait.</span>
     </div>
   );
 }

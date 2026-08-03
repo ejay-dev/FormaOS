@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Users } from 'lucide-react';
 import { TRUST_SUBPROCESSORS } from '@/lib/trust/subprocessors';
+import { TRUST_DOCUMENT_REVISIONS } from '@/lib/trust/document-revisions';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
@@ -46,7 +47,7 @@ export default function SubprocessorsPage() {
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <p className="text-sm text-muted-foreground mt-2 mb-12">
-          Last updated: February 2026
+          Last updated: {TRUST_DOCUMENT_REVISIONS.subprocessors}
         </p>
 
         <div className="space-y-4">

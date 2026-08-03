@@ -381,14 +381,14 @@ const COLUMNS: readonly Column[] = [
     label: 'Foundation',
     code: 'FND',
     price: '$297/mo',
-    accent: 'text-slate-400',
+    accent: 'text-zinc-400',
   },
   {
     key: 'pro',
     label: 'Growth',
     code: 'GRW',
     price: '$797/mo',
-    accent: 'text-slate-200',
+    accent: 'text-zinc-200',
     featured: true,
   },
   {
@@ -396,14 +396,14 @@ const COLUMNS: readonly Column[] = [
     label: 'Scale',
     code: 'SCL',
     price: '$1,800/mo',
-    accent: 'text-slate-400',
+    accent: 'text-zinc-400',
   },
   {
     key: 'enterprise',
     label: 'Enterprise',
     code: 'ENT',
     price: 'Custom',
-    accent: 'text-slate-400',
+    accent: 'text-zinc-400',
   },
 ];
 
@@ -413,7 +413,7 @@ function renderCell(value: Cell, focused: boolean) {
   if (value === '✓') {
     return (
       <Check
-        className={`mx-auto h-4 w-4 ${focused ? 'text-white' : 'text-slate-500'}`}
+        className={`mx-auto h-4 w-4 ${focused ? 'text-white' : 'text-zinc-500'}`}
         aria-hidden="true"
       />
     );
@@ -421,13 +421,13 @@ function renderCell(value: Cell, focused: boolean) {
   if (value === '—') {
     return (
       <Minus
-        className={`mx-auto h-4 w-4 ${focused ? 'text-slate-600' : 'text-slate-700'}`}
+        className={`mx-auto h-4 w-4 ${focused ? 'text-zinc-600' : 'text-zinc-700'}`}
         aria-hidden="true"
       />
     );
   }
   return (
-    <span className={`text-[12px] ${focused ? 'text-white' : 'text-slate-500'}`}>
+    <span className={`text-[12px] ${focused ? 'text-white' : 'text-zinc-500'}`}>
       {value}
     </span>
   );
@@ -484,13 +484,13 @@ export function PricingComparisonTable() {
         >
           <span className="mt-1.5 hidden h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent sm:block" />
           <div className="max-w-2xl">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+            <p className="mb-3 text-sm font-semibold text-zinc-500">
               Capability matrix
             </p>
             <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Pick a plan. See exactly what it covers.
             </h2>
-            <p className="mt-4 text-base leading-7 text-slate-400">
+            <p className="mt-4 text-base leading-7 text-zinc-400">
               {GROUPS.length} categories, {TOTAL_ROWS} capabilities
               <span className="hidden lg:inline">, side by side</span>.{' '}
               <span>
@@ -509,7 +509,7 @@ export function PricingComparisonTable() {
           className="mt-10 hidden lg:block"
         >
           <div className="flex flex-wrap items-center gap-2.5">
-            <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <span className="mr-1 text-[10px] font-semibold text-zinc-500">
               Focus
             </span>
             {COLUMNS.map((col) => {
@@ -523,11 +523,11 @@ export function PricingComparisonTable() {
                   className={`flex items-baseline gap-2 rounded-xl border px-4 py-2 transition-colors duration-200 ${
                     active
                       ? 'border-white/30 bg-white/[0.08] text-white'
-                      : 'border-white/[0.08] bg-white/[0.02] text-slate-400 hover:border-white/[0.16] hover:text-slate-200'
+                      : 'border-white/[0.08] bg-white/[0.02] text-zinc-400 hover:border-white/[0.16] hover:text-zinc-200'
                   }`}
                 >
                   <span className="text-sm font-semibold">{col.label}</span>
-                  <span className="text-[11px] text-slate-500">{col.price}</span>
+                  <span className="text-[11px] text-zinc-500">{col.price}</span>
                 </button>
               );
             })}
@@ -537,26 +537,26 @@ export function PricingComparisonTable() {
           <div className="mt-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-5 py-4">
             {prevLabel ? (
               <>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                <p className="text-[11px] font-semibold text-zinc-500">
                   {focusedCol.label} adds over {prevLabel}
                 </p>
                 <div className="mt-2.5 flex flex-wrap gap-x-5 gap-y-1.5">
                   {upgrades.map((u) => (
                     <span
                       key={u.label}
-                      className="inline-flex items-center gap-2 text-[13px] text-slate-300"
+                      className="inline-flex items-center gap-2 text-[13px] text-zinc-300"
                     >
-                      <span className="h-1 w-1 rounded-full bg-slate-400" />
+                      <span className="h-1 w-1 rounded-full bg-zinc-400" />
                       {u.label}
                       {u.value ? (
-                        <span className="text-slate-500">· {u.value}</span>
+                        <span className="text-zinc-500">· {u.value}</span>
                       ) : null}
                     </span>
                   ))}
                 </div>
               </>
             ) : (
-              <p className="text-[13px] text-slate-300">
+              <p className="text-[13px] text-zinc-300">
                 <span className="font-semibold text-white">
                   {focusedCol.label}
                 </span>{' '}
@@ -572,10 +572,10 @@ export function PricingComparisonTable() {
           <div className="relative mt-6 hidden overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.015] lg:block">
             <table className="w-full">
               <thead className="sticky top-0 z-10">
-                <tr className="border-b border-white/[0.08] bg-[#0a0f1c]/95 backdrop-blur-md">
+                <tr className="border-b border-white/[0.08] bg-[#181a1c]/95">
                   <th
                     scope="col"
-                    className="w-[34%] px-6 py-5 text-left text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500"
+                    className="w-[34%] px-6 py-5 text-left text-[10px] font-semibold text-zinc-500"
                   >
                     Capability
                   </th>
@@ -596,13 +596,13 @@ export function PricingComparisonTable() {
                         ) : null}
                         <div className="flex items-center justify-center gap-2">
                           <span
-                            className={`text-base font-semibold ${isFocus ? 'text-white' : 'text-slate-400'}`}
+                            className={`text-base font-semibold ${isFocus ? 'text-white' : 'text-zinc-400'}`}
                           >
                             {col.label}
                           </span>
                         </div>
                         <div
-                          className={`mt-1 text-xs ${isFocus ? 'text-slate-300' : 'text-slate-500'}`}
+                          className={`mt-1 text-xs ${isFocus ? 'text-zinc-300' : 'text-zinc-500'}`}
                         >
                           {col.price}
                         </div>
@@ -620,7 +620,7 @@ export function PricingComparisonTable() {
                       className="scroll-mt-24 bg-white/[0.035]"
                     >
                       <td className="px-6 py-3" colSpan={1}>
-                        <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/75">
+                        <span className="text-xs font-semibold text-white/75">
                           {group.title}
                         </span>
                       </td>
@@ -640,10 +640,10 @@ export function PricingComparisonTable() {
                             : 'border-t border-white/[0.04] bg-white/[0.012]'
                         }
                       >
-                        <td className="px-6 py-3.5 text-sm text-slate-200">
+                        <td className="px-6 py-3.5 text-sm text-zinc-200">
                           <div>{row.label}</div>
                           {row.hint ? (
-                            <div className="mt-0.5 text-xs text-slate-500">
+                            <div className="mt-0.5 text-xs text-zinc-500">
                               {row.hint}
                             </div>
                           ) : null}
@@ -675,7 +675,7 @@ export function PricingComparisonTable() {
         */}
         <div className="mt-8 lg:hidden">
           {/* Sticky plan switcher — stays reachable while the list scrolls */}
-          <div className="sticky top-[calc(env(safe-area-inset-top)+60px)] z-20 -mx-6 border-b border-white/[0.06] bg-[#0a0f1c]/92 px-6 pb-3 pt-3 backdrop-blur-md">
+          <div className="sticky top-[calc(env(safe-area-inset-top)+60px)] z-20 -mx-6 border-b border-white/[0.06] bg-[#181a1c]/92 px-6 pb-3 pt-3">
             <div
               role="tablist"
               aria-label="Focus a plan"
@@ -693,13 +693,13 @@ export function PricingComparisonTable() {
                     className={`flex min-h-[52px] flex-col items-center justify-center gap-0.5 rounded-xl border px-1 py-2 transition-colors duration-200 ${
                       active
                         ? 'border-white/30 bg-white/[0.08] text-white'
-                        : 'border-white/[0.08] bg-white/[0.02] text-slate-400 active:bg-white/[0.06]'
+                        : 'border-white/[0.08] bg-white/[0.02] text-zinc-400 active:bg-white/[0.06]'
                     }`}
                   >
                     <span className="text-[13px] font-semibold leading-none">
                       {col.label}
                     </span>
-                    <span className="text-[10px] leading-none text-slate-500">
+                    <span className="text-[10px] leading-none text-zinc-500">
                       {col.price}
                     </span>
                   </button>
@@ -712,20 +712,20 @@ export function PricingComparisonTable() {
           <div className="mt-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-3.5">
             {prevLabel ? (
               <>
-                <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                <span className="block text-[10px] font-semibold text-zinc-500">
                   {focusedCol.label} adds over {prevLabel}
                 </span>
                 <div className="mt-2.5 flex flex-col gap-2">
                   {upgrades.map((u) => (
                     <span
                       key={u.label}
-                      className="flex items-start gap-2.5 text-[13px] leading-snug text-slate-300"
+                      className="flex items-start gap-2.5 text-[13px] leading-snug text-zinc-300"
                     >
-                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-zinc-400" />
                       <span>
                         {u.label}
                         {u.value ? (
-                          <span className="text-slate-500"> · {u.value}</span>
+                          <span className="text-zinc-500"> · {u.value}</span>
                         ) : null}
                       </span>
                     </span>
@@ -733,7 +733,7 @@ export function PricingComparisonTable() {
                 </div>
               </>
             ) : (
-              <span className="block text-[13px] leading-relaxed text-slate-300">
+              <span className="block text-[13px] leading-relaxed text-zinc-300">
                 <span className="font-semibold text-white">
                   {focusedCol.label}
                 </span>{' '}
@@ -752,10 +752,10 @@ export function PricingComparisonTable() {
                 className="scroll-mt-[140px]"
               >
                 <div className="mb-1 flex items-center gap-3">
-                  <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                  <span className="text-[10px] text-zinc-400">
                     {group.code}
                   </span>
-                  <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/85">
+                  <span className="text-xs font-semibold text-white/85">
                     {group.title}
                   </span>
                   <span className="h-px flex-1 bg-white/[0.06]" />
@@ -771,12 +771,12 @@ export function PricingComparisonTable() {
                       >
                         <div className="min-w-0">
                           <span
-                            className={`block text-sm font-medium leading-snug ${excluded ? 'text-slate-500' : 'text-white'}`}
+                            className={`block text-sm font-medium leading-snug ${excluded ? 'text-zinc-500' : 'text-white'}`}
                           >
                             {row.label}
                           </span>
                           {row.hint ? (
-                            <span className="mt-0.5 block text-xs leading-snug text-slate-500">
+                            <span className="mt-0.5 block text-xs leading-snug text-zinc-500">
                               {row.hint}
                             </span>
                           ) : null}
@@ -793,7 +793,7 @@ export function PricingComparisonTable() {
                           ) : value === '—' ? (
                             <>
                               <Minus
-                                className="ml-auto h-[18px] w-[18px] text-slate-700"
+                                className="ml-auto h-[18px] w-[18px] text-zinc-700"
                                 aria-hidden="true"
                               />
                               <span className="sr-only">Not included</span>

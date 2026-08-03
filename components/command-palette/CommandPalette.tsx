@@ -16,7 +16,6 @@ import {
   FileText,
   Lock,
   Shield,
-  BarChart3,
   Users,
   Settings,
   CreditCard,
@@ -34,9 +33,14 @@ import {
   Activity,
   Tag,
   LifeBuoy,
+  ChevronRight,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  getIndustryNavigation,
+  type NavItem,
+} from '@/lib/navigation/industry-sidebar';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -65,110 +69,91 @@ type SearchResultItem = {
   type: SearchResultType;
 };
 
+const RESULT_TYPE_LABELS: Record<SearchResultType, string> = {
+  policy: 'Policy',
+  task: 'Task',
+  evidence: 'Evidence',
+};
+
 // ---------------------------------------------------------------------------
 // Data
 // ---------------------------------------------------------------------------
 
-const NAVIGATION_ITEMS: CommandItem[] = [
-  {
-    id: 'nav-dashboard',
-    label: 'Dashboard',
-    icon: LayoutDashboard,
-    href: '/app',
-    keywords: ['home', 'overview', 'main'],
-  },
-  {
-    id: 'nav-tasks',
-    label: 'Tasks',
-    icon: CheckSquare,
-    href: '/app/tasks',
-    keywords: ['todo', 'roadmap', 'checklist'],
-  },
-  {
-    id: 'nav-policies',
-    label: 'Policies',
-    icon: FileText,
-    href: '/app/policies',
-    keywords: ['documents', 'governance', 'rules'],
-  },
-  {
-    id: 'nav-vault',
-    label: 'Evidence Vault',
-    icon: Lock,
-    href: '/app/vault',
-    keywords: ['files', 'evidence', 'upload', 'storage'],
-  },
-  {
-    id: 'nav-compliance',
-    label: 'Compliance',
-    icon: Shield,
-    href: '/app/registers',
-    keywords: ['registers', 'compliance', 'audit'],
-  },
-  {
-    id: 'nav-audit',
-    label: 'Audit Trail',
-    icon: History,
-    href: '/app/audit-trail',
-    keywords: ['log', 'history', 'trail', 'activity'],
-  },
-  {
-    id: 'nav-reports',
-    label: 'Reports',
-    icon: BarChart3,
-    href: '/app/reports',
-    keywords: ['analytics', 'charts', 'metrics', 'insights'],
-  },
-  {
-    id: 'nav-team',
-    label: 'Team',
-    icon: Users,
-    href: '/app/team',
-    keywords: ['members', 'people', 'staff', 'workforce'],
-  },
-  {
-    id: 'nav-settings',
-    label: 'Settings',
-    icon: Settings,
-    href: '/app/settings',
-    keywords: ['preferences', 'config', 'organization'],
-  },
-  {
-    id: 'nav-billing',
-    label: 'Billing',
-    icon: CreditCard,
-    href: '/app/billing',
-    keywords: ['subscription', 'plan', 'payment', 'invoice'],
-  },
-];
+/**
+ * The Navigation group is generated from the same getIndustryNavigation()
+ * call the sidebar and the mobile bottom nav render, so a label, a target
+ * or an entire module can never drift between the palette and the rest of
+ * the product — including the care operations a support worker needs and
+ * the compliance home at /app/compliance.
+ *
+ * Sub-items are included because a palette is where deep routes belong;
+ * on the desktop sidebar they only appear once their parent is active.
+ */
+function buildNavigationItems(navigation: NavItem[]): CommandItem[] {
+  const items: CommandItem[] = [];
 
-const ACTION_ITEMS: CommandItem[] = [
+  for (const entry of navigation) {
+    if (entry.href.startsWith('#')) continue;
+
+    items.push({
+      id: `nav-${entry.href}`,
+      label: entry.name,
+      icon: entry.icon,
+      href: entry.href,
+      keywords: [entry.category],
+    });
+
+    for (const child of entry.children ?? []) {
+      items.push({
+        id: `nav-${child.href}`,
+        label: `${entry.name} · ${child.name}`,
+        icon: ChevronRight,
+        href: child.href,
+        keywords: [entry.category, child.name],
+      });
+    }
+  }
+
+  return items;
+}
+
+/**
+ * `module` is the nav route the action lives inside. An action is only
+ * offered when that route is in the person's navigation, so a support
+ * worker on the restricted staff navigation is not invited to write a
+ * policy or add a team member.
+ */
+const ACTION_ITEMS: (CommandItem & { module: string })[] = [
   {
     id: 'action-create-task',
-    label: 'Create Task',
+    label: 'Create task',
     icon: Plus,
     href: '/app/tasks?new=true',
+    module: '/app/tasks',
     keywords: ['new task', 'add task', 'todo'],
   },
   {
     id: 'action-upload-evidence',
-    label: 'Upload Evidence',
+    label: 'Upload evidence',
     icon: Upload,
     href: '/app/vault?upload=true',
+    module: '/app/vault',
     keywords: ['upload', 'file', 'evidence', 'document'],
   },
   {
     id: 'action-new-policy',
-    label: 'New Policy',
+    label: 'New policy',
     icon: FileText,
     href: '/app/policies?new=true',
+    module: '/app/policies',
     keywords: ['create policy', 'add policy', 'document'],
   },
   {
     id: 'action-invite-member',
-    label: 'Invite Team Member',
+    label: 'Invite team member',
     icon: UserPlus,
     href: '/app/team?invite=true',
+    module: '/app/team',
     keywords: ['add member', 'invite', 'user'],
   },
 ];
@@ -183,25 +168,68 @@ const QUICK_LINK_ITEMS: CommandItem[] = [
   },
   {
     id: 'link-security',
-    label: 'Security Settings',
+    label: 'Security settings',
     icon: ShieldCheck,
     href: '/app/settings/security',
     keywords: ['password', 'mfa', '2fa', 'authentication'],
   },
   {
     id: 'link-help',
-    label: 'Help & Support',
+    label: 'Help and support',
     icon: HelpCircle,
     href: '/documentation',
     keywords: ['support', 'documentation', 'faq', 'contact'],
   },
 ];
 
-const APP_COMMAND_GROUPS: CommandGroup[] = [
-  { heading: 'Navigation', items: NAVIGATION_ITEMS },
-  { heading: 'Actions', items: ACTION_ITEMS },
-  { heading: 'Quick Links', items: QUICK_LINK_ITEMS },
-];
+function buildAppCommandGroups(
+  industry: string | null,
+  role: string,
+): CommandGroup[] {
+  const { navigation } = getIndustryNavigation(industry, role);
+  const moduleHrefs = new Set(navigation.map((item) => item.href));
+  const navigationItems = buildNavigationItems(navigation);
+
+  // Every industry navigation carries /app/team, but the default one an org
+  // uses before it picks an industry does not — so a full membership would
+  // otherwise lose both the Team route and the invite action that keys off it.
+  // Added here on the same signal as Billing below rather than by narrowing
+  // the palette to whatever the sidebar happens to list.
+  if (moduleHrefs.has('/app/settings') && !moduleHrefs.has('/app/team')) {
+    moduleHrefs.add('/app/team');
+    navigationItems.push({
+      id: 'nav-/app/team',
+      label: 'Team',
+      icon: Users,
+      href: '/app/team',
+      keywords: ['members', 'roles', 'permissions'],
+    });
+  }
+
+  const quickLinks = [...QUICK_LINK_ITEMS];
+  // Billing is reached from the account menu rather than any sidebar, so it
+  // has to be added by hand — but only for the navigations that carry
+  // organisation settings, which is what separates a full membership from
+  // the restricted staff view.
+  if (moduleHrefs.has('/app/settings')) {
+    quickLinks.push({
+      id: 'link-billing',
+      label: 'Billing',
+      icon: CreditCard,
+      href: '/app/billing',
+      keywords: ['subscription', 'plan', 'payment', 'invoice'],
+    });
+  }
+
+  return [
+    { heading: 'Navigation', items: navigationItems },
+    {
+      heading: 'Actions',
+      items: ACTION_ITEMS.filter((item) => moduleHrefs.has(item.module)),
+    },
+    { heading: 'Quick links', items: quickLinks },
+  ];
+}
 
 const ADMIN_NAV_ITEMS: CommandItem[] = [
   {
@@ -355,7 +383,15 @@ const dialogVariantsReduced = {
 // Component
 // ---------------------------------------------------------------------------
 
-export function CommandPalette() {
+export function CommandPalette({
+  industry = null,
+  role = 'owner',
+}: {
+  /** Organisation industry, so the Navigation group matches the sidebar. */
+  industry?: string | null;
+  /** Membership role — staff and viewer see the restricted navigation. */
+  role?: string;
+} = {}) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [remoteResults, setRemoteResults] = useState<SearchResultItem[]>([]);
@@ -366,8 +402,11 @@ export function CommandPalette() {
   const prefersReducedMotion = useReducedMotion();
   const isAdminContext = pathname?.startsWith('/admin') ?? false;
   const commandGroups = useMemo(
-    () => (isAdminContext ? ADMIN_COMMAND_GROUPS : APP_COMMAND_GROUPS),
-    [isAdminContext],
+    () =>
+      isAdminContext
+        ? ADMIN_COMMAND_GROUPS
+        : buildAppCommandGroups(industry, role),
+    [isAdminContext, industry, role],
   );
 
   // Platform detection for shortcut display
@@ -473,17 +512,20 @@ export function CommandPalette() {
 
   return (
     <>
-      {/* Mobile floating trigger — stacked above the help/AI assistant FAB,
-          which itself sits above the bottom nav on mobile. Without this offset
-          both FABs collide in the bottom-right corner and one becomes
-          unreachable. */}
-      <button
-        onClick={() => setOpen(true)}
-        aria-label="Open command palette"
-        className="fixed bottom-[calc(env(safe-area-inset-bottom)+9rem)] right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-foreground text-background shadow-lg hover:opacity-90 transition-transform motion-safe:hover:scale-105 motion-safe:active:scale-95 md:hidden"
-      >
-        <Search className="h-5 w-5" />
-      </button>
+      {/* Admin has no small-viewport search of its own — the admin quick
+          search is lg-and-up — so the palette carries its own trigger
+          there. Inside /app the topbar already has a mobile search button
+          wired to the same event, and the bottom-right corner is already
+          carrying the help and feedback controls. */}
+      {isAdminContext && (
+        <button
+          onClick={() => setOpen(true)}
+          aria-label="Open command palette"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-foreground text-background shadow-lg transition-opacity hover:opacity-90 md:hidden"
+        >
+          <Search className="h-5 w-5" />
+        </button>
+      )}
 
       {/* Command palette dialog */}
       <AnimatePresence>
@@ -518,7 +560,13 @@ export function CommandPalette() {
               aria-modal="true"
               aria-label="Command palette"
               style={{ zIndex: 'var(--z-modal)' }}
-              className="fixed inset-0 flex items-start justify-center px-4 pt-[15vh] sm:pt-[20vh]"
+              className="fixed inset-0 flex items-start justify-center px-4 pt-[6vh] pb-[max(env(safe-area-inset-bottom),1rem)] sm:pt-[20vh]"
+              // This container sits over the backdrop and fills the screen,
+              // so the backdrop's own click handler never sees a click on
+              // empty space. Dismissal has to be handled here.
+              onClick={(event) => {
+                if (event.target === event.currentTarget) setOpen(false);
+              }}
             >
               <Command
                 className="w-full max-w-[640px] overflow-hidden rounded-2xl border border-border bg-popover shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-xl"
@@ -551,7 +599,10 @@ export function CommandPalette() {
                 </div>
 
                 {/* Results list */}
-                <Command.List className="max-h-[320px] overflow-y-auto overscroll-contain p-2 scrollbar-hide">
+                {/* On a phone the on-screen keyboard takes roughly half the
+                    viewport, so the list is capped against the dynamic
+                    viewport rather than a fixed pixel height. */}
+                <Command.List className="max-h-[min(320px,45dvh)] overflow-y-auto overscroll-contain p-2 scrollbar-hide">
                   <Command.Empty className="flex flex-col items-center justify-center py-12 text-center">
                     <Search className="mb-3 h-8 w-8 text-muted-foreground/40" />
                     <p className="text-sm font-medium text-muted-foreground">
@@ -567,9 +618,8 @@ export function CommandPalette() {
                       heading="Results"
                       className={cn(
                         '[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2',
-                        '[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-bold',
-                        '[&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest',
-                        '[&_[cmdk-group-heading]]:text-muted-foreground/60',
+                        '[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium',
+                        '[&_[cmdk-group-heading]]:text-muted-foreground',
                       )}
                     >
                       {remoteLoading ? (
@@ -667,8 +717,8 @@ export function CommandPalette() {
                                 <span className="flex-1 truncate">
                                   {r.title}
                                 </span>
-                                <span className="shrink-0 rounded-md border border-border bg-surface-1 px-2 py-1 text-xs font-medium text-muted-foreground/40">
-                                  {r.type}
+                                <span className="hidden shrink-0 rounded-md border border-border bg-surface-1 px-2 py-1 text-xs font-medium text-muted-foreground/60 sm:inline">
+                                  {RESULT_TYPE_LABELS[r.type]}
                                 </span>
                                 <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/40 opacity-0 transition-opacity group-aria-selected:opacity-100" />
                               </Command.Item>
@@ -684,9 +734,8 @@ export function CommandPalette() {
                       heading={group.heading}
                       className={cn(
                         '[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2',
-                        '[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-bold',
-                        '[&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest',
-                        '[&_[cmdk-group-heading]]:text-muted-foreground/60',
+                        '[&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium',
+                        '[&_[cmdk-group-heading]]:text-muted-foreground',
                       )}
                     >
                       {group.items.map((item) => (
@@ -728,7 +777,7 @@ export function CommandPalette() {
 
                 {/* Footer */}
                 <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
-                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground/40">
+                  <div className="hidden items-center gap-3 text-[11px] text-muted-foreground/40 sm:flex">
                     <span className="flex items-center gap-1">
                       <kbd className="rounded border border-border bg-surface-1 px-1 py-0.5 font-mono text-xs">
                         &uarr;
@@ -751,8 +800,17 @@ export function CommandPalette() {
                       <span className="ml-0.5">Close</span>
                     </span>
                   </div>
-                  <span className="text-[11px] text-muted-foreground/40">
-                    FormaOS Command Palette
+                  {/* There is no Escape key on a phone, so touch gets an
+                      explicit way out. */}
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="-my-2 flex min-h-[44px] items-center px-1 text-sm font-medium text-muted-foreground sm:hidden"
+                  >
+                    Close
+                  </button>
+                  <span className="hidden text-[11px] text-muted-foreground/40 sm:inline">
+                    FormaOS command palette
                   </span>
                 </div>
               </Command>

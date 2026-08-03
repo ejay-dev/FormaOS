@@ -16,27 +16,27 @@ import { duration } from '@/config/motion';
 const TIER_VISUAL = {
   foundation: {
     code: 'FND',
-    accent: 'text-slate-400',
-    rail: 'from-slate-500/30 via-slate-500/10 to-transparent',
-    chip: 'border-white/[0.12] bg-white/[0.04] text-slate-300',
+    accent: 'text-zinc-400',
+    rail: 'from-zinc-500/30 via-zinc-500/10 to-transparent',
+    chip: 'border-white/[0.12] bg-white/[0.04] text-zinc-300',
   },
   growth: {
     code: 'GRW',
-    accent: 'text-slate-200',
+    accent: 'text-zinc-200',
     rail: 'from-white/60 via-white/20 to-transparent',
     chip: 'border-white/25 bg-white/[0.1] text-white',
   },
   scale: {
     code: 'SCL',
-    accent: 'text-slate-400',
-    rail: 'from-slate-500/30 via-slate-500/10 to-transparent',
-    chip: 'border-white/[0.12] bg-white/[0.04] text-slate-300',
+    accent: 'text-zinc-400',
+    rail: 'from-zinc-500/30 via-zinc-500/10 to-transparent',
+    chip: 'border-white/[0.12] bg-white/[0.04] text-zinc-300',
   },
   enterprise: {
     code: 'ENT',
-    accent: 'text-slate-400',
-    rail: 'from-slate-500/30 via-slate-500/10 to-transparent',
-    chip: 'border-white/[0.12] bg-white/[0.04] text-slate-300',
+    accent: 'text-zinc-400',
+    rail: 'from-zinc-500/30 via-zinc-500/10 to-transparent',
+    chip: 'border-white/[0.12] bg-white/[0.04] text-zinc-300',
   },
 } as const;
 
@@ -66,7 +66,7 @@ export function PricingTiers() {
           className="mb-14 grid gap-x-12 gap-y-5 lg:grid-cols-[1fr_minmax(0,22rem)] lg:items-end"
         >
           <div>
-            <div className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="mb-4 flex items-center gap-3 text-xs font-semibold text-zinc-500">
               <span className="h-px w-8 bg-white/25" />
               <span>Plan catalog</span>
             </div>
@@ -74,7 +74,7 @@ export function PricingTiers() {
               One compliance OS, four ways to deploy it.
             </h2>
           </div>
-          <p className="text-sm leading-7 text-slate-400 lg:pb-1">
+          <p className="text-sm leading-7 text-zinc-400 lg:pb-1">
             Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
             is contracted with procurement and security review. Same engine
             across every plan. Only the scope changes. Prices in AUD, GST
@@ -102,8 +102,8 @@ export function PricingTiers() {
                 transition={{ duration: duration.fast }}
                 className={`group relative flex min-h-full flex-col overflow-hidden rounded-3xl border bg-gradient-to-b shadow-2xl ${
                   tier.featured
-                    ? 'border-white/25 from-white/[0.07] via-white/[0.02] to-white/[0.02] shadow-slate-950/50 lg:-mt-4 lg:mb-4 lg:scale-[1.015]'
-                    : 'border-white/[0.07] from-white/[0.045] to-white/[0.015] shadow-slate-950/50 hover:border-white/[0.14]'
+                    ? 'border-white/25 from-white/[0.07] via-white/[0.02] to-white/[0.02] shadow-zinc-950/50 lg:-mt-4 lg:mb-4 lg:scale-[1.015]'
+                    : 'border-white/[0.07] from-white/[0.045] to-white/[0.015] shadow-zinc-950/50 hover:border-white/[0.14]'
                 }`}
               >
                 {/* Vertical accent rail */}
@@ -117,7 +117,7 @@ export function PricingTiers() {
                   <div className="mb-4 flex h-5 items-center">
                     {tier.badge ? (
                       <span
-                        className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${visual.chip}`}
+                        className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase ${visual.chip}`}
                       >
                         {tier.badge}
                       </span>
@@ -127,10 +127,10 @@ export function PricingTiers() {
                   <h3 className="text-2xl font-semibold tracking-tight text-white">
                     {nameFor(tier)}
                   </h3>
-                  <p className="mt-1.5 text-[13px] leading-snug text-slate-400">
+                  <p className="mt-1.5 text-[13px] leading-snug text-zinc-400">
                     {tier.audience}
                   </p>
-                  <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                  <p className="mt-2 text-[10px] text-zinc-500">
                     {tier.audienceSize}
                   </p>
 
@@ -145,22 +145,22 @@ export function PricingTiers() {
                         {price}
                       </span>
                       {!isCustomPrice ? (
-                        <span className="pb-2 text-sm font-medium text-slate-400">
+                        <span className="pb-2 text-sm font-medium text-zinc-400">
                           {tier.priceSubtext}
                         </span>
                       ) : null}
                     </div>
                     {isCustomPrice ? (
-                      <p className="mt-1 text-sm font-medium text-slate-400">
+                      <p className="mt-1 text-sm font-medium text-zinc-400">
                         {tier.priceSubtext}
                       </p>
                     ) : null}
                   </div>
 
-                  <div className="mt-3 flex items-start gap-2 text-[11px] leading-snug text-slate-400">
+                  <div className="mt-3 flex items-start gap-2 text-[11px] leading-snug text-zinc-400">
                     <CheckCircle2
                       className={`mt-0.5 h-3 w-3 shrink-0 ${
-                        tier.featured ? 'text-slate-200' : 'text-slate-500'
+                        tier.featured ? 'text-zinc-200' : 'text-zinc-500'
                       }`}
                       aria-hidden="true"
                     />
@@ -184,7 +184,7 @@ export function PricingTiers() {
                     }
                     className={`mt-6 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition ${
                       tier.featured
-                        ? 'bg-white text-slate-900 shadow-lg shadow-slate-950/40 hover:bg-slate-100'
+                        ? 'bg-white text-zinc-900 shadow-lg shadow-zinc-950/40 hover:bg-zinc-100'
                         : 'border border-white/[0.1] bg-white/[0.04] text-white hover:border-white/[0.2] hover:bg-white/[0.08]'
                     }`}
                   >
@@ -193,26 +193,26 @@ export function PricingTiers() {
                   </Link>
 
                   {/* Summary */}
-                  <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
+                  <p className="mt-6 text-[13px] leading-relaxed text-zinc-400">
                     {tier.summary}
                   </p>
 
                   {/* Features ledger */}
                   <div className="mt-6 border-t border-white/[0.06] pt-5">
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                    <p className="text-[10px] text-zinc-500">
                       Includes
                     </p>
                     <ul className="mt-3 flex-1 space-y-2.5">
                       {tier.features.map((feature) => (
                         <li
                           key={feature}
-                          className="flex gap-2.5 text-[13px] leading-snug text-slate-300"
+                          className="flex gap-2.5 text-[13px] leading-snug text-zinc-300"
                         >
                           <CheckCircle2
                             className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${
                               tier.featured
-                                ? 'text-slate-200'
-                                : 'text-slate-400'
+                                ? 'text-zinc-200'
+                                : 'text-zinc-400'
                             }`}
                             aria-hidden="true"
                           />
@@ -233,12 +233,12 @@ export function PricingTiers() {
           range={[0, 0.4]}
           className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6"
         >
-          <p className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
+          <p className="text-[10px] text-zinc-500">
             Prices in AUD · GST inclusive · Stripe-secured payments
           </p>
-          <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.18em] text-slate-500">
+          <div className="flex items-center gap-4 text-[10px] text-zinc-500">
             <span>SSO available on Enterprise</span>
-            <span className="text-slate-600">·</span>
+            <span className="text-zinc-600">·</span>
             <span>Cancel anytime</span>
           </div>
         </ScrollReveal>

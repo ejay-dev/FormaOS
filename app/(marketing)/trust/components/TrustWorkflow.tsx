@@ -43,19 +43,13 @@ export function TrustWorkflow() {
   return (
     <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
       <ScrollReveal variant="depthScale" range={[0, 0.35]}>
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-sm lg:p-10">
-          <div className="mb-6 flex items-center gap-3">
-            <span className="h-px w-8 bg-white/25" />
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Trust Workflow
-            </span>
-          </div>
+        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 lg:p-10">
           <h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
             From early evaluation through procurement
           </h3>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-400">
-            FormaOS trust artifacts are structured to support enterprise review
-            gates at every stage of the buyer journey.
+            The trust artifacts are structured around the three review gates a
+            regulated buyer usually has to clear, in the order they hit them.
           </p>
 
           <SectionChoreography
@@ -63,20 +57,15 @@ export function TrustWorkflow() {
             stagger={0.05}
             className="mt-8 grid gap-3 md:grid-cols-3"
           >
-            {trustWorkflow.map((item, i) => (
+            {trustWorkflow.map((item) => (
               <article
                 key={item.step}
                 className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-5"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium tabular-nums text-slate-600">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    {item.step}
-                  </p>
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                <p className="text-base font-semibold text-white">
+                  {item.step}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-300">
                   {item.detail}
                 </p>
                 <ul className="mt-3 space-y-1.5">

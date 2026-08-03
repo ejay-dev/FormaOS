@@ -18,21 +18,19 @@ export const metadata = { title: 'Customer Health – Admin' };
 export const dynamic = 'force-dynamic';
 
 function TrendIcon({ trend }: { trend?: 'up' | 'down' | 'stable' }) {
-  if (trend === 'up') return <ArrowUpRight className="h-4 w-4 text-green-500" />;
-  if (trend === 'down') return <ArrowDownRight className="h-4 w-4 text-red-500" />;
+  if (trend === 'up') return <ArrowUpRight className="h-4 w-4 text-success" />;
+  if (trend === 'down') return <ArrowDownRight className="h-4 w-4 text-destructive" />;
   return <Minus className="h-4 w-4 text-muted-foreground" />;
 }
 
 function statusBadge(status: string) {
   const styles: Record<string, string> = {
     Healthy:
-      'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-    Warning:
-      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-    'At Risk':
-      'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
+      'bg-success/10 text-success',
+    Warning: 'bg-warning/10 text-warning',
+    'At Risk': 'bg-warning/20 text-warning',
     Critical:
-      'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+      'bg-destructive/10 text-destructive',
   };
   return (
     <span
@@ -61,7 +59,7 @@ export default async function CustomerHealthPage() {
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Customer Health Dashboard</h1>
+        <h1 className="text-2xl font-bold">Customer health</h1>
         <p className="text-muted-foreground">
           Real-time health scoring across all active organizations. Calculated{' '}
           {new Date(rankings.calculatedAt).toLocaleString()}.
@@ -76,13 +74,13 @@ export default async function CustomerHealthPage() {
           <p className="text-2xl font-bold">{summary.averageScore}</p>
         </div>
         <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="flex items-center gap-2 text-green-600 text-sm mb-1">
+          <div className="flex items-center gap-2 text-success text-sm mb-1">
             <Users className="h-4 w-4" /> Healthy
           </div>
           <p className="text-2xl font-bold">{summary.healthy}</p>
         </div>
         <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="flex items-center gap-2 text-yellow-600 text-sm mb-1">
+          <div className="flex items-center gap-2 text-warning text-sm mb-1">
             <AlertTriangle className="h-4 w-4" /> Warning / At Risk
           </div>
           <p className="text-2xl font-bold">
@@ -90,7 +88,7 @@ export default async function CustomerHealthPage() {
           </p>
         </div>
         <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="flex items-center gap-2 text-red-600 text-sm mb-1">
+          <div className="flex items-center gap-2 text-destructive text-sm mb-1">
             <TrendingDown className="h-4 w-4" /> Critical
           </div>
           <p className="text-2xl font-bold">{summary.critical}</p>
@@ -103,19 +101,19 @@ export default async function CustomerHealthPage() {
           {total > 0 && (
             <>
               <div
-                className="bg-green-500"
+                className="bg-success"
                 style={{ width: `${(summary.healthy / total) * 100}%` }}
               />
               <div
-                className="bg-yellow-500"
+                className="bg-warning/50"
                 style={{ width: `${(summary.warning / total) * 100}%` }}
               />
               <div
-                className="bg-orange-500"
+                className="bg-warning"
                 style={{ width: `${(summary.atRisk / total) * 100}%` }}
               />
               <div
-                className="bg-red-500"
+                className="bg-destructive"
                 style={{ width: `${(summary.critical / total) * 100}%` }}
               />
             </>
@@ -123,19 +121,19 @@ export default async function CustomerHealthPage() {
         </div>
         <div className="flex flex-wrap gap-4 mt-2 text-xs text-muted-foreground">
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-green-500" />
+            <span className="h-2 w-2 rounded-full bg-success" />
             Healthy {summary.healthy}
           </span>
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-yellow-500" />
+            <span className="h-2 w-2 rounded-full bg-warning/50" />
             Warning {summary.warning}
           </span>
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-orange-500" />
+            <span className="h-2 w-2 rounded-full bg-warning" />
             At Risk {summary.atRisk}
           </span>
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-red-500" />
+            <span className="h-2 w-2 rounded-full bg-destructive" />
             Critical {summary.critical}
           </span>
           <span className="flex items-center gap-1">
@@ -190,12 +188,12 @@ export default async function CustomerHealthPage() {
                     <span
                       className={
                         org.score >= 75
-                          ? 'text-green-600'
+                          ? 'text-success'
                           : org.score >= 50
-                            ? 'text-yellow-600'
+                            ? 'text-warning'
                             : org.score >= 25
-                              ? 'text-orange-600'
-                              : 'text-red-600'
+                              ? 'text-warning'
+                              : 'text-destructive'
                       }
                     >
                       {org.score}
@@ -217,7 +215,7 @@ export default async function CustomerHealthPage() {
                   </td>
                   <td className="px-4 py-3">
                     {org.alerts.length > 0 ? (
-                      <span className="text-red-600">
+                      <span className="text-destructive">
                         {org.alerts.length}
                       </span>
                     ) : (

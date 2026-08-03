@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
@@ -29,28 +29,22 @@ const stakeholderTracks = [
   { persona: 'Procurement', artifact: 'Trust artifacts + implementation scope' },
 ] as const;
 
-const trustSignals = [
-  'Immutable audit history',
-  'Framework-mapped controls',
-  'Role-based access governance',
-  'Evidence chain integrity',
-];
-
 export function QuestionnaireAccelerator() {
   return (
     <>
       {/* Security Questionnaire Fast-Lane */}
-      <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+      <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 lg:p-10">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300">
-                  Security Questionnaire Fast-Lane
+                <h3 className="text-xl font-semibold text-white">
+                  Answering a security questionnaire
                 </h3>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
-                  Designed to reduce back-and-forth during enterprise review by
-                  packaging answers around the actual buyer workflow.
+                  Most of what a diligence questionnaire asks is already
+                  written down, mapped to the control it belongs to, so the
+                  back-and-forth is about your specifics rather than the basics.
                 </p>
               </div>
               <Link
@@ -75,37 +69,18 @@ export function QuestionnaireAccelerator() {
               ))}
             </SectionChoreography>
 
-            <SectionChoreography pattern="alternating" stagger={0.05} className="mt-6 grid gap-3 md:grid-cols-3">
+            <dl className="mt-6 grid gap-x-8 gap-y-4 border-t border-white/[0.08] pt-6 sm:grid-cols-3">
               {stakeholderTracks.map((track) => (
-                  <div key={track.persona} className="rounded-xl border border-white/[0.1] bg-white/[0.05] px-4 py-3">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                      {track.persona}
-                    </p>
-                    <p className="mt-1 text-sm text-slate-200">
-                      {track.artifact}
-                    </p>
-                  </div>
+                <div key={track.persona}>
+                  <dt className="text-sm font-semibold text-white">
+                    {track.persona}
+                  </dt>
+                  <dd className="mt-1 text-sm text-slate-400">
+                    {track.artifact}
+                  </dd>
+                </div>
               ))}
-            </SectionChoreography>
-          </div>
-        </ScrollReveal>
-      </section>
-
-      {/* Assurance Signals */}
-      <section className="relative mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
-        <ScrollReveal variant="depthScale" range={[0, 0.35]}>
-          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Assurance Signals
-            </p>
-            <SectionChoreography pattern="stagger-wave" stagger={0.04} className="mt-4 flex flex-wrap gap-2.5">
-              {trustSignals.map((signal) => (
-                  <span key={signal} className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.05] px-3 py-1.5 text-xs text-slate-300">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-slate-400" />
-                    {signal}
-                  </span>
-              ))}
-            </SectionChoreography>
+            </dl>
           </div>
         </ScrollReveal>
       </section>

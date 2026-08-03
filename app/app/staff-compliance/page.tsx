@@ -21,6 +21,10 @@ import {
   RecordCard,
   RecordList,
 } from '@/components/mobile/record-card';
+import {
+  StatusBadge,
+  certificateExpiry,
+} from '@/components/compliance/StatusBadge';
 
 function formatDate(date: string | null) {
   if (!date) return '-';
@@ -31,48 +35,13 @@ function formatDate(date: string | null) {
   });
 }
 
-function getExpiryStatus(expiryDate: string | null): {
-  label: string;
-  color: string;
-  urgent: boolean;
-} {
-  if (!expiryDate)
-    return {
-      label: 'No Expiry',
-      color: 'text-muted-foreground',
-      urgent: false,
-    };
-
-  const expiry = new Date(expiryDate);
-  const now = new Date();
-  const daysUntil = Math.ceil(
-    (expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+/** Rows within a month of lapsing (or already lapsed) are tinted. */
+function needsAttention(expiryDate: string | null): boolean {
+  if (!expiryDate) return false;
+  const days = Math.ceil(
+    (new Date(expiryDate).getTime() - Date.now()) / 86_400_000,
   );
-
-  if (daysUntil < 0) {
-    return {
-      label: 'Expired',
-      color: 'text-red-600 bg-red-500/10',
-      urgent: true,
-    };
-  } else if (daysUntil <= 30) {
-    return {
-      label: `${daysUntil}d`,
-      color: 'text-orange-600 bg-orange-500/10',
-      urgent: true,
-    };
-  } else if (daysUntil <= 90) {
-    return {
-      label: `${daysUntil}d`,
-      color: 'text-amber-600 bg-amber-500/10',
-      urgent: false,
-    };
-  }
-  return {
-    label: 'Valid',
-    color: 'text-green-600 bg-green-500/10',
-    urgent: false,
-  };
+  return days <= 30;
 }
 
 function getCredentialLabel(industry: string | null): string {
@@ -263,9 +232,22 @@ export default async function StaffCompliancePage() {
       />
 
       <div className="page-content space-y-4">
+        {/* Says which surface owns the record, so the renewals view is not
+            mistaken for a second register. */}
+        <p className="text-sm text-muted-foreground">
+          Every staff qualification, check and certificate is recorded here.{' '}
+          <Link
+            href="/app/certificates"
+            className="font-medium text-foreground underline-offset-2 hover:underline"
+          >
+            Certificate renewals
+          </Link>{' '}
+          lists only the ones lapsing in the next 90 days.
+        </p>
+
         {/* Alert for expiring/expired */}
         {(stats.expiringSoon > 0 || stats.expired > 0) && (
-          <div className="flex items-center gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
+          <div className="flex items-center gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
             <span>
               {stats.expired > 0 && `${stats.expired} expired. `}
@@ -278,7 +260,6 @@ export default async function StaffCompliancePage() {
         <div className="md:hidden">
           <RecordList>
             {enrichedCredentials.map((credential: Credential) => {
-              const expiryStatus = getExpiryStatus(credential.expiry_date);
               const evidenceCount =
                 evidenceCountByCredential.get(credential.id) ?? 0;
               const staffName =
@@ -295,11 +276,7 @@ export default async function StaffCompliancePage() {
                   title={credentialTitle}
                   subtitle={staffName}
                   status={
-                    <span
-                      className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${expiryStatus.color}`}
-                    >
-                      {expiryStatus.label}
-                    </span>
+                    <StatusBadge {...certificateExpiry(credential.expiry_date)} />
                   }
                   meta={[
                     {
@@ -324,8 +301,8 @@ export default async function StaffCompliancePage() {
                         <span
                           className={
                             evidenceCount > 0
-                              ? 'text-emerald-500'
-                              : 'text-amber-500'
+                              ? 'text-success'
+                              : 'text-warning'
                           }
                         >
                           {evidenceCount} file{evidenceCount === 1 ? '' : 's'}
@@ -377,16 +354,15 @@ export default async function StaffCompliancePage() {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {enrichedCredentials.map((credential: Credential) => {
-                    const expiryStatus = getExpiryStatus(
-                      credential.expiry_date,
-                    );
                     const evidenceCount =
                       evidenceCountByCredential.get(credential.id) ?? 0;
                     return (
                       <tr
                         key={credential.id}
                         className={`hover:bg-muted/30 transition-colors ${
-                          expiryStatus.urgent ? 'bg-red-500/5' : ''
+                          needsAttention(credential.expiry_date)
+                            ? 'bg-destructive/5'
+                            : ''
                         }`}
                       >
                         <td className="px-4 py-3">
@@ -427,18 +403,16 @@ export default async function StaffCompliancePage() {
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <span
-                            className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${expiryStatus.color}`}
-                          >
-                            {expiryStatus.label}
-                          </span>
+                          <StatusBadge
+                            {...certificateExpiry(credential.expiry_date)}
+                          />
                         </td>
                         <td className="px-4 py-3">
                           <span
                             className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
                               evidenceCount > 0
-                                ? 'bg-emerald-500/10 text-emerald-600'
-                                : 'bg-amber-500/10 text-amber-600'
+                                ? 'bg-success/10 text-success'
+                                : 'bg-warning/10 text-warning'
                             }`}
                           >
                             {evidenceCount} file{evidenceCount === 1 ? '' : 's'}

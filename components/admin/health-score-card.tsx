@@ -24,15 +24,15 @@ interface HealthScore {
 }
 
 function scoreColor(score: number): string {
-  if (score >= 80) return 'text-green-600 dark:text-green-400';
-  if (score >= 60) return 'text-yellow-600 dark:text-yellow-400';
-  return 'text-red-600 dark:text-red-400';
+  if (score >= 80) return 'text-success';
+  if (score >= 60) return 'text-warning';
+  return 'text-destructive';
 }
 
 function scoreBg(score: number): string {
-  if (score >= 80) return 'bg-green-500';
-  if (score >= 60) return 'bg-yellow-500';
-  return 'bg-red-500';
+  if (score >= 80) return 'bg-success';
+  if (score >= 60) return 'bg-warning';
+  return 'bg-destructive';
 }
 
 const FACTOR_LABELS: Record<string, string> = {
@@ -52,9 +52,9 @@ export function HealthScoreCard({ health }: { health: HealthScore }) {
         : Activity;
   const trendColor =
     health.trend === 'up'
-      ? 'text-green-500'
+      ? 'text-success'
       : health.trend === 'down'
-        ? 'text-red-500'
+        ? 'text-destructive'
         : 'text-muted-foreground';
 
   return (
@@ -134,7 +134,7 @@ export function HealthScoreCard({ health }: { health: HealthScore }) {
           {health.riskIndicators.map((r, i) => (
             <div
               key={i}
-              className="flex items-center gap-1.5 text-xs text-red-600 dark:text-red-400 mb-1"
+              className="flex items-center gap-1.5 text-xs text-destructive mb-1"
             >
               <AlertTriangle className="h-3 w-3 shrink-0" /> {r}
             </div>

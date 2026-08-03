@@ -15,6 +15,7 @@ import {
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
+import { TRUST_DOCUMENT_REVISIONS } from '@/lib/trust/document-revisions';
 import { siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
@@ -129,7 +130,8 @@ export default function TrustPacketPage() {
                 FormaOS Vendor Trust Packet (PDF)
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Current version · Updated February 2026 · 6 sections · ~12 pages
+                Current version · Updated {TRUST_DOCUMENT_REVISIONS.vendorPacket}{' '}
+                · {sections.length} sections
               </p>
             </div>
             <a

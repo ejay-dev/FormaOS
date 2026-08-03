@@ -4,8 +4,7 @@
  */
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
+import { getOrgMemberIdentities } from '@/lib/team/member-identity';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -40,14 +39,14 @@ function formatDateTime(date: string | null) {
 function getStatusIcon(status: string) {
   switch (status) {
     case 'completed':
-      return <CheckCircle className="h-4 w-4 text-green-500" />;
+      return <CheckCircle className="h-4 w-4 text-success" />;
     case 'cancelled':
     case 'missed':
-      return <XCircle className="h-4 w-4 text-red-500" />;
+      return <XCircle className="h-4 w-4 text-destructive" />;
     case 'in_progress':
-      return <Clock className="h-4 w-4 text-blue-500" />;
+      return <Clock className="h-4 w-4 text-info" />;
     default:
-      return <AlertCircle className="h-4 w-4 text-amber-500" />;
+      return <AlertCircle className="h-4 w-4 text-muted-foreground" />;
   }
 }
 
@@ -84,7 +83,6 @@ export default async function VisitsPage({
   const { organization } = systemState;
   const label = getVisitLabel(organization.industry);
   const supabase = await createSupabaseServerClient();
-  const admin = createSupabaseAdminClient();
 
   // Fetch visits and resolve related labels explicitly so schema-cache FK drift
   // does not break the whole page.
@@ -119,7 +117,7 @@ export default async function VisitsPage({
   type VisitRow = NonNullable<typeof visits>[number];
   type Visit = VisitRow & {
     client: { full_name?: string | null } | null;
-    staff: { email?: string | null } | null;
+    staff: { name: string } | null;
   };
 
   const visitRows = (visits ?? []) as VisitRow[];
@@ -130,15 +128,8 @@ export default async function VisitsPage({
         .filter((value): value is string => Boolean(value)),
     ),
   );
-  const staffIds = Array.from(
-    new Set(
-      visitRows
-        .map((visit) => visit.staff_id as string | null | undefined)
-        .filter((value): value is string => Boolean(value)),
-    ),
-  );
 
-  const [{ data: clients }, staffProfiles] = await Promise.all([
+  const [{ data: clients }, staffIdentities] = await Promise.all([
     clientIds.length
       ? supabase
           .from('org_patients')
@@ -147,9 +138,7 @@ export default async function VisitsPage({
       : Promise.resolve({
           data: [] as Array<{ id: string; full_name: string | null }>,
         }),
-    staffIds.length
-      ? getAdminProfileDirectoryEntries(staffIds, admin)
-      : Promise.resolve([]),
+    getOrgMemberIdentities(),
   ]);
 
   const clientNameById = new Map(
@@ -158,9 +147,6 @@ export default async function VisitsPage({
       (client.full_name as string | null | undefined) ?? null,
     ]),
   );
-  const staffEmailById = new Map(
-    staffProfiles.map((profile) => [profile.userId, profile.email ?? null]),
-  );
 
   const enrichedVisits: Visit[] = visitRows.map((visit) => ({
     ...visit,
@@ -168,7 +154,11 @@ export default async function VisitsPage({
       ? { full_name: clientNameById.get(visit.client_id as string) ?? null }
       : null,
     staff: visit.staff_id
-      ? { email: staffEmailById.get(visit.staff_id as string) ?? null }
+      ? {
+          name:
+            staffIdentities[visit.staff_id as string]?.name ??
+            'Unknown member',
+        }
       : null,
   }));
 
@@ -180,27 +170,44 @@ export default async function VisitsPage({
     const clientName = (
       (visit.client as { full_name?: string } | null)?.full_name ?? ''
     ).toLowerCase();
+    const staffName = (visit.staff?.name ?? '').toLowerCase();
     const visitType = (visit.visit_type ?? '').toLowerCase();
     const serviceCategory = (visit.service_category ?? '').toLowerCase();
     const locationType = (visit.location_type ?? '').toLowerCase();
 
     return (
       clientName.includes(qLower) ||
+      staffName.includes(qLower) ||
       visitType.includes(qLower) ||
       serviceCategory.includes(qLower) ||
       locationType.includes(qLower)
     );
   });
 
+  // Hero metrics count the whole organisation, not the filtered row window.
+  const orgVisits = () =>
+    supabase
+      .from('org_visits')
+      .select('id', { count: 'exact', head: true })
+      .eq('organization_id', organization.id);
+
+  const [
+    { count: totalVisits },
+    { count: scheduledVisits },
+    { count: completedVisits },
+    { count: missedVisits },
+  ] = await Promise.all([
+    orgVisits(),
+    orgVisits().eq('status', 'scheduled'),
+    orgVisits().eq('status', 'completed'),
+    orgVisits().in('status', ['missed', 'cancelled']),
+  ]);
+
   const stats = {
-    total: filteredVisits.length,
-    scheduled: filteredVisits.filter((v: Visit) => v.status === 'scheduled')
-      .length,
-    completed: filteredVisits.filter((v: Visit) => v.status === 'completed')
-      .length,
-    missed: filteredVisits.filter(
-      (v: Visit) => v.status === 'missed' || v.status === 'cancelled',
-    ).length,
+    total: totalVisits ?? 0,
+    scheduled: scheduledVisits ?? 0,
+    completed: completedVisits ?? 0,
+    missed: missedVisits ?? 0,
   };
 
   const heroMetrics: PageHeroMetric[] = [
@@ -292,6 +299,12 @@ export default async function VisitsPage({
           ) : null}
         </form>
 
+        <p className="text-xs text-muted-foreground">
+          Showing {filteredVisits.length} of {stats.total}{' '}
+          {label.toLowerCase()}
+          {stats.total > 100 ? ', most recent 100 loaded' : ''}.
+        </p>
+
         {/* Mobile cards */}
         <div className="md:hidden">
           {filteredVisits.length === 0 ? (
@@ -319,10 +332,7 @@ export default async function VisitsPage({
                 const clientName =
                   (visit.client as { full_name?: string } | null)?.full_name ||
                   'Unassigned';
-                const staffName =
-                  (visit.staff as { email?: string } | null)?.email?.split(
-                    '@',
-                  )[0] || null;
+                const staffName = visit.staff?.name ?? null;
                 return (
                   <RecordCard
                     key={visit.id}
@@ -330,7 +340,7 @@ export default async function VisitsPage({
                     title={clientName}
                     subtitle={formatDateTime(visit.scheduled_start)}
                     status={
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-medium">
                         {getStatusIcon(visit.status)}
                         {visit.status.replace('_', ' ')}
                       </span>
@@ -423,9 +433,7 @@ export default async function VisitsPage({
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     <span className="text-sm text-muted-foreground">
-                      {(visit.staff as { email?: string } | null)?.email?.split(
-                        '@',
-                      )[0] || '-'}
+                      {visit.staff?.name || '-'}
                     </span>
                   </td>
                   <td className="px-4 py-3 hidden xl:table-cell">

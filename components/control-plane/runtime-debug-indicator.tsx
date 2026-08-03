@@ -24,7 +24,7 @@ export function RuntimeDebugIndicator() {
   } = useControlPlaneRuntime();
 
   return (
-    <div className="fixed bottom-3 right-3 z-[var(--z-debug)] w-64 rounded-lg border border-slate-700 bg-slate-950/90 p-3 text-[11px] text-foreground/90 shadow-xl backdrop-blur">
+    <div className="fixed bottom-3 right-3 z-[var(--z-debug)] w-64 rounded-lg border border-border bg-background/90 p-3 text-[11px] text-foreground/90 shadow-xl backdrop-blur">
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-1 font-semibold text-foreground">
           <Activity className="h-3.5 w-3.5" />
@@ -32,9 +32,9 @@ export function RuntimeDebugIndicator() {
         </div>
         <div className="flex items-center gap-1 text-xs">
           {streamConnected ? (
-            <Wifi className="h-3 w-3 text-emerald-300" />
+            <Wifi className="h-3 w-3 text-success" />
           ) : (
-            <WifiOff className="h-3 w-3 text-rose-300" />
+            <WifiOff className="h-3 w-3 text-destructive" />
           )}
           <span>{streamStatus}</span>
         </div>

@@ -19,9 +19,7 @@ import {
   IndustryHero,
   BeforeAfterSection,
   FrameworkExplorer,
-  VerticalTimeline,
   HeroStatsBar,
-  CompareTable,
   SeeItInAction,
   DemoDashboardContent,
   DemoAuditExport,
@@ -88,7 +86,7 @@ function ConstructionDashboardVisual() {
             contractors: '22',
           },
           expandedContent: {
-            label: 'Site Details, REVIEW NEEDED',
+            label: 'Site details: review needed',
             items: [
               { key: 'Project Manager', value: 'Sarah Kim' },
               { key: 'WHS Score', value: '84%' },
@@ -126,7 +124,7 @@ function ConstructionDashboardVisual() {
             contractors: '48',
           },
           expandedContent: {
-            label: 'Site Details, ACTION REQUIRED',
+            label: 'Site details: action required',
             items: [
               { key: 'Project Manager', value: "Mike O'Sullivan" },
               { key: 'WHS Score', value: '72%' },
@@ -192,9 +190,7 @@ function FeatureVisual({
   return (
     <div className="p-5 space-y-3">
       <div>
-        <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-          {label}
-        </div>
+        <div className="text-xs font-medium text-slate-400">{label}</div>
         <div className="mt-0.5 text-[9px] text-slate-600">
           Illustrative · sample data
         </div>
@@ -212,10 +208,10 @@ function FeatureVisual({
                 <span
                   className={`h-2 w-2 rounded-full ${
                     r.status === 'green'
-                      ? 'bg-emerald-500'
+                      ? 'bg-success'
                       : r.status === 'amber'
-                        ? 'bg-amber-500'
-                        : 'bg-red-500'
+                        ? 'bg-warning'
+                        : 'bg-destructive'
                   }`}
                 />
               )}
@@ -240,47 +236,39 @@ export default function ConstructionComplianceContent() {
           scrim="center"
         />
         <IndustryHero
-        statsBar={
-          <HeroStatsBar
-            stats={[
-              'Multi-site compliance',
-              'SafeWork notification in 48hr',
-              'Contractor verification automated',
-              'AU-hosted',
-            ]}
-          />
-        }
-        eyebrow="SafeWork + WHS Act Compliance"
-        headline={
-          <>
-            SafeWork Inspection?
-            <br />
-            <span className="text-foreground">
-              You&apos;re Already Prepared.
-            </span>
-          </>
-        }
-        subheadline="SafeWork inspectors arrive unannounced. FormaOS keeps SWMS current, inductions verified, and incidents tracked across every site."
-        primaryCta={{
-          label: PUBLIC_CTA_LABELS.compliancePlan,
-          href: compliancePlanHref('construction_compliance'),
-        }}
-        secondaryCta={{
-          label: 'See Construction Demo',
-          href: demoHref('construction_compliance'),
-        }}
-        trustSignals={[
-          'AU-hosted by default',
-          'Assessment-led onboarding',
-          'Compliance plan scoped by framework',
-          'SafeWork notification ready',
-        ]}
-        dashboardVisual={<ConstructionDashboardVisual />}
-        jurisdictionBadges={[
-          { label: 'WHS Act 2011' },
-          { label: 'SafeWork Australia' },
-          { label: 'SWMS Requirements' },
-        ]}
+          statsBar={
+            <HeroStatsBar
+              stats={[
+                'Multi-site compliance',
+                'SafeWork notification in 48hr',
+                'Contractor verification automated',
+                'AU-hosted',
+              ]}
+            />
+          }
+          headline={
+            <>
+              The notification chain
+              <br />
+              starts <span className="mk-accent">immediately</span>
+            </>
+          }
+          subheadline="A notifiable incident starts a preservation duty, a notification and an investigation at once. FormaOS runs that chain across every site."
+          primaryCta={{
+            label: PUBLIC_CTA_LABELS.compliancePlan,
+            href: compliancePlanHref('construction_compliance'),
+          }}
+          secondaryCta={{
+            label: 'See Construction Demo',
+            href: demoHref('construction_compliance'),
+          }}
+          trustSignals={[
+            'AU-hosted by default',
+            'Assessment-led onboarding',
+            'Compliance plan scoped by framework',
+            'SafeWork notification ready',
+          ]}
+          dashboardVisual={<ConstructionDashboardVisual />}
         />
       </div>
 
@@ -289,91 +277,19 @@ export default function ConstructionComplianceContent() {
       </div>
 
       <BeforeAfterSection
-        headline="The Construction WHS Compliance Gap"
-        subheadline="The difference between scrambling and being inspection-ready."
+        headline="What happens in the hour after a notifiable incident"
+        subheadline="Site preservation, regulator notification and investigation all start at once, usually while the site is still stopped."
         without={[
-          'SafeWork inspector arrives unannounced, scramble to find current SWMS across spreadsheets, emails, and filing cabinets',
-          'Subcontractors arrive on-site without valid inductions or licences, you carry the liability',
-          "Notifiable WHS incident happens, 48-hour SafeWork notification deadline tracked in someone's head",
-          'Managing compliance across 5+ active sites with spreadsheets, gaps emerge between projects unseen',
+          "Notifiable WHS incident happens, the notification deadline is tracked in someone's head",
+          'Site preservation obligations remembered late, the scene is disturbed before the regulator arrives',
+          'Subcontractors are on site without valid inductions or licences, you carry the liability',
+          'SafeWork inspector arrives unannounced, current SWMS are spread across spreadsheets, emails, and filing cabinets',
         ]}
         withFormaOS={[
-          'Every SWMS is version-controlled, signed off, and exportable by site, hand the inspector a structured evidence pack instantly',
-          'Contractor verification pipeline checks inductions, licences, and insurance before site access, automatic alerts on expiry',
-          'Incident pipeline with countdown timer, site preservation checklist, and structured SafeWork notification workflow, zero missed deadlines',
-          'Multi-site dashboard shows compliance score, incident count, SWMS currency, and contractor status per project in real time',
-        ]}
-      />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
-      <CompareTable
-        headline="FormaOS vs. the old way"
-        description="See how a construction-specific WHS platform compares to the tools most builders are still using."
-        col2Label="WHS Software"
-        rows={[
-          {
-            feature: 'SWMS version control per site',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Worker sign-off tracking',
-            spreadsheets: 'partial',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'SafeWork 48hr notification timer',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Contractor licence verification',
-            spreadsheets: 'partial',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Multi-site compliance dashboard',
-            spreadsheets: 'no',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
-          {
-            feature: 'High-risk work licence register',
-            spreadsheets: 'partial',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'Incident investigation workflow',
-            spreadsheets: 'no',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
-          {
-            feature: 'State-specific WHS regulations',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'One-click SafeWork audit export',
-            spreadsheets: 'no',
-            genericGrc: 'no',
-            formaos: 'yes',
-          },
-          {
-            feature: 'AU-hosted with data sovereignty',
-            spreadsheets: 'partial',
-            genericGrc: 'partial',
-            formaos: 'yes',
-          },
+          'Incident pipeline with a countdown timer and a structured SafeWork notification workflow, no missed deadlines',
+          'Site preservation checklist triggered at classification, with timestamps against each step',
+          'Contractor verification pipeline checks inductions, licences, and insurance before site access, with automatic expiry alerts',
+          'Every SWMS is version-controlled, signed off, and exportable by site, hand the inspector a structured evidence pack',
         ]}
       />
 
@@ -382,8 +298,8 @@ export default function ConstructionComplianceContent() {
       </div>
 
       <FrameworkExplorer
-        headline="Every Construction WHS Framework. Pre-Built."
-        description="FormaOS ships with Australian WHS frameworks pre-loaded. State-specific regulations, Codes of Practice, and high-risk work requirements, mapped and ready."
+        headline="The duties behind that chain, already mapped"
+        description="Model WHS Act duties, the Codes of Practice you actually work to, state notification rules, and the high-risk work licences your crew holds."
         frameworks={[
           {
             id: 'model-whs',
@@ -391,14 +307,6 @@ export default function ConstructionComplianceContent() {
             body: 'Safe Work Australia',
             updated: '2025-12-01',
             obligationCount: '250+',
-            categories: [
-              { name: 'Primary duty of care (PCBU obligations)', pct: 98 },
-              { name: 'Worker consultation and participation', pct: 96 },
-              { name: 'Workplace entry by WHS permit holders', pct: 94 },
-              { name: 'Notifiable incident reporting', pct: 100 },
-              { name: 'Health and safety representative powers', pct: 92 },
-              { name: 'Issue resolution procedures', pct: 95 },
-            ],
             requirements: [
               'Primary duty of care (PCBU obligations)',
               'Worker consultation, representation, and participation',
@@ -414,14 +322,6 @@ export default function ConstructionComplianceContent() {
             body: 'Safe Work Australia',
             updated: '2025-11-15',
             obligationCount: '300+',
-            categories: [
-              { name: 'Construction work, managing risks', pct: 97 },
-              { name: 'Demolition work', pct: 94 },
-              { name: 'Excavation work', pct: 96 },
-              { name: 'Managing the risk of falls', pct: 98 },
-              { name: 'Welding processes', pct: 93 },
-              { name: 'Managing risks of hazardous chemicals', pct: 91 },
-            ],
             requirements: [
               'Construction work, managing risks',
               'Demolition work',
@@ -437,13 +337,6 @@ export default function ConstructionComplianceContent() {
             body: 'SafeWork NSW, WorkSafe VIC, WHS QLD, SafeWork SA',
             updated: '2026-01-10',
             obligationCount: '200+',
-            categories: [
-              { name: 'SafeWork NSW construction notification', pct: 100 },
-              { name: 'WorkSafe VIC high-risk construction', pct: 96 },
-              { name: 'WHS QLD principal contractor obligations', pct: 94 },
-              { name: 'SafeWork SA asbestos management', pct: 98 },
-              { name: 'State-specific licensing and registration', pct: 92 },
-            ],
             requirements: [
               'SafeWork NSW construction notification requirements',
               'WorkSafe VIC high-risk construction work',
@@ -458,13 +351,6 @@ export default function ConstructionComplianceContent() {
             body: 'Model WHS Regulations',
             updated: '2025-09-20',
             obligationCount: '100+',
-            categories: [
-              { name: 'Principal contractor duties', pct: 97 },
-              { name: 'WHS management plan requirements', pct: 95 },
-              { name: 'Subcontractor induction and verification', pct: 98 },
-              { name: 'Signage and site access control', pct: 100 },
-              { name: 'SWMS requirements', pct: 96 },
-            ],
             requirements: [
               'Principal contractor duties',
               'WHS management plan requirements',
@@ -479,13 +365,6 @@ export default function ConstructionComplianceContent() {
             body: 'Safe Work Australia / State regulators',
             updated: '2025-10-05',
             obligationCount: '80+',
-            categories: [
-              { name: 'Crane and hoist operation licences', pct: 100 },
-              { name: 'Scaffolding work licences', pct: 98 },
-              { name: 'Rigging work licences', pct: 96 },
-              { name: 'Forklift operation licences', pct: 100 },
-              { name: 'Dogging and pressure equipment', pct: 94 },
-            ],
             requirements: [
               'Crane and hoist operation licences',
               'Scaffolding work licences',
@@ -501,108 +380,9 @@ export default function ConstructionComplianceContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      {/* ---- How It Works ---- */}
-      <VerticalTimeline
-        steps={[
-          {
-            number: '01',
-            title: 'Set up your sites and SWMS register',
-            description:
-              'Add your active construction sites and upload existing SWMS documents. FormaOS creates a versioned SWMS register per site with worker sign-off tracking and review date alerts, ready for any SafeWork inspection.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
-            visual: (
-              <FeatureVisual
-                label="Site Setup"
-                rows={[
-                  { k: 'CBD Tower, 12 SWMS', v: 'Active', status: 'green' },
-                  {
-                    k: 'Westfield Extension, 8 SWMS',
-                    v: 'Active',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Olympic Park Stage 3, 15 SWMS',
-                    v: 'Active',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Airport Terminal 2, 10 SWMS',
-                    v: 'Active',
-                    status: 'green',
-                  },
-                ]}
-              />
-            ),
-          },
-          {
-            number: '02',
-            title: 'Verify contractors and link credentials',
-            description:
-              'Add subcontractors per project and link their inductions, licences, and insurance. The contractor verification pipeline shows verified vs unverified workers at every site with automatic expiry alerts.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
-            visual: (
-              <FeatureVisual
-                label="Contractor Verification"
-                rows={[
-                  {
-                    k: 'Murray Electrical',
-                    v: 'Fully Verified',
-                    status: 'green',
-                  },
-                  {
-                    k: 'Pacific Plumbing',
-                    v: 'Insurance Expiring',
-                    status: 'amber',
-                  },
-                  { k: 'Skyline Scaffolding', v: 'Verified', status: 'green' },
-                  {
-                    k: 'Delta Demolition',
-                    v: 'Licence Expired',
-                    status: 'red',
-                  },
-                ]}
-              />
-            ),
-          },
-          {
-            number: '03',
-            title: 'Monitor, report, and prove compliance',
-            description:
-              'Multi-site dashboard shows compliance scores across all projects. When an incident occurs, the pipeline tracks it from report through SafeWork notification to investigation and closure. Export structured evidence packs for any inspection.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
-            visual: (
-              <FeatureVisual
-                label="Portfolio Compliance"
-                rows={[
-                  { k: 'CBD Tower', v: '98% compliant', status: 'green' },
-                  {
-                    k: 'Westfield Extension',
-                    v: '84% compliant',
-                    status: 'amber',
-                  },
-                  {
-                    k: 'Olympic Park Stage 3',
-                    v: '72% compliant',
-                    status: 'red',
-                  },
-                  { k: 'Audit export', v: 'Ready', status: 'green' },
-                ]}
-              />
-            ),
-          },
-        ]}
-      />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
       <IndustryFeatures
-        headline="Purpose-Built for Construction"
-        subheadline="Every feature designed around real construction WHS workflows, not retrofitted office compliance tools."
+        headline="SWMS, contractors, licences and incidents, per site"
+        subheadline="The four registers a principal contractor is asked for, kept per project rather than reassembled after an incident."
         features={[
           {
             title: 'SWMS Register',
@@ -722,8 +502,8 @@ export default function ConstructionComplianceContent() {
             ],
             visual: (
               <div className="p-5 space-y-3">
-                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Incident Pipeline
+                <div className="text-xs font-medium text-slate-400">
+                  Incident pipeline
                 </div>
                 {[
                   'Reported',
@@ -733,22 +513,18 @@ export default function ConstructionComplianceContent() {
                   'Closed',
                 ].map((stage, i) => (
                   <div key={stage} className="flex items-center gap-3">
-                    <div
-                      className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
-                        i < 3
-                          ? 'bg-white/[0.12] text-white border border-white/20'
-                          : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
+                    <span
+                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                        i < 3 ? 'bg-success' : 'bg-white/20'
                       }`}
-                    >
-                      {i + 1}
-                    </div>
+                    />
                     <span
                       className={`text-xs ${i < 3 ? 'text-white' : 'text-slate-500'}`}
                     >
                       {stage}
                     </span>
                     {i < 3 && (
-                      <span className="text-[10px] text-emerald-500 ml-auto">
+                      <span className="text-[10px] text-success ml-auto">
                         Complete
                       </span>
                     )}
@@ -805,6 +581,50 @@ export default function ConstructionComplianceContent() {
       {/* ---- See It In Action ---- */}
       <SeeItInAction
         tabs={[
+          {
+            id: 'incidents',
+            label: 'Incident Timeline',
+            icon: <Bell className="h-4 w-4" />,
+            content: (
+              <DemoNotificationTimeline
+                steps={[
+                  {
+                    time: 'T+0:00',
+                    label:
+                      'Notifiable incident, fall from height at Olympic Park',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+0:15',
+                    label: 'Site preservation activated, area cordoned',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+1:00',
+                    label:
+                      'SafeWork notification prepared, 48hr countdown started',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+18:00',
+                    label: 'SafeWork notification lodged',
+                    status: 'active',
+                  },
+                  {
+                    time: 'T+48:00',
+                    label:
+                      'Investigation commenced, witness statements collected',
+                    status: 'pending',
+                  },
+                  {
+                    time: 'T+14d',
+                    label: 'Corrective action plan drafted and assigned',
+                    status: 'pending',
+                  },
+                ]}
+              />
+            ),
+          },
           {
             id: 'dashboard',
             label: 'Site Compliance Dashboard',
@@ -867,50 +687,6 @@ export default function ConstructionComplianceContent() {
               />
             ),
           },
-          {
-            id: 'incidents',
-            label: 'Incident Timeline',
-            icon: <Bell className="h-4 w-4" />,
-            content: (
-              <DemoNotificationTimeline
-                steps={[
-                  {
-                    time: 'T+0:00',
-                    label:
-                      'Notifiable incident, fall from height at Olympic Park',
-                    status: 'complete',
-                  },
-                  {
-                    time: 'T+0:15',
-                    label: 'Site preservation activated, area cordoned',
-                    status: 'complete',
-                  },
-                  {
-                    time: 'T+1:00',
-                    label:
-                      'SafeWork notification prepared, 48hr countdown started',
-                    status: 'complete',
-                  },
-                  {
-                    time: 'T+18:00',
-                    label: 'SafeWork notification lodged',
-                    status: 'active',
-                  },
-                  {
-                    time: 'T+48:00',
-                    label:
-                      'Investigation commenced, witness statements collected',
-                    status: 'pending',
-                  },
-                  {
-                    time: 'T+14d',
-                    label: 'Corrective action plan drafted and assigned',
-                    status: 'pending',
-                  },
-                ]}
-              />
-            ),
-          },
         ]}
       />
 
@@ -920,27 +696,27 @@ export default function ConstructionComplianceContent() {
 
       <SocialProof
         metricsBanner={[
-          '206+ tables with row-level security',
+          'Notifiable incident timers built in',
+          'SWMS version history with worker sign-off',
           'AU-hosted by default, data never leaves Australia',
-          'Zero evidence gaps at inspection, immutable chain',
-          'SOC 2 compliance in progress',
+          'Immutable, timestamped evidence chain',
         ]}
         trustCards={[
           {
-            persona: 'Tier 1 Builder, 12 active sites',
+            persona: 'A builder running a dozen active sites',
             need: 'SWMS currency and contractor verification across all projects from a single dashboard',
             delivers:
               'Multi-site compliance dashboard, automated SWMS review alerts, contractor verification pipeline with expiry tracking',
           },
           {
-            persona: 'Civil Contractor, government infrastructure',
+            persona: 'A civil contractor on government infrastructure',
             need: 'SafeWork notification workflows with audit trail for government contract compliance',
             delivers:
               'Incident pipeline with 48-hour notification timer, immutable audit trail, exportable compliance evidence packs',
           },
           {
-            persona: 'Specialist Subcontractor, high-risk work',
-            need: 'High-risk work licence tracking for 60+ crew across 5 licence classes',
+            persona: 'A specialist subcontractor doing high-risk work',
+            need: 'High-risk work licence tracking across several licence classes and a large crew',
             delivers:
               'Centralised licence register, automatic expiry alerts at 90/60/30 days, bulk verification export',
           },
@@ -951,17 +727,6 @@ export default function ConstructionComplianceContent() {
           { name: 'WorkSafe VIC', icon: <Building2 className="h-4 w-4" /> },
         ]}
       />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
-      <div className="relative isolate overflow-hidden">
-        <IndustryCTA
-          industry="Construction"
-          urgencyCallout="SafeWork inspections don't announce themselves. Is your SWMS register current right now?"
-        />
-      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -1013,6 +778,13 @@ export default function ConstructionComplianceContent() {
           },
         ]}
       />
+      <div className="relative isolate overflow-hidden">
+        <IndustryCTA
+          industry="Construction"
+          urgencyCallout="SafeWork inspections don't announce themselves. Is your SWMS register current right now?"
+        />
+      </div>
+
       <RelatedIndustries currentSlug="construction-compliance" />
     </MarketingPageShell>
   );

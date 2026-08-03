@@ -61,7 +61,7 @@ export function CompliancePageHero() {
 
   return (
     <PageHero
-      eyebrow="Compliance · Obligations Register"
+      eyebrow="Compliance"
       title="Obligations Register"
       subtitle="Track, manage, and prove compliance across all frameworks."
       metrics={metrics}

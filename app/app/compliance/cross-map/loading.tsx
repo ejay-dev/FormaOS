@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Cross Map" cards={2} tableRows={4} />;
+export default function AppComplianceCrossMapLoading() {
+  return <PageSkeleton hero label="the cross-map" heroMetrics={4} tableRows={4} />;
 }

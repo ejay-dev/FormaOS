@@ -8,11 +8,19 @@ import {
   notifySelf,
   createNotification,
 } from '@/app/app/actions/notifications';
-import { requirePermission } from '@/app/app/actions/rbac';
+import {
+  getUserOrgMembership,
+  hasPermission,
+  requirePermission,
+} from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
 import { normalizeTaskPriority } from '@/lib/tasks/priority';
 import { insertOrgTaskCompat } from '@/lib/tasks/persistence';
 import { actionError, isNextInternalError } from "@/lib/actions/safe";
+import {
+  normaliseTaskStatus,
+  TASK_STATUS_LABELS,
+} from '@/components/tasks/task-status';
 
 export async function createTask(formData: FormData) {
   try {
@@ -290,7 +298,105 @@ export async function completeTask(taskId: string) {
     if (!taskId) throw new Error('Task ID required');
 
     await _completeTaskCore(supabase, taskId, user);
-    return { ok: true as const };
+    return { success: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+/**
+ * Moves a task to another status. Backs the board's drag-and-drop, so the
+ * caller needs the outcome to decide whether to keep or revert its optimistic
+ * move — every failure path returns `{ success: false, error }` rather than
+ * throwing.
+ */
+export async function updateTaskStatus(taskId: string, status: string) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Unauthorized');
+    if (!taskId) throw new Error('Task ID required');
+
+    const nextStatus = normaliseTaskStatus(status);
+
+    // Role is checked here first only so a blocked user reads a sentence
+    // instead of a permission key; requirePermission below still runs, and
+    // with it the billing read-only gate every other write goes through.
+    const membership = await getUserOrgMembership();
+    if (!hasPermission(membership.role, 'EDIT_CONTROLS')) {
+      throw new Error(
+        'Your role cannot change task status. Ask an owner or compliance officer.',
+      );
+    }
+
+    // Completion runs the shared path so recurrence, notifications and the
+    // onboarding checklist behave the same however the task was completed.
+    if (nextStatus === 'completed') {
+      await _completeTaskCore(supabase, taskId, user);
+      return { success: true as const, status: nextStatus };
+    }
+
+    const permissionCtx = await requirePermission('EDIT_CONTROLS');
+
+    const { data: task } = await supabase
+      .from('org_tasks')
+      .select('id, title, status')
+      .eq('id', taskId)
+      .eq('organization_id', permissionCtx.orgId)
+      .maybeSingle();
+
+    if (!task) throw new Error('Task not found');
+
+    const previousStatus = (task.status as string | null) ?? null;
+    if (normaliseTaskStatus(previousStatus) === nextStatus) {
+      return { success: true as const, status: nextStatus };
+    }
+
+    const { error: updateError } = await supabase
+      .from('org_tasks')
+      .update({ status: nextStatus })
+      .eq('id', taskId)
+      .eq('organization_id', permissionCtx.orgId);
+
+    if (updateError) throw updateError;
+
+    await logProductActivity(
+      permissionCtx.orgId,
+      user.id,
+      'updated',
+      {
+        type: 'task',
+        id: taskId,
+        name: task.title as string,
+        path: '/app/tasks',
+      },
+      {
+        previousStatus,
+        nextStatus,
+        statusLabel: TASK_STATUS_LABELS[nextStatus],
+      },
+    );
+
+    await logAuditEvent({
+      organizationId: permissionCtx.orgId,
+      actorUserId: user.id,
+      actorRole: permissionCtx.role,
+      entityType: 'task',
+      entityId: taskId,
+      actionType: 'TASK_STATUS_CHANGED',
+      beforeState: { status: previousStatus },
+      afterState: { status: nextStatus },
+      reason: 'task_status_change',
+    });
+
+    revalidatePath('/app/tasks');
+    revalidatePath('/app/tasks/board');
+    revalidatePath('/app/tasks/calendar');
+
+    return { success: true as const, status: nextStatus };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);

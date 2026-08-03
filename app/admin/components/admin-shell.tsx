@@ -20,16 +20,19 @@ import {
   LifeBuoy,
   Settings,
   Tag,
-  ShieldAlert,
+  BarChart3,
+  Gauge,
+  HeartPulse,
+  KeyRound,
+  Mail,
+  Server,
   SlidersHorizontal,
   Layers,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useTheme } from 'next-themes';
+import { useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
-import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import { AdminQuickSearch } from '@/app/admin/components/admin-quick-search';
 
 /* Admin Console Shell — Platform Operations Center */
@@ -40,50 +43,43 @@ const NAV_SECTIONS = [
     items: [
       { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutGrid },
       { name: 'Revenue', href: '/admin/revenue', icon: DollarSign },
+      {
+        name: 'Usage analytics',
+        href: '/admin/usage-analytics',
+        icon: BarChart3,
+      },
     ],
   },
   {
-    label: 'Management',
+    label: 'Customers',
     items: [
       { name: 'Users', href: '/admin/users', icon: Users },
       { name: 'Organizations', href: '/admin/orgs', icon: Building2 },
+      { name: 'Customer health', href: '/admin/customer-health', icon: Gauge },
       { name: 'Billing', href: '/admin/billing', icon: CreditCard },
       { name: 'Trials', href: '/admin/trials', icon: Clock },
+      { name: 'Support', href: '/admin/support', icon: LifeBuoy },
+      { name: 'Bulk actions', href: '/admin/bulk', icon: Layers },
     ],
   },
   {
     label: 'Platform',
     items: [
       {
-        name: 'Command Center',
+        name: 'Control plane',
         href: '/admin/control-plane',
         icon: SlidersHorizontal,
       },
       { name: 'Features', href: '/admin/features', icon: Zap },
       { name: 'Security', href: '/admin/security', icon: Shield },
-      {
-        name: 'Security Live',
-        href: '/admin/security-live',
-        icon: ShieldAlert,
-      },
-      {
-        name: 'Risk Triage',
-        href: '/admin/security/triage',
-        icon: ShieldAlert,
-      },
-      { name: 'Sessions', href: '/admin/sessions', icon: Users },
+      { name: 'Sessions', href: '/admin/sessions', icon: KeyRound },
       { name: 'Activity', href: '/admin/activity', icon: Activity },
-      { name: 'System', href: '/admin/system', icon: Activity },
-      { name: 'Audit', href: '/admin/audit', icon: FileText },
+      { name: 'Audit log', href: '/admin/audit', icon: FileText },
+      { name: 'System status', href: '/admin/system', icon: Server },
+      { name: 'System health', href: '/admin/health', icon: HeartPulse },
       { name: 'Releases', href: '/admin/releases', icon: Tag },
       { name: 'Exports', href: '/admin/exports', icon: FileArchive },
-    ],
-  },
-  {
-    label: 'Admin',
-    items: [
-      { name: 'Support', href: '/admin/support', icon: LifeBuoy },
-      { name: 'Bulk Actions', href: '/admin/bulk', icon: Layers },
+      { name: 'Emails', href: '/admin/emails', icon: Mail },
       { name: 'Settings', href: '/admin/settings', icon: Settings },
     ],
   },
@@ -98,19 +94,6 @@ export function AdminShell({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
-
-  // Admin surface was designed dark-first; many nested components use hardcoded
-  // slate tokens that render unreadably on a light background. Lock dark while
-  // mounted and restore the user's previous preference on unmount so the rest
-  // of the app still respects their theme choice.
-  useEffect(() => {
-    const previous = theme;
-    if (previous !== 'dark') setTheme('dark');
-    return () => {
-      if (previous && previous !== 'dark') setTheme(previous);
-    };
-  }, []);
 
   const handleLogout = async () => {
     const client = createSupabaseClient();
@@ -149,10 +132,6 @@ export function AdminShell({
         {/* Right: Status + User + Logout */}
         <div className="flex items-center gap-4">
           <AdminQuickSearch />
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted text-xs font-medium">
-            <div className="h-2 w-2 rounded-full bg-success" />
-            <span>Healthy</span>
-          </div>
           <div className="hidden sm:block text-xs text-muted-foreground truncate max-w-[200px]">
             {email || 'Admin'}
           </div>
@@ -178,7 +157,7 @@ export function AdminShell({
           <nav className="p-3 space-y-5">
             {NAV_SECTIONS.map((section) => (
               <div key={section.label}>
-                <div className="px-3 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <div className="px-3 mb-1.5 text-xs font-medium text-muted-foreground">
                   {section.label}
                 </div>
                 <div className="space-y-0.5">
@@ -217,7 +196,6 @@ export function AdminShell({
           id="main-content"
           className="flex-1 min-w-0 h-[calc(100vh-4rem)] overflow-y-auto"
         >
-          <EnterpriseTrustStrip surface="admin" />
           <div className="p-6 md:p-8 max-w-[1600px] mx-auto">{children}</div>
         </main>
       </div>

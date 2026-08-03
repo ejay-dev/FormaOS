@@ -128,7 +128,7 @@ function NavDropdown({
                   'block rounded-lg px-3 py-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40',
                   isActive
                     ? 'bg-white/[0.06] text-white'
-                    : 'text-slate-400 hover:bg-white/[0.06] hover:text-white',
+                    : 'text-zinc-400 hover:bg-white/[0.06] hover:text-white',
                 )}
               >
                 {l.label}
@@ -163,7 +163,7 @@ function MobileSection({
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500 hover:text-slate-400 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-2 text-[11px] text-zinc-500 hover:text-zinc-400 transition-colors"
         aria-expanded={open}
       >
         {label}
@@ -187,7 +187,7 @@ function MobileSection({
                   'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
                   isActive
                     ? 'bg-white/[0.06] text-white border border-white/15'
-                    : 'hover:bg-white/5 text-slate-300 hover:text-white',
+                    : 'hover:bg-white/5 text-zinc-300 hover:text-white',
                 )}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -229,7 +229,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
     return (
       <div className="text-sm space-y-1">
         {/* Home + Pricing - always visible as direct links */}
-        <div className="px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500">
+        <div className="px-4 py-2 text-[11px] text-zinc-500">
           Pages
         </div>
         <Link
@@ -239,7 +239,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
             'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed',
             pathname === '/'
               ? 'bg-white/[0.06] text-white border border-white/15'
-              : 'hover:bg-white/5 text-slate-300 hover:text-white',
+              : 'hover:bg-white/5 text-zinc-300 hover:text-white',
           )}
           aria-current={pathname === '/' ? 'page' : undefined}
         >
@@ -252,7 +252,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
             'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed',
             pathname === '/pricing'
               ? 'bg-white/[0.06] text-white border border-white/15'
-              : 'hover:bg-white/5 text-slate-300 hover:text-white',
+              : 'hover:bg-white/5 text-zinc-300 hover:text-white',
           )}
           aria-current={pathname === '/pricing' ? 'page' : undefined}
         >

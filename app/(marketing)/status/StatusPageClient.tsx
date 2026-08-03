@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 
 // Audit 2026-05-27, client renderer for /status. Polls /api/health
 // every 30s and renders the per-subsystem status cards. No auth.
@@ -30,20 +31,20 @@ const POLL_INTERVAL_MS = 30_000;
 function statusColour(status: string): string {
   switch (status) {
     case 'healthy':
-      return 'bg-emerald-500';
+      return 'bg-success';
     case 'degraded':
-      return 'bg-amber-500';
+      return 'bg-warning';
     case 'unhealthy':
     case 'error':
-      return 'bg-red-500';
+      return 'bg-destructive';
     default:
-      return 'bg-zinc-400';
+      return 'bg-muted-foreground/50';
   }
 }
 
 function StatusBadge({ status }: { status: string }) {
   return (
-    <span className="inline-flex items-center gap-2 text-sm font-medium uppercase tracking-wide text-zinc-700 dark:text-zinc-200">
+    <span className="inline-flex items-center gap-2 text-sm font-medium capitalize text-foreground">
       <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusColour(status)}`} aria-hidden />
       {status}
     </span>
@@ -54,7 +55,9 @@ function formatRelative(iso: string | null | undefined): string {
   if (!iso) return '—';
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return iso;
-  const seconds = Math.floor((Date.now(), then) / 1000);
+  // Clamped: a provider clock running ahead of the browser would
+  // otherwise render a negative age.
+  const seconds = Math.max(0, Math.floor((Date.now() - then) / 1000));
   if (seconds < 60) return `${seconds}s ago`;
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
   if (seconds < 86_400) return `${Math.floor(seconds / 3600)}h ago`;
@@ -107,121 +110,104 @@ export default function StatusPageClient() {
   const overallStatus = health?.status ?? 'unknown';
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16 text-zinc-900 dark:text-zinc-100">
-      <header className="mb-12">
-        <h1 className="text-3xl font-semibold tracking-tight">FormaOS Status</h1>
-        <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
-          Live platform health, sampled every 30 seconds from the
-          {' '}<a className="underline" href="/api/health">/api/health</a> endpoint.
-          No auth required.
-        </p>
-      </header>
-
+    <div className="mx-auto max-w-4xl px-6 pb-24">
       <section
         aria-label="overall status"
-        className="mb-10 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+        className="rounded-2xl border border-border bg-card p-6"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <div className="text-xs uppercase text-zinc-500 dark:text-zinc-400">
-              Overall
-            </div>
-            <div className="mt-1 text-2xl font-semibold">
+            <p className="text-sm text-muted-foreground">Overall</p>
+            <p className="mt-1 text-2xl font-semibold text-foreground">
               {overallStatus === 'healthy' && 'All systems operational'}
               {overallStatus === 'degraded' && 'Partial degradation'}
               {overallStatus === 'unhealthy' && 'Major incident in progress'}
               {overallStatus === 'unknown' && 'Status unavailable'}
-            </div>
+            </p>
           </div>
           <StatusBadge status={overallStatus} />
         </div>
-        <div className="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
+        <p className="mt-4 text-xs text-muted-foreground">
           Last refreshed: {fetchedAt ? formatRelative(fetchedAt) : '—'} ·
           Environment: {health?.environment ?? 'unknown'}
-        </div>
+        </p>
       </section>
 
       {error && (
-        <p className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-200">
+        <p className="mt-6 rounded-xl border border-border bg-card px-4 py-3 text-sm text-destructive">
           /api/health request failed: {error}
         </p>
       )}
 
-      <section aria-label="subsystems" className="mb-10 space-y-3">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-          Subsystems
-        </h2>
-        {subsystems.length === 0 && (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">No data yet…</p>
-        )}
-        {subsystems.map((s) => (
-          <div
-            key={s.key}
-            className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-4 py-3 text-sm dark:border-zinc-800 dark:bg-zinc-900"
-          >
-            <div>
-              <div className="font-medium capitalize">{s.key}</div>
-              {s.error && (
-                <div className="mt-1 text-xs text-red-600 dark:text-red-300">
-                  {s.error}
+      <section aria-label="subsystems" className="mt-10">
+        <h2 className="text-lg font-semibold text-foreground">Subsystems</h2>
+        <div className="mt-4 space-y-3">
+          {subsystems.length === 0 && (
+            <p className="text-sm text-muted-foreground">
+              Waiting for the first health sample.
+            </p>
+          )}
+          {subsystems.map((s) => (
+            <div
+              key={s.key}
+              className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card px-4 py-3 text-sm"
+            >
+              <div>
+                <div className="font-medium capitalize text-foreground">
+                  {s.key}
                 </div>
-              )}
+                {s.error && (
+                  <div className="mt-1 text-xs text-destructive">{s.error}</div>
+                )}
+              </div>
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                {typeof s.responseTime === 'number' && (
+                  <span>{s.responseTime}ms</span>
+                )}
+                <StatusBadge status={s.status} />
+              </div>
             </div>
-            <div className="flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400">
-              {typeof s.responseTime === 'number' && (
-                <span>{s.responseTime}ms</span>
-              )}
-              <StatusBadge status={s.status} />
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </section>
 
       <section
         aria-label="audit chain integrity"
-        className="mb-10 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
+        className="mt-10 rounded-2xl border border-border bg-card p-6"
       >
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+        <h2 className="text-lg font-semibold text-foreground">
           Audit-chain external anchor
         </h2>
-        <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
-          The audit-log hash chain is periodically anchored to an
-          external public transparency log so a chain rewrite would
-          require also forging a third-party-witnessed record.
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+          The audit-log hash chain is periodically anchored to an external
+          public transparency log, so a chain rewrite would require also
+          forging a third-party-witnessed record.
         </p>
-        <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+        <div className="mt-6 grid grid-cols-2 gap-6 text-sm">
           <div>
-            <div className="text-xs uppercase text-zinc-500 dark:text-zinc-400">
-              Latest anchor
-            </div>
-            <div className="mt-1 font-medium">
+            <p className="text-xs text-muted-foreground">Latest anchor</p>
+            <p className="mt-1 font-medium text-foreground">
               {formatRelative(anchor?.latestAnchorAt)}
-            </div>
+            </p>
           </div>
           <div>
-            <div className="text-xs uppercase text-zinc-500 dark:text-zinc-400">
-              Provider
-            </div>
-            <div className="mt-1 font-medium">
+            <p className="text-xs text-muted-foreground">Provider</p>
+            <p className="mt-1 font-medium text-foreground">
               {anchor?.latestExternalProvider ?? '—'}
-            </div>
+            </p>
           </div>
           <div>
-            <div className="text-xs uppercase text-zinc-500 dark:text-zinc-400">
-              Last 30 days
-            </div>
-            <div className="mt-1 font-medium">
+            <p className="text-xs text-muted-foreground">Last 30 days</p>
+            <p className="mt-1 font-medium text-foreground">
               {anchor?.totalAnchorsLast30d ?? 0} anchors
-            </div>
+            </p>
           </div>
           <div>
-            <div className="text-xs uppercase text-zinc-500 dark:text-zinc-400">
-              Public view
-            </div>
-            <div className="mt-1 font-medium">
+            <p className="text-xs text-muted-foreground">Public view</p>
+            <p className="mt-1 font-medium text-foreground">
               {anchor?.latestExternalUrl ? (
                 <a
-                  className="underline"
+                  className="text-primary hover:underline"
                   href={anchor.latestExternalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -231,22 +217,43 @@ export default function StatusPageClient() {
               ) : (
                 '—'
               )}
-            </div>
+            </p>
           </div>
         </div>
       </section>
 
-      <footer className="mt-12 text-xs text-zinc-500 dark:text-zinc-400">
-        <p>
-          Raw JSON: <a className="underline" href="/api/health">/api/health</a>{' '}
-          · <a className="underline" href="/api/health/integrity">/api/health/integrity</a>{' '}
-          · <a className="underline" href="/api/status/audit-chain-anchor">/api/status/audit-chain-anchor</a>
-        </p>
-        <p className="mt-2">
-          Incidents history: filed under the <code>incidents</code>{' '}
-          channel; subscribe via your account if you&apos;re a customer.
-        </p>
-      </footer>
-    </main>
+      <p className="mt-10 text-xs text-muted-foreground">
+        Raw JSON:{' '}
+        <a className="text-primary hover:underline" href="/api/health">
+          /api/health
+        </a>{' '}
+        ·{' '}
+        <a className="text-primary hover:underline" href="/api/health/integrity">
+          /api/health/integrity
+        </a>{' '}
+        ·{' '}
+        <a
+          className="text-primary hover:underline"
+          href="/api/status/audit-chain-anchor"
+        >
+          /api/status/audit-chain-anchor
+        </a>
+      </p>
+
+      <div className="mt-8 flex flex-col sm:flex-row gap-4 text-sm">
+        <Link href="/trust" className="text-primary hover:underline">
+          ← Back to Trust Center
+        </Link>
+        <Link href="/trust/sla" className="text-primary hover:underline">
+          SLA and support terms →
+        </Link>
+        <Link
+          href="/trust/incident-response"
+          className="text-primary hover:underline"
+        >
+          Incident response →
+        </Link>
+      </div>
+    </div>
   );
 }

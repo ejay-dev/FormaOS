@@ -1,8 +1,17 @@
-import { NotificationPreferences } from '@/components/notifications/notification-preferences';
-import { fetchSystemState } from '@/lib/system-state/server';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-export default async function NotificationSettingsPage() {
+import { NotificationPreferences } from '@/components/notifications/notification-preferences';
+import { EmailPreferencesForm } from '@/components/settings/email-preferences-form';
+import {
+  SettingsPageHeader,
+  SettingsPageShell,
+} from '@/components/settings/settings-page-header';
+import { fetchSystemState } from '@/lib/system-state/server';
+
+export const metadata = { title: 'Communications | Settings | FormaOS' };
+
+export default async function CommunicationSettingsPage() {
   const systemState = await fetchSystemState();
 
   if (!systemState) {
@@ -10,21 +19,65 @@ export default async function NotificationSettingsPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <header>
-        <p className="text-xs font-black uppercase tracking-[0.26em] text-muted-foreground">
-          Notifications
-        </p>
-        <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-          Delivery Preferences
-        </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-          Control in-app alerts, digests, Slack and Teams routing, plus quiet
-          hours.
-        </p>
-      </header>
+    <SettingsPageShell>
+      <SettingsPageHeader
+        title="Communications"
+        description="Choose how FormaOS reaches you and which emails you receive."
+        action={
+          <Link
+            href="/app/settings/email-history"
+            className="inline-flex items-center rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Email history
+          </Link>
+        }
+      />
 
-      <NotificationPreferences orgId={systemState.organization.id} />
-    </div>
+      <section id="channels" className="space-y-3">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">
+            Delivery channels
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Where each notification lands — in-app, email, Slack, or Teams —
+            plus quiet hours.
+          </p>
+        </div>
+        <NotificationPreferences orgId={systemState.organization.id} />
+      </section>
+
+      <section id="email" className="space-y-3">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">
+            Emails from FormaOS
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            These settings cover email sent to your account address. Channel
+            routing above decides which events reach email in the first place.
+          </p>
+        </div>
+        <EmailPreferencesForm />
+      </section>
+
+      <section id="executive-digest" className="space-y-3">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">
+            Executive digest
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            A scheduled compliance summary sent to owners and admins. Configured
+            for the whole organisation rather than per person.
+          </p>
+        </div>
+        <div className="rounded-lg border border-border bg-card p-5">
+          <Link
+            href="/app/settings/executive-digest"
+            className="text-sm font-medium text-primary hover:text-primary/80"
+          >
+            Configure the executive digest
+          </Link>
+        </div>
+      </section>
+    </SettingsPageShell>
   );
 }

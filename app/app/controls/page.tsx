@@ -17,27 +17,16 @@ import {
   RecordCard,
   RecordList,
 } from '@/components/mobile/record-card';
+import {
+  StatusBadge,
+  controlStatus,
+} from '@/components/compliance/StatusBadge';
 
-const STATUS_CONFIG: Record<
-  string,
-  { label: string; className: string; icon: typeof CheckCircle2 }
-> = {
-  compliant: {
-    label: 'Compliant',
-    className: 'border-success/30 bg-success/10 text-success',
-    icon: CheckCircle2,
-  },
-  at_risk: {
-    label: 'At Risk',
-    className: 'border-warning/30 bg-warning/10 text-warning',
-    icon: AlertTriangle,
-  },
-  non_compliant: {
-    label: 'Non-Compliant',
-    className: 'border-destructive/30 bg-destructive/10 text-destructive',
-    icon: XCircle,
-  },
-};
+const SUMMARY_TILES = [
+  { key: 'compliant', icon: CheckCircle2, toneClass: 'text-success' },
+  { key: 'at_risk', icon: AlertTriangle, toneClass: 'text-warning' },
+  { key: 'non_compliant', icon: XCircle, toneClass: 'text-destructive' },
+] as const;
 
 async function ControlsList({ orgId }: { orgId: string }) {
   const db = await createSupabaseServerClient();
@@ -54,7 +43,7 @@ async function ControlsList({ orgId }: { orgId: string }) {
 
   if (controls.length === 0) {
     return (
-      <div className="rounded-2xl border border-border bg-surface-1 p-8 text-center">
+      <div className="rounded-xl border border-border bg-surface-1 p-8 text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface-2">
           <ShieldCheck className="h-5 w-5 text-muted-foreground" />
         </div>
@@ -85,20 +74,18 @@ async function ControlsList({ orgId }: { orgId: string }) {
     <div className="space-y-6">
       {/* Summary cards */}
       <div className="grid gap-4 sm:grid-cols-3">
-        {Object.entries(STATUS_CONFIG).map(([key, config]) => {
-          const Icon = config.icon;
-          const count = statusCounts[key as keyof typeof statusCounts] ?? 0;
+        {SUMMARY_TILES.map((tile) => {
+          const Icon = tile.icon;
+          const count = statusCounts[tile.key] ?? 0;
           return (
             <div
-              key={key}
-              className="rounded-2xl border border-border bg-card p-5 shadow-premium-lg"
+              key={tile.key}
+              className="rounded-xl border border-border bg-card p-5"
             >
               <div className="flex items-center gap-2">
-                <Icon
-                  className={`h-4 w-4 ${config.className.split(' ').pop()}`}
-                />
+                <Icon className={`h-4 w-4 ${tile.toneClass}`} />
                 <span className="text-xs font-semibold text-muted-foreground">
-                  {config.label}
+                  {controlStatus(tile.key).label}
                 </span>
               </div>
               <div className="mt-2 text-2xl font-bold text-foreground">
@@ -122,20 +109,12 @@ async function ControlsList({ orgId }: { orgId: string }) {
               (details.control_title as string) ?? controlCode;
             const frameworkCode =
               (details.framework_code as string) ?? '—';
-            const cfg =
-              STATUS_CONFIG[control.status] ?? STATUS_CONFIG.at_risk;
             return (
               <RecordCard
                 key={control.id}
                 title={controlCode}
                 subtitle={controlTitle !== controlCode ? controlTitle : undefined}
-                status={
-                  <span
-                    className={`inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${cfg.className}`}
-                  >
-                    {cfg.label}
-                  </span>
-                }
+                status={<StatusBadge {...controlStatus(control.status)} />}
                 meta={[
                   { label: 'Framework', value: frameworkCode },
                   {
@@ -161,7 +140,7 @@ async function ControlsList({ orgId }: { orgId: string }) {
       </div>
 
       {/* Controls table — desktop */}
-      <div className="hidden md:block rounded-2xl border border-border bg-surface-1 overflow-hidden">
+      <div className="hidden md:block rounded-xl border border-border bg-surface-1 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-surface-2 text-muted-foreground">
@@ -188,8 +167,6 @@ async function ControlsList({ orgId }: { orgId: string }) {
                 const controlTitle =
                   (details.control_title as string) ?? controlCode;
                 const frameworkCode = (details.framework_code as string) ?? '—';
-                const cfg =
-                  STATUS_CONFIG[control.status] ?? STATUS_CONFIG.at_risk;
 
                 return (
                   <tr
@@ -212,14 +189,10 @@ async function ControlsList({ orgId }: { orgId: string }) {
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-[11px] font-semibold ${cfg.className}`}
-                      >
-                        {cfg.label}
-                      </span>
+                      <StatusBadge {...controlStatus(control.status)} />
                     </td>
                     <td className="px-4 py-3">
-                      <span className="font-mono text-xs text-foreground">
+                      <span className="text-xs tabular-nums text-foreground">
                         {control.compliance_score != null
                           ? `${control.compliance_score}%`
                           : '—'}
@@ -251,18 +224,18 @@ export default async function ControlsPage() {
   if (!state) redirect('/auth/signin');
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full">
+      <div className="page-header">
         <div>
-          <h1 className="text-xl font-bold">Controls</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
+          <h1 className="page-title">Controls</h1>
+          <p className="page-description">
             Controls are provisioned from your activated frameworks. Add or
-            update frameworks in{' '}
+            update them in the{' '}
             <Link
               href="/app/compliance/frameworks"
               className="underline decoration-muted-foreground/40 underline-offset-2 hover:text-foreground"
             >
-              /app/compliance/frameworks
+              Framework Library
             </Link>
             .
           </p>
@@ -285,14 +258,16 @@ export default async function ControlsPage() {
             href="/app/compliance/cross-map"
             className="rounded-lg border border-border bg-surface-1 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
           >
-            Cross-Map
+            Cross-map
           </Link>
         </div>
       </div>
 
-      <Suspense fallback={<SkeletonCard className="h-96" />}>
-        <ControlsList orgId={state.organization.id} />
-      </Suspense>
+      <div className="page-content">
+        <Suspense fallback={<SkeletonCard className="h-96" />}>
+          <ControlsList orgId={state.organization.id} />
+        </Suspense>
+      </div>
     </div>
   );
 }

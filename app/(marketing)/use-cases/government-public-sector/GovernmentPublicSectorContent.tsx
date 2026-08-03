@@ -67,7 +67,7 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Records-backed control evidence',
     description:
-      'Keep decisions, supporting records, and control artifacts attached so evidence survives public-sector scrutiny.',
+      'Keep decisions, supporting records, and control artefacts attached so evidence survives public-sector scrutiny.',
     steps: [
       'Store supporting evidence alongside each control or policy action',
       'Maintain timestamps, reviewers, and status changes',
@@ -78,9 +78,9 @@ const workflows: UseCaseWorkflow[] = [
   {
     title: 'Procurement and assurance review',
     description:
-      'Organize vendor assessments, internal approvals, and security review materials without starting a separate workstream.',
+      'Organise vendor assessments, internal approvals, and security review materials without starting a separate workstream.',
     steps: [
-      'Collect supplier and internal assurance artifacts in one workflow',
+      'Collect supplier and internal assurance artefacts in one workflow',
       'Assign risk, legal, and procurement reviewers explicitly',
       'Track exceptions and remediation commitments with owners',
       'Export decision-ready packs for governance committees',
@@ -91,17 +91,19 @@ const workflows: UseCaseWorkflow[] = [
 const standards: UseCaseStandard[] = [
   {
     name: 'PSPF / ISM / Essential Eight',
-    description: 'Security and control governance for public-sector programs and digital services.',
+    description:
+      'Security and control governance for public-sector programs and digital services.',
     features: [
       'Policy and control approval chains with immutable history',
-      'Evidence and remediation artifacts linked to each control',
+      'Evidence and remediation artefacts linked to each control',
       'Role-based visibility for reviewers and approvers',
       'Exportable snapshots for assurance and oversight',
     ],
   },
   {
     name: 'FOI / Records Accountability',
-    description: 'Decision and document governance that supports defensible retrieval and review.',
+    description:
+      'Decision and document governance that supports defensible retrieval and review.',
     features: [
       'Documented decision chronology',
       'Linked evidence and supporting records',
@@ -111,7 +113,8 @@ const standards: UseCaseStandard[] = [
   },
   {
     name: 'Procurement & Vendor Assurance',
-    description: 'Structured internal review for supplier risk and contract assurance.',
+    description:
+      'Structured internal review for supplier risk and contract assurance.',
     features: [
       'Supplier assessment workflows with named approvers',
       'Exception and remediation tracking',
@@ -124,23 +127,27 @@ const standards: UseCaseStandard[] = [
 const metrics: UseCaseMetric[] = [
   {
     value: 'Single chain',
-    label: 'Decision History',
-    description: 'Approvals, comments, evidence, and exports stay attached to the same governed record.',
+    label: 'Decision history',
+    description:
+      'Approvals, comments, evidence, and exports stay attached to the same governed record.',
   },
   {
-    value: '< 1 hr',
-    label: 'Review Pack Prep',
-    description: 'Assemble oversight and procurement artifacts without chasing multiple systems.',
+    value: 'Assembled',
+    label: 'Review packs',
+    description:
+      'Oversight and procurement artefacts collect as work happens, instead of being chased across systems.',
   },
   {
     value: 'Named',
     label: 'Approvers',
-    description: 'Every policy, exception, and review step resolves to an accountable authority.',
+    description:
+      'Every policy, exception, and review step resolves to an accountable authority.',
   },
   {
     value: 'Always-on',
-    label: 'Governance Readiness',
-    description: 'Teams can answer audit and review questions without launching a separate preparation sprint.',
+    label: 'Governance readiness',
+    description:
+      'Teams can answer audit and review questions without launching a separate preparation sprint.',
   },
 ] as const;
 
@@ -171,7 +178,7 @@ export default function GovernmentPublicSectorContent() {
       metrics={metrics}
       industryKey="government_public_sector"
       ctaTitle="Give oversight teams proof that survives scrutiny"
-      ctaDescription="Replace fragmented approval trails with a single governed workflow for policies, evidence, procurement reviews, and export-ready oversight artifacts."
+      ctaDescription="Replace fragmented approval trails with a single governed workflow for policies, evidence, procurement reviews, and export-ready oversight artefacts."
       mediaSrc="/marketing-media/use-case-government-public-sector.jpg"
     />
   );

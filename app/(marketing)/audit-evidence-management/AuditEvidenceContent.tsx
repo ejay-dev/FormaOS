@@ -18,7 +18,7 @@ export default function AuditEvidenceContent() {
       }
       subheadline="Capture immutable evidence during daily operations, map it to controls, and export auditor-ready packages on demand."
       introParagraphs={[
-        'Audit evidence is the currency of compliance. Without organized, verifiable evidence, controls are just claims. With it, you demonstrate that your organization actually does what it says it does.',
+        'Audit evidence is the currency of compliance. Without organised, verifiable evidence, controls are just claims. With it, you demonstrate that your organisation actually does what it says it does.',
         'The fundamental problem with audit evidence isn\'t collection - it\'s timing. When evidence is gathered after the fact, retroactively assembled from email threads, screenshots, and spreadsheets, it\'s incomplete, inconsistent, and unconvincing. Auditors can tell the difference between evidence that was captured in real-time and evidence that was reconstructed for an audit.',
         'FormaOS solves this by embedding evidence capture into operational workflows. Every task completion, every approval, every policy acknowledgment, every control verification creates an evidence record at the moment it happens. The result is a continuous, immutable evidence chain that auditors trust because it reflects actual operations.',
         'This isn\'t just about audit preparation efficiency - though that improves dramatically. It\'s about evidence quality. Real-time evidence is more complete, more accurate, and more defensible than retroactive evidence collection can ever be.',
@@ -27,7 +27,7 @@ export default function AuditEvidenceContent() {
         {
           heading: 'The evidence collection anti-pattern',
           paragraphs: [
-            'Most organizations follow a predictable pattern: compliance requirements are documented, controls are designed, and then - months later - someone needs to prove the controls actually worked. This triggers the evidence scramble.',
+            'Most organisations follow a predictable pattern: compliance requirements are documented, controls are designed, and then - months later - someone needs to prove the controls actually worked. This triggers the evidence scramble.',
             'The evidence scramble looks like this:',
           ],
           bullets: [
@@ -36,7 +36,7 @@ export default function AuditEvidenceContent() {
             'Screenshots are taken of current system states, not historical states',
             'Spreadsheets are updated retroactively to show what should have been tracked all along',
             'Evidence packages are assembled manually, often missing context about who, when, and why',
-            'Auditors receive evidence that\'s disorganized, incomplete, and hard to trace to specific controls',
+            'Auditors receive evidence that\'s disorganised, incomplete, and hard to trace to specific controls',
           ],
         },
         {
@@ -87,10 +87,10 @@ export default function AuditEvidenceContent() {
         {
           heading: 'Auditor-ready export packages',
           paragraphs: [
-            'Generate evidence packages organized exactly how auditors expect - by framework, control, time period, and evidence type.',
+            'Generate evidence packages organised exactly how auditors expect - by framework, control, time period, and evidence type.',
           ],
           bullets: [
-            'Structured exports organized by framework and control',
+            'Structured exports organised by framework and control',
             'Time-period filtering for Type II and surveillance audits',
             'Evidence completeness scoring before export',
             'Standard formats (CSV, ZIP) for auditor independence',
@@ -114,7 +114,7 @@ export default function AuditEvidenceContent() {
       faq={[
         { question: 'How does FormaOS capture audit evidence?', answer: 'Evidence is captured automatically as work happens. Every task completion, policy acknowledgment, approval, and control verification creates an immutable evidence record linked to specific compliance controls.' },
         { question: 'Is evidence in FormaOS truly immutable?', answer: 'Yes. Evidence records include cryptographic timestamps and are stored in append-only audit logs. Records cannot be modified or deleted after creation, ensuring a tamper-evident evidence chain.' },
-        { question: 'Can we export evidence for external auditors?', answer: 'Yes. FormaOS generates structured evidence packages organized by framework, control, and time period. Exports are available in standard formats (CSV, ZIP) that auditors can review independently.' },
+        { question: 'Can we export evidence for external auditors?', answer: 'Yes. FormaOS generates structured evidence packages organised by framework, control, and time period. Exports are available in standard formats (CSV, ZIP) that auditors can review independently.' },
         { question: 'How does FormaOS handle evidence for multiple frameworks?', answer: 'A single piece of evidence can be linked to controls across multiple frameworks. This eliminates duplicate evidence collection when controls overlap between ISO 27001, SOC 2, NDIS, and other frameworks.' },
       ]}
       relatedLinks={[

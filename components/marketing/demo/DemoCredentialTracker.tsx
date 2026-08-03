@@ -164,7 +164,7 @@ export default function DemoCredentialTracker({
                     <span className={`text-[10px] block ${cred.status === 'expired' ? 'text-red-400' : cred.status === 'expiring' ? 'text-amber-400' : 'text-muted-foreground'}`}>
                       {cred.expiryDate}
                     </span>
-                    <span className="text-[8px] text-muted-foreground/40 block">
+                    <span className="text-[8px] text-muted-foreground block">
                       {cred.daysRemaining > 0 ? `${cred.daysRemaining}d remaining` : `${Math.abs(cred.daysRemaining)}d overdue`}
                     </span>
                   </div>

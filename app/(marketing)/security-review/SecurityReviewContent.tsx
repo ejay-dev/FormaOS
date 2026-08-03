@@ -141,7 +141,7 @@ export default function SecurityReviewContent() {
               >
                 <motion.article
                   whileHover={{ y: -6 }}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
                 >
                   <div className="mb-4 inline-flex rounded-lg border border-white/[0.1] bg-white/[0.06] p-2">
                     <s.icon className="h-5 w-5 text-slate-300" />
@@ -152,7 +152,7 @@ export default function SecurityReviewContent() {
                   <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-300">
                     {s.points.map((p) => (
                       <li key={p} className="flex items-start gap-2">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-300" />
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                         <span>{p}</span>
                       </li>
                     ))}
@@ -172,11 +172,11 @@ export default function SecurityReviewContent() {
       <DeferredSection minHeight={240}>
         <section className="relative mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-7 lg:p-10">
               <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300">
-                    Security Review Checklist
+                  <h3 className="text-xl font-semibold text-white">
+                    What the checklist covers
                   </h3>
                   <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
                     The items below match typical procurement questionnaires. If

@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Loader2, MoonStar, Send, TestTube2 } from 'lucide-react';
+import { Loader2, MoonStar, TestTube2 } from 'lucide-react';
 import Button from '@/components/ui/button';
 import {
   EVENT_CATEGORY_MAP,
@@ -239,15 +239,12 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
     <div className="space-y-8">
       <section className="rounded-[2rem] border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <h2 className="text-xl font-black tracking-tight text-foreground">
-              Delivery Matrix
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-              Configure which events reach which channels. Critical alerts bypass
-              digests automatically.
-            </p>
-          </div>
+          {/* The Communications page already titles this section, so the
+              matrix only carries the rule a person cannot infer from it. */}
+          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+            Choose which events reach which channels. Critical alerts bypass
+            digests automatically.
+          </p>
 
           <div className="flex flex-wrap gap-2">
             {NOTIFICATION_CHANNELS.map((channel) => {
@@ -260,7 +257,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                   key={channel}
                   type="button"
                   onClick={() => void sendTest(channel)}
-                  className="rounded-full border border-border bg-surface-1 px-3 py-2 text-xs font-bold uppercase tracking-wider text-foreground/90 transition hover:border-primary/30 hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="rounded-md border border-border bg-surface-1 px-3 py-2 text-sm font-medium text-foreground transition hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <TestTube2 className="mr-2 inline h-3.5 w-3.5" />
                   Test {CHANNEL_LABELS[channel]}
@@ -275,13 +272,13 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
           <table className="min-w-full border-separate border-spacing-y-3">
             <thead>
               <tr>
-                <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
+                <th className="px-4 py-2 text-left text-sm font-medium text-muted-foreground">
                   Event
                 </th>
                 {NOTIFICATION_CHANNELS.map((channel) => (
                   <th
                     key={channel}
-                    className="px-4 py-2 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground/60"
+                    className="px-4 py-2 text-center text-sm font-medium text-muted-foreground"
                   >
                     {CHANNEL_LABELS[channel]}
                   </th>
@@ -294,7 +291,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
                   <tr key={`${category}-header`}>
                     <td
                       colSpan={NOTIFICATION_CHANNELS.length + 1}
-                      className="pt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+                      className="pt-6 text-sm font-semibold text-foreground"
                     >
                       {NOTIFICATION_CATEGORY_LABELS[category]}
                     </td>
@@ -390,8 +387,8 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
         <div className="flex items-start gap-3">
           <MoonStar className="mt-1 h-5 w-5 text-muted-foreground" />
           <div>
-            <h3 className="text-lg font-black tracking-tight text-foreground">
-              Quiet Hours
+            <h3 className="text-lg font-semibold tracking-tight text-foreground">
+              Quiet hours
             </h3>
             <p className="mt-1 text-sm text-muted-foreground">
               Defer non-critical email delivery during protected hours.
@@ -401,7 +398,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
 
         <div className="mt-5 grid gap-4 md:grid-cols-4">
           <label className="rounded-2xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground/90">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
+            <div className="mb-2 text-sm font-medium text-foreground">
               Enabled
             </div>
             <input
@@ -418,7 +415,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
           </label>
 
           <label className="rounded-2xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground/90">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
+            <div className="mb-2 text-sm font-medium text-foreground">
               Start
             </div>
             <input
@@ -435,9 +432,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
           </label>
 
           <label className="rounded-2xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground/90">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
-              End
-            </div>
+            <div className="mb-2 text-sm font-medium text-foreground">End</div>
             <input
               type="time"
               value={quietHours.end}
@@ -452,7 +447,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
           </label>
 
           <label className="rounded-2xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground/90">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
+            <div className="mb-2 text-sm font-medium text-foreground">
               Timezone
             </div>
             <input
@@ -475,7 +470,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
           variant="ghost"
           onClick={savePreferences}
           disabled={saving}
-          className="rounded-full border border-primary/30 bg-primary/10 px-5 py-3 text-sm font-bold text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {saving ? (
             <>
@@ -483,10 +478,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
               Saving
             </>
           ) : (
-            <>
-              <Send className="mr-2 h-4 w-4" />
-              Save Preferences
-            </>
+            'Save changes'
           )}
         </Button>
       </div>

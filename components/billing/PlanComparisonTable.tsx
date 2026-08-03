@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { PLAN_CATALOG, type PlanKey } from '@/lib/plans';
+import { brand } from '@/config/brand';
 import { useTrialState } from '@/lib/trial/use-trial-state';
 import { startCheckout } from '@/app/app/actions/billing';
 import {
@@ -176,7 +177,7 @@ export function PlanComparisonTable() {
         !raw;
       setError(
         isFrameworkError
-          ? 'Checkout could not be started. Please try again, or contact Formaos.team@gmail.com if the issue persists.'
+          ? `Checkout could not be started. Try again, or email ${brand.email.billingEmail} if it keeps failing.`
           : raw,
       );
     } finally {
@@ -364,7 +365,7 @@ export function PlanComparisonTable() {
                       {isCheck ? (
                         <Check className="h-4 w-4 text-success mx-auto" />
                       ) : isDash ? (
-                        <X className="h-4 w-4 text-muted-foreground/40 mx-auto" />
+                        <X className="h-4 w-4 text-muted-foreground mx-auto" />
                       ) : (
                         <span className="text-foreground/70">{value}</span>
                       )}

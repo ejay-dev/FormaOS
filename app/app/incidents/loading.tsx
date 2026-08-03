@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function IncidentsLoading() {
-  return <PageSkeleton title="Incidents" tableRows={5} />;
+export default function AppIncidentsLoading() {
+  return <PageSkeleton hero label="incidents" heroMetrics={5} tableRows={5} />;
 }

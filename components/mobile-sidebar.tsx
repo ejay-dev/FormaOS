@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { Menu, X } from "lucide-react";
 import clsx from "clsx";
 import { Sidebar } from "@/components/sidebar";
+import { Logo } from "@/components/brand/Logo";
+import { brand } from "@/config/brand";
 import Button from "./ui/button";
 
 type UserRole = "viewer" | "member" | "admin" | "owner" | "staff" | "auditor";
@@ -75,9 +77,11 @@ export function MobileSidebar({ role }: { role: UserRole }) {
     <div className="md:hidden">
       <Button
         variant="ghost"
+        size="icon"
         onClick={handleOpen}
-        className="rounded-full p-2.5"
         aria-label="Open navigation"
+        aria-expanded={open}
+        className="rounded-full"
       >
         <Menu className="h-5 w-5" />
       </Button>
@@ -100,20 +104,29 @@ export function MobileSidebar({ role }: { role: UserRole }) {
             aria-modal="true"
             aria-label="Navigation"
             className={clsx(
-              "absolute left-0 top-0 h-full w-[88vw] max-w-[340px] sm:w-80 shadow-2xl overflow-y-auto overscroll-y-contain bg-[hsl(var(--sidebar))] glass-panel-strong pt-[max(env(safe-area-inset-top),0.75rem)] pb-[max(env(safe-area-inset-bottom),0.75rem)]",
+              "absolute left-0 top-0 flex h-full w-[88vw] max-w-[340px] sm:w-80 flex-col bg-[hsl(var(--sidebar))] shadow-2xl glass-panel-strong pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]",
               "transition-transform duration-[250ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
               open ? "translate-x-0" : "-translate-x-full"
             )}
           >
-            <Sidebar role={role} />
-            <Button
-              variant="ghost"
-              onClick={handleClose}
-              aria-label="Close navigation"
-              className="absolute right-3 top-3 rounded-full p-2 bg-black/30 border border-glass-border"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            {/* The close control belongs in a header outside the scroll
+                area: inside it, it scrolls away from the user and overlaps
+                the first row of the navigation. */}
+            <div className="flex h-12 shrink-0 items-center justify-between border-b border-border pl-4 pr-2">
+              <Logo variant="wordmark" size={17} alt={brand.appName} />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClose}
+                aria-label="Close navigation"
+                className="rounded-full"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain">
+              <Sidebar role={role} />
+            </div>
           </div>
         </div>
       )}

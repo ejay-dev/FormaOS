@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function TeamLoading() {
-  return <PageSkeleton title="Team Management" tableRows={4} />;
+export default function AppTeamLoading() {
+  return <PageSkeleton hero label="the team" heroMetrics={3} tableRows={4} />;
 }

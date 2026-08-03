@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { resolvePlanKey, PLAN_CATALOG } from '@/lib/plans';
+import { brand } from '@/config/brand';
 import { CreditCard, ShieldCheck } from 'lucide-react';
 import { BillingActionButtons } from '@/components/billing/BillingActionButtons';
 import { PlanComparisonTable } from '@/components/billing/PlanComparisonTable';
@@ -11,6 +12,7 @@ import { useOrgId } from '@/lib/stores/app';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { PageSkeleton } from '@/components/ui/skeleton';
 import { PageHero } from '@/components/ui/page-hero';
+import { describeEntitlement } from '@/lib/billing/entitlement-labels';
 
 type EntitlementRow = {
   feature_key: string;
@@ -87,14 +89,14 @@ export default function BillingPage() {
     [subscription],
   );
 
-  useEffect(() => {
-    if (!orgId) {
-      setError('Organization not found');
-      setIsLoading(false);
-      return;
-    }
+  const loadBillingData = useCallback(
+    async () => {
+      if (!orgId) {
+        setError('Organization not found');
+        setIsLoading(false);
+        return;
+      }
 
-    const fetchBillingData = async () => {
       try {
         setIsLoading(true);
 
@@ -138,25 +140,42 @@ export default function BillingPage() {
       } finally {
         setIsLoading(false);
       }
-    };
+    },
+    [orgId, supabase],
+  );
 
-    fetchBillingData();
-  }, [orgId, supabase]);
+  useEffect(() => {
+    loadBillingData();
+  }, [loadBillingData]);
 
-  if (!orgId) {
-    return (
-      <div className="text-center text-muted-foreground">Loading organization...</div>
-    );
-  }
-
-  if (isLoading) {
+  if (!orgId || isLoading) {
     return <PageSkeleton title="Billing & Plan" cards={2} tableRows={0} />;
   }
 
   if (error) {
     return (
-      <div className="rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-500">
-        Error: {error}
+      <div className="flex min-h-[40vh] items-center justify-center px-6 py-10">
+        <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-xl">
+          <h2 className="text-lg font-semibold">
+            Billing details could not be loaded
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Your subscription is not affected. Try again, or email{' '}
+            <a
+              href={`mailto:${brand.email.billingEmail}`}
+              className="underline underline-offset-2"
+            >
+              {brand.email.billingEmail}
+            </a>{' '}
+            if it keeps failing.
+          </p>
+          <button
+            onClick={() => loadBillingData()}
+            className="mt-4 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          >
+            Try again
+          </button>
+        </div>
       </div>
     );
   }
@@ -164,15 +183,14 @@ export default function BillingPage() {
   const subStatus = subscription?.status ?? 'not active';
   const subTone =
     subStatus === 'active' || subStatus === 'trialing'
-      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
-      : 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+      ? 'bg-success/10 text-success border-success/30'
+      : 'bg-destructive/10 text-destructive border-destructive/30';
 
   return (
     <div className="flex flex-col h-full">
       <PageHero
-        eyebrow="Administration · Billing"
-        title="Billing & Plan"
-        subtitle="Manage subscription status and entitlements."
+        title="Billing and plan"
+        subtitle="Your subscription status and what it includes."
         actions={
           <span
             className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold capitalize ${subTone}`}
@@ -185,8 +203,8 @@ export default function BillingPage() {
 
       <div className="page-content max-w-3xl space-y-4">
       {status === 'success' ? (
-        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-600">
-          Subscription activated. Entitlements will update shortly.
+        <div className="rounded-lg border border-success/20 bg-success/10 px-3 py-2 text-sm text-success">
+          Subscription activated. Your plan features will update shortly.
         </div>
       ) : null}
       {status === 'cancelled' ? (
@@ -206,18 +224,32 @@ export default function BillingPage() {
       ) : null}
       {status === 'contact' ? (
         <div className="rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-sm text-primary">
-          Enterprise billing can be coordinated via Formaos.team@gmail.com.
+          Enterprise plans are invoiced directly. Email{' '}
+          <a
+            href={`mailto:${brand.email.billingEmail}`}
+            className="underline underline-offset-2"
+          >
+            {brand.email.billingEmail}
+          </a>{' '}
+          to get set up.
         </div>
       ) : null}
       {resumeCheckoutPlan && !canSelfServe ? (
-        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
+        <div className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
           Your checkout session timed out. Activate your subscription below to
           finish setting up your workspace.
         </div>
       ) : null}
       {status === 'checkout_failed' ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          We couldn&apos;t start checkout. Please try again, or contact Formaos.team@gmail.com if the issue persists.
+          Checkout could not be started. Try again, or email{' '}
+          <a
+            href={`mailto:${brand.email.billingEmail}`}
+            className="underline underline-offset-2"
+          >
+            {brand.email.billingEmail}
+          </a>{' '}
+          if it keeps failing.
         </div>
       ) : null}
       {status === 'stripe_unavailable' ? (
@@ -227,7 +259,14 @@ export default function BillingPage() {
       ) : null}
       {status === 'missing_price' ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          This plan requires a guided billing review. Contact Formaos.team@gmail.com to proceed.
+          This plan is invoiced directly rather than through checkout. Email{' '}
+          <a
+            href={`mailto:${brand.email.billingEmail}`}
+            className="underline underline-offset-2"
+          >
+            {brand.email.billingEmail}
+          </a>{' '}
+          to arrange it.
         </div>
       ) : null}
       {trialExpired ? (
@@ -240,9 +279,7 @@ export default function BillingPage() {
         <div className="flex items-center gap-3 text-foreground">
           <CreditCard className="h-4 w-4 text-muted-foreground" />
           <div>
-            <div className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-              Current plan
-            </div>
+            <div className="text-sm text-muted-foreground">Current plan</div>
             <div className="text-lg font-semibold">
               {plan?.name ?? 'Plan not set'}
             </div>
@@ -258,7 +295,15 @@ export default function BillingPage() {
         />
         {planKey === 'enterprise' ? (
           <div className="mt-3 text-xs text-muted-foreground">
-            Enterprise billing is coordinated through procurement, security review, and invoiced rollout with Formaos.team@gmail.com.
+            Enterprise plans are invoiced directly, not through checkout. Email{' '}
+            <a
+              href={`mailto:${brand.email.billingEmail}`}
+              className="underline underline-offset-2"
+            >
+              {brand.email.billingEmail}
+            </a>{' '}
+            with your billing contact and purchase order number to get an
+            invoice.
           </div>
         ) : null}
         {trialEndsAt && !trialExpired ? (
@@ -269,20 +314,32 @@ export default function BillingPage() {
       </div>
 
       <div className="rounded-lg border border-border bg-card p-4">
-        <h3 className="section-label mb-3">Entitlements</h3>
+        <h3 className="mb-3 text-sm font-semibold text-foreground">
+          What your plan includes
+        </h3>
         <div className="grid gap-2 md:grid-cols-2">
-          {entitlements.map((entitlement) => (
-            <div
-              key={entitlement.feature_key}
-              className="rounded-md border border-border px-3 py-2 text-sm"
-            >
-              <div className="font-medium">{entitlement.feature_key}</div>
-              <div className="text-xs text-muted-foreground">
-                {entitlement.enabled ? 'Enabled' : 'Disabled'}
-                {entitlement.limit_value ? ` · Limit ${entitlement.limit_value}` : ''}
+          {entitlements.map((entitlement) => {
+            const label = describeEntitlement(entitlement.feature_key);
+            return (
+              <div
+                key={entitlement.feature_key}
+                className="rounded-md border border-border px-3 py-2 text-sm"
+              >
+                <div className="font-medium">{label.name}</div>
+                {label.description ? (
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {label.description}
+                  </p>
+                ) : null}
+                <div className="mt-1 text-xs text-muted-foreground">
+                  {entitlement.enabled ? 'Included' : 'Not included'}
+                  {entitlement.limit_value
+                    ? ` · up to ${entitlement.limit_value}`
+                    : ''}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {entitlements.length === 0 ? (
             <div className="text-sm text-muted-foreground">
               No entitlements active yet.

@@ -9,7 +9,8 @@ export default function Image() {
   return renderOg({
     eyebrow: 'Company',
     headline: 'Case Studies',
-      subhead: 'Representative FormaOS proof packs showing audit preparation, governed workflows, and evidence trails for regulated operators.',
+    subhead:
+      'No customer case studies published yet. The structure each one will follow, and what a buyer can review in the meantime.',
     badges: ['Australia', 'Adelaide HQ'],
     accent: 'violet',
   });

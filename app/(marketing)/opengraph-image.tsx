@@ -10,7 +10,7 @@ export default function Image() {
   return new ImageResponse(
     <div
       style={{
-        background: '#0a0f1c',
+        background: '#1C1E1F',
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -23,7 +23,7 @@ export default function Image() {
         overflow: 'hidden',
       }}
     >
-      {/* Background accent orbs */}
+      {/* One faint lift behind the headline so the card is not a flat rectangle */}
       <div
         style={{
           position: 'absolute',
@@ -33,19 +33,7 @@ export default function Image() {
           height: 500,
           borderRadius: '50%',
           background:
-            'radial-gradient(circle, rgba(148,163,184,0.10) 0%, transparent 65%)',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: 100,
-          bottom: -120,
-          width: 400,
-          height: 400,
-          borderRadius: '50%',
-          background:
-            'radial-gradient(circle, rgba(148,163,184,0.06) 0%, transparent 65%)',
+            'radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 65%)',
         }}
       />
 
@@ -92,19 +80,11 @@ export default function Image() {
         </span>
       </div>
 
-      {/* Main content */}
+      {/* Main content. The uppercase letter-spaced kicker that used to sit
+          above the headline is gone: every link preview carried it, which
+          made the brand's most-reproduced asset lead with the one pattern
+          the rest of the site is moving away from. */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        <div
-          style={{
-            color: '#94a3b8',
-            fontSize: 15,
-            fontWeight: 700,
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase' as const,
-          }}
-        >
-          Compliance Operating System
-        </div>
         <div
           style={{
             color: '#ffffff',
@@ -115,24 +95,24 @@ export default function Image() {
             maxWidth: 900,
           }}
         >
-          Governance, Evidence & Audits - One Platform
+          Governance, evidence and audits in one platform
         </div>
         <div
           style={{
-            color: '#94a3b8',
+            color: '#b8b8b8',
             fontSize: 24,
             lineHeight: 1.5,
             maxWidth: 740,
           }}
         >
-          Purpose-built for Australian regulated industries. NDIS, healthcare,
-          financial services, childcare & construction.
+          Purpose-built for Australian regulated industries: NDIS, healthcare,
+          financial services, childcare and construction.
         </div>
       </div>
 
       {/* Bottom strip */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
-        <div style={{ color: '#64748b', fontSize: 16, fontWeight: 500 }}>
+        <div style={{ color: '#808080', fontSize: 16, fontWeight: 500 }}>
           www.formaos.com.au
         </div>
         <div
@@ -140,7 +120,7 @@ export default function Image() {
             width: 5,
             height: 5,
             borderRadius: '50%',
-            background: '#334155',
+            background: '#5a5a5a',
           }}
         />
         <div style={{ display: 'flex', gap: 12 }}>
@@ -150,7 +130,7 @@ export default function Image() {
               style={{
                 background: 'rgba(255,255,255,0.06)',
                 border: '1px solid rgba(255,255,255,0.12)',
-                color: '#cbd5e1',
+                color: '#d4d4d4',
                 padding: '4px 12px',
                 borderRadius: 999,
                 fontSize: 13,

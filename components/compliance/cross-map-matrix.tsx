@@ -18,10 +18,9 @@ interface Props {
 }
 
 const STRENGTH_COLORS: Record<string, string> = {
-  exact: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300',
-  partial:
-    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300',
-  related: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
+  exact: 'bg-success/10 text-success',
+  partial: 'bg-warning/10 text-warning',
+  related: 'bg-muted text-muted-foreground',
 };
 
 export function CrossMapMatrix({ frameworks, mappings }: Props) {
@@ -59,6 +58,7 @@ export function CrossMapMatrix({ frameworks, mappings }: Props) {
               {frameworks.map((fw) => (
                 <th
                   key={fw}
+                  scope="col"
                   className="p-2 text-center text-sm font-medium text-foreground border-b border-border"
                 >
                   {fw}
@@ -69,9 +69,12 @@ export function CrossMapMatrix({ frameworks, mappings }: Props) {
           <tbody>
             {frameworks.map((src) => (
               <tr key={src}>
-                <td className="p-2 text-sm font-medium text-foreground border-r border-border">
+                <th
+                  scope="row"
+                  className="p-2 text-left text-sm font-medium text-foreground border-r border-border"
+                >
                   {src}
-                </td>
+                </th>
                 {frameworks.map((tgt) => {
                   if (src === tgt) {
                     return (
@@ -82,23 +85,26 @@ export function CrossMapMatrix({ frameworks, mappings }: Props) {
                   }
                   const strength = getCellStrength(src, tgt);
                   const count = getCellMappings(src, tgt).length;
+                  const isSelected =
+                    selectedCell?.src === src && selectedCell?.tgt === tgt;
                   return (
                     <td
                       key={tgt}
-                      className={`p-2 text-center cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all ${
-                        selectedCell?.src === src && selectedCell?.tgt === tgt
-                          ? 'ring-2 ring-primary'
-                          : ''
+                      className={`p-2 text-center transition-all ${
+                        isSelected ? 'ring-2 ring-primary' : ''
                       }`}
-                      onClick={() => count > 0 && setSelectedCell({ src, tgt })}
                     >
                       {strength ? (
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${STRENGTH_COLORS[strength]}`}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCell({ src, tgt })}
+                          aria-pressed={isSelected}
+                          aria-label={`Show ${count} ${src} to ${tgt} mappings`}
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover:ring-2 hover:ring-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${STRENGTH_COLORS[strength]}`}
                         >
-                          <Link2 className="h-3 w-3" />
+                          <Link2 aria-hidden="true" className="h-3 w-3" />
                           {count}
-                        </span>
+                        </button>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
                       )}
@@ -189,27 +195,22 @@ export function DeduplicationOpportunities({
                 </span>
               )}
             </div>
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium">
+            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-success/10 text-success text-xs font-medium">
               <Zap className="h-3 w-3" />+{opp.potentialScoreImprovement}%
             </span>
           </div>
 
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-xs font-medium text-green-600 dark:text-green-400 mb-1">
-                Satisfied
-              </p>
+              <p className="text-xs font-medium text-success mb-1">Satisfied</p>
               {opp.satisfiedControls.map((c, j) => (
                 <div key={j} className="text-xs text-foreground">
-                  {c.framework}:{' '}
-                  <code className="text-green-600 dark:text-green-400">
-                    {c.controlId}
-                  </code>
+                  {c.framework}: <code className="text-success">{c.controlId}</code>
                 </div>
               ))}
             </div>
             <div>
-              <p className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">
+              <p className="text-xs font-medium text-destructive mb-1">
                 Gaps (linkable)
               </p>
               {opp.unsatisfiedControls.map((c, j) => (
@@ -218,9 +219,7 @@ export function DeduplicationOpportunities({
                   className="flex items-center gap-2 text-xs text-foreground"
                 >
                   {c.framework}:{' '}
-                  <code className="text-red-600 dark:text-red-400">
-                    {c.controlId}
-                  </code>
+                  <code className="text-destructive">{c.controlId}</code>
                   <Link
                     href={`/app/controls?framework=${encodeURIComponent(c.framework)}&control=${encodeURIComponent(c.controlId)}`}
                     className="px-1.5 py-0.5 rounded bg-primary text-primary-foreground text-[10px] hover:bg-primary/90"

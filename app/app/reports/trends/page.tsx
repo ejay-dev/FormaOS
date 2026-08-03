@@ -1,9 +1,33 @@
 import { redirect } from 'next/navigation';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { TrendingUp, TrendingDown, Minus, Calendar } from 'lucide-react';
+import Link from 'next/link';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { ReportsTabs } from '../ReportsTabs';
 
 export const metadata = { title: 'Trend Analytics | FormaOS' };
+
+const RANGE_PRESETS = [
+  { days: 30, label: '30 days' },
+  { days: 90, label: '90 days' },
+  { days: 180, label: '6 months' },
+] as const;
+
+function isoDaysAgo(days: number): string {
+  return new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+}
+
+function formatDay(iso: string): string {
+  const parsed = new Date(iso);
+  if (Number.isNaN(parsed.getTime())) return iso;
+  return parsed.toLocaleDateString('en-AU', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
 
 export default async function TrendsPage({
   searchParams,
@@ -18,9 +42,7 @@ export default async function TrendsPage({
 
   // Default to last 6 months
   const to = sp.to ?? new Date().toISOString().slice(0, 10);
-  const from =
-    sp.from ??
-    new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const from = sp.from ?? isoDaysAgo(180);
 
   const { data: snapshots } = await db
     .from('org_analytics_snapshots')
@@ -49,21 +71,40 @@ export default async function TrendsPage({
     { key: 'members_active', label: 'Active Members', suffix: '' },
   ];
 
+  const today = new Date().toISOString().slice(0, 10);
+
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-bold">Trend Analytics</h1>
-          <p className="text-sm text-muted-foreground">
-            Track your compliance posture over time.
+          <h1 className="page-title">Trends</h1>
+          <p className="page-description">
+            Compliance posture from {formatDay(from)} to {formatDay(to)}.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
-            {from} — {to}
-          </span>
-        </div>
+        <ReportsTabs current="/app/reports/trends" />
+      </div>
+
+      <div className="page-content space-y-4">
+      <div className="flex flex-wrap items-center gap-1">
+        {RANGE_PRESETS.map((preset) => {
+          const presetFrom = isoDaysAgo(preset.days);
+          const isActive = from === presetFrom && to === today;
+          return (
+            <Link
+              key={preset.days}
+              href={`/app/reports/trends?from=${presetFrom}&to=${today}`}
+              aria-current={isActive ? 'page' : undefined}
+              className={`rounded-md px-3 py-1.5 text-xs transition-colors ${
+                isActive
+                  ? 'bg-accent/50 font-semibold text-foreground'
+                  : 'font-medium text-muted-foreground hover:bg-accent/30 hover:text-foreground'
+              }`}
+            >
+              {preset.label}
+            </Link>
+          );
+        })}
       </div>
 
       {/* KPI Cards */}
@@ -86,9 +127,7 @@ export default async function TrendsPage({
                 {change !== 0 && (
                   <span
                     className={`flex items-center gap-0.5 text-sm ${
-                      change > 0
-                        ? 'text-green-600 dark:text-green-400'
-                        : 'text-red-600 dark:text-red-400'
+                      change > 0 ? 'text-success' : 'text-destructive'
                     }`}
                   >
                     {change > 0 ? (
@@ -116,7 +155,7 @@ export default async function TrendsPage({
       <div className="rounded-lg border border-border bg-card overflow-hidden">
         <div className="border-b border-border px-4 py-3">
           <h2 className="font-semibold">
-            Daily Snapshots ({data.length} data points)
+            Snapshot history ({data.length} day{data.length === 1 ? '' : 's'})
           </h2>
         </div>
         <div className="overflow-x-auto max-h-[400px]">
@@ -154,7 +193,9 @@ export default async function TrendsPage({
                   const m = s.metrics as Record<string, number>;
                   return (
                     <tr key={s.snapshot_date} className="hover:bg-muted/30">
-                      <td className="px-4 py-2">{s.snapshot_date}</td>
+                      <td className="px-4 py-2">
+                        {formatDay(s.snapshot_date)}
+                      </td>
                       <td className="px-4 py-2 text-right font-medium">
                         {m.compliance_score ?? 0}%
                       </td>
@@ -170,9 +211,7 @@ export default async function TrendsPage({
                       <td className="px-4 py-2 text-right">
                         <span
                           className={
-                            (m.tasks_overdue ?? 0) > 0
-                              ? 'text-red-600 dark:text-red-400'
-                              : ''
+                            (m.tasks_overdue ?? 0) > 0 ? 'text-destructive' : ''
                           }
                         >
                           {m.tasks_overdue ?? 0}
@@ -198,6 +237,7 @@ export default async function TrendsPage({
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   );

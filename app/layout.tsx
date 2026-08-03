@@ -1,19 +1,24 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Sora, JetBrains_Mono } from 'next/font/google';
+import {
+  Hanken_Grotesk,
+  Bricolage_Grotesque,
+  Fraunces,
+  JetBrains_Mono,
+} from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import CookieConsent from '@/components/CookieConsent';
 import NextTopLoader from 'nextjs-toploader';
 import { ObservabilityProvider } from '@/components/observability/ObservabilityProvider';
 import './globals.css';
 
-const inter = Inter({
+const bodyFont = Hanken_Grotesk({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-body',
   weight: ['400', '500', '600', '700', '800'],
 });
 
-const sora = Sora({
+const displayFont = Bricolage_Grotesque({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-display',
@@ -21,6 +26,18 @@ const sora = Sora({
   weight: ['600', '700', '800'],
   // size-adjust fallback metrics so the H1 doesn't reflow on font swap (CLS/LCP)
   fallback: ['system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+});
+
+// Editorial accent for a single emphasised word in a marketing headline.
+// Not loaded on the app shell path in practice — preload is off and only
+// .mk-accent references it, so pages that never use it pay nothing.
+const accentFont = Fraunces({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-accent',
+  preload: false,
+  style: ['italic'],
+  weight: ['400', '500', '600'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -101,7 +118,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0F172A',
+  // Matches public/manifest.json theme_color. These disagreed (slate navy
+  // here, brand charcoal there), so the browser chrome tinted a different
+  // colour than the installed app.
+  themeColor: '#1C1E1F',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
@@ -116,9 +136,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable}`}
+      className={`${bodyFont.variable} ${displayFont.variable} ${accentFont.variable} ${jetbrainsMono.variable}`}
     >
-      <body className={inter.className}>
+      <body className={bodyFont.className}>
         {/* v4-029: actual Skip-to-main link. The prior comment
             claimed one existed but the element was never rendered,
             so keyboard users had no way to bypass the global nav

@@ -26,6 +26,10 @@ import {
   RecordList,
   EmptyRecordState,
 } from '@/components/mobile/record-card';
+import {
+  StatusBadge,
+  severityStatus,
+} from '@/components/compliance/StatusBadge';
 
 export const metadata = { title: 'CAPA Register' };
 
@@ -119,26 +123,27 @@ export default async function CAPAPage({
       <div className="flex h-full flex-col">
         <div className="page-header">
           <div>
-            <h1 className="page-title">CAPA Register</h1>
+            <h1 className="page-title">CAPA register</h1>
             <p className="page-description">
               Corrective and preventive action management
             </p>
           </div>
         </div>
         <div className="page-content">
-          <section className="rounded-lg border border-cyan-400/30 bg-cyan-500/10 p-6">
+          <section className="rounded-lg border border-border bg-card p-6">
             <h2 className="text-lg font-semibold text-foreground">
-              CAPA management is not enabled
+              CAPA is not included in your current plan
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              CAPA creation, ownership, evidence, verification, and closure
-              require the capa_management entitlement.
+              Upgrading turns on corrective and preventive actions: raising a
+              CAPA, assigning an owner, attaching evidence, and recording
+              verification and closure.
             </p>
             <Link
               href="/app/billing"
-              className="mt-5 inline-flex rounded-md border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+              className="mt-5 inline-flex rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
-              Review Billing
+              View plans
             </Link>
           </section>
         </div>
@@ -204,14 +209,6 @@ export default async function CAPAPage({
   ).length;
   const closedCount = capaItems.filter((c) => c.status === 'closed').length;
 
-  const severityColors: Record<string, string> = {
-    critical: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-    high: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
-    medium:
-      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-    low: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-  };
-
   const statusIcons: Record<string, typeof Clock> = {
     draft: Clock,
     open: Clock,
@@ -226,9 +223,10 @@ export default async function CAPAPage({
     <div className="flex h-full flex-col">
       <div className="page-header">
         <div>
-          <h1 className="page-title">CAPA Register</h1>
+          <h1 className="page-title">CAPA register</h1>
           <p className="page-description">
-            Corrective and preventive actions with lifecycle, evidence, and audit traceability
+            Corrective and preventive actions with lifecycle, evidence, and
+            audit traceability
           </p>
         </div>
         {capaUnavailable ? (
@@ -253,8 +251,9 @@ export default async function CAPAPage({
       <div className="page-content space-y-4">
         {capaUnavailable && (
           <div className="rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">
-            CAPA storage is not enabled for this workspace yet. Apply the CAPA
-            lifecycle migration before creating or updating CAPA records.
+            CAPA storage is not enabled for this workspace yet. Contact support
+            to turn it on — until then, creating and updating CAPA records
+            stays switched off.
           </div>
         )}
         {params.error && !capaUnavailable && (
@@ -369,15 +368,7 @@ export default async function CAPAPage({
                     href={`/app/capa/${item.id}`}
                     title={item.title}
                     subtitle={item.description ?? undefined}
-                    status={
-                      <span
-                        className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                          severityColors[severity] ?? severityColors.medium
-                        }`}
-                      >
-                        {severity}
-                      </span>
-                    }
+                    status={<StatusBadge {...severityStatus(severity)} />}
                     meta={[
                       { label: 'Status', value: getStatusLabel(item.status) },
                       {
@@ -385,7 +376,7 @@ export default async function CAPAPage({
                         value: (
                           <span
                             className={
-                              isOverdue ? 'font-medium text-red-500' : ''
+                              isOverdue ? 'font-medium text-destructive' : ''
                             }
                           >
                             {fmtDate(item.due_date)}
@@ -430,7 +421,7 @@ export default async function CAPAPage({
                     <tr
                       key={item.id}
                       className={`hover:bg-muted/30 ${
-                        isOverdue ? 'bg-red-50/50 dark:bg-red-950/10' : ''
+                        isOverdue ? 'bg-destructive/5' : ''
                       }`}
                     >
                       <td className="px-4 py-3">
@@ -447,13 +438,7 @@ export default async function CAPAPage({
                         )}
                       </td>
                       <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                            severityColors[severity] ?? severityColors.medium
-                          }`}
-                        >
-                          {severity}
-                        </span>
+                        <StatusBadge {...severityStatus(severity)} />
                       </td>
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center gap-1 text-xs capitalize">
@@ -464,7 +449,11 @@ export default async function CAPAPage({
                         {getMemberLabel(item.owner_id, memberNames)}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={isOverdue ? 'font-medium text-red-600' : ''}>
+                        <span
+                          className={
+                            isOverdue ? 'font-medium text-destructive' : ''
+                          }
+                        >
                           {fmtDate(item.due_date)}
                         </span>
                       </td>

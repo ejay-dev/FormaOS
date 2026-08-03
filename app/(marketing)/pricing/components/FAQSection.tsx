@@ -26,13 +26,13 @@ export function FAQSection() {
         >
           <span className="mt-1.5 hidden h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent sm:block" />
           <div className="max-w-2xl">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+            <p className="mb-3 text-sm font-semibold text-zinc-500">
               Questions
             </p>
             <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Answers for the people who sign off.
             </h2>
-            <p className="mt-4 text-base leading-7 text-slate-400">
+            <p className="mt-4 text-base leading-7 text-zinc-400">
               For compliance leaders, procurement, and IT security evaluating
               platform fit, data handling, and enterprise readiness.
             </p>
@@ -76,7 +76,7 @@ export function FAQSection() {
                       className="flex-shrink-0"
                       aria-hidden="true"
                     >
-                      <ChevronDown className="w-5 h-5 text-slate-400" />
+                      <ChevronDown className="w-5 h-5 text-zinc-400" />
                     </motion.span>
                   </button>
                 </h3>
@@ -98,7 +98,7 @@ export function FAQSection() {
                         }}
                         className="overflow-hidden"
                       >
-                        <p className="px-6 pb-6 leading-relaxed text-slate-300">
+                        <p className="px-6 pb-6 leading-relaxed text-zinc-300">
                           {faq.answer}
                         </p>
                       </motion.div>

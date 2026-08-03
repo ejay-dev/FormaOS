@@ -269,8 +269,9 @@ export default function Comments({
                         setEditContent(comment.content);
                       }}
                       className="p-1 hover:bg-gray-200 rounded"
+                      aria-label="Edit comment"
                     >
-                      <Edit2 className="h-3 w-3 text-gray-500" />
+                      <Edit2 aria-hidden="true" className="h-3 w-3 text-gray-500" />
                     </button>
                     <button
                       onClick={() => setPendingDeleteId(comment.id)}

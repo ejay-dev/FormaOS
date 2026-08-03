@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRealtimeSecurity } from '@/lib/hooks/use-realtime-security';
+import { SecurityTabs } from '@/app/admin/components/security-tabs';
 import { useModalA11y } from '@/lib/hooks/use-modal-a11y';
 
 type UserRef = {
@@ -199,15 +200,15 @@ export default function SecurityLivePage() {
   const getSeverityClass = (severity: string) => {
     switch (severity) {
       case 'critical':
-        return 'border-red-700 bg-red-900/20 text-red-200';
+        return 'border-destructive/30 bg-destructive/20 text-destructive';
       case 'high':
-        return 'border-red-800 bg-red-900/10 text-red-300';
+        return 'border-destructive/20 bg-destructive/10 text-destructive';
       case 'medium':
-        return 'border-amber-700 bg-amber-900/10 text-amber-300';
+        return 'border-warning/20 bg-warning/10 text-warning';
       case 'low':
-        return 'border-blue-700 bg-blue-900/10 text-blue-300';
+        return 'border-border bg-muted text-muted-foreground';
       default:
-        return 'border-slate-700 bg-slate-800/20 text-slate-300';
+        return 'border-border bg-muted text-muted-foreground';
     }
   };
 
@@ -225,98 +226,102 @@ export default function SecurityLivePage() {
   if (loading) {
     return (
       <div className="space-y-6 p-6">
-        <div className="h-8 w-56 animate-pulse rounded-md bg-slate-800" />
+        <div className="h-8 w-56 animate-pulse rounded-md bg-muted" />
         <div className="grid gap-4 md:grid-cols-3">
-          <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
-          <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
-          <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
+          <div className="h-24 animate-pulse rounded-lg bg-card" />
+          <div className="h-24 animate-pulse rounded-lg bg-card" />
+          <div className="h-24 animate-pulse rounded-lg bg-card" />
         </div>
-        <div className="h-24 animate-pulse rounded-lg bg-slate-900/60" />
-        <div className="h-64 animate-pulse rounded-lg bg-slate-900/60" />
+        <div className="h-24 animate-pulse rounded-lg bg-card" />
+        <div className="h-64 animate-pulse rounded-lg bg-card" />
       </div>
     );
   }
 
   return (
     <div className="space-y-6 p-6">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-100">Security Live</h1>
-          <p className="mt-1 text-sm text-slate-400">
-            Founder monitoring for alerts, events, and live incident response.
+          <h1 className="text-3xl font-bold text-foreground">Security</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Alerts raised by the platform, newest first.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <span
-            className={`rounded-md border px-2.5 py-1 text-xs font-semibold ${
+            className={`rounded-md border px-2.5 py-1 text-xs font-medium ${
               connected
-                ? 'border-emerald-700 bg-emerald-900/20 text-emerald-300'
-                : 'border-slate-700 bg-slate-800 text-slate-400'
+                ? 'border-success/20 bg-success/10 text-success'
+                : 'border-warning/20 bg-warning/10 text-warning'
             }`}
           >
-            {connected ? 'Realtime connected' : 'Realtime reconnecting'}
+            {connected
+              ? 'Live updates on'
+              : 'Live updates off — refreshing every 90s'}
           </span>
           <Link
             href="/admin/sessions"
-            className="rounded-lg border border-slate-700 bg-slate-800/60 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700/60"
+            className="rounded-lg border border-border bg-muted/60 px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
           >
             Sessions
           </Link>
           <Link
             href="/admin/activity"
-            className="rounded-lg border border-slate-700 bg-slate-800/60 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700/60"
+            className="rounded-lg border border-border bg-muted/60 px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
           >
             Activity
           </Link>
         </div>
       </div>
 
+      <SecurityTabs />
+
       {error && (
-        <div className="rounded-lg border border-red-800/40 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {error}
         </div>
       )}
 
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-lg border border-red-800/40 bg-red-900/10 p-4">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4">
           <div className="flex items-center gap-3">
-            <AlertTriangle className="h-8 w-8 text-red-400" />
+            <AlertTriangle className="h-8 w-8 text-destructive" />
             <div>
-              <p className="text-sm font-medium text-red-200/80">Open Alerts</p>
-              <p className="text-3xl font-bold text-red-300">{summary.openAlerts}</p>
+              <p className="text-sm font-medium text-destructive">Open alerts</p>
+              <p className="text-3xl font-bold text-destructive">{summary.openAlerts}</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border border-amber-800/40 bg-amber-900/10 p-4">
+        <div className="rounded-lg border border-warning/20 bg-warning/10 p-4">
           <div className="flex items-center gap-3">
-            <Shield className="h-8 w-8 text-amber-400" />
+            <Shield className="h-8 w-8 text-warning" />
             <div>
-              <p className="text-sm font-medium text-amber-200/80">
-                High/Critical
+              <p className="text-sm font-medium text-warning">
+                High or critical
               </p>
-              <p className="text-3xl font-bold text-amber-300">
+              <p className="text-3xl font-bold text-warning">
                 {summary.criticalEvents}
               </p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border border-slate-700 bg-slate-800/50 p-4">
+        <div className="rounded-lg border border-border bg-card p-4">
           <div className="flex items-center gap-3">
-            <Clock className="h-8 w-8 text-slate-400" />
+            <Clock className="h-8 w-8 text-muted-foreground" />
             <div>
-              <p className="text-sm font-medium text-slate-400">Total Events</p>
-              <p className="text-3xl font-bold text-slate-200">{summary.totalEvents}</p>
+              <p className="text-sm font-medium text-muted-foreground">Total events</p>
+              <p className="text-3xl font-bold text-foreground">{summary.totalEvents}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
+      <section className="rounded-lg border border-border bg-card p-4">
         <div className="grid gap-3 md:grid-cols-5">
           <select
             value={timeRange}
             onChange={(event) => setTimeRange(event.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
           >
             <option value="1h">Last hour</option>
             <option value="24h">Last 24 hours</option>
@@ -325,7 +330,7 @@ export default function SecurityLivePage() {
           <select
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
           >
             {STATUS_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -336,7 +341,7 @@ export default function SecurityLivePage() {
           <select
             value={severityFilter}
             onChange={(event) => setSeverityFilter(event.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
           >
             {SEVERITY_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -347,7 +352,7 @@ export default function SecurityLivePage() {
           <select
             value={orgFilter}
             onChange={(event) => setOrgFilter(event.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
           >
             <option value="">All organizations</option>
             {filterOptions.organizations.map((organization) => (
@@ -359,7 +364,7 @@ export default function SecurityLivePage() {
           <select
             value={userFilter}
             onChange={(event) => setUserFilter(event.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200"
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
           >
             <option value="">All users</option>
             {filterOptions.users.map((user) => (
@@ -371,10 +376,10 @@ export default function SecurityLivePage() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-100">Alerts</h2>
+      <section className="rounded-lg border border-border bg-card p-6">
+        <h2 className="mb-4 text-lg font-semibold text-foreground">Alerts</h2>
         {alerts.length > visibleAlerts.length && (
-          <p className="mb-3 text-xs text-slate-400">
+          <p className="mb-3 text-xs text-muted-foreground">
             Showing {visibleAlerts.length} most recent alerts.
           </p>
         )}
@@ -391,10 +396,10 @@ export default function SecurityLivePage() {
                       <span className="font-semibold capitalize">
                         {alert.event.type.replaceAll('_', ' ')}
                       </span>
-                      <span className="rounded bg-slate-900/40 px-2 py-0.5 text-xs font-medium capitalize">
+                      <span className="rounded bg-card px-2 py-0.5 text-xs font-medium capitalize">
                         {alert.event.severity}
                       </span>
-                      <span className="rounded bg-slate-900/40 px-2 py-0.5 text-xs font-medium capitalize">
+                      <span className="rounded bg-card px-2 py-0.5 text-xs font-medium capitalize">
                         {alert.status.replaceAll('_', ' ')}
                       </span>
                     </div>
@@ -420,14 +425,14 @@ export default function SecurityLivePage() {
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => setSelectedAlertId(alert.id)}
-                      className="rounded-lg border border-slate-600 bg-slate-900/40 px-3 py-1 text-xs font-medium text-slate-200 hover:bg-slate-800"
+                      className="rounded-lg border border-border bg-card px-3 py-1 text-xs font-medium text-foreground hover:bg-muted"
                     >
                       Details
                     </button>
                     {alert.status === 'open' && (
                       <button
                         onClick={() => void updateAlertStatus(alert.id, 'acknowledged')}
-                        className="rounded-lg border border-slate-600 bg-slate-900/40 px-3 py-1 text-xs font-medium text-slate-200 hover:bg-slate-800"
+                        className="rounded-lg border border-border bg-card px-3 py-1 text-xs font-medium text-foreground hover:bg-muted"
                       >
                         <span className="inline-flex items-center gap-1">
                           <CheckCircle className="h-3.5 w-3.5" />
@@ -438,7 +443,7 @@ export default function SecurityLivePage() {
                     {alert.status !== 'resolved' && alert.status !== 'false_positive' && (
                       <button
                         onClick={() => void updateAlertStatus(alert.id, 'resolved', 'Resolved in dashboard')}
-                        className="rounded-lg border border-emerald-700 bg-emerald-900/20 px-3 py-1 text-xs font-medium text-emerald-300 hover:bg-emerald-900/30"
+                        className="rounded-lg border border-success/20 bg-success/10 px-3 py-1 text-xs font-medium text-success hover:bg-success/10"
                       >
                         <span className="inline-flex items-center gap-1">
                           <ShieldCheck className="h-3.5 w-3.5" />
@@ -451,17 +456,17 @@ export default function SecurityLivePage() {
               </div>
             ))
           ) : (
-            <div className="rounded-lg border border-slate-800 bg-slate-900/50 py-12 text-center text-slate-400">
+            <div className="rounded-lg border border-border bg-card py-12 text-center text-muted-foreground">
               No alerts found for current filters.
             </div>
           )}
         </div>
       </section>
 
-      <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="mb-4 text-lg font-semibold text-slate-100">Recent Events</h2>
+      <section className="rounded-lg border border-border bg-card p-6">
+        <h2 className="mb-4 text-lg font-semibold text-foreground">Recent events</h2>
         {events.length > visibleEvents.length && (
-          <p className="mb-3 text-xs text-slate-400">
+          <p className="mb-3 text-xs text-muted-foreground">
             Showing {visibleEvents.length} most recent events.
           </p>
         )}
@@ -469,13 +474,13 @@ export default function SecurityLivePage() {
           {visibleEvents.map((event) => (
             <div
               key={event.id}
-              className="flex flex-col gap-2 rounded-lg border border-slate-800/70 bg-slate-900/30 p-3 text-sm sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 text-sm sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="min-w-0">
-                <p className="truncate font-medium capitalize text-slate-200">
+                <p className="truncate font-medium capitalize text-foreground">
                   {event.type.replaceAll('_', ' ')}
                 </p>
-                <p className="truncate text-xs text-slate-400">
+                <p className="truncate text-xs text-muted-foreground">
                   {event.user?.email || event.user?.full_name || event.user_id || 'Unknown user'}
                   {event.organization?.name ? ` • ${event.organization.name}` : ''}
                   {event.request_path ? ` • ${event.request_path}` : ''}
@@ -489,7 +494,7 @@ export default function SecurityLivePage() {
                 >
                   {event.severity}
                 </span>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-muted-foreground">
                   {relativeTime(event.created_at)}
                 </span>
               </div>
@@ -505,72 +510,72 @@ export default function SecurityLivePage() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="security-alert-dialog-title"
-            className="h-full w-full max-w-xl overflow-y-auto border-l border-slate-800 bg-slate-950 p-6"
+            className="h-full w-full max-w-xl overflow-y-auto border-l border-border bg-background p-6"
           >
             <div className="mb-5 flex items-start justify-between gap-3">
               <div>
-                <h3 id="security-alert-dialog-title" className="text-xl font-semibold text-slate-100">
-                  Alert Details
+                <h3 id="security-alert-dialog-title" className="text-xl font-semibold text-foreground">
+                  Alert details
                 </h3>
-                <p className="text-sm text-slate-400">
+                <p className="text-sm text-muted-foreground">
                   {selectedAlert.event.type.replaceAll('_', ' ')}
                 </p>
               </div>
               <button
                 onClick={() => setSelectedAlertId(null)}
                 aria-label="Close alert details"
-                className="rounded-lg border border-slate-700 bg-slate-900 p-2 text-slate-300 hover:bg-slate-800"
+                className="rounded-lg border border-border bg-card p-2 text-muted-foreground hover:bg-muted"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             <div className="space-y-4 text-sm">
-              <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
-                <p className="text-slate-400">Status</p>
-                <p className="font-medium capitalize text-slate-100">
+              <div className="rounded-lg border border-border bg-card p-4">
+                <p className="text-muted-foreground">Status</p>
+                <p className="font-medium capitalize text-foreground">
                   {selectedAlert.status.replaceAll('_', ' ')}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
-                <p className="text-slate-400">Timeline</p>
-                <p className="text-slate-200">
+              <div className="rounded-lg border border-border bg-card p-4">
+                <p className="text-muted-foreground">Timeline</p>
+                <p className="text-foreground">
                   Event raised: {new Date(selectedAlert.event.created_at).toLocaleString()}
                 </p>
-                <p className="text-slate-200">
+                <p className="text-foreground">
                   Alert created: {new Date(selectedAlert.created_at).toLocaleString()}
                 </p>
                 {selectedAlert.resolved_at && (
-                  <p className="text-slate-200">
+                  <p className="text-foreground">
                     Resolved: {new Date(selectedAlert.resolved_at).toLocaleString()}
                   </p>
                 )}
               </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
-                <p className="text-slate-400">Request Context</p>
-                <p className="text-slate-200">
+              <div className="rounded-lg border border-border bg-card p-4">
+                <p className="text-muted-foreground">Request context</p>
+                <p className="text-foreground">
                   IP: {selectedAlert.event.ip_address ?? 'n/a'}
                 </p>
-                <p className="text-slate-200">
+                <p className="text-foreground">
                   Geo: {selectedAlert.event.geo_country ?? 'n/a'}
                 </p>
-                <p className="text-slate-200">
+                <p className="text-foreground">
                   Route: {selectedAlert.event.request_path ?? 'n/a'}
                 </p>
-                <p className="mt-2 break-all text-xs text-slate-500">
+                <p className="mt-2 break-all text-xs text-muted-foreground">
                   UA: {selectedAlert.event.user_agent ?? 'n/a'}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
-                <p className="text-slate-400">Metadata</p>
-                <pre className="mt-2 overflow-x-auto rounded-md bg-slate-950 p-3 text-xs text-slate-300">
+              <div className="rounded-lg border border-border bg-card p-4">
+                <p className="text-muted-foreground">Metadata</p>
+                <pre className="mt-2 overflow-x-auto rounded-md bg-background p-3 text-xs text-muted-foreground">
                   {JSON.stringify(selectedAlert.event.metadata ?? {}, null, 2)}
                 </pre>
               </div>
               {selectedAlert.notes && (
-                <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-4">
-                  <p className="text-slate-400">Notes</p>
-                  <p className="text-slate-200">{selectedAlert.notes}</p>
+                <div className="rounded-lg border border-border bg-card p-4">
+                  <p className="text-muted-foreground">Notes</p>
+                  <p className="text-foreground">{selectedAlert.notes}</p>
                 </div>
               )}
             </div>

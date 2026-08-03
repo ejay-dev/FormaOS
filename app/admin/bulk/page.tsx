@@ -121,7 +121,7 @@ export default function AdminBulkPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Bulk Operator Actions</h1>
+        <h1 className="text-3xl font-bold text-foreground">Bulk actions</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Apply actions to multiple organizations at once. Always preview the blast radius before executing.
         </p>

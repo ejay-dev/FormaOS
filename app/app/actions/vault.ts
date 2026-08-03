@@ -6,6 +6,7 @@ import { logActivity } from '@/lib/audit/legacy-log-activity';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
 import { actionError, isNextInternalError } from "@/lib/actions/safe";
+import { isMissingSupabaseColumnError } from '@/lib/supabase/schema-compat';
 
 export async function registerVaultArtifact(data: {
   title: string;
@@ -14,7 +15,15 @@ export async function registerVaultArtifact(data: {
   fileType: string;
   fileSize: number;
   policyId?: string;
-  checksum?: string;
+  /**
+   * Control this artifact closes a gap for, from the `?control=` param the
+   * evidence-gap and report links carry into the vault. Written as part of
+   * the insert: a follow-up update from the browser is not equivalent,
+   * because the RLS update policy can reject it without the upload failing.
+   */
+  controlId?: string;
+  /** SHA-256 hex of the uploaded bytes, computed before upload. */
+  fileHash: string;
 }) {
   try {
   const supabase = await createSupabaseServerClient();
@@ -33,26 +42,63 @@ export async function registerVaultArtifact(data: {
   if (!membership || membership.organization_id !== permissionCtx.orgId)
     throw new Error('Access Denied');
 
+  // The control id arrives from a URL the user can edit, so resolve it
+  // against this org before it is written anywhere.
+  const requestedControlId = data.controlId?.trim() || '';
+  let controlToLink: string | null = null;
+  if (requestedControlId) {
+    const { data: control } = await supabase
+      .from('org_controls')
+      .select('id')
+      .eq('organization_id', membership.organization_id)
+      .eq('id', requestedControlId)
+      .maybeSingle();
+    controlToLink = (control?.id as string | undefined) ?? null;
+  }
+
   // org_evidence.file_name is NOT NULL in the base schema. Persisting the
   // original filename also drives the downloads UX, so accept it explicitly
   // rather than synthesising it from the title (which is optional and may
   // duplicate across uploads).
-  const { data: evidenceRow, error } = await supabase
+  const insertPayload: Record<string, unknown> = {
+    organization_id: membership.organization_id,
+    title: data.title,
+    file_name: data.fileName,
+    file_path: data.filePath,
+    file_type: data.fileType,
+    file_size: data.fileSize,
+    uploaded_by: user.id,
+    linked_policy_id: data.policyId || null,
+    file_hash: data.fileHash,
+    verification_status: 'pending',
+  };
+  if (controlToLink) insertPayload.control_id = controlToLink;
+
+  let controlLinked = Boolean(controlToLink);
+  let { data: evidenceRow, error } = await supabase
     .from('org_evidence')
-    .insert({
-      organization_id: membership.organization_id,
-      title: data.title,
-      file_name: data.fileName,
-      file_path: data.filePath,
-      file_type: data.fileType,
-      file_size: data.fileSize,
-      uploaded_by: user.id,
-      linked_policy_id: data.policyId || null,
-      checksum: data.checksum || null,
-      verification_status: 'pending',
-    })
+    .insert(insertPayload)
     .select('id')
     .maybeSingle();
+
+  // org_evidence.control_id is not in the shipped schema yet (no migration
+  // adds it, and production does not have it either), so this retry is the
+  // live path rather than a rare fallback: the file still has to land, and
+  // `controlLinked: false` tells the modal to say the control was not
+  // attached instead of claiming a link that was never written.
+  if (
+    error &&
+    controlToLink &&
+    isMissingSupabaseColumnError(error, 'org_evidence', 'control_id')
+  ) {
+    controlLinked = false;
+    delete insertPayload.control_id;
+    ({ data: evidenceRow, error } = await supabase
+      .from('org_evidence')
+      .insert(insertPayload)
+      .select('id')
+      .maybeSingle());
+  }
 
   if (error) {
     // Postgres 23505 = unique_violation. Combined with the deterministic
@@ -67,12 +113,25 @@ export async function registerVaultArtifact(data: {
         .eq('organization_id', membership.organization_id)
         .eq('file_path', data.filePath)
         .maybeSingle();
+      // Re-uploading a file that is already in the vault is how people
+      // attach an existing artifact to a new gap, so still record the
+      // control on the row that survived.
+      if (controlToLink && existing?.id) {
+        const { error: relinkError } = await supabase
+          .from('org_evidence')
+          .update({ control_id: controlToLink })
+          .eq('id', existing.id)
+          .eq('organization_id', membership.organization_id);
+        controlLinked = !relinkError;
+      }
       revalidatePath('/app/vault');
       if (data.policyId) revalidatePath(`/app/policies/${data.policyId}`);
+      if (controlLinked) revalidatePath('/app/evidence/gaps');
       return {
         success: true as const,
         evidenceId: existing?.id ?? null,
         deduplicated: true as const,
+        controlLinked,
       };
     }
 
@@ -104,8 +163,13 @@ export async function registerVaultArtifact(data: {
 
   revalidatePath('/app/vault');
   if (data.policyId) revalidatePath(`/app/policies/${data.policyId}`);
+  if (controlLinked) revalidatePath('/app/evidence/gaps');
 
-  return { success: true as const, evidenceId: evidenceRow?.id ?? null };
+  return {
+    success: true as const,
+    evidenceId: evidenceRow?.id ?? null,
+    controlLinked,
+  };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
@@ -207,6 +271,55 @@ export async function listOrgPoliciesForLinking(): Promise<
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to list policies',
+    };
+  }
+}
+
+/**
+ * Resolve the control behind the vault's `?control=` param so the upload
+ * modal can name what the file is being attached to instead of showing an
+ * id. org_controls carries no row-level policy of its own, so the caller's
+ * organisation is applied here explicitly — a control id from another
+ * workspace resolves to null.
+ */
+export async function getControlForEvidenceLink(controlId: string): Promise<
+  | { success: true; control: { id: string; code: string; title: string } | null }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Unauthorized' };
+    const permissionCtx = await requirePermission('VIEW_CONTROLS');
+
+    const trimmed = controlId.trim();
+    if (!trimmed) return { success: true, control: null };
+
+    const { data, error } = await supabase
+      .from('org_controls')
+      .select('id, code, title')
+      .eq('organization_id', permissionCtx.orgId)
+      .eq('id', trimmed)
+      .maybeSingle();
+
+    if (error) return { success: false, error: error.message };
+    if (!data) return { success: true, control: null };
+
+    return {
+      success: true,
+      control: {
+        id: data.id as string,
+        code: (data.code as string | null) ?? '',
+        title: (data.title as string | null) ?? '',
+      },
+    };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to load control',
     };
   }
 }

@@ -61,7 +61,7 @@ export default function PlanSelectPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground p-6">
       <div className="w-full max-w-4xl rounded-2xl border border-border bg-card p-8">
-        <h2 className="text-2xl font-semibold mb-4">Choose a plan</h2>
+        <h1 className="text-2xl font-semibold mb-4">Choose a plan</h1>
         <p className="text-sm text-muted-foreground mb-6">Select a plan to continue into the app.</p>
 
         {error && <div className="mb-4 text-destructive">{error}</div>}
@@ -69,7 +69,7 @@ export default function PlanSelectPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.values(PLAN_CATALOG).map((p) => (
             <div key={p.key} className={`rounded-lg border p-4 ${selected === p.key ? "border-primary" : "border-border"}`}>
-              <h3 className="font-semibold">{p.name}</h3>
+              <h2 className="font-semibold">{p.name}</h2>
               <p className="text-sm text-muted-foreground">{p.summary}</p>
               <div className="mt-4">
                 <button

@@ -66,7 +66,7 @@ function FAQHeroVisualInner() {
         {PILLS.map((pill, i) => (
           <div
             key={i}
-            className="absolute rounded-full border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-3 py-1 whitespace-nowrap"
+            className="absolute rounded-full border border-white/[0.10] bg-white/[0.04] px-3 py-1 whitespace-nowrap"
             style={{
               left: `calc(50% + ${pill.x}px)`,
               top: `calc(50% + ${pill.y}px)`,
@@ -122,7 +122,7 @@ function FAQHeroVisualInner() {
           return (
             <motion.div
               key={i}
-              className="absolute rounded-full border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-3 py-1 whitespace-nowrap shadow-lg"
+              className="absolute rounded-full border border-white/[0.10] bg-white/[0.04] px-3 py-1 whitespace-nowrap shadow-lg"
               style={{
                 left: `calc(50% + ${pill.x}px)`,
                 top: `calc(50% + ${pill.y}px)`,

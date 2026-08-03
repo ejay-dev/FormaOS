@@ -148,7 +148,10 @@ export async function updateParticipant(id: string, formData: FormData) {
       primary_diagnosis: (formData.get('primary_diagnosis') as string) || null,
       communication_needs:
         (formData.get('communication_needs') as string) || null,
+      cultural_considerations:
+        (formData.get('cultural_considerations') as string) || null,
       updated_by: user.id,
+      updated_at: new Date().toISOString(),
     };
 
     const { error } = await supabase
@@ -179,6 +182,7 @@ export async function updateParticipant(id: string, formData: FormData) {
 
     revalidatePath(`/app/participants/${id}`);
     revalidatePath('/app/participants');
+    redirect(`/app/participants/${id}`);
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);

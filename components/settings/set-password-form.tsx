@@ -73,7 +73,7 @@ export function SetPasswordForm({ hasPassword }: SetPasswordFormProps) {
           <KeyRound className="h-6 w-6" />
         </div>
         <div>
-          <h3 className="text-lg font-black text-foreground tracking-tight">
+          <h3 className="text-lg font-semibold text-foreground tracking-tight">
             {hasPassword ? 'Change password' : 'Set a password'}
           </h3>
           <p className="text-xs text-muted-foreground mt-1">

@@ -188,18 +188,13 @@ export function InteractiveDashboard({
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ scale: 1.01 }}
-      className="rounded-xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-[#0a0f1e] select-none"
+      className="rounded-xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-marketing-bg select-none"
       style={{ cursor: 'default' }}
     >
       {/* Browser chrome */}
-      <div className="flex items-center gap-2 px-4 h-9 bg-[#060d1a] border-b border-white/[0.08]">
-        <div className="flex gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-          <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-          <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-        </div>
+      <div className="flex items-center gap-2 px-4 h-9 bg-marketing-bg-alt border-b border-white/[0.08]">
         <div className="flex-1 mx-4 h-5 rounded bg-white/5 flex items-center px-3">
-          <span className="text-[10px] text-white/40 font-mono">
+          <span className="text-[10px] text-white/40">
             app.formaos.com.au / dashboard
           </span>
         </div>
@@ -213,12 +208,12 @@ export function InteractiveDashboard({
         {/* Sidebar */}
         <motion.div
           {...anim(0.1)}
-          className="hidden sm:flex w-40 flex-shrink-0 bg-[#060d1a] border-r border-white/[0.08] flex-col overflow-hidden"
+          className="hidden sm:flex w-40 flex-shrink-0 bg-marketing-bg-alt border-r border-white/[0.08] flex-col overflow-hidden"
         >
           {/* Logo */}
           <div className="px-3 pt-3 pb-1">
             <div className="flex items-center gap-1.5">
-              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
+              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-zinc-600 to-zinc-800 flex items-center justify-center">
                 <span className="text-[7px] font-bold text-white">FO</span>
               </div>
               <div className="min-w-0">
@@ -232,7 +227,7 @@ export function InteractiveDashboard({
             </div>
           </div>
           <div className="px-3 pb-2">
-            <span className="inline-flex items-center rounded-full bg-cyan-500/10 border border-cyan-500/20 px-1.5 py-0.5 text-[7px] font-medium text-cyan-400">
+            <span className="inline-flex items-center rounded-full border border-white/[0.12] bg-white/[0.06] px-1.5 py-0.5 text-[7px] font-medium text-white/70">
               {industry}
             </span>
           </div>
@@ -251,7 +246,7 @@ export function InteractiveDashboard({
                         key={item.label}
                         className={`flex items-center gap-1.5 h-6 px-1.5 rounded text-[8px] font-medium ${
                           item.active
-                            ? 'border-l-2 border-l-cyan-400 bg-cyan-500/10 text-cyan-400'
+                            ? 'border-l-2 border-l-white/60 bg-white/[0.06] text-white'
                             : 'text-white/50'
                         }`}
                       >
@@ -275,13 +270,13 @@ export function InteractiveDashboard({
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Topbar */}
           <motion.div {...anim(0.15)} className="flex-shrink-0">
-            <div className="flex items-center justify-between h-8 px-3 bg-[#0a0f1e] border-b border-white/[0.08]">
-              <div className="flex items-center gap-1 text-[7px] text-white/40 font-mono">
-                <span className="uppercase tracking-wider">Organization</span>
+            <div className="flex items-center justify-between h-8 px-3 bg-marketing-bg border-b border-white/[0.08]">
+              <div className="flex items-center gap-1 text-[7px] text-white/40">
+                <span className="uppercase tracking-wider">Organisation</span>
                 <span className="text-white/20">&rsaquo;</span>
                 <span className="text-white/60">greenfield-care</span>
                 <span className="text-white/20">&rsaquo;</span>
-                <span className="text-cyan-400/60 uppercase tracking-wider">
+                <span className="text-white/50">
                   Owner
                 </span>
               </div>
@@ -302,7 +297,7 @@ export function InteractiveDashboard({
               </div>
             </div>
             {/* Compliance strip */}
-            <div className="flex items-center gap-3 h-5 px-3 bg-[#080c18] border-b border-white/[0.06]">
+            <div className="flex items-center gap-3 h-5 px-3 bg-marketing-bg-alt border-b border-white/[0.06]">
               <span className="flex items-center gap-1 text-[7px]">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
                 <span className="text-white/40">0 Overdue</span>
@@ -358,7 +353,7 @@ export function InteractiveDashboard({
                     onClick={() => setActiveTab(tab.id)}
                     className={`px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all whitespace-nowrap ${
                       activeTab === tab.id
-                        ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                        ? 'bg-white/[0.06] text-white border border-white/[0.12]'
                         : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
                     }`}
                   >
@@ -390,7 +385,7 @@ export function InteractiveDashboard({
                   }}
                   className={`min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg transition-all ${
                     searchOpen
-                      ? 'bg-cyan-500/10 text-cyan-400'
+                      ? 'bg-white/[0.06] text-white'
                       : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
                   }`}
                 >
@@ -405,7 +400,7 @@ export function InteractiveDashboard({
                     onClick={() => setFilterOpen(!filterOpen)}
                     className={`min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg transition-all ${
                       filterOpen || selectedFilter
-                        ? 'bg-cyan-500/10 text-cyan-400'
+                        ? 'bg-white/[0.06] text-white'
                         : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
                     }`}
                   >
@@ -418,7 +413,7 @@ export function InteractiveDashboard({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -4 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 top-full mt-1 z-20 rounded-lg border border-white/[0.08] bg-[#0d1428] p-1.5 shadow-xl min-w-[120px]"
+                        className="absolute right-0 top-full mt-1 z-20 rounded-lg border border-white/[0.08] bg-marketing-card p-1.5 shadow-xl min-w-[120px]"
                       >
                         <button
                           type="button"
@@ -428,7 +423,7 @@ export function InteractiveDashboard({
                           }}
                           className={`block w-full text-left px-2.5 py-1.5 rounded text-[11px] transition-colors ${
                             !selectedFilter
-                              ? 'text-cyan-400 bg-cyan-500/10'
+                              ? 'text-white bg-white/[0.06]'
                               : 'text-white/50 hover:bg-white/[0.04]'
                           }`}
                         >
@@ -444,7 +439,7 @@ export function InteractiveDashboard({
                             }}
                             className={`flex items-center gap-2 w-full text-left px-2.5 py-1.5 rounded text-[11px] transition-colors ${
                               selectedFilter === f
-                                ? 'text-cyan-400 bg-cyan-500/10'
+                                ? 'text-white bg-white/[0.06]'
                                 : 'text-white/50 hover:bg-white/[0.04]'
                             }`}
                           >
@@ -472,12 +467,12 @@ export function InteractiveDashboard({
                       onClick={() => setNotifOpen(!notifOpen)}
                       className={`relative min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg transition-all ${
                         notifOpen
-                          ? 'bg-cyan-500/10 text-cyan-400'
+                          ? 'bg-white/[0.06] text-white'
                           : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
                       }`}
                     >
                       <Bell className="h-3.5 w-3.5" aria-hidden="true" />
-                      <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 ring-2 ring-[#0d1428]" />
+                      <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive ring-2 ring-marketing-card" />
                     </button>
                     <AnimatePresence>
                       {notifOpen && (
@@ -486,7 +481,7 @@ export function InteractiveDashboard({
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: -4 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute right-0 top-full mt-1 z-20 rounded-lg border border-white/[0.08] bg-[#0d1428] p-2 shadow-xl w-[220px]"
+                          className="absolute right-0 top-full mt-1 z-20 rounded-lg border border-white/[0.08] bg-marketing-card p-2 shadow-xl w-[220px]"
                         >
                           <div className="text-[8px] uppercase tracking-wider text-white/30 px-1 mb-1.5">
                             Notifications
@@ -548,15 +543,16 @@ export function InteractiveDashboard({
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search records..."
-                        className="w-full rounded-lg border border-white/[0.08] bg-white/[0.02] pl-8 pr-8 py-1.5 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-500/30 focus:ring-1 focus:ring-cyan-500/20"
+                        className="w-full rounded-lg border border-white/[0.08] bg-white/[0.02] pl-8 pr-8 py-1.5 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/25 focus:ring-1 focus:ring-white/20"
                       />
                       {searchQuery && (
                         <button
                           type="button"
                           onClick={() => setSearchQuery('')}
+                          aria-label="Clear search"
                           className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/50"
                         >
-                          <X className="h-3 w-3" />
+                          <X aria-hidden="true" className="h-3 w-3" />
                         </button>
                       )}
                     </div>
@@ -607,7 +603,7 @@ export function InteractiveDashboard({
                         className={`border-b border-white/[0.04] last:border-0 transition-colors ${
                           row.expandedContent ? 'cursor-pointer' : ''
                         } ${hoveredRow === row.id ? 'bg-white/[0.02]' : ''} ${
-                          expandedRow === row.id ? 'bg-cyan-500/[0.02]' : ''
+                          expandedRow === row.id ? 'bg-white/[0.03]' : ''
                         }`}
                         style={{ height: 32 }}
                       >
@@ -640,7 +636,7 @@ export function InteractiveDashboard({
                                 {row.cells[col.key]}
                               </span>
                             ) : (
-                              <span className="text-white/40 text-[10px] font-mono">
+                              <span className="text-white/40 text-[10px]">
                                 {row.cells[col.key]}
                               </span>
                             )}
@@ -686,9 +682,9 @@ export function InteractiveDashboard({
                     const row = rows.find((r) => r.id === expandedRow);
                     if (!row?.expandedContent) return null;
                     return (
-                      <div className="px-4 py-3 bg-cyan-500/[0.02]">
+                      <div className="px-4 py-3 bg-white/[0.03]">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-[8px] uppercase tracking-wider text-cyan-500/60">
+                          <span className="text-[8px] text-white/50">
                             {row.expandedContent.label}
                           </span>
                           <button
@@ -697,16 +693,17 @@ export function InteractiveDashboard({
                               e.stopPropagation();
                               setExpandedRow(null);
                             }}
+                            aria-label="Collapse row"
                             className="text-white/30 hover:text-white/50"
                           >
-                            <X className="h-3 w-3" />
+                            <X aria-hidden="true" className="h-3 w-3" />
                           </button>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                           {row.expandedContent.items.map((item) => (
                             <div
                               key={item.key}
-                              className="rounded-lg border border-white/[0.04] bg-[#0d1428] px-3 py-2"
+                              className="rounded-lg border border-white/[0.04] bg-marketing-card px-3 py-2"
                             >
                               <div className="text-[7px] uppercase tracking-wider text-white/30 mb-0.5">
                                 {item.key}
@@ -736,18 +733,18 @@ export function InteractiveDashboard({
                 <button
                   type="button"
                   onClick={() => setSelectedFilter(null)}
-                  className="ml-2 text-cyan-500 hover:text-cyan-400"
+                  className="ml-2 text-white/70 hover:text-white"
                 >
                   Clear filter
                 </button>
               )}
             </span>
             <div className="flex items-center gap-3 text-[10px] text-white/30">
-              <span className="hidden sm:inline font-mono">
+              <span className="hidden sm:inline">
                 Last synced 2 min ago
               </span>
               <span className="flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="h-1.5 w-1.5 rounded-full bg-success" />
                 Live
               </span>
             </div>

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { EmptyState } from '@/components/empty-states';
 
 /**
  * RecordList / RecordCard — the canonical mobile pattern for any data table
@@ -139,22 +140,31 @@ export function RecordList({
   return <div className={cn('flex flex-col gap-2', className)}>{children}</div>;
 }
 
+/**
+ * The compact, card-list form of the canonical EmptyState — same component,
+ * same copy rules, sized for a phone. `module` picks the icon; pass a string
+ * key from the empty-state library ('incidents', 'evidence', 'tasks', …).
+ */
 export function EmptyRecordState({
   title,
   description,
   action,
+  module = 'default',
 }: {
   title: string;
   description?: string;
   action?: ReactNode;
+  module?: string;
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-border bg-muted/20 p-6 text-center">
-      <p className="text-sm font-semibold text-foreground">{title}</p>
-      {description && (
-        <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-      )}
-      {action && <div className="mt-4 flex justify-center">{action}</div>}
-    </div>
+    <EmptyState
+      module={module}
+      title={title}
+      description={description}
+      actions={action}
+      tone="neutral"
+      compact
+      className="rounded-xl border border-dashed border-border bg-muted/20"
+    />
   );
 }

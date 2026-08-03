@@ -140,7 +140,7 @@ export default function DemoPolicyLifecycle({
                   className={`
                     flex items-center gap-1 sm:gap-1.5 rounded-full px-1.5 sm:px-2.5 py-1 text-[9px] sm:text-[10px] font-medium transition-all w-full justify-center
                     ${isActive ? `${step.bg} ${step.color} border ${step.border}` :
-                      isPast ? 'bg-white/[0.04] text-emerald-400' : 'bg-white/[0.02] text-muted-foreground/40'}
+                      isPast ? 'bg-white/[0.04] text-emerald-400' : 'bg-white/[0.02] text-muted-foreground'}
                   `}
                 >
                   <Icon className="h-3 w-3 flex-shrink-0" />

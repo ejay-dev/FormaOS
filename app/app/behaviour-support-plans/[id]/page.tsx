@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, Archive, Pencil, Trash2 } from "lucide-react";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { fetchSystemState } from "@/lib/system-state/server";
-import { deleteBehaviourSupportPlan } from "@/app/app/actions/behaviour-support-plans";
+import {
+  deleteBehaviourSupportPlan,
+  updateBehaviourSupportPlan,
+} from "@/app/app/actions/behaviour-support-plans";
+import { ConfirmActionButton } from "@/components/care/confirm-action-button";
 
 export const metadata = {
   title: "Behaviour Support Plan | FormaOS",
@@ -63,6 +67,38 @@ export default async function BehaviourSupportPlanDetailPage({
   // System-state UserRole flattens compliance_admin → admin at the system-state
   // layer; RLS enforces the finer-grained owner/admin/compliance_admin check.
   const canEdit = state.role === "owner" || state.role === "admin";
+  const isWithdrawn = plan.status === "withdrawn";
+
+  // Withdrawing keeps the authorisation record intact, which the Restrictive
+  // Practices Rules require; deletion is the last resort.
+  const withdrawAction = async () => {
+    "use server";
+    const fd = new FormData();
+    fd.set("plan_id", plan.id);
+    fd.set("plan_type", plan.plan_type);
+    fd.set("status", "withdrawn");
+    for (const [field, value] of [
+      ["participant_id", plan.participant_id],
+      ["first_restrictive_practice_at", plan.first_restrictive_practice_at],
+      ["authorised_at", plan.authorised_at],
+      ["effective_from", plan.effective_from],
+      ["expires_at", plan.expires_at],
+      ["reviewed_at", plan.reviewed_at],
+      ["authorising_body", plan.authorising_body],
+      ["authorisation_reference", plan.authorisation_reference],
+      ["sbs_provider_name", plan.sbs_provider_name],
+      ["sbs_provider_registration_id", plan.sbs_provider_registration_id],
+      ["notes", plan.notes],
+    ] as [string, string | null][]) {
+      if (value) fd.set(field, value);
+    }
+    await updateBehaviourSupportPlan(fd);
+  };
+
+  const deleteAction = async (fd: FormData) => {
+    "use server";
+    await deleteBehaviourSupportPlan(fd);
+  };
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 p-6">
@@ -70,12 +106,13 @@ export default async function BehaviourSupportPlanDetailPage({
         <div className="flex items-center gap-3">
           <Link
             href="/app/behaviour-support-plans"
+            aria-label="Back to behaviour support plans"
             className="rounded-lg p-2 transition-colors hover:bg-muted"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft aria-hidden="true" className="h-5 w-5" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold">
+            <h1 className="page-title">
               {participantLabel ?? "Unassigned participant"}
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -93,21 +130,29 @@ export default async function BehaviourSupportPlanDetailPage({
             >
               <Pencil className="h-3.5 w-3.5" /> Edit
             </Link>
-            <form
-              action={async (fd: FormData) => {
-                "use server";
-                await deleteBehaviourSupportPlan(fd);
-              }}
-            >
-              <input type="hidden" name="plan_id" value={plan.id} />
-              <button
-                type="submit"
-                className="inline-flex items-center gap-1.5 rounded-md border border-red-500/40 px-3 py-2 text-sm text-red-600 hover:bg-red-500/10"
-                data-testid="bsp-delete-btn"
-              >
-                <Trash2 className="h-3.5 w-3.5" /> Delete
-              </button>
-            </form>
+            {!isWithdrawn && (
+              <ConfirmActionButton
+                action={withdrawAction}
+                label="Withdraw"
+                icon={<Archive className="h-3.5 w-3.5" />}
+                className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm hover:bg-muted"
+                title="Withdraw this behaviour support plan?"
+                description="The plan is marked withdrawn and stops counting as current, but the authorisation record and its dates stay on file for audit."
+                confirmLabel="Withdraw plan"
+                tone="primary"
+              />
+            )}
+            <ConfirmActionButton
+              action={deleteAction}
+              fields={{ plan_id: plan.id }}
+              label="Delete"
+              icon={<Trash2 className="h-3.5 w-3.5" />}
+              testId="bsp-delete-btn"
+              className="inline-flex items-center gap-1.5 rounded-md border border-destructive/40 px-3 py-2 text-sm text-destructive hover:bg-destructive/10"
+              title="Permanently delete this plan?"
+              description="This erases the record of a restrictive practice authorisation, which the NDIS Restrictive Practices Rules require you to keep. Withdraw the plan instead unless it was created in error."
+              confirmLabel="Delete permanently"
+            />
           </div>
         )}
       </div>

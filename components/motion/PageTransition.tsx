@@ -1,7 +1,7 @@
 'use client';
 
 import { type ReactNode, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { easing } from '@/config/motion';
 
@@ -9,32 +9,15 @@ interface PageTransitionProps {
   children: ReactNode;
 }
 
-const variants = {
-  initial: {
-    opacity: 0,
-    scale: 0.98,
-    y: 8,
-  },
-  enter: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      duration: 0.35,
-      ease: easing.signature as [number, number, number, number],
-    },
-  },
-  exit: {
-    opacity: 0,
-    scale: 0.98,
-    y: -8,
-    transition: {
-      duration: 0.25,
-      ease: easing.signature as [number, number, number, number],
-    },
-  },
-};
-
+/**
+ * One entrance move for the whole marketing shell: the incoming page fades in.
+ *
+ * There is deliberately no exit phase. Wrapping this in AnimatePresence with
+ * mode="wait" held the outgoing page on screen for its full exit duration
+ * before the new one could mount, so every click on a static, prerendered site
+ * cost a quarter of a second of nothing happening. Scale and y offset are gone
+ * for the same reason restraint applies elsewhere — one move, not three.
+ */
 export function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
@@ -49,18 +32,17 @@ export function PageTransition({ children }: PageTransitionProps) {
   }
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={pathname}
-        variants={variants}
-        initial={isFirstMount.current ? false : 'initial'}
-        animate="enter"
-        exit="exit"
-        className="will-change-[opacity,transform]"
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      key={pathname}
+      initial={isFirstMount.current ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{
+        duration: 0.2,
+        ease: easing.signature as [number, number, number, number],
+      }}
+    >
+      {children}
+    </motion.div>
   );
 }
 

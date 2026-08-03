@@ -1495,9 +1495,10 @@ const DetailDrawer = memo(function DetailDrawer({
               </div>
               <button
                 onClick={onClose}
+                aria-label="Close panel"
                 className="p-1 rounded-md hover:bg-white/[0.06] text-white/40 hover:text-white/70 transition-colors shrink-0"
               >
-                <X className="w-4 h-4" />
+                <X aria-hidden="true" className="w-4 h-4" />
               </button>
             </div>
             {/* Status */}

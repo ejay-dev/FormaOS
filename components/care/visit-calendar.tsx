@@ -103,18 +103,20 @@ export function VisitCalendar({ visits }: { visits: Visit[] }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
+            aria-label="Previous month"
             className="rounded-md border border-border p-1.5 hover:bg-muted"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft aria-hidden="true" className="h-4 w-4" />
           </button>
           <h2 className="text-lg font-semibold min-w-[180px] text-center">
             {monthLabel}
           </h2>
           <button
             onClick={() => navigate(1)}
+            aria-label="Next month"
             className="rounded-md border border-border p-1.5 hover:bg-muted"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight aria-hidden="true" className="h-4 w-4" />
           </button>
           <button
             onClick={() => setCurrentDate(new Date())}

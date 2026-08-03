@@ -13,15 +13,19 @@ import {
   RowSelectionState,
   useReactTable,
 } from '@tanstack/react-table';
-import { Paperclip, ArrowUpDown, Download, Users, Filter } from 'lucide-react';
+import { Paperclip, ArrowUpDown, Download, Filter } from 'lucide-react';
 import Button from '@/components/ui/button';
 import { OwnerChip } from '@/components/compliance/OwnerChip';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { EvidenceDrawer } from '@/components/compliance/EvidenceDrawer';
+import {
+  StatusBadge,
+  obligationStatus,
+  severityStatus,
+} from '@/components/compliance/StatusBadge';
 import type { ObligationStatus } from '@/lib/stores/compliance';
-import { ragFromStatus, ragBadgeClass } from '@/lib/stores/compliance';
 
 type RiskLevel = 'critical' | 'high' | 'medium' | 'low';
 
@@ -38,11 +42,11 @@ interface ObligationRow {
 }
 
 const STATUS_LABELS: Record<ObligationStatus, string> = {
-  overdue: 'Overdue',
-  due_soon: 'Due Soon',
-  on_track: 'On Track',
-  completed: 'Completed',
-  not_started: 'Not Started',
+  overdue: obligationStatus('overdue').label,
+  due_soon: obligationStatus('due_soon').label,
+  on_track: obligationStatus('on_track').label,
+  completed: obligationStatus('completed').label,
+  not_started: obligationStatus('not_started').label,
 };
 
 const STATUS_SORT_ORDER: Record<ObligationStatus, number> = {
@@ -61,17 +65,10 @@ const RISK_SORT_ORDER: Record<RiskLevel, number> = {
 };
 
 const RISK_LABELS: Record<RiskLevel, string> = {
-  critical: 'Critical',
-  high: 'High',
-  medium: 'Medium',
-  low: 'Low',
-};
-
-const RISK_BADGE_CLASSES: Record<RiskLevel, string> = {
-  critical: 'border-destructive/20 bg-destructive/10 text-destructive',
-  high: 'border-warning/20 bg-warning/10 text-warning',
-  medium: 'border-warning/20 bg-warning/10 text-warning',
-  low: 'border-success/20 bg-success/10 text-success',
+  critical: severityStatus('critical').label,
+  high: severityStatus('high').label,
+  medium: severityStatus('medium').label,
+  low: severityStatus('low').label,
 };
 
 function computeRiskScore(row: ObligationRow): RiskLevel {
@@ -106,25 +103,49 @@ function computeRiskScore(row: ObligationRow): RiskLevel {
   return 'low';
 }
 
-function StatusBadge({ status }: { status: ObligationStatus }) {
-  const rag = ragFromStatus(status);
-  return (
-    <span
-      className={`inline-flex items-center rounded border px-2 py-0.5 text-[11px] font-semibold ${ragBadgeClass(rag)}`}
-    >
-      {STATUS_LABELS[status]}
-    </span>
-  );
+const CSV_COLUMNS = [
+  'Obligation',
+  'Framework',
+  'Owner',
+  'Due date',
+  'Status',
+  'Risk',
+  'Evidence',
+] as const;
+
+function csvCell(value: string | number): string {
+  const text = String(value ?? '');
+  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 }
 
-function RiskBadge({ level }: { level: RiskLevel }) {
-  return (
-    <span
-      className={`inline-flex items-center rounded border px-2 py-0.5 text-[11px] font-semibold ${RISK_BADGE_CLASSES[level]}`}
-    >
-      {RISK_LABELS[level]}
-    </span>
+function exportRowsToCsv(rows: ObligationRow[]) {
+  if (rows.length === 0) return;
+
+  const lines = [
+    CSV_COLUMNS.join(','),
+    ...rows.map((row) =>
+      [
+        row.title,
+        row.frameworkCode,
+        row.owner?.name ?? 'Unassigned',
+        row.dueDate ? new Date(row.dueDate).toLocaleDateString() : '',
+        obligationStatus(row.status).label,
+        severityStatus(row.riskScore).label,
+        row.evidenceCount,
+      ]
+        .map(csvCell)
+        .join(','),
+    ),
+  ];
+
+  const url = URL.createObjectURL(
+    new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' }),
   );
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `obligations-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 function OwnerCell({ owner }: { owner: ObligationRow['owner'] }) {
@@ -203,6 +224,7 @@ function FilterBar({
 function ObligationsTableInner() {
   const [data, setData] = useState<ObligationRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([
     { id: 'status', desc: false },
     { id: 'dueDate', desc: false },
@@ -224,29 +246,29 @@ function ObligationsTableInner() {
       if (!res.ok) throw new Error('Failed');
       const json = await res.json();
       setData(json.obligations ?? []);
+      setLoadFailed(false);
     } catch {
-      // empty
+      // A failed fetch must never be reported as "you have no obligations".
+      setLoadFailed(true);
     }
   }, []);
+
+  const retry = useCallback(async () => {
+    setIsLoading(true);
+    await reload();
+    setIsLoading(false);
+  }, [reload]);
 
   useEffect(() => {
     let mounted = true;
     (async () => {
-      try {
-        const res = await fetch('/api/v1/compliance/obligations');
-        if (!res.ok) throw new Error('Failed');
-        const json = await res.json();
-        if (mounted) setData(json.obligations ?? []);
-      } catch {
-        // empty
-      } finally {
-        if (mounted) setIsLoading(false);
-      }
+      await reload();
+      if (mounted) setIsLoading(false);
     })();
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [reload]);
 
   const frameworks = useMemo(
     () => [...new Set(data.map((d) => d.framework))].sort(),
@@ -360,7 +382,9 @@ function ObligationsTableInner() {
             Status <ArrowUpDown className="h-3 w-3" />
           </button>
         ),
-        cell: ({ row }) => <StatusBadge status={row.getValue('status')} />,
+        cell: ({ row }) => (
+          <StatusBadge {...obligationStatus(row.getValue('status'))} />
+        ),
         size: 110,
         sortingFn: (a, b) => {
           return (
@@ -379,10 +403,11 @@ function ObligationsTableInner() {
             Risk <ArrowUpDown className="h-3 w-3" />
           </button>
         ),
-        cell: ({ row }) => {
-          const level = row.getValue('riskScore') as RiskLevel;
-          return <RiskBadge level={level} />;
-        },
+        cell: ({ row }) => (
+          <StatusBadge
+            {...severityStatus(row.getValue('riskScore') as RiskLevel)}
+          />
+        ),
         size: 90,
         sortingFn: (a, b) => {
           return (
@@ -435,6 +460,12 @@ function ObligationsTableInner() {
   });
 
   const selectedCount = Object.keys(rowSelection).length;
+  const hasActiveFilter = Boolean(
+    frameworkFilter || statusFilter || riskFilter,
+  );
+  const emptyMessage = hasActiveFilter
+    ? 'No obligations match these filters.'
+    : 'No obligations yet. Enable a framework to populate the register.';
 
   if (isLoading) {
     return (
@@ -443,6 +474,27 @@ function ObligationsTableInner() {
         {Array.from({ length: 8 }).map((_, i) => (
           <Skeleton key={i} className="h-8 w-full" />
         ))}
+      </div>
+    );
+  }
+
+  if (loadFailed && data.length === 0) {
+    return (
+      <div className="rounded-lg border border-border bg-card p-6 text-center">
+        <p className="text-sm font-medium text-foreground">
+          Couldn&apos;t load your obligations
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          The register is still there — the connection failed. Try again.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-4 h-7 text-xs"
+          onClick={() => void retry()}
+        >
+          Retry
+        </Button>
       </div>
     );
   }
@@ -466,11 +518,17 @@ function ObligationsTableInner() {
               <span className="text-xs text-muted-foreground">
                 {selectedCount} selected
               </span>
-              <Button variant="outline" size="sm" className="text-xs h-7">
-                <Users className="h-3 w-3 mr-1" /> Reassign
-              </Button>
-              <Button variant="outline" size="sm" className="text-xs h-7">
-                <Download className="h-3 w-3 mr-1" /> Export
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-xs h-7"
+                onClick={() =>
+                  exportRowsToCsv(
+                    table.getSelectedRowModel().rows.map((r) => r.original),
+                  )
+                }
+              >
+                <Download className="h-3 w-3 mr-1" /> Export CSV
               </Button>
             </div>
           )}
@@ -481,11 +539,10 @@ function ObligationsTableInner() {
         <div className="md:hidden space-y-2">
           {filteredData.length === 0 ? (
             <div className="rounded-lg border border-dashed border-border bg-muted/20 p-6 text-center text-sm text-muted-foreground">
-              No obligations found. Add your first framework to get started.
+              {emptyMessage}
             </div>
           ) : (
             filteredData.slice(0, 50).map((row) => {
-              const rag = ragFromStatus(row.status);
               const due = row.dueDate
                 ? new Date(row.dueDate).toLocaleDateString()
                 : '—';
@@ -514,11 +571,7 @@ function ObligationsTableInner() {
                         <span className="truncate">{row.framework}</span>
                       </div>
                     </div>
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${ragBadgeClass(rag)}`}
-                    >
-                      {STATUS_LABELS[row.status]}
-                    </span>
+                    <StatusBadge {...obligationStatus(row.status)} />
                   </div>
                   <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
                     <div className="flex items-center gap-1.5">
@@ -551,16 +604,8 @@ function ObligationsTableInner() {
                         <dt className="uppercase tracking-wider text-muted-foreground/80">
                           Risk
                         </dt>
-                        <dd
-                          className={`font-semibold ${
-                            row.riskScore === 'critical' || row.riskScore === 'high'
-                              ? 'text-destructive'
-                              : row.riskScore === 'medium'
-                                ? 'text-warning'
-                                : 'text-foreground/85'
-                          }`}
-                        >
-                          {row.riskScore}
+                        <dd className="font-medium text-foreground/85">
+                          {severityStatus(row.riskScore).label}
                         </dd>
                       </div>
                     )}
@@ -611,8 +656,7 @@ function ObligationsTableInner() {
                       colSpan={columns.length}
                       className="h-32 text-center text-muted-foreground"
                     >
-                      No obligations found. Add your first framework to get
-                      started.
+                      {emptyMessage}
                     </td>
                   </tr>
                 ) : (

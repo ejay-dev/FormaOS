@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function ReportsLoading() {
-  return <PageSkeleton title="Reports Center" cards={4} tableRows={0} />;
+export default function AppReportsLoading() {
+  return <PageSkeleton hero label="reports" heroActions={2} cards={4} tableRows={0} />;
 }

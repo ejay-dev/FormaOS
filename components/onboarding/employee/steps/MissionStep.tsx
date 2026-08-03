@@ -48,7 +48,7 @@ export function MissionStep({
       <div className="space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1">
           <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          <span className="text-xs font-medium text-muted-foreground">
             Your mission at {orgName}
           </span>
         </div>

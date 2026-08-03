@@ -144,7 +144,7 @@ export default function EvidenceShowcase() {
                           className={`
                             relative flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all w-full justify-center
                             ${isActive ? `${step.bg} ${step.color} border ${step.border}` :
-                              isPast ? 'bg-white/[0.04] text-emerald-400' : 'bg-white/[0.02] text-muted-foreground/40'}
+                              isPast ? 'bg-white/[0.04] text-emerald-400' : 'bg-white/[0.02] text-muted-foreground'}
                           `}
                         >
                           <Icon className="h-3 w-3" />

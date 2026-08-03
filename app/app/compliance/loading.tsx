@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function ComplianceLoading() {
-  return <PageSkeleton title="Compliance" cards={4} tableRows={5} />;
+export default function AppComplianceLoading() {
+  return <PageSkeleton hero label="compliance" heroMetrics={4} cards={4} tableRows={5} />;
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { FileText, Shield, Scale, ArrowRight, Lock } from 'lucide-react';
+import { FileText, Shield, Scale, ArrowRight, Lock, Activity } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
@@ -9,12 +9,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Legal',
   description:
-    'Legal and compliance resources for FormaOS: Terms of Service, Privacy Policy, Data Processing Agreement summary, and sub-processor list.',
+    'Legal and compliance resources for FormaOS: Terms of Service, Privacy Policy, Data Processing Agreement summary, sub-processor list, and platform status.',
   alternates: { canonical: `${siteUrl}/legal` },
   openGraph: {
     title: 'FormaOS | Legal',
     description:
-      'Legal and compliance resources for FormaOS: Terms of Service, Privacy Policy, Data Processing Agreement summary, and sub-processor list.',
+      'Legal and compliance resources for FormaOS: Terms of Service, Privacy Policy, Data Processing Agreement summary, sub-processor list, and platform status.',
     type: 'website',
     url: `${siteUrl}/legal`,
     locale: 'en_AU',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | Legal',
     description:
-      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA, and subprocessors.',
+      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA, subprocessors, and platform status.',
   },
 };
 
@@ -53,8 +53,12 @@ const links = [
     description: 'Current subprocessor list and data-handling roles.',
     icon: Shield,
   },
-  // /status card removed 2026-05-13; route unshipped until a real
-  // status provider is wired (chore/unship-status-page).
+  {
+    title: 'Platform Status',
+    href: '/status',
+    description: 'Live platform health checks, published without sign-in.',
+    icon: Activity,
+  },
 ] as const;
 
 export default function LegalIndexPage() {
@@ -63,12 +67,12 @@ export default function LegalIndexPage() {
       <CompactHero
         title="Legal"
         description="Procurement-ready legal and privacy resources. Content reflects implemented platform behavior and contract-first commitments."
-        topColor="violet"
-        bottomColor="blue"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<Scale className="w-8 h-8 text-slate-400" />}
-            color="139,92,246"
+            icon={<Scale className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

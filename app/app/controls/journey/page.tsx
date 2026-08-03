@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { LayoutList, ShieldCheck, Radio } from 'lucide-react';
+import { LayoutList, ShieldCheck } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SkeletonCard } from '@/components/ui/skeleton';
@@ -172,13 +172,6 @@ async function ControlsJourney({ orgId }: { orgId: string }) {
             {compliantPct}%
           </span>
           compliant · {total} total
-        </span>
-        <span
-          className="hidden items-center gap-1 text-[10px] uppercase tracking-wider text-info sm:inline-flex"
-          title="Live — updates stream from the evaluator"
-        >
-          <Radio className="h-3 w-3" />
-          Live
         </span>
         <div className="ml-auto flex items-center gap-1.5">
           <Link

@@ -33,6 +33,16 @@ import {
   DemoNotificationTimeline,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
+import { PUBLIC_PRICING_TIERS, priceLabelFor } from '@/lib/marketing/pricing';
+
+/* The comparison row reads the entry plan from the public pricing tiers so it
+   cannot drift from /pricing. */
+const foundationTier = PUBLIC_PRICING_TIERS.find(
+  (tier) => tier.id === 'foundation',
+);
+const ENTRY_PRICE = foundationTier
+  ? `from ${priceLabelFor(foundationTier)}/mo`
+  : 'See pricing';
 
 /* ── Interactive Dashboard visual ────────────────────── */
 
@@ -107,7 +117,7 @@ function HealthcareDashboardVisual() {
             cpd: '12 / 60 hrs',
           },
           expandedContent: {
-            label: 'Practitioner Details, REVIEW',
+            label: 'Practitioner Details: review',
             items: [
               { key: 'AHPRA Number', value: 'DEN0001456789' },
               { key: 'Registration Expiry', value: '22 May 2026' },
@@ -126,7 +136,7 @@ function HealthcareDashboardVisual() {
             cpd: '5 / 20 hrs',
           },
           expandedContent: {
-            label: 'Practitioner Details, ACTION REQUIRED',
+            label: 'Practitioner Details: action required',
             items: [
               { key: 'AHPRA Number', value: 'PHY0001876543' },
               { key: 'Expired', value: '39 days ago' },
@@ -192,9 +202,7 @@ function FeatureVisual({
   return (
     <div className="p-5 space-y-3">
       <div>
-        <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-          {label}
-        </div>
+        <div className="text-xs font-medium text-slate-400">{label}</div>
         <div className="mt-0.5 text-[9px] text-slate-600">
           Illustrative · sample data
         </div>
@@ -212,10 +220,10 @@ function FeatureVisual({
                 <span
                   className={`h-2 w-2 rounded-full ${
                     r.status === 'green'
-                      ? 'bg-emerald-500'
+                      ? 'bg-success'
                       : r.status === 'amber'
-                        ? 'bg-amber-500'
-                        : 'bg-red-500'
+                        ? 'bg-warning'
+                        : 'bg-destructive'
                   }`}
                 />
               )}
@@ -240,47 +248,39 @@ export default function HealthcareComplianceContent() {
           scrim="center"
         />
         <IndustryHero
-        eyebrow="AHPRA + NSQHS Compliance"
-        headline={
-          <>
-            AHPRA Audits Don&apos;t Wait.
-            <br />
-            <span className="text-foreground">
-              Neither Should You.
-            </span>
-          </>
-        }
-        subheadline="AHPRA registrations, NSQHS accreditation, and credential expiry across 16 health professions. FormaOS keeps audit-ready evidence continuous."
-        primaryCta={{
-          label: PUBLIC_CTA_LABELS.compliancePlan,
-          href: compliancePlanHref('healthcare_compliance'),
-        }}
-        secondaryCta={{
-          label: 'See Healthcare Demo',
-          href: demoHref('healthcare_compliance'),
-        }}
-        trustSignals={[
-          'AU-hosted by default',
-          'Assessment-led onboarding',
-          'Compliance plan scoped by framework',
-          'AHPRA credential tracking',
-        ]}
-        dashboardVisual={<HealthcareDashboardVisual />}
-        statsBar={
-          <HeroStatsBar
-            stats={[
-              '1,204 practitioners tracked',
-              '8/8 NSQHS Standards covered',
-              'Zero evidence gaps at accreditation',
-              'AU-hosted',
-            ]}
-          />
-        }
-        jurisdictionBadges={[
-          { label: 'AHPRA Registration' },
-          { label: 'NSQHS Standards' },
-          { label: 'ACSQHC Accreditation' },
-        ]}
+          headline={
+            <>
+              Accreditation is a state,
+              <br />
+              not a <span className="mk-accent">sprint</span>
+            </>
+          }
+          subheadline="AHPRA registrations, NSQHS accreditation, and credential expiry across 16 health professions. FormaOS keeps audit-ready evidence continuous."
+          primaryCta={{
+            label: PUBLIC_CTA_LABELS.compliancePlan,
+            href: compliancePlanHref('healthcare_compliance'),
+          }}
+          secondaryCta={{
+            label: 'See Healthcare Demo',
+            href: demoHref('healthcare_compliance'),
+          }}
+          trustSignals={[
+            'AU-hosted by default',
+            'Assessment-led onboarding',
+            'Compliance plan scoped by framework',
+            'AHPRA credential tracking',
+          ]}
+          dashboardVisual={<HealthcareDashboardVisual />}
+          statsBar={
+            <HeroStatsBar
+              stats={[
+                'All 16 AHPRA-regulated professions',
+                'All 8 NSQHS standards, criterion-level',
+                'Expiry alerts at 90, 60 and 30 days',
+                'AU-hosted',
+              ]}
+            />
+          }
         />
       </div>
 
@@ -289,8 +289,8 @@ export default function HealthcareComplianceContent() {
       </div>
 
       <BeforeAfterSection
-        headline="The Healthcare Compliance Gap"
-        subheadline="The difference between scrambling and being accreditation-ready."
+        headline="Where accreditation evidence usually goes missing"
+        subheadline="Four failure points that show up again and again, and what replaces each one."
         without={[
           'AHPRA registration lapse discovered at point of care, practitioner practising unlawfully for 39 days',
           'NSQHS accreditation evidence assembled in a 3-week sprint, critical gaps found 48 hours before visit',
@@ -306,8 +306,8 @@ export default function HealthcareComplianceContent() {
       />
 
       <CompareTable
-        headline="FormaOS vs. The Status Quo"
-        description="See how purpose-built healthcare compliance software compares."
+        headline="Compared with spreadsheets and legacy tools"
+        description="Both can hold documents. Neither holds a criterion-level evidence chain with a named owner on every action."
         col2Label="Legacy Tools"
         rows={[
           {
@@ -368,7 +368,7 @@ export default function HealthcareComplianceContent() {
             feature: 'Price',
             spreadsheets: 'Hidden',
             genericGrc: '$$$+',
-            formaos: 'from $297/mo',
+            formaos: ENTRY_PRICE,
           },
         ]}
       />
@@ -378,8 +378,8 @@ export default function HealthcareComplianceContent() {
       </div>
 
       <FrameworkExplorer
-        headline="Every Healthcare Framework. Pre-Built."
-        description="FormaOS ships with every major Australian healthcare regulatory framework pre-loaded. Your obligations are mapped from day one, no manual setup required."
+        headline="NSQHS, AHPRA, RACGP and the Privacy Act, already mapped"
+        description="Select your service type and the obligation register is live. Nothing to transcribe from a standards PDF."
         frameworks={[
           {
             id: 'nsqhs',
@@ -387,22 +387,6 @@ export default function HealthcareComplianceContent() {
             body: 'Australian Commission on Safety and Quality in Health Care (ACSQHC)',
             updated: '2025-11-01',
             obligationCount: '350',
-            categories: [
-              { name: 'Clinical Governance', pct: 98 },
-              { name: 'Partnering with Consumers', pct: 96 },
-              {
-                name: 'Preventing and Controlling Healthcare-Associated Infections',
-                pct: 100,
-              },
-              { name: 'Medication Safety', pct: 97 },
-              { name: 'Comprehensive Care', pct: 95 },
-              { name: 'Communicating for Safety', pct: 98 },
-              { name: 'Blood Management', pct: 100 },
-              {
-                name: 'Recognising and Responding to Acute Deterioration',
-                pct: 96,
-              },
-            ],
             requirements: [
               'Clinical Governance',
               'Partnering with Consumers',
@@ -420,14 +404,6 @@ export default function HealthcareComplianceContent() {
             body: 'Australian Health Practitioner Regulation Agency',
             updated: '2026-01-15',
             obligationCount: '200',
-            categories: [
-              { name: 'Registration renewal and currency', pct: 100 },
-              { name: 'CPD requirements per profession', pct: 95 },
-              { name: 'Professional indemnity insurance', pct: 100 },
-              { name: 'Recency of practice requirements', pct: 92 },
-              { name: 'Criminal history declarations', pct: 98 },
-              { name: 'Mandatory notifications', pct: 96 },
-            ],
             requirements: [
               'Registration renewal and currency',
               'CPD requirements per profession',
@@ -439,16 +415,10 @@ export default function HealthcareComplianceContent() {
           },
           {
             id: 'privacy-act',
-            name: 'Privacy Act 1988, NDB Scheme',
+            name: 'Privacy Act 1988 and the NDB scheme',
             body: 'Office of the Australian Information Commissioner (OAIC)',
             updated: '2025-09-20',
             obligationCount: '80',
-            categories: [
-              { name: 'Notifiable Data Breaches scheme', pct: 100 },
-              { name: 'Australian Privacy Principles', pct: 96 },
-              { name: 'Health records handling', pct: 94 },
-              { name: 'Patient consent management', pct: 92 },
-            ],
             requirements: [
               'Notifiable Data Breaches scheme',
               'Australian Privacy Principles',
@@ -462,14 +432,6 @@ export default function HealthcareComplianceContent() {
             body: 'ACSQHC / State Health Departments',
             updated: '2025-12-10',
             obligationCount: '150',
-            categories: [
-              { name: 'Clinical incident management', pct: 97 },
-              { name: 'Credentialing and scope of practice', pct: 95 },
-              { name: 'Mortality and morbidity review', pct: 93 },
-              { name: 'Open disclosure', pct: 98 },
-              { name: 'Consumer feedback and complaints', pct: 96 },
-              { name: 'Clinical audit and effectiveness', pct: 94 },
-            ],
             requirements: [
               'Clinical incident management',
               'Credentialing and scope of practice',
@@ -485,14 +447,6 @@ export default function HealthcareComplianceContent() {
             body: 'Royal Australian College of General Practitioners',
             updated: '2025-08-05',
             obligationCount: '120',
-            categories: [
-              { name: 'Communication and patient participation', pct: 96 },
-              { name: 'Rights and needs of patients', pct: 98 },
-              { name: 'Comprehensiveness of care', pct: 94 },
-              { name: 'Coordination of care', pct: 95 },
-              { name: 'Education and training', pct: 97 },
-              { name: 'Practice management', pct: 93 },
-            ],
             requirements: [
               'Communication and patient participation',
               'Rights and needs of patients',
@@ -512,12 +466,9 @@ export default function HealthcareComplianceContent() {
       <VerticalTimeline
         steps={[
           {
-            number: '01',
             title: 'Connect Your Healthcare Obligations',
             description:
               'FormaOS ships with NSQHS Standards, AHPRA registration requirements, and clinical governance frameworks pre-built. Select your service type and your obligation register is live in minutes.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Framework Activation"
@@ -538,7 +489,7 @@ export default function HealthcareComplianceContent() {
                     status: 'green',
                   },
                   {
-                    k: 'Privacy Act 1988, NDB Scheme',
+                    k: 'Privacy Act 1988 and the NDB scheme',
                     v: 'Activated',
                     status: 'green',
                   },
@@ -547,12 +498,9 @@ export default function HealthcareComplianceContent() {
             ),
           },
           {
-            number: '02',
             title: 'Map Evidence to Every Standard',
             description:
               'Upload clinical governance documents, credentials, training records. FormaOS links each to specific NSQHS standards and AHPRA requirements, building continuous evidence chains.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Evidence Mapping"
@@ -582,12 +530,9 @@ export default function HealthcareComplianceContent() {
             ),
           },
           {
-            number: '03',
             title: 'Stay Accreditation-Ready Every Day',
             description:
               'Automated alerts for every credential expiry, CPD deadline, and evidence gap. When accreditation assessors arrive, your evidence pack is one click away.',
-            gradient:
-              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Readiness Score"
@@ -612,8 +557,8 @@ export default function HealthcareComplianceContent() {
       </div>
 
       <IndustryFeatures
-        headline="Purpose-Built for Healthcare Organisations"
-        subheadline="Every feature designed around real healthcare compliance workflows, not generic task management."
+        headline="Built around clinical governance, not generic task lists"
+        subheadline="Practitioner registers, CPD by profession, adverse events and NSQHS evidence, kept as one connected record."
         features={[
           {
             title: 'Practitioner Register',
@@ -703,8 +648,8 @@ export default function HealthcareComplianceContent() {
             ],
             visual: (
               <div className="p-5 space-y-3">
-                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Adverse Event Pipeline
+                <div className="text-xs font-medium text-slate-400">
+                  Adverse event pipeline
                 </div>
                 {[
                   'Reported',
@@ -714,22 +659,18 @@ export default function HealthcareComplianceContent() {
                   'Closed',
                 ].map((stage, i) => (
                   <div key={stage} className="flex items-center gap-3">
-                    <div
-                      className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
-                        i < 4
-                          ? 'bg-white/[0.12] text-white border border-white/20'
-                          : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
+                    <span
+                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                        i < 4 ? 'bg-success' : 'bg-white/20'
                       }`}
-                    >
-                      {i + 1}
-                    </div>
+                    />
                     <span
                       className={`text-xs ${i < 4 ? 'text-white' : 'text-slate-500'}`}
                     >
                       {stage}
                     </span>
                     {i < 4 && (
-                      <span className="text-[10px] text-emerald-500 ml-auto">
+                      <span className="text-[10px] text-success ml-auto">
                         Complete
                       </span>
                     )}
@@ -832,7 +773,7 @@ export default function HealthcareComplianceContent() {
                 title="Healthcare Compliance Overview"
                 rows={[
                   {
-                    label: 'NSQHS Standard 1, Clinical Governance',
+                    label: 'NSQHS Standard 1: Clinical Governance',
                     value: '96%',
                     status: 'green',
                   },
@@ -954,26 +895,26 @@ export default function HealthcareComplianceContent() {
 
       <SocialProof
         metricsBanner={[
-          '206+ tables with row-level security',
+          'All 8 NSQHS standards, criterion-level',
           'AU-hosted by default, data never leaves Australia',
-          'Zero evidence gaps at audit, immutable chain',
-          'SOC 2 compliance in progress',
+          'Immutable, timestamped evidence chain',
+          'Audit exports you can verify independently',
         ]}
         trustCards={[
           {
-            persona: 'Hospital Group, 400+ practitioners across 3 campuses',
-            need: 'AHPRA credential tracking and NSQHS evidence management across all departments with zero manual reconciliation',
+            persona: 'A hospital group running three campuses',
+            need: 'AHPRA credential tracking and NSQHS evidence management across every department, without manual reconciliation',
             delivers:
-              'Automated practitioner register, credential expiry alerts, NSQHS standards tree with evidence attachment, and one-click accreditation evidence packs',
+              'Practitioner register, credential expiry alerts, NSQHS standards tree with evidence attachment, and accreditation evidence packs on export',
           },
           {
-            persona: 'GP Practice Network, 25 clinics',
-            need: 'RACGP accreditation readiness and CPD tracking for GPs, nurses, and allied health staff across all sites',
+            persona: 'A GP practice network across multiple clinics',
+            need: 'RACGP accreditation readiness and CPD tracking for GPs, nurses, and allied health staff at every site',
             delivers:
-              'Pre-built RACGP standards framework, centralised CPD tracking per profession, and accreditation-ready evidence export for every clinic',
+              'Pre-built RACGP standards framework, centralised CPD tracking per profession, and accreditation-ready evidence export per clinic',
           },
           {
-            persona: 'Allied Health Network, 80+ practitioners',
+            persona: 'An allied health network across several professions',
             need: 'AHPRA registration monitoring across physiotherapy, occupational therapy, psychology, and speech pathology',
             delivers:
               'Multi-profession credential dashboard, profession-specific CPD rules, indemnity insurance tracking, and 90/60/30-day expiry escalation paths',

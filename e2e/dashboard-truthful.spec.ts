@@ -9,40 +9,32 @@ async function openDashboard(page: Page) {
   ).toBeVisible({ timeout: 30_000 });
 }
 
+/**
+ * The dashboard is the first screen of a compliance product, so anything it
+ * states has to be something the workspace can actually back up. These
+ * assertions pin the specific fabrications that have been removed from it,
+ * so they cannot return unnoticed.
+ */
 test.describe('Dashboard truthfulness', () => {
-  test('Pulse tab does not render fabricated trend data', async ({
-    page,
-    browserName,
-  }) => {
+  test('renders no fabricated data', async ({ page, browserName }) => {
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
 
     await authenticateWorkspacePage(page);
     await openDashboard(page);
 
-    const pulseTab = page.getByRole('button', { name: /^pulse$/i }).first();
-    if (await pulseTab.count()) {
-      await pulseTab.click();
-    }
-
-    // The synthetic "vs. previous 30d" caption used to anchor fake sparklines.
+    // Synthetic trend caption that anchored sparklines with no history behind
+    // them, and seeded actor names that were never real users.
     await expect(page.getByText('vs. previous 30d')).toHaveCount(0);
-  });
-
-  test('Records tab does not show the old fabricated actor names', async ({
-    page,
-    browserName,
-  }) => {
-    test.skip(browserName !== 'chromium', 'Runs once on chromium');
-
-    await authenticateWorkspacePage(page);
-    await openDashboard(page);
-
-    const recordsTab = page.getByRole('button', { name: /^records$/i }).first();
-    if (await recordsTab.count()) {
-      await recordsTab.click();
-    }
-
     await expect(page.getByText(/Priya Natarajan/)).toHaveCount(0);
     await expect(page.getByText(/Alex Chen/)).toHaveCount(0);
+
+    // Owner and SLA chips on the priority queue were literal strings dressed
+    // as live operational assignments.
+    await expect(page.getByText('Compliance Ops', { exact: true })).toHaveCount(
+      0,
+    );
+    await expect(page.getByText('Evidence Owners', { exact: true })).toHaveCount(
+      0,
+    );
   });
 });

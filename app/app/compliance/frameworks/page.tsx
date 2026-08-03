@@ -136,8 +136,8 @@ async function FrameworkGrid({ orgId }: { orgId: string }) {
             <EvaluationTally tally={tallyMap.get(framework.id)!} />
           ) : (
             <div className="mt-4 rounded-lg border border-dashed border-border p-3 text-xs text-muted-foreground">
-              No per-control evaluations recorded yet. Trigger an evaluation
-              from /app/controls or wait for the nightly job.
+              No per-control evaluations recorded yet. Run one from the
+              Controls page, or wait for the overnight check.
             </div>
           )}
         </div>

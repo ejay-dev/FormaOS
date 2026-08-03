@@ -7,7 +7,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Security & Data Protection | FormaOS',
   description:
-    'Enterprise-grade security for Australian compliance data. AU-hosted, SOC 2 in progress, row-level security, SAML SSO, MFA, data residency assured.',
+    'AES-256 at rest and TLS 1.3 in transit, tenant isolation enforced by row-level security, SAML 2.0 SSO, MFA, and tamper-evident audit logs. AU-hosted by default.',
   keywords: [
     'FormaOS security',
     'compliance software security Australia',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     siteName: 'FormaOS',
     title: 'Security & Data Protection | FormaOS',
     description:
-      'Enterprise-grade security for Australian compliance data. AU-hosted, SOC 2 in progress, row-level security, SAML SSO, MFA.',
+      'AES-256 at rest and TLS 1.3 in transit, row-level tenant isolation, SAML 2.0 SSO, MFA, and tamper-evident audit logs. AU-hosted by default.',
     images: [
       {
         url: `${siteUrl}/og-image.png`,
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Security & Data Protection | FormaOS',
     description:
-      'Enterprise-grade security for Australian compliance data. AU-hosted, SOC 2 in progress, row-level security, SAML SSO, MFA.',
+      'AES-256 at rest and TLS 1.3 in transit, row-level tenant isolation, SAML 2.0 SSO, MFA, and tamper-evident audit logs. AU-hosted by default.',
     images: [`${siteUrl}/og-image.png`],
     creator: '@EjazDev',
     site: '@FormaOS',

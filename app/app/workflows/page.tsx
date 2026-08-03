@@ -5,6 +5,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { listExecutions, listWorkflows } from '@/lib/automation/workflow-store';
 import { listWorkflowTemplates } from '@/lib/automation/templates';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 export default async function WorkflowsPage() {
   const supabase = await createSupabaseServerClient();
@@ -41,39 +42,36 @@ export default async function WorkflowsPage() {
   if (entitlementCheck.data?.enabled !== true) {
     return (
       <div className="flex h-full flex-col">
-        <div className="page-header">
-          <div>
-            <h1 className="page-title">Workflow Engine</h1>
-            <p className="page-description">
-              Build compliance workflows with approvals, branching, and execution traces
-            </p>
-          </div>
-        </div>
+        <PageHero
+          eyebrow="Automation · Workflows"
+          title="Workflows"
+          subtitle="Build compliance workflows with approvals, branching, and execution traces."
+        />
 
         <div className="page-content">
           <section
-            className="rounded-[28px] border border-cyan-400/30 bg-cyan-500/10 p-6"
+            className="rounded-xl border border-border bg-card p-6"
             data-testid="workflow-entitlement-disabled"
           >
             <h2 className="text-lg font-semibold text-foreground">
-              Workflow automation is an Enterprise feature
+              Workflow automation is available on the Enterprise plan
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Creation, template installation, manual runs, toggles, and builder
-              edits are disabled until this workspace has the
-              workflow_automation entitlement enabled.
+              Creating workflows, installing templates, running them manually
+              and editing them in the builder all need an Enterprise
+              subscription for this workspace.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               <a
                 href="/app/billing"
-                className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
               >
-                Review Billing
+                Review billing
               </a>
               <button
                 type="button"
                 disabled
-                className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-foreground opacity-50"
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground opacity-50"
               >
                 Create workflow
               </button>
@@ -99,37 +97,30 @@ export default async function WorkflowsPage() {
   if (missingWorkflowTables.length > 0) {
     return (
       <div className="flex flex-col h-full">
-        <div className="page-header">
-          <div>
-            <h1 className="page-title">Workflow Engine</h1>
-            <p className="page-description">
-              Build compliance workflows with approvals, branching, and execution traces
-            </p>
-          </div>
-        </div>
+        <PageHero
+          eyebrow="Automation · Workflows"
+          title="Workflows"
+          subtitle="Build compliance workflows with approvals, branching, and execution traces."
+        />
 
         <div className="page-content">
           <section
-            className="rounded-[28px] border border-amber-400/30 bg-amber-500/10 p-6"
+            className="rounded-xl border border-warning/30 bg-warning/10 p-6"
             data-testid="workflow-schema-disabled"
           >
             <h2 className="text-lg font-semibold text-foreground">
-              Workflow automation is not available in this environment
+              Workflows are not switched on for this environment
             </h2>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              The backing database tables are not migrated yet:
-              {' '}
-              <span className="font-mono text-foreground">
-                {missingWorkflowTables.join(', ')}
-              </span>
-              . Workflow creation, template installation, runs, and toggles are
-              unavailable until the workflow schema is present.
+            <p className="mt-2 max-w-2xl text-sm text-foreground">
+              Creating workflows, installing templates and running them are
+              unavailable here. Contact support if you expected this workspace
+              to have workflow automation.
             </p>
             <div className="mt-5">
               <button
                 type="button"
                 disabled
-                className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-foreground opacity-50"
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground opacity-50"
               >
                 Create workflow
               </button>
@@ -145,14 +136,41 @@ export default async function WorkflowsPage() {
     listExecutions(membership.organization_id, { limit: 100 }),
   ]);
 
+  const runningCount = executions.filter(
+    (execution) => execution.status === 'running',
+  ).length;
+  const failedCount = executions.filter(
+    (execution) => execution.status === 'failed',
+  ).length;
+
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Workflows', value: workflows.length, sub: 'defined' },
+    {
+      label: 'Runs',
+      value: executions.length,
+      sub: executions.length > 0 ? 'recorded' : 'none yet',
+    },
+    {
+      label: 'Running',
+      value: runningCount,
+      sub: runningCount > 0 ? 'in progress' : 'nothing in flight',
+    },
+    {
+      label: 'Failed',
+      value: failedCount,
+      sub: failedCount > 0 ? 'needs attention' : 'none failed',
+      tone: failedCount > 0 ? 'danger' : 'neutral',
+    },
+  ];
+
   return (
     <div className="flex flex-col h-full">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Workflow Engine</h1>
-          <p className="page-description">Build compliance workflows with approvals, branching, and execution traces</p>
-        </div>
-      </div>
+      <PageHero
+        eyebrow="Automation · Workflows"
+        title="Workflows"
+        subtitle="Build compliance workflows with approvals, branching, and execution traces."
+        metrics={heroMetrics}
+      />
 
       <div className="page-content space-y-4">
       <WorkflowManagementClient

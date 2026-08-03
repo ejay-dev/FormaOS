@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { X, PanelLeftClose, PanelLeftOpen, Bot } from 'lucide-react';
+import { useModalA11y } from '@/lib/hooks/use-modal-a11y';
 import { useAiAssistant } from './AiAssistantContext';
 import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
@@ -26,6 +27,7 @@ export function AiAssistantPanel() {
     newConversation,
   } = useAiAssistant();
 
+  const panelRef = useModalA11y<HTMLDivElement>(isOpen, close);
   const [showSidebar, setShowSidebar] = useState(true);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -224,8 +226,14 @@ export function AiAssistantPanel() {
         />
       )}
 
-      {/* Panel */}
+      {/* Panel — stays mounted so it can slide; `inert` keeps the off-screen
+          copy out of the tab order and the accessibility tree. */}
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="AI assistant"
+        inert={!isOpen}
         className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-[800px] flex-col bg-background border-l border-border shadow-2xl transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}

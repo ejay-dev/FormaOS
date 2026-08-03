@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function VisitsLoading() {
-  return <PageSkeleton title="Service Register" tableRows={5} />;
+export default function AppVisitsLoading() {
+  return <PageSkeleton hero label="visits" heroMetrics={4} tableRows={5} />;
 }

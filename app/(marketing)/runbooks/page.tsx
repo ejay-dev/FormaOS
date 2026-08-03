@@ -32,13 +32,13 @@ export default function RunbooksPage() {
     <MarketingPageShell>
       <CompactHero
         title="Operational Runbooks"
-        description="How FormaOS handles backup, recovery, and operational continuity. Companion page to /security and /trust for procurement and audit reviews."
-        topColor="emerald"
-        bottomColor="cyan"
+        description="How FormaOS handles backup, recovery, and operational continuity. Written for the security reviewers and auditors who ask for it in writing."
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<Database className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<Database className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />
@@ -74,8 +74,8 @@ export default function RunbooksPage() {
                 <code className="mx-1 rounded bg-muted px-1.5 py-0.5 text-xs">
                   supabase/migrations/
                 </code>
-                and applied via Supabase MCP or the supabase CLI, every
-                schema change is reproducible from source.
+                and applied through the Supabase CLI, so every schema change
+                is reproducible from source.
               </li>
               <li>
                 Storage buckets (audit exports, evidence uploads) are
@@ -99,8 +99,8 @@ export default function RunbooksPage() {
             </div>
             <ol className="list-decimal pl-6 space-y-2 text-sm text-muted-foreground">
               <li>
-                Confirm the incident scope and the PITR target timestamp via
-                the internal incident channel.
+                Confirm the incident scope and the point-in-time recovery
+                target timestamp before any restore begins.
               </li>
               <li>
                 Restore a new Supabase project from the PITR snapshot. The
@@ -137,7 +137,7 @@ export default function RunbooksPage() {
             <p className="text-sm text-muted-foreground mb-3">
               The full incident-response lifecycle, severity classification,
               and customer-notification expectations live on the dedicated
-              page below, this section is the operational pointer.
+              page below. This section is the pointer to it.
             </p>
             <a
               href="/trust/incident-response"
@@ -162,22 +162,21 @@ export default function RunbooksPage() {
               <li>
                 <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   GET /api/health
-                </code>{' '}
-               , overall liveness probe used by uptime monitors.
+                </code>
+                : overall liveness probe used by uptime monitors.
               </li>
               <li>
                 <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   GET /api/health/integrity
-                </code>{' '}
-               , public data-integrity check summary (database + storage
-                reachable). Used by SOC 2 scanners and external trust
-                reviewers.
+                </code>
+                : public data-integrity check summary, confirming the database
+                and storage are reachable. Used by external trust reviewers.
               </li>
               <li>
                 <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   GET /api/health/detailed
-                </code>{' '}
-               , operator-only detailed checks behind a founder token.
+                </code>
+                : operator-only detailed checks behind an operator token.
               </li>
             </ul>
           </section>

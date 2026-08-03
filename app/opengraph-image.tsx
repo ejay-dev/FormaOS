@@ -10,7 +10,7 @@ export default function Image() {
     (
       <div
         style={{
-          background: '#0a0f1c',
+          background: '#1C1E1F',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -38,22 +38,21 @@ export default function Image() {
 
         {/* Main content */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div style={{ color: '#aeb6c2', fontSize: 14, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-            Compliance Operating System
-          </div>
           <div style={{ color: '#ffffff', fontSize: 60, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', maxWidth: 860 }}>
-            Turn Process Into Provable Truth
+            Turn process into provable truth
           </div>
-          <div style={{ color: '#94a3b8', fontSize: 22, lineHeight: 1.5, maxWidth: 720 }}>
-            Structured controls, owned actions, and immutable audit evidence for regulated industries.
+          <div style={{ color: '#b8b8b8', fontSize: 22, lineHeight: 1.5, maxWidth: 720 }}>
+            Structured controls, owned actions, and tamper-evident audit evidence for regulated organisations.
           </div>
         </div>
 
-        {/* Bottom strip */}
+        {/* Bottom strip. Frameworks named here must be packs that actually
+            ship — this line previously advertised Essential Eight, which has
+            no pack in the registry. */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-          <div style={{ color: '#475569', fontSize: 15 }}>formaos.com.au</div>
-          <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#334155' }} />
-          <div style={{ color: '#475569', fontSize: 15 }}>ISO 27001 · SOC 2 · NDIS · Essential Eight</div>
+          <div style={{ color: '#808080', fontSize: 15 }}>formaos.com.au</div>
+          <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#5a5a5a' }} />
+          <div style={{ color: '#808080', fontSize: 15 }}>ISO 27001 · SOC 2 · NDIS Practice Standards · HIPAA</div>
         </div>
 
         {/* Accent gradient */}

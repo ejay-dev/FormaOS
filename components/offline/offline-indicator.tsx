@@ -105,9 +105,10 @@ export function OfflineIndicator() {
         )}
         <button
           onClick={() => setDismissed(true)}
+          aria-label="Dismiss"
           className="text-xs text-muted-foreground hover:text-foreground"
         >
-          ✕
+          <span aria-hidden="true">✕</span>
         </button>
       </div>
     </div>

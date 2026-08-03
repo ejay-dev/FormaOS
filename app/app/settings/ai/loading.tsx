@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Ai" cards={2} tableRows={4} />;
+export default function AppSettingsAiLoading() {
+  return <PageSkeleton title="AI settings" cards={2} tableRows={4} />;
 }

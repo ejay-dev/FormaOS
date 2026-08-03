@@ -124,7 +124,7 @@ export default function StructureScreen() {
                 </motion.div>
                 <span className="text-foreground/70 truncate flex-1">{mapping.control}</span>
                 <span className="text-[9px] text-muted-foreground/60 flex-shrink-0 hidden sm:block">{mapping.framework}</span>
-                <span className="text-[9px] text-muted-foreground/40 flex-shrink-0">{mapping.owner.split(' ')[0]}</span>
+                <span className="text-[9px] text-muted-foreground flex-shrink-0">{mapping.owner.split(' ')[0]}</span>
               </motion.div>
             );
           })}

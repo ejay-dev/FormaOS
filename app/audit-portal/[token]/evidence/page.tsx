@@ -1,7 +1,18 @@
 import { validateAuditorToken, logAuditorActivity } from '@/lib/auditor/portal';
-import { redirect } from 'next/navigation';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { FileText } from 'lucide-react';
+import { AccessUnavailable } from '../AccessUnavailable';
+
+/**
+ * org_evidence.freshness_status defaults to 'current' in the database, so a
+ * null reads as current here the same way it does in the coverage calculator.
+ */
+const FRESHNESS: Record<string, { label: string; className: string }> = {
+  current: { label: 'Current', className: 'text-success' },
+  expiring_soon: { label: 'Expiring soon', className: 'text-warning' },
+  expired: { label: 'Expired', className: 'text-destructive' },
+  needs_review: { label: 'Needs review', className: 'text-warning' },
+};
 
 export default async function AuditPortalEvidence({
   params,
@@ -10,35 +21,28 @@ export default async function AuditPortalEvidence({
 }) {
   const { token } = await params;
   const tokenData = await validateAuditorToken(token);
-  if (!tokenData) redirect('/');
+  if (!tokenData) return <AccessUnavailable />;
 
   const db = createSupabaseAdminClient();
   const orgId = tokenData.org_id;
 
   await logAuditorActivity(tokenData.id, orgId, 'viewed_evidence');
 
-  const { data: evidence } = await db
+  const { data: evidence, error } = await db
     .from('org_evidence')
     .select(
-      'id, title, description, status, file_type, freshness_status, valid_until, created_at, control_id',
+      'id, title, file_name, file_type, freshness_status, valid_until, created_at',
     )
     .eq('organization_id', orgId)
     .order('created_at', { ascending: false });
 
   const items = evidence ?? [];
 
-  const statusColor: Record<string, string> = {
-    current: 'text-green-500',
-    expiring_soon: 'text-yellow-500',
-    expired: 'text-red-500',
-    needs_review: 'text-orange-500',
-  };
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">Evidence Browser</h1>
+          <h1 className="text-xl font-bold">Evidence</h1>
           <p className="text-sm text-muted-foreground">
             {items.length} evidence items
           </p>
@@ -67,51 +71,48 @@ export default async function AuditPortalEvidence({
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {items.map((item) => (
-              <tr key={item.id} className="hover:bg-muted/20">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">{item.title}</p>
-                      {item.description && (
-                        <p className="line-clamp-1 text-xs text-muted-foreground">
-                          {item.description}
-                        </p>
-                      )}
+            {items.map((item) => {
+              const freshness =
+                FRESHNESS[item.freshness_status ?? 'current'] ??
+                FRESHNESS.current;
+              return (
+                <tr key={item.id} className="hover:bg-muted/20">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <p className="font-medium">
+                        {item.title ?? item.file_name}
+                      </p>
                     </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  {item.file_type ?? '—'}
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={
-                      statusColor[item.freshness_status ?? 'current'] ??
-                      'text-muted-foreground'
-                    }
-                  >
-                    {(item.freshness_status ?? 'current').replace('_', ' ')}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  {item.valid_until
-                    ? new Date(item.valid_until).toLocaleDateString()
-                    : '—'}
-                </td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  {new Date(item.created_at).toLocaleDateString()}
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {item.file_type ?? '—'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={freshness.className}>
+                      {freshness.label}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {item.valid_until
+                      ? new Date(item.valid_until).toLocaleDateString()
+                      : '—'}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {new Date(item.created_at).toLocaleDateString()}
+                  </td>
+                </tr>
+              );
+            })}
             {items.length === 0 && (
               <tr>
                 <td
                   colSpan={5}
                   className="px-4 py-12 text-center text-muted-foreground"
                 >
-                  No evidence items available.
+                  {error
+                    ? 'Evidence could not be loaded. Try again shortly.'
+                    : 'No evidence has been recorded for this organisation yet.'}
                 </td>
               </tr>
             )}

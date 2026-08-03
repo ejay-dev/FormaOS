@@ -42,12 +42,12 @@ export function KPICard({
   className,
 }: KPICardProps) {
   const _statusStyles = {
-    LOW: 'bg-emerald-400/10 text-emerald-200 border-emerald-400/30',
-    SUCCESS: 'bg-emerald-400/10 text-emerald-200 border-emerald-400/30',
-    MEDIUM: 'bg-amber-400/10 text-amber-200 border-amber-400/30',
-    WARNING: 'bg-amber-400/10 text-amber-200 border-amber-400/30',
-    HIGH: 'bg-rose-500/10 text-rose-200 border-rose-400/30',
-    DANGER: 'bg-rose-500/10 text-rose-200 border-rose-400/30',
+    LOW: 'bg-success/10 text-success border-success/30',
+    SUCCESS: 'bg-success/10 text-success border-success/30',
+    MEDIUM: 'bg-warning/10 text-warning border-warning/30',
+    WARNING: 'bg-warning/10 text-warning border-warning/30',
+    HIGH: 'bg-destructive/10 text-destructive border-destructive/30',
+    DANGER: 'bg-destructive/10 text-destructive border-destructive/30',
   };
 
   const ragBorder =
@@ -117,7 +117,7 @@ export function KPICard({
           <div
             className={clsx(
               'flex items-center gap-0.5 text-[10px] font-bold',
-              trend.isPositive ? 'text-emerald-500' : 'text-red-500',
+              trend.isPositive ? 'text-success' : 'text-destructive',
             )}
           >
             {trend.isPositive ? (

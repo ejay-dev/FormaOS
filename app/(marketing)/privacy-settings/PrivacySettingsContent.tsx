@@ -143,7 +143,7 @@ export default function PrivacySettingsContent() {
               type="button"
               onClick={withdraw}
               data-testid="withdraw-consent"
-              className="withdraw-consent inline-flex items-center gap-2 rounded-lg border border-rose-500/40 bg-rose-500/10 px-4 py-2 text-sm font-medium text-rose-200 hover:bg-rose-500/20 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+              className="withdraw-consent inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-destructive hover:bg-muted/40 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
             >
               <X className="w-4 h-4" />
               Withdraw consent
@@ -151,7 +151,7 @@ export default function PrivacySettingsContent() {
           </div>
           {confirmation ? (
             <p
-              className="mt-4 text-xs text-emerald-300"
+              className="mt-4 text-xs text-success"
               role="status"
               aria-live="polite"
             >
@@ -229,9 +229,9 @@ export default function PrivacySettingsContent() {
             <Link
               href="/app/privacy#delete"
               data-testid="delete-account"
-              className="inline-flex flex-col items-start gap-2 rounded-xl border border-rose-500/40 bg-rose-500/5 p-4 text-left hover:border-rose-400/60 hover:bg-rose-500/10"
+              className="inline-flex flex-col items-start gap-2 rounded-xl border border-border bg-card p-4 text-left hover:border-destructive/60 hover:bg-muted/40"
             >
-              <AlertTriangle className="h-4 w-4 text-rose-300" />
+              <AlertTriangle className="h-4 w-4 text-destructive" />
               <div>
                 <div className="text-sm font-semibold text-white">
                   Delete your account
@@ -240,7 +240,7 @@ export default function PrivacySettingsContent() {
                   Permanently remove your account and personal data.
                 </div>
               </div>
-              <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-rose-300">
+              <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-destructive">
                 Sign in to delete
                 <ArrowRight className="h-3 w-3" />
               </span>

@@ -38,6 +38,10 @@ import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 /* ─── Easing ──────────────────────────────────────────────── */
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
+// Bump this whenever the list below is re-read. A roadmap without a review
+// date ages silently; with one, a stale page at least says so.
+const ROADMAP_REVIEWED = 'August 2026';
+
 /* ─── Status Types ────────────────────────────────────────── */
 
 type RoadmapStatus = 'shipped' | 'in-progress' | 'planned' | 'exploring';
@@ -149,7 +153,6 @@ interface RoadmapItem {
   longDescription: string;
   status: RoadmapStatus;
   category: RoadmapCategory;
-  quarter: string;
   impact: 'high' | 'medium';
   capabilities?: string[];
 }
@@ -163,7 +166,6 @@ const roadmapItems: RoadmapItem[] = [
       'Infrastructure-level data residency supporting US-East, EU-West, and APAC-Sydney regions. Each region operates with independent encryption keys, isolated database clusters, and region-specific backup policies. Organizations can configure per-workspace residency preferences to satisfy GDPR, Privacy Act 1988, and sector-specific data sovereignty requirements.',
     status: 'in-progress',
     category: 'Security',
-    quarter: 'Q1 2026',
     impact: 'high',
     capabilities: [
       'US, EU, and APAC region support',
@@ -177,10 +179,9 @@ const roadmapItems: RoadmapItem[] = [
     description:
       'Machine learning model suggesting control mappings across frameworks based on semantic similarity.',
     longDescription:
-      'A fine-tuned language model that analyzes control descriptions across frameworks and suggests evidence mapping relationships. Reduces manual mapping effort by 70% for organizations activating new frameworks. Suggestions include confidence scores and human-review workflows to maintain audit integrity. The model trains on anonymized, aggregated mapping patterns across the FormaOS customer base.',
+      'A language model that reads control descriptions across frameworks and suggests where the same evidence satisfies more than one requirement, which is the slowest part of activating a new framework by hand. Every suggestion carries a confidence score and goes through human review before it is accepted, so nothing enters the control graph unreviewed.',
     status: 'shipped',
     category: 'Compliance',
-    quarter: 'Q1 2026',
     impact: 'high',
     capabilities: [
       'Semantic similarity scoring',
@@ -197,7 +198,6 @@ const roadmapItems: RoadmapItem[] = [
       'Native mobile application for compliance teams working in the field. Camera-based evidence capture with automatic SHA-256 hashing, offline task management with sync-on-connect, push notification support for compliance alerts, and biometric authentication for secure access. Designed for NDIS care workers, facility auditors, and distributed compliance teams.',
     status: 'in-progress',
     category: 'Platform',
-    quarter: 'Q2 2026',
     impact: 'high',
     capabilities: [
       'Camera evidence capture with auto-hashing',
@@ -214,7 +214,6 @@ const roadmapItems: RoadmapItem[] = [
       'A comprehensive reporting engine that goes beyond pre-built templates. Build custom compliance reports using drag-and-drop widgets: charts, tables, score gauges, evidence lists, and comment threads. Schedule reports for daily, weekly, or monthly delivery to stakeholder distribution lists. Export in PDF, XLSX, CSV, and PowerPoint formats with white-label branding support.',
     status: 'planned',
     category: 'Reporting',
-    quarter: 'Q2 2026',
     impact: 'high',
     capabilities: [
       'Drag-and-drop report builder',
@@ -231,7 +230,6 @@ const roadmapItems: RoadmapItem[] = [
       'Extend enterprise SSO beyond SAML 2.0 to include OpenID Connect (OIDC) support. Organizations can configure either protocol based on their identity provider capabilities. OIDC support enables seamless integration with Auth0, Cognito, Keycloak, and cloud-native identity platforms. Hybrid mode allows different authentication flows for different user populations within the same organization.',
     status: 'planned',
     category: 'Security',
-    quarter: 'Q2 2026',
     impact: 'medium',
     capabilities: [
       'OpenID Connect protocol support',
@@ -248,7 +246,6 @@ const roadmapItems: RoadmapItem[] = [
       'Configure automatic evidence collection from cloud and scanner APIs on a recurring schedule, AWS / Azure / GCP configuration snapshots, Okta access-review exports, Qualys / Tenable scan reports. Each run produces versioned evidence with SHA-256 verification and links back to the source. The integration engine already supports custom webhooks and inbound HMAC-signed payloads; the cloud-specific connectors are exploratory and not yet shipping.',
     status: 'exploring',
     category: 'Automation',
-    quarter: 'Exploring',
     impact: 'high',
     capabilities: [
       'Scheduled API-based evidence pulls (exploring)',
@@ -265,7 +262,6 @@ const roadmapItems: RoadmapItem[] = [
       'A general-purpose Q&A surface for compliance questions and policy drafting. Useful for "how is GDPR Article 32 typically implemented?" or "draft a vendor risk policy starter." Surface-level org context (industry, team size) is passed in; live policies, evidence, and controls are NOT used as grounding today, see lib/ai-assistant.ts for the explicit framing. Real retrieval-augmented chat against your evidence vault is planned, not shipping.',
     status: 'shipped',
     category: 'Compliance',
-    quarter: 'Q1 2026',
     impact: 'medium',
     capabilities: [
       'Natural-language compliance Q&A',
@@ -282,7 +278,6 @@ const roadmapItems: RoadmapItem[] = [
       'Move from periodic compliance checks to continuous monitoring. Agent-based and agentless monitoring of technical controls: firewall configurations, encryption settings, access control lists, and patch levels. Detect drift from compliant baselines in real-time with automated alerting and remediation playbook suggestions. Integrates with cloud provider APIs for infrastructure-as-code validation.',
     status: 'planned',
     category: 'Compliance',
-    quarter: 'Q3 2026',
     impact: 'high',
     capabilities: [
       'Real-time technical control monitoring',
@@ -299,7 +294,6 @@ const roadmapItems: RoadmapItem[] = [
       'For organizations with regulatory requirements not covered by standard framework packs. Build custom frameworks from scratch or fork existing packs. Define custom control hierarchies, evidence requirements, scoring weights, and review cadences. Custom frameworks participate fully in cross-framework mapping, unified scoring, and audit export capabilities.',
     status: 'planned',
     category: 'Compliance',
-    quarter: 'Q3 2026',
     impact: 'medium',
     capabilities: [
       'Custom control hierarchy builder',
@@ -316,7 +310,6 @@ const roadmapItems: RoadmapItem[] = [
       'Bi-directional integration with major HRIS platforms. Automatically sync employee lifecycle events, onboarding, role changes, departures, with compliance control ownership and access review requirements. Map HRIS organizational structures to FormaOS team hierarchies. Track personnel compliance obligations like background check status, training completion, and NDA execution.',
     status: 'in-progress',
     category: 'Integrations',
-    quarter: 'Q2 2026',
     impact: 'medium',
     capabilities: [
       'BambooHR, Workday, Rippling support',
@@ -333,7 +326,6 @@ const roadmapItems: RoadmapItem[] = [
       'Provide external auditors with temporary, read-only access to compliance data through a dedicated portal. Configure visibility scope per auditor: specific frameworks, date ranges, and entity types. Auditors can review evidence, download audit packets, and leave comments, all tracked in the audit trail. Access automatically expires after the configured audit window.',
     status: 'exploring',
     category: 'Platform',
-    quarter: 'Q3 2026',
     impact: 'medium',
     capabilities: [
       'Time-limited auditor access',
@@ -350,7 +342,6 @@ const roadmapItems: RoadmapItem[] = [
       'Extend compliance management beyond your organization to your vendor ecosystem. Send standardized or custom compliance questionnaires to vendors, collect and verify their evidence artifacts, monitor vendor compliance posture over time, and generate vendor risk reports. Integrates with procurement workflows for vendor onboarding compliance gates.',
     status: 'exploring',
     category: 'Compliance',
-    quarter: 'Q4 2026',
     impact: 'high',
     capabilities: [
       'Vendor compliance questionnaires',
@@ -367,7 +358,6 @@ const roadmapItems: RoadmapItem[] = [
       'A comprehensive public API enabling organizations to build custom integrations, automation workflows, and reporting pipelines. Full CRUD operations across all entity types: controls, evidence, tasks, incidents, and audit logs. Webhook subscriptions for real-time event streaming. TypeScript and Python SDKs with code generation from OpenAPI specification. Rate limiting, API key management, and usage analytics included.',
     status: 'shipped',
     category: 'Platform',
-    quarter: 'Q1 2026',
     impact: 'high',
     capabilities: [
       'Full CRUD across all entities',
@@ -384,7 +374,6 @@ const roadmapItems: RoadmapItem[] = [
       'Purpose-built automation for SOC 2 Type II audit preparation. Continuous evidence collection across the observation period with automated evidence freshness tracking. Generates Type II-specific evidence bundles including operating effectiveness samples, monitoring logs, and control performance metrics over the audit window.',
     status: 'exploring',
     category: 'Automation',
-    quarter: 'Q4 2026',
     impact: 'high',
     capabilities: [
       'Continuous observation period tracking',
@@ -401,7 +390,6 @@ const roadmapItems: RoadmapItem[] = [
       'Built-in privacy impact assessment workflows supporting GDPR Data Protection Impact Assessments (DPIA) and general Privacy Impact Assessments (PIA). Template library for common processing activities, stakeholder review and approval chains, risk scoring based on data sensitivity and processing scope, and integration with the evidence vault for assessment artifact management.',
     status: 'exploring',
     category: 'Compliance',
-    quarter: 'Q4 2026',
     impact: 'medium',
     capabilities: [
       'DPIA and PIA workflow templates',
@@ -418,7 +406,6 @@ const roadmapItems: RoadmapItem[] = [
       'A real-time compliance dashboard that updates instantly as compliance state changes. Drag-and-drop widget layout with configurable data sources. TV mode for compliance operations centers with auto-rotating views. Shareable dashboard links with configurable access permissions. WebSocket-powered real-time updates with no manual refresh required.',
     status: 'shipped',
     category: 'Reporting',
-    quarter: 'Q1 2026',
     impact: 'medium',
     capabilities: [
       'WebSocket real-time updates',
@@ -435,7 +422,6 @@ const roadmapItems: RoadmapItem[] = [
       'Integrate FormaOS with your software development lifecycle. GitHub and GitLab connectors that surface compliance status in pull request checks, automatically collect code review evidence for security controls, and track SDLC compliance requirements like code scanning, dependency review, and release approval workflows.',
     status: 'shipped',
     category: 'Integrations',
-    quarter: 'Q1 2026',
     impact: 'medium',
     capabilities: [
       'PR compliance status checks',
@@ -452,7 +438,6 @@ const roadmapItems: RoadmapItem[] = [
       'Manage compliance training requirements directly within FormaOS. Assign training modules to team members based on role and compliance obligations. Track completion status, generate certificates, and automatically link training evidence to relevant controls. Support for external LMS integration via SCORM and xAPI standards.',
     status: 'exploring',
     category: 'Collaboration',
-    quarter: 'Q4 2026',
     impact: 'medium',
     capabilities: [
       'Role-based training assignment',
@@ -469,7 +454,6 @@ const roadmapItems: RoadmapItem[] = [
       'Native integration with AWS Config for continuous infrastructure compliance monitoring. Map AWS Config rules to FormaOS controls, automatically collect Config evaluation results as compliance evidence, and trigger alerts when resources fall out of compliance. Support for AWS conformance packs aligned to ISO 27001, SOC 2, and HIPAA frameworks.',
     status: 'planned',
     category: 'Integrations',
-    quarter: 'Q3 2026',
     impact: 'high',
     capabilities: [
       'AWS Config rule mapping to controls',
@@ -486,7 +470,6 @@ const roadmapItems: RoadmapItem[] = [
       'Comprehensive data migration tools for organizations transitioning from spreadsheets, other GRC platforms, or custom systems. Interactive field mapping wizards with preview and validation. Support for CSV, XLSX, and JSON import formats. Incremental import support for ongoing data feeds. Rollback capability for imports that need reversal.',
     status: 'shipped',
     category: 'Platform',
-    quarter: 'Q1 2026',
     impact: 'medium',
     capabilities: [
       'Interactive field mapping wizard',
@@ -503,7 +486,6 @@ const roadmapItems: RoadmapItem[] = [
       'A composite score that evaluates your readiness for an upcoming audit based on evidence completeness, control maturity, open findings, and documentation freshness. Actionable recommendations prioritized by impact show exactly what to address first. Timeline estimates predict how many days of effort remain before achieving audit-ready status.',
     status: 'shipped',
     category: 'Reporting',
-    quarter: 'Q1 2026',
     impact: 'high',
     capabilities: [
       'Composite readiness scoring',
@@ -520,7 +502,6 @@ const roadmapItems: RoadmapItem[] = [
       'Advanced notification rules engine that routes compliance alerts based on configurable conditions. Define escalation chains with time-based triggers, if an alert is not acknowledged within N hours, escalate to the next level. Digest batching groups non-urgent notifications into configurable summary windows. Quiet hours prevent non-critical notifications during off-hours.',
     status: 'shipped',
     category: 'Automation',
-    quarter: 'Q1 2026',
     impact: 'medium',
     capabilities: [
       'Conditional routing rules',
@@ -548,7 +529,6 @@ const roadmapStats = [
   { value: String(inProgressCount), label: 'In Progress', suffix: '' },
   { value: String(plannedCount), label: 'Planned', suffix: '' },
   { value: String(exploringCount), label: 'Exploring', suffix: '' },
-  { value: '4', label: 'Quarters Ahead', suffix: '' },
 ];
 
 /* ─── Animated Stat ───────────────────────────────────────── */
@@ -599,7 +579,7 @@ function StatusBadge({
   const Icon = config.icon;
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full font-bold uppercase tracking-wider border ${config.bg} ${config.border} ${config.text}
+      className={`inline-flex items-center gap-1 rounded-full font-medium border ${config.bg} ${config.border} ${config.text}
         ${size === 'md' ? 'px-3 py-1 text-xs' : 'px-2 py-0.5 text-[10px]'}`}
     >
       {status === 'in-progress' ? (
@@ -647,6 +627,7 @@ function RoadmapCard({ item, index }: { item: RoadmapItem; index: number }) {
           }`}
         onClick={() => setExpanded(!expanded)}
         role="button"
+        aria-expanded={expanded}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -686,8 +667,8 @@ function RoadmapCard({ item, index }: { item: RoadmapItem; index: number }) {
               </h3>
               <StatusBadge status={item.status} />
               {item.impact === 'high' && (
-                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-300">
-                  High Impact
+                <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-medium border border-white/15 bg-white/[0.06] text-slate-300">
+                  High impact
                 </span>
               )}
             </div>
@@ -707,12 +688,8 @@ function RoadmapCard({ item, index }: { item: RoadmapItem; index: number }) {
         {/* Meta row */}
         <div className="relative flex flex-wrap items-center gap-3 text-xs text-slate-500">
           <div className="flex items-center gap-1">
-            <Calendar className="w-3 h-3" />
-            {item.quarter}
-          </div>
-          <div className="flex items-center gap-1">
             <span
-              className={`w-1.5 h-1.5 rounded-full`}
+              className="w-1.5 h-1.5 rounded-full"
               style={{ backgroundColor: `rgba(${catConfig.colorRgb}, 0.6)` }}
             />
             {item.category}
@@ -865,182 +842,6 @@ function StatusFilterBar({
   );
 }
 
-/* ─── Quarter Timeline Visual ─────────────────────────────── */
-
-function QuarterTimeline() {
-  const quarters = ['Q1 2026', 'Q2 2026', 'Q3 2026', 'Q4 2026'];
-  const currentQuarter = 'Q1 2026';
-
-  const quarterData = useMemo(() => {
-    return quarters.map((q) => {
-      const items = roadmapItems.filter((i) => i.quarter === q);
-      const shipped = items.filter((i) => i.status === 'shipped').length;
-      const inProgress = items.filter((i) => i.status === 'in-progress').length;
-      const planned = items.filter((i) => i.status === 'planned').length;
-      const exploring = items.filter((i) => i.status === 'exploring').length;
-      return {
-        quarter: q,
-        total: items.length,
-        shipped,
-        inProgress,
-        planned,
-        exploring,
-      };
-    });
-  }, []);
-
-  return (
-    <DeferredSection minHeight={300}>
-      <section className="mk-section relative">
-        <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-10"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Timeline
-            </p>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
-              Quarterly{' '}
-              <span className="text-foreground">
-                delivery plan
-              </span>
-            </h2>
-            <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Our development roadmap organized by quarter with status breakdown
-              for each delivery window.
-            </p>
-          </ScrollReveal>
-
-          <SectionChoreography pattern="stagger-wave" stagger={0.08}>
-            <div className="relative">
-              {/* Connecting line */}
-              <div className="absolute top-1/2 left-0 right-0 h-px bg-white/[0.08] hidden lg:block" />
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {quarterData.map((qd, i) => {
-                  const isCurrent = qd.quarter === currentQuarter;
-                  return (
-                    <div
-                      key={qd.quarter}
-                      className={`relative rounded-2xl border p-5 transition-all duration-300
-                        ${
-                          isCurrent
-                            ? 'border-white/20 bg-white/[0.05] hover:bg-white/[0.07] hover:border-white/30'
-                            : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1]'
-                        }`}
-                    >
-                      {isCurrent && (
-                        <div className="absolute -top-px -right-px">
-                          <span className="relative flex h-3 w-3">
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-slate-300/80" />
-                          </span>
-                        </div>
-                      )}
-
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-bold text-white">
-                          {qd.quarter}
-                        </h3>
-                        {isCurrent && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-200 px-2 py-0.5 rounded-full border border-white/15 bg-white/[0.06]">
-                            Current
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="text-3xl font-bold text-white mb-4">
-                        {qd.total}
-                        <span className="text-sm text-slate-500 font-normal ml-1">
-                          items
-                        </span>
-                      </div>
-
-                      <div className="space-y-2">
-                        {qd.shipped > 0 && (
-                          <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-xs text-white">
-                              <span className="w-2 h-2 rounded-full bg-white/80" />
-                              Shipped
-                            </span>
-                            <span className="text-xs font-semibold text-white">
-                              {qd.shipped}
-                            </span>
-                          </div>
-                        )}
-                        {qd.inProgress > 0 && (
-                          <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-xs text-slate-300">
-                              <span className="w-2 h-2 rounded-full bg-slate-300" />
-                              In Progress
-                            </span>
-                            <span className="text-xs font-semibold text-white">
-                              {qd.inProgress}
-                            </span>
-                          </div>
-                        )}
-                        {qd.planned > 0 && (
-                          <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-xs text-slate-400">
-                              <span className="w-2 h-2 rounded-full bg-slate-400" />
-                              Planned
-                            </span>
-                            <span className="text-xs font-semibold text-white">
-                              {qd.planned}
-                            </span>
-                          </div>
-                        )}
-                        {qd.exploring > 0 && (
-                          <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-xs text-slate-500">
-                              <span className="w-2 h-2 rounded-full bg-slate-500" />
-                              Exploring
-                            </span>
-                            <span className="text-xs font-semibold text-white">
-                              {qd.exploring}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Progress bar */}
-                      <div className="mt-4 h-1.5 rounded-full bg-white/[0.04] overflow-hidden flex">
-                        {qd.shipped > 0 && (
-                          <motion.div
-                            className="h-full bg-white/70"
-                            initial={{ width: 0 }}
-                            whileInView={{
-                              width: `${(qd.shipped / qd.total) * 100}%`,
-                            }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                          />
-                        )}
-                        {qd.inProgress > 0 && (
-                          <motion.div
-                            className="h-full bg-slate-400/60"
-                            initial={{ width: 0 }}
-                            whileInView={{
-                              width: `${(qd.inProgress / qd.total) * 100}%`,
-                            }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </SectionChoreography>
-        </div>
-      </section>
-    </DeferredSection>
-  );
-}
-
 /* ─── Category Breakdown ──────────────────────────────────── */
 
 function CategoryBreakdown() {
@@ -1072,9 +873,6 @@ function CategoryBreakdown() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Investment Areas
-            </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Where we&apos;re{' '}
               <span className="text-foreground">
@@ -1082,8 +880,8 @@ function CategoryBreakdown() {
               </span>
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Development effort distributed across categories, reflecting
-              customer demand, compliance landscape, and platform maturity.
+              Where the work sits across categories, and how much of each has
+              already shipped.
             </p>
           </ScrollReveal>
 
@@ -1142,7 +940,7 @@ function CategoryBreakdown() {
                           }}
                           initial={{ width: 0 }}
                           whileInView={{
-                            width: `${((item.total, item.shipped) / maxTotal) * 100}%`,
+                            width: `${((item.total - item.shipped) / maxTotal) * 100}%`,
                           }}
                           viewport={{ once: true }}
                           transition={{
@@ -1169,27 +967,27 @@ function CategoryBreakdown() {
 const transparencyItems = [
   {
     icon: Eye,
-    title: 'Public Roadmap',
+    title: 'The roadmap is public',
     description:
-      'Our roadmap is publicly visible with real-time status updates. No hidden backlog, no surprise deprecations.',
+      'This page is the roadmap. Items that stall stay visible with their status changed rather than disappearing.',
   },
   {
     icon: MessageSquare,
-    title: 'Customer-Driven Priorities',
+    title: 'Priorities you can question',
     description:
-      'Feature prioritization is informed by customer requests, audit findings, and compliance landscape changes.',
+      'What gets built next is driven by regulatory change and by what evaluators and users ask for. If something here is in the wrong order for you, say so.',
   },
   {
     icon: Calendar,
-    title: 'Monthly Release Cadence',
+    title: 'Every change is written down',
     description:
-      'We ship every month with predictable release windows. Changelogs document every change transparently.',
+      'The changelog records what shipped and why, including the things that were quietly broken before they were fixed.',
   },
   {
     icon: Shield,
-    title: 'Security-First Development',
+    title: 'Security work comes first',
     description:
-      'Security patches ship within 72 hours of discovery. Every release passes automated security scanning.',
+      'Security fixes take priority over feature work, and every release runs automated security and accessibility checks before it goes out.',
   },
   {
     icon: GitBranch,
@@ -1199,9 +997,9 @@ const transparencyItems = [
   },
   {
     icon: Bell,
-    title: 'Proactive Communication',
+    title: 'Notice before things change',
     description:
-      'Release notes, breaking change warnings, and deprecation notices delivered well in advance via multiple channels.',
+      'Breaking changes and deprecations are announced in the changelog and by email before they land, not after.',
   },
 ];
 
@@ -1215,9 +1013,6 @@ function TransparencySection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Our Commitment
-            </p>
             <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
               Built with{' '}
               <span className="text-foreground">
@@ -1225,8 +1020,8 @@ function TransparencySection() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              How we plan, build, and ship, openly, predictably, and with your
-              compliance requirements driving every decision.
+              How the product is planned, built, and released, and what you can
+              expect when something changes.
             </p>
           </ScrollReveal>
 
@@ -1279,8 +1074,7 @@ function StatsSection() {
                 Roadmap at a glance
               </h2>
               <p className="text-sm text-slate-400 max-w-lg mx-auto">
-                Where we stand today and what&apos;s coming across the next four
-                quarters of development.
+                Where the product stands today. Reviewed {ROADMAP_REVIEWED}.
               </p>
             </ScrollReveal>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -1319,9 +1113,6 @@ function FeatureRequestCTA() {
 
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Shape the Product
-                </p>
                 <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                   Have a feature{' '}
                   <span className="text-foreground">
@@ -1329,8 +1120,9 @@ function FeatureRequestCTA() {
                   </span>
                 </h2>
                 <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
-                  Our roadmap is shaped by customer needs. Let us know what
-                  would make FormaOS work better for your compliance program.
+                  If something on this list is in the wrong order for your
+                  compliance program, or missing entirely, tell us. Requests
+                  from regulated operators carry the most weight.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1359,10 +1151,9 @@ function FeatureRequestCTA() {
 
                 <div className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-slate-500">
                   {[
-                    'Customer-driven roadmap',
-                    'Monthly release cadence',
-                    'Public progress tracking',
-                    'Transparent development',
+                    'Public roadmap',
+                    'Changelog for every release',
+                    'Status changes stay visible',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3 h-3 text-slate-400/60" />
@@ -1396,34 +1187,10 @@ function RoadmapHero() {
       ref={heroRef}
       className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
     >
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
-            backgroundSize: '72px 72px',
-          }}
-        />
-      </div>
-
       <motion.div
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
         className="relative z-10 mx-auto max-w-5xl px-6 lg:px-8 py-32 sm:py-40 text-center"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="mb-8 flex items-center justify-center gap-4"
-        >
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
-            Product Roadmap
-          </span>
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-        </motion.div>
-
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1444,9 +1211,9 @@ function RoadmapHero() {
           className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           {roadmapItems.length} items across{' '}
-          {Object.keys(CATEGORY_CONFIG).length} categories. See what we&apos;ve
-          shipped, what we&apos;re building, and what&apos;s coming next -
-          publicly and transparently.
+          {Object.keys(CATEGORY_CONFIG).length} categories: what has shipped,
+          what is being built now, and what is still being evaluated. Last
+          reviewed {ROADMAP_REVIEWED}.
         </motion.p>
 
         <motion.div
@@ -1519,12 +1286,6 @@ export default function RoadmapPageContent() {
       </div>
 
       <StatsSection />
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
-      <QuarterTimeline />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />

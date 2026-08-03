@@ -48,11 +48,11 @@ const signatureEase: [number, number, number, number] = [
 type Accent = 'rose' | 'violet' | 'amber' | 'cyan' | 'indigo';
 
 const NEUTRAL_ACCENT = {
-  icon: 'text-slate-300',
+  icon: 'text-zinc-300',
   bg: 'bg-white/[0.05]',
   border: 'border-white/[0.08]',
   activeBorder: 'border-white/20',
-  text: 'text-slate-400',
+  text: 'text-zinc-400',
 } as const;
 
 const ACCENT_MAP: Record<Accent, typeof NEUTRAL_ACCENT> = {
@@ -336,7 +336,7 @@ const StatCard = memo(function StatCard({
         <p className="font-display tabular-nums text-xl sm:text-2xl font-bold mb-0.5 text-white">
           {stat.value}
         </p>
-        <p className="text-[11px] text-slate-400 font-medium">{stat.label}</p>
+        <p className="text-[11px] text-zinc-400 font-medium">{stat.label}</p>
       </div>
     </motion.div>
   );
@@ -405,7 +405,7 @@ const CapabilityCard = memo(function CapabilityCard({
           <h4 className="text-white text-sm font-semibold mb-1">
             {capability.title}
           </h4>
-          <p className="text-slate-400 text-xs leading-relaxed">
+          <p className="text-zinc-400 text-xs leading-relaxed">
             {capability.description}
           </p>
         </div>
@@ -454,8 +454,8 @@ const AccordionItem = memo(function AccordionItem({
         aria-controls={panelId}
         className={`group relative w-full text-left rounded-2xl border overflow-hidden transition-all duration-300 ${
           isExpanded
-            ? `bg-slate-950/70 ${a.activeBorder}`
-            : `bg-slate-950/55 border-white/[0.08] hover:border-white/[0.15] hover:bg-slate-950/70`
+            ? `bg-black/40 ${a.activeBorder}`
+            : `bg-black/25 border-white/[0.08] hover:border-white/[0.15] hover:bg-black/40`
         }`}
       >
         {isExpanded && (
@@ -477,7 +477,7 @@ const AccordionItem = memo(function AccordionItem({
               <h3 className="font-display text-base lg:text-xl font-bold text-white mb-0.5">
                 {solution.title}
               </h3>
-              <p className="text-xs lg:text-sm text-slate-400">
+              <p className="text-xs lg:text-sm text-zinc-400">
                 {solution.subtitle}
               </p>
             </div>
@@ -506,18 +506,18 @@ const AccordionItem = memo(function AccordionItem({
             transition={{ duration: duration.normal, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="mt-1 relative rounded-2xl border border-white/[0.08] bg-slate-950/70 overflow-hidden">
+            <div className="mt-1 relative rounded-2xl border border-white/[0.08] bg-black/40 overflow-hidden">
               <div className="relative z-10 p-5 lg:p-7">
                 {/* Row 1: Tagline + framework badges */}
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-6">
-                  <p className="text-sm text-slate-300 leading-relaxed max-w-xl">
+                  <p className="text-sm text-zinc-300 leading-relaxed max-w-xl">
                     {solution.tagline}
                   </p>
                   <div className="flex flex-wrap gap-1.5 shrink-0">
                     {solution.frameworks.map((fw) => (
                       <span
                         key={fw}
-                        className="inline-flex items-center rounded-md border border-white/[0.08] bg-white/[0.05] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400"
+                        className="inline-flex items-center rounded-md border border-white/[0.08] bg-white/[0.05] px-2 py-0.5 text-[11px] font-medium text-zinc-400"
                       >
                         {fw}
                       </span>
@@ -593,7 +593,7 @@ export const Industries = memo(function Industries() {
       className="mk-section home-section home-section--contrast relative isolate overflow-hidden"
       style={{
         background:
-          'linear-gradient(180deg, #020617 0%, #080d20 35%, #0c1129 60%, #020617 100%)',
+          'linear-gradient(180deg, #181a1c 0%, #202325 35%, #26292b 60%, #181a1c 100%)',
       }}
     >
       <SectionMedia
@@ -615,12 +615,6 @@ export const Industries = memo(function Industries() {
             transition={{ duration: duration.slow, ease: signatureEase }}
             className="lg:col-span-7"
           >
-            <div className="mb-5 flex items-center gap-3">
-              <span className="h-px w-8 bg-white/25" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                Industry Solutions
-              </span>
-            </div>
             <h2 className="font-display text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
               Built for high-accountability industries
             </h2>
@@ -636,7 +630,7 @@ export const Industries = memo(function Industries() {
             }}
             className="lg:col-span-5"
           >
-            <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+            <p className="max-w-md text-sm leading-relaxed text-zinc-400 sm:text-base">
               When compliance failure means regulatory action, accreditation
               loss, or operational shutdown, FormaOS delivers the evidence
               infrastructure your industry demands.
@@ -670,7 +664,7 @@ export const Industries = memo(function Industries() {
           }}
           className="mt-12 text-center"
         >
-          <p className="text-slate-400 mb-5">
+          <p className="text-zinc-400 mb-5">
             Not sure which solution fits your organization?
           </p>
           <Link

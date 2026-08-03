@@ -20,7 +20,7 @@ import {
   X,
 } from 'lucide-react';
 
-interface AuditEntry {
+export interface AuditEntry {
   id: string;
   user_id?: string;
   action: string;
@@ -141,14 +141,14 @@ function groupByDate(
   }));
 }
 
-const ACTION_OPTIONS = [
-  'CREATE',
-  'UPDATE',
-  'DELETE',
-  'APPROVE',
-  'REJECT',
-  'VIEW',
-  'EXPORT',
+const ACTION_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: 'CREATE', label: 'Created' },
+  { value: 'UPDATE', label: 'Updated' },
+  { value: 'DELETE', label: 'Deleted' },
+  { value: 'APPROVE', label: 'Approved' },
+  { value: 'REJECT', label: 'Rejected' },
+  { value: 'VIEW', label: 'Viewed' },
+  { value: 'EXPORT', label: 'Exported' },
 ];
 
 export function AuditTrailViewer({
@@ -187,8 +187,8 @@ export function AuditTrailViewer({
     <div className="space-y-3">
       {/* Header row */}
       <div className="flex items-center justify-between px-1">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-          {total} recorded events
+        <p className="text-xs text-muted-foreground">
+          {total} recorded event{total === 1 ? '' : 's'}
         </p>
         {onFilter && (
           <button
@@ -212,7 +212,7 @@ export function AuditTrailViewer({
             <div className="flex flex-col gap-1">
               <label
                 htmlFor="audit-filter-action"
-                className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+                className="text-xs font-medium text-muted-foreground"
               >
                 Action
               </label>
@@ -224,8 +224,8 @@ export function AuditTrailViewer({
               >
                 <option value="">All actions</option>
                 {ACTION_OPTIONS.map((a) => (
-                  <option key={a} value={a}>
-                    {a}
+                  <option key={a.value} value={a.value}>
+                    {a.label}
                   </option>
                 ))}
               </select>
@@ -233,7 +233,7 @@ export function AuditTrailViewer({
             <div className="flex flex-col gap-1">
               <label
                 htmlFor="audit-filter-resource"
-                className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+                className="text-xs font-medium text-muted-foreground"
               >
                 Resource type
               </label>
@@ -268,7 +268,7 @@ export function AuditTrailViewer({
 
       {entries.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-border bg-surface-1 py-12 text-center">
-          <Shield className="h-8 w-8 text-muted-foreground/40" />
+          <Shield className="h-8 w-8 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">
             No audit entries found
           </p>
@@ -279,7 +279,7 @@ export function AuditTrailViewer({
             <div key={group.label}>
               {/* Date group header */}
               <div className="mb-3 flex items-center gap-3">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                <span className="text-xs font-semibold text-foreground">
                   {group.label}
                 </span>
                 <div className="h-px flex-1 bg-border" />
@@ -358,7 +358,7 @@ export function AuditTrailViewer({
                         {/* Expanded detail drawer */}
                         {isExpanded && (
                           <div className="mt-1 rounded-xl border border-border bg-surface-1 px-4 py-3">
-                            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                            <p className="mb-1.5 text-xs font-medium text-muted-foreground">
                               Event detail
                             </p>
                             <p className="mb-1 text-xs text-muted-foreground">
@@ -442,7 +442,7 @@ export function ChainIntegrityBadge({
   );
 }
 
-interface ExportJob {
+export interface ExportJob {
   id: string;
   status: string;
   date_from: string;

@@ -74,7 +74,7 @@ export function ReadyStep({
 
       {/* Quick recap */}
       <div className="w-full max-w-sm rounded-2xl border border-edge-2 bg-surface-1 p-5 text-left space-y-3">
-        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+        <p className="text-xs font-medium text-muted-foreground">
           What&apos;s waiting for you
         </p>
         <div className="flex flex-col gap-2">

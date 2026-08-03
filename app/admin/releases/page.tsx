@@ -14,10 +14,10 @@ async function fetchReleases() {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  stable: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
-  draft: 'bg-blue-500/10 text-blue-300 border-blue-500/20',
-  deprecated: 'bg-amber-500/10 text-amber-300 border-amber-500/20',
-  archived: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+  stable: 'bg-success/10 text-success border-success/20',
+  draft: 'bg-info/10 text-info border-info/20',
+  deprecated: 'bg-warning/10 text-warning border-warning/20',
+  archived: 'bg-muted text-muted-foreground border-border',
 };
 
 function StatusBadge({ status }: { status: string }) {
@@ -48,47 +48,48 @@ export default async function AdminReleasesPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-100">
-          Release Management
-        </h1>
-        <p className="mt-2 text-sm text-slate-400">
-          Enterprise product versioning and release lifecycle
+        <h1 className="text-3xl font-bold text-foreground">Releases</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Product versions and what shipped in each one
         </p>
       </div>
 
       {/* Active Release Banner */}
       {activeRelease && (
-        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-6">
+        <div className="rounded-lg border border-success/20 bg-success/10 p-6">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/10">
-                <Tag className="h-6 w-6 text-emerald-400" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-success/10">
+                <Tag className="h-6 w-6 text-success" />
               </div>
               <div>
                 <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-bold text-slate-100">
+                  <h2 className="text-xl font-bold text-foreground">
                     FormaOS {activeRelease.release_name}
                   </h2>
                   <StatusBadge status={activeRelease.release_status} />
                   {activeRelease.is_locked && (
-                    <Lock className="h-4 w-4 text-amber-400" />
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-warning">
+                      <Lock className="h-3.5 w-3.5" />
+                      Locked
+                    </span>
                   )}
                 </div>
-                <p className="text-sm text-slate-400 mt-1">
+                <p className="text-sm text-muted-foreground mt-1">
                   v{activeRelease.version_code} · Released{' '}
-                  {formatDate(activeRelease.release_date)} · Enterprise Release
+                  {formatDate(activeRelease.release_date)}
                 </p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-500">Feature Flags</p>
-              <p className="text-lg font-bold text-emerald-300">
+              <p className="text-xs text-muted-foreground">Feature flags</p>
+              <p className="text-lg font-bold text-success">
                 {Object.keys(activeRelease.feature_flags ?? {}).length}
               </p>
             </div>
           </div>
           {activeRelease.release_notes && (
-            <p className="mt-4 text-sm text-slate-400 border-t border-emerald-500/10 pt-4">
+            <p className="mt-4 text-sm text-muted-foreground border-t border-success/20 pt-4">
               {activeRelease.release_notes}
             </p>
           )}
@@ -100,14 +101,14 @@ export default async function AdminReleasesPage() {
 
       {/* Release History */}
       <div>
-        <h2 className="text-lg font-semibold text-slate-100 mb-4">
-          All Releases
+        <h2 className="text-lg font-semibold text-foreground mb-4">
+          All releases
         </h2>
         {releases.length === 0 ? (
-          <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-8 text-center">
-            <Tag className="h-8 w-8 opacity-20 mx-auto mb-2 text-slate-500" />
-            <p className="text-slate-400">No releases found</p>
-            <p className="text-xs text-slate-500 mt-1">
+          <div className="rounded-lg border border-border bg-card p-8 text-center">
+            <Tag className="h-8 w-8 opacity-20 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-muted-foreground">No releases found</p>
+            <p className="text-xs text-muted-foreground mt-1">
               Create your first release using the form above
             </p>
           </div>
@@ -124,26 +125,32 @@ export default async function AdminReleasesPage() {
               return (
                 <div
                   key={release.id}
-                  className="rounded-lg border border-slate-800 bg-slate-900/50 p-5"
+                  className="rounded-lg border border-border bg-card p-5"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="text-base font-semibold text-slate-100">
+                          <h3 className="text-base font-semibold text-foreground">
                             FormaOS {release.release_name}
                           </h3>
-                          <span className="text-sm text-slate-500 font-mono">
+                          <span className="text-sm text-muted-foreground font-mono">
                             v{release.version_code}
                           </span>
                           <StatusBadge status={release.release_status} />
                           {release.is_locked ? (
-                            <Lock className="h-3.5 w-3.5 text-amber-400" />
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-warning">
+                              <Lock className="h-3.5 w-3.5" />
+                              Locked
+                            </span>
                           ) : (
-                            <Unlock className="h-3.5 w-3.5 text-slate-600" />
+                            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                              <Unlock className="h-3.5 w-3.5" />
+                              Unlocked
+                            </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-4 mt-1 text-xs text-slate-500">
+                        <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                           <span>
                             Created {formatDate(release.created_at)}
                           </span>
@@ -163,7 +170,7 @@ export default async function AdminReleasesPage() {
 
                     <div className="flex items-center gap-4">
                       {flagCount > 0 && (
-                        <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                           <Flag className="h-3.5 w-3.5" />
                           <span>
                             {enabledFlags}/{flagCount} flags
@@ -175,7 +182,7 @@ export default async function AdminReleasesPage() {
 
                   {/* Feature Flags Detail */}
                   {flagCount > 0 && (
-                    <div className="mt-3 pt-3 border-t border-slate-800">
+                    <div className="mt-3 pt-3 border-t border-border">
                       <div className="flex flex-wrap gap-2">
                         {Object.entries(release.feature_flags ?? {}).map(
                           ([key, enabled]) => (
@@ -183,8 +190,8 @@ export default async function AdminReleasesPage() {
                               key={key}
                               className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-mono ${
                                 enabled
-                                  ? 'bg-emerald-500/10 text-emerald-400'
-                                  : 'bg-slate-800 text-slate-500'
+                                  ? 'bg-success/10 text-success'
+                                  : 'bg-muted text-muted-foreground'
                               }`}
                             >
                               {key}: {enabled ? 'on' : 'off'}
@@ -197,8 +204,8 @@ export default async function AdminReleasesPage() {
 
                   {/* Release Notes */}
                   {release.release_notes && (
-                    <div className="mt-3 pt-3 border-t border-slate-800">
-                      <p className="text-xs text-slate-500 line-clamp-2">
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <p className="text-xs text-muted-foreground line-clamp-2">
                         {release.release_notes}
                       </p>
                     </div>

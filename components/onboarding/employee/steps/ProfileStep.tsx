@@ -44,7 +44,7 @@ export function ProfileStep({
       <div className="space-y-2">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1">
           <User className="h-3 w-3 text-muted-foreground" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          <span className="text-xs font-medium text-muted-foreground">
             Almost there
           </span>
         </div>
@@ -70,7 +70,7 @@ export function ProfileStep({
         <div className="space-y-2">
           <label
             htmlFor="displayName"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
+            className="text-xs font-medium text-muted-foreground"
           >
             Display name <span className="text-destructive">*</span>
           </label>
@@ -109,10 +109,10 @@ export function ProfileStep({
         <div className="space-y-2">
           <label
             htmlFor="phone"
-            className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground"
+            className="flex items-center gap-2 text-xs font-medium text-muted-foreground"
           >
             Phone
-            <span className="text-[9px] font-medium normal-case tracking-normal text-muted-foreground">
+            <span className="text-[11px] font-medium text-muted-foreground">
               Optional
             </span>
           </label>

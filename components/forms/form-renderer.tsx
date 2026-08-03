@@ -65,7 +65,7 @@ function FieldInput({
 }) {
   const baseClass =
     'w-full px-3 py-2 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-colors';
-  const errorClass = error ? 'border-red-500' : 'border-input';
+  const errorClass = error ? 'border-destructive' : 'border-input';
 
   switch (field.type) {
     case 'textarea':
@@ -301,9 +301,9 @@ export function FormRenderer({
   if (submitted) {
     return (
       <div className="text-center py-12">
-        <div className="mx-auto h-16 w-16 rounded-full bg-green-500/10 flex items-center justify-center mb-4">
+        <div className="mx-auto h-16 w-16 rounded-full bg-success/10 flex items-center justify-center mb-4">
           <svg
-            className="h-8 w-8 text-green-500"
+            className="h-8 w-8 text-success"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -335,7 +335,7 @@ export function FormRenderer({
             <label className="block text-sm font-medium">
               {field.label}
               {field.validation?.required && (
-                <span className="text-red-400 ml-1">*</span>
+                <span className="text-destructive ml-1">*</span>
               )}
             </label>
             {field.helpText && (
@@ -348,7 +348,7 @@ export function FormRenderer({
               onChange={(val) => handleChange(field.id, val)}
             />
             {error && (
-              <p className="text-xs text-red-400" role="alert">
+              <p className="text-xs text-destructive" role="alert">
                 {error}
               </p>
             )}

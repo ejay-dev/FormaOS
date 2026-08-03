@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { verifyUnsubscribeToken } from '@/lib/email/unsubscribe-token';
+import { unsubscribeUserFromAllEmail } from '@/lib/email/unsubscribe';
 
 /**
  * RFC 8058 one-click unsubscribe handler. Mail clients that honor the
@@ -16,19 +16,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_token' }, { status: 400 });
   }
 
-  const admin = createSupabaseAdminClient();
-  const { error } = await admin
-    .from('email_preferences')
-    .upsert(
-      {
-        user_id: payload.userId,
-        unsubscribed_all: true,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: 'user_id' },
-    );
+  const { ok } = await unsubscribeUserFromAllEmail(payload.userId);
 
-  if (error) {
+  if (!ok) {
     return NextResponse.json({ error: 'update_failed' }, { status: 500 });
   }
 

@@ -1,7 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, FileText, CheckSquare, Loader2, Lock, X } from 'lucide-react';
+import {
+  Search,
+  FileText,
+  CheckSquare,
+  Loader2,
+  Lock,
+  X,
+  ArrowRight,
+} from 'lucide-react';
 import Link from 'next/link';
 
 export function TopbarSearch() {
@@ -102,7 +110,7 @@ export function TopbarSearch() {
 
       {isOpen && results.length > 0 && (
         <div className="absolute mt-2 w-full rounded-2xl border border-card-foreground/8 bg-card p-2 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="px-2 py-1.5 text-xs font-bold uppercase text-muted-foreground tracking-wider">
+          <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
             Results
           </div>
           {results.map((result) => (
@@ -141,6 +149,18 @@ export function TopbarSearch() {
               </div>
             </Link>
           ))}
+
+          {/* This dropdown covers three record types and caps at a handful of
+              rows. /app/search covers ten types with facets and had no inbound
+              link anywhere in the product. */}
+          <Link
+            href={`/app/search?q=${encodeURIComponent(query)}`}
+            onClick={() => setIsOpen(false)}
+            className="mt-1 flex items-center justify-between rounded-xl border-t border-card-foreground/8 px-3 py-2.5 text-sm font-medium text-card-foreground hover:bg-card/8"
+          >
+            Search everything for “{query}”
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { OutcomeJourneyPage } from '../components/outcome-journey-page';
 import { siteUrl } from '@/lib/seo';
+import { CLAIM_PHRASES } from '@/lib/marketing/claims';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Prove Compliance',
@@ -29,11 +30,11 @@ export const metadata: Metadata = {
 export default function ProvePage() {
   return (
     <OutcomeJourneyPage
-      badge="Outcome Journey · Prove"
-      title="Prove Compliance With Defensible Evidence, Not Last-Minute Documents"
+      badge="Second of four: Prove"
+      title="Prove compliance with defensible evidence, not last-minute documents"
       description="Build an evidence chain that links obligations, controls, owners, and outcomes so audits move from panic to confidence."
-      proofLabel="Proof signal"
-      proofValue="Audit-ready exports"
+      proofLabel="Controls you can evidence against"
+      proofValue={CLAIM_PHRASES.controls}
       proofNote="Made for teams that need source-linked evidence before audits, customer reviews, procurement checks, and regulator requests."
       workflow={[
         'Collect evidence at execution time',
@@ -41,7 +42,7 @@ export default function ProvePage() {
         'Review exceptions and approvals',
         'Export audit-ready proof packages',
       ]}
-      pillarsEyebrow="Prove In FormaOS"
+      pillarsEyebrow="Prove in FormaOS"
       pillarsTitle="Make defensible evidence part of the operating flow"
       pillarsDescription="Prove connects execution history, approvals, and export paths so review cycles start from live records instead of last-minute assembly."
       pillars={[
@@ -65,6 +66,13 @@ export default function ProvePage() {
             'Support due diligence with clearer answers about identity, exports, hosting posture, and review artifacts.',
           href: '/security-review',
           cta: 'Review security materials',
+        },
+        {
+          title: 'Next: Operate',
+          detail:
+            'These four pages read in order: evaluate, prove, operate, govern. Operate covers the recurring work that keeps evidence current.',
+          href: '/operate',
+          cta: 'Read Operate',
         },
       ]}
       trustArtifacts={[

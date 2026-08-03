@@ -36,9 +36,9 @@ export function PoliciesPageHero({
 
   return (
     <PageHero
-      eyebrow="Governance · Policy Library"
-      title="Policy Library"
-      subtitle="Manage your organization's governance framework."
+      eyebrow="Governance"
+      title="Policy library"
+      subtitle="Draft, publish and review the policies your organisation operates under."
       metrics={metrics}
       actions={
         <Link
@@ -46,7 +46,7 @@ export function PoliciesPageHero({
           className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
         >
           <Plus className="h-3.5 w-3.5" />
-          New Policy
+          New policy
         </Link>
       }
     />

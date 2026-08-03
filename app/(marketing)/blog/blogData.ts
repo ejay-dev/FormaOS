@@ -43,7 +43,7 @@ export type BlogPost = {
 export const blogPosts: BlogPost[] = [
   {
     id: 'compliance-operating-system',
-    title: 'Why Your Organization Needs a Compliance Operating System',
+    title: 'Why Your Organisation Needs a Compliance Operating System',
     excerpt:
       'Modern compliance requires more than checklists. Learn how a compliance operating system aligns people, processes, and evidence in real time, without slowing the business.',
     author: 'FormaOS Team',
@@ -57,11 +57,11 @@ export const blogPosts: BlogPost[] = [
         heading: 'The compliance gap most teams feel',
         paragraphs: [
           'Growth creates compliance pressure. New services, new markets, and new partners multiply obligations faster than policy teams can keep up.',
-          'The result is a gap between what the organization thinks is happening and what is actually happening day to day.',
+          'The result is a gap between what the organisation thinks is happening and what is actually happening day to day.',
           'That gap shows up as late evidence, scattered documentation, and a scramble before audits. A compliance operating system closes that gap by turning requirements into audit-readiness workflows rather than a yearly project.',
         ],
         bullets: [
-          'Policies that are readable but not operationalized',
+          'Policies that are readable but not operationalised',
           'Evidence collected retroactively and stored in silos',
           'Controls that are owned by “everyone,” which means no one',
         ],
@@ -148,7 +148,7 @@ export const blogPosts: BlogPost[] = [
     title: 'NDIS Practice Standards 2025: What Providers Need to Know',
     excerpt:
       'A practical guide to the 2025 NDIS Practice Standards updates, what changed, how to map controls, and how to keep evidence ready across service lines.',
-    author: 'Compliance Team',
+    author: 'FormaOS Team',
     date: 'January 20, 2026',
     readTime: '9 min read',
     category: 'NDIS',
@@ -232,10 +232,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'immutable-audit-trails',
-    title: 'The Power of Immutable Audit Trails in Regulatory Defense',
+    title: 'The Power of Immutable Audit Trails in Regulatory Defence',
     excerpt:
       'Immutable audit trails create defensible evidence chains. Learn how to design them, what regulators expect, and how to implement them without slowing teams down.',
-    author: 'Security Team',
+    author: 'FormaOS Team',
     date: 'January 12, 2026',
     readTime: '8 min read',
     category: 'Security',
@@ -320,7 +320,7 @@ export const blogPosts: BlogPost[] = [
     title: 'From Manual to Automatic: Evidence Collection Reimagined',
     excerpt:
       'Manual evidence collection is costly and error-prone. Learn how to automate capture with workflow triggers and integrations without disrupting teams.',
-    author: 'Product Team',
+    author: 'FormaOS Team',
     date: 'January 6, 2026',
     readTime: '7 min read',
     category: 'Technology',
@@ -493,7 +493,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Real-Time Compliance Monitoring: Beyond the Dashboard',
     excerpt:
       'Dashboards are not enough. Real-time monitoring means alerts, ownership, and action. Here’s how to design monitoring that keeps you audit-ready.',
-    author: 'Product Team',
+    author: 'FormaOS Team',
     date: 'December 4, 2025',
     readTime: '7 min read',
     category: 'Technology',
@@ -574,63 +574,70 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'security-soc2-journey',
-    title: 'Our SOC 2 Journey: Lessons Learned Building FormaOS',
+    title: 'What SOC 2 Alignment Actually Requires',
     excerpt:
-      'An inside look at how we aligned to SOC 2 controls, what we prioritized, where we struggled, and how we built repeatable evidence along the way.',
-    author: 'Engineering Team',
+      'Aligned and certified are different words with different consequences. What the Security and Availability criteria ask for, where alignment work stalls, and what evidence has to look like to survive sampling.',
+    author: 'FormaOS Team',
     date: 'November 22, 2025',
     readTime: '9 min read',
     category: 'Security',
     icon: Shield,
     sections: [
       {
-        heading: 'Scope, timeline, and expectations',
+        heading: 'Aligned is not certified, and the difference matters',
         paragraphs: [
-          'We scoped our initial SOC 2 alignment effort to the Security and Availability trust services criteria.',
-          'The goal was a timeline we could actually hit without disrupting delivery.',
-          'The biggest challenge was not documentation. It was proving ongoing control execution with verifiable evidence.',
+          'Alignment means the controls a framework describes are modelled in your systems and can produce evidence on demand. Certification means an independent auditor has examined those controls and issued a report. A vendor that says aligned when it means certified will be caught the first time a buyer asks for the report.',
+          'FormaOS is aligned to SOC 2 and says so plainly. Our infrastructure providers hold their own reports. Anyone can ask us for our position during procurement and get the same answer that is published on this site.',
         ],
       },
       {
-        heading: 'The gaps we discovered',
+        heading: 'Start with scope, because scope is what runs over',
+        paragraphs: [
+          'Most first efforts scope to the Security criteria, adding Availability where uptime is contractual. Confidentiality and Privacy pull in data classification and retention work that is worth doing deliberately rather than under audit pressure.',
+          'Write the scope down before you start collecting anything. An undocumented scope quietly expands, and the expansion is what makes timelines slip.',
+        ],
+      },
+      {
+        heading: 'Where alignment work usually stalls',
         bullets: [
-          'Inconsistent access reviews across teams',
-          'Vendor risk assessments stored in multiple tools',
-          'Evidence captured after the fact rather than inline',
+          'Access reviews happen, but nothing records who reviewed what, or when',
+          'Vendor assessments are spread across email, spreadsheets, and a drive folder',
+          'Evidence is assembled after the fact, so it proves the artefact existed, not that the control ran',
+          'Controls have an owner in a document and no owner in practice',
         ],
         paragraphs: [
-          'We realized the gap was operational. Our policies were sound, but the evidence trail was fragmented.',
+          'None of these are documentation problems. Policies are usually fine. The gap is operational: the control runs, and nothing durable records that it ran.',
         ],
       },
       {
-        heading: 'Our remediation plan',
+        heading: 'A sequence that holds up',
         paragraphs: [
-          'We treated remediation like compliance automation work, not a documentation sprint. Each step needed clear ownership and evidence.',
+          'Treat the work as operational change with owners and dates, not a documentation sprint before an audit window.',
         ],
         steps: [
-          'Centralize controls in a single taxonomy.',
-          'Assign clear owners and define evidence requirements.',
-          'Automate evidence capture from core systems.',
-          'Run weekly control health reviews and log exceptions.',
-          'Test audit reports quarterly to validate integrity.',
+          'Put every control in one taxonomy so a control referenced by three frameworks is one record, not three.',
+          'Give each control a named owner and a stated evidence requirement.',
+          'Capture evidence where the work happens, so the artefact is a by-product of the task rather than a separate chore.',
+          'Review control health on a fixed cadence and log exceptions instead of quietly closing them.',
+          'Generate the audit export early, while there is still time to fix what it shows.',
         ],
       },
       {
-        heading: 'Evidence automation wins',
+        heading: 'What evidence has to survive',
         paragraphs: [
-          'Automated evidence capture reduced manual effort and gave auditors a clear trail of accountability.',
+          'An auditor samples. They pick a period, ask for the records, and check that the record was created when the control ran rather than the week before the request. Evidence that cannot show its own timing is weak evidence.',
         ],
         bullets: [
-          'Automated access review evidence from identity systems',
-          'Deployment approvals captured from CI/CD workflows',
-          'Immutable logs for key control events',
+          'Access review records tied to the identity system and the date of the review',
+          'Deployment approvals captured from the pipeline, not retyped afterwards',
+          'Audit entries that cannot be edited after the fact, so the timeline is checkable',
         ],
       },
       {
-        heading: 'Takeaways for teams starting SOC 2 alignment',
+        heading: 'What to take from this',
         paragraphs: [
-          'Treat SOC 2 as an operating system, not a once-a-year project.',
-          'Build evidence capture into everyday workflows, keep ownership explicit, and use RBAC governance to protect control changes.',
+          'SOC 2 alignment is a way of operating, not an annual project. Capture evidence inside everyday workflows, keep ownership explicit, and protect control changes with role-based access.',
+          'And keep the language honest. Aligned, certified, and in progress mean different things to a security reviewer, and using them precisely costs nothing.',
         ],
         links: [
           {
@@ -642,7 +649,7 @@ export const blogPosts: BlogPost[] = [
             href: '/security',
           },
           {
-            label: 'FormaOS vs Ideagen Policy Logic',
+            label: 'FormaOS vs Ideagen CompliSpace',
             href: '/compare/complispace',
             description:
               'How FormaOS differs from policy + training management tools for AU care.',
@@ -662,7 +669,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Risk-Based Controls Mapping: A Practical Framework',
     excerpt:
       'Risk-based mapping reduces duplication and focuses effort where it matters. Learn how to build a control map that scales across regulations.',
-    author: 'Compliance Strategy',
+    author: 'FormaOS Team',
     date: 'November 6, 2025',
     readTime: '8 min read',
     category: 'Compliance',
@@ -746,7 +753,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Policy Lifecycle Automation: From Draft to Audit',
     excerpt:
       'Policies fail when they drift. Learn how to automate the policy lifecycle, from drafting and approvals to ongoing reviews and evidence capture.',
-    author: 'Product Updates',
+    author: 'FormaOS Team',
     date: 'October 18, 2025',
     readTime: '7 min read',
     category: 'Product Updates',
@@ -792,7 +799,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Change management practices',
         paragraphs: [
-          'RBAC governance keeps policy changes restricted to authorized owners while still enabling collaboration.',
+          'RBAC governance keeps policy changes restricted to authorised owners while still enabling collaboration.',
         ],
         bullets: [
           'Notify teams of material changes',
@@ -814,7 +821,7 @@ export const blogPosts: BlogPost[] = [
               'Policy automation for NDIS Practice Standards compliance.',
           },
           {
-            label: 'FormaOS vs CompliSpace',
+            label: 'FormaOS vs Ideagen CompliSpace',
             href: '/compare/complispace',
             description:
               'Compare policy management vs full compliance execution.',
@@ -831,7 +838,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Vendor Risk Management Playbook for Fast-Growing Teams',
     excerpt:
       'A vendor program should scale with growth. This playbook covers tiering, evidence requirements, and how to keep third-party risk visible.',
-    author: 'Security Team',
+    author: 'FormaOS Team',
     date: 'September 28, 2025',
     readTime: '8 min read',
     category: 'Security',
@@ -882,7 +889,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Visibility with FormaOS',
         paragraphs: [
-          'FormaOS centralizes vendor evidence and links it to compliance controls, so audits no longer require a manual hunt across tools.',
+          'FormaOS centralises vendor evidence and links it to compliance controls, so audits no longer require a manual hunt across tools.',
           'Automated evidence capture keeps vendor reviews current without extra coordination overhead.',
         ],
         links: [
@@ -909,7 +916,7 @@ export const blogPosts: BlogPost[] = [
     title: 'Data Retention and Privacy Controls That Auditors Trust',
     excerpt:
       'Retention policies and privacy controls are under increasing scrutiny. Learn how to define retention rules, automate enforcement, and keep evidence defensible.',
-    author: 'Compliance Team',
+    author: 'FormaOS Team',
     date: 'September 10, 2025',
     readTime: '8 min read',
     category: 'Compliance',
@@ -940,7 +947,7 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: 'How to operationalize retention',
+        heading: 'How to operationalise retention',
         paragraphs: [
           'Operational retention depends on automation and clear accountability. Automated evidence capture makes retention actions defensible.',
         ],
@@ -988,7 +995,7 @@ export const blogPosts: BlogPost[] = [
           },
         ],
         paragraphs: [
-          'FormaOS unifies retention evidence across teams and keeps a verified trail for audit defense.',
+          'FormaOS unifies retention evidence across teams and keeps a verified trail for audit defence.',
           'RBAC governance ensures retention exceptions are reviewed and approved by the right owners.',
         ],
       },
@@ -1000,7 +1007,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'The NDIS Quality and Safeguards Commission is stepping up unannounced audits. Learn what triggers them, how to prepare, and the evidence you need on hand.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'March 3, 2026',
     readTime: '10 min read',
     category: 'NDIS',
     icon: Shield,
@@ -1092,7 +1099,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'A comprehensive walkthrough of all eight NDIS Practice Standards modules, what each requires, and how to operationalise compliance across your organisation.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'March 11, 2026',
     readTime: '12 min read',
     category: 'NDIS',
     icon: ClipboardCheck,
@@ -1188,7 +1195,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'AHPRA regulates 16 health professions across Australia. Learn what registration, CPD, and renewal obligations allied health providers must track to stay compliant.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'March 19, 2026',
     readTime: '10 min read',
     category: 'Healthcare',
     icon: FileCheck,
@@ -1267,7 +1274,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'The NSQHS Standards define safety and quality for Australian healthcare. Learn how to move from periodic preparation to continuous compliance across all 8 standards.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'March 26, 2026',
     readTime: '11 min read',
     category: 'Healthcare',
     icon: Shield,
@@ -1351,7 +1358,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'Section 912A of the Corporations Act sets out the general obligations of AFS licensees. This checklist breaks down each obligation and how to demonstrate compliance.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'April 2, 2026',
     readTime: '10 min read',
     category: 'Financial Services',
     icon: ClipboardCheck,
@@ -1431,7 +1438,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'Learn how early childhood education services can embed the National Quality Framework into daily practice and stay ready for Assessment and Rating at all times.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'April 14, 2026',
     readTime: '9 min read',
     category: 'Childcare',
     icon: BookOpen,
@@ -1513,7 +1520,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'Construction carries some of the highest WHS risks in Australia. Understand your duties under the model WHS Act, SWMS requirements, and SafeWork reporting obligations.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'April 21, 2026',
     readTime: '10 min read',
     category: 'Construction',
     icon: Building2,
@@ -1594,7 +1601,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'Compliance operating systems and GRC platforms both manage risk and compliance, but they take fundamentally different approaches. Learn which is right for your organisation.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'April 28, 2026',
     readTime: '9 min read',
     category: 'Compliance',
     icon: Layers,
@@ -1699,7 +1706,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'The Serious Incident Response Scheme imposes strict reporting obligations on NDIS and aged care providers. Learn what qualifies, the time limits, and how to comply.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'May 6, 2026',
     readTime: '10 min read',
     category: 'NDIS',
     icon: Zap,
@@ -1783,7 +1790,7 @@ export const blogPosts: BlogPost[] = [
     excerpt:
       'AUSTRAC regulates anti-money laundering and counter-terrorism financing in Australia. Understand your AML/CTF program obligations, CDD requirements, and reporting duties.',
     author: 'FormaOS Team',
-    date: 'April 2026',
+    date: 'May 14, 2026',
     readTime: '11 min read',
     category: 'Financial Services',
     icon: Lock,
@@ -1868,7 +1875,7 @@ export const blogPosts: BlogPost[] = [
       'Australian Compliance Frameworks 2026: A Side-by-Side Reference for Multi-Framework Operators',
     excerpt:
       'How the seven major Australian compliance frameworks compare on structure, regulator, reporting timeframes, and audit cycle, a reference for compliance leaders running multiple obligations in parallel.',
-    author: 'Compliance Strategy',
+    author: 'FormaOS Team',
     date: 'May 23, 2026',
     dateModified: 'May 23, 2026',
     readTime: '12 min read',

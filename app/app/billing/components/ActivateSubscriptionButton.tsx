@@ -59,14 +59,11 @@ export function ActivateSubscriptionButton({
           </span>
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </div>
-        
-        {/* Shimmer effect */}
-        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
       </button>
 
       {/* Error state */}
       {error && (
-        <div className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+        <div className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
           <div className="font-medium">Checkout failed</div>
           <div className="mt-1 text-xs opacity-80">{error}</div>
           <button

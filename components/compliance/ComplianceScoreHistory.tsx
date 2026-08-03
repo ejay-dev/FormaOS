@@ -119,7 +119,7 @@ export function ComplianceScoreHistory({
 
         {/* Current Score with Trend */}
         <div className="flex items-baseline gap-3 mb-6">
-          <div className="text-4xl font-black text-foreground">
+          <div className="text-4xl font-bold text-foreground">
             {currentScore}%
           </div>
           {scoreTrend !== 0 && (

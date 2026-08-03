@@ -2,16 +2,15 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
-import {
-  FileText,
-  Search,
-  Filter,
-  ChevronRight,
-} from 'lucide-react';
+import { FileText, Search, ChevronRight } from 'lucide-react';
 import { useOrgId } from '@/lib/stores/app';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { PoliciesEmptyState } from '@/components/empty-states';
 import { PoliciesPageHero } from '@/components/policies/PoliciesPageHero';
+import {
+  StatusBadge,
+  documentStatus,
+} from '@/components/compliance/StatusBadge';
 
 type PolicyRow = {
   id: string;
@@ -41,11 +40,24 @@ export default function PoliciesPage() {
   const [allPolicies, setAllPolicies] = useState<PolicyRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const publishedCount = useMemo(
     () => allPolicies.filter((p) => p.status === 'published').length,
     [allPolicies],
   );
+
+  const visiblePolicies = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return allPolicies.filter((policy) => {
+      if (statusFilter !== 'all' && policy.status !== statusFilter) {
+        return false;
+      }
+      if (!query) return true;
+      return policy.title.toLowerCase().includes(query);
+    });
+  }, [allPolicies, searchQuery, statusFilter]);
 
   useEffect(() => {
     if (!orgId) {
@@ -97,8 +109,8 @@ export default function PoliciesPage() {
 
   if (error) {
     return (
-      <div className="rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-500">
-        Error: {error}
+      <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        Couldn&apos;t load policies. {error}
       </div>
     );
   }
@@ -122,22 +134,38 @@ export default function PoliciesPage() {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
-              placeholder="Filter policies..."
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search policies"
+              aria-label="Search policies"
               className="w-full pl-9 pr-3 h-8 rounded-md border border-border bg-background text-sm"
             />
           </div>
-          <button className="flex items-center gap-1.5 h-8 px-3 rounded-md border border-border text-xs font-medium text-muted-foreground hover:bg-accent/30">
-            <Filter className="h-3 w-3" />
-            Filter
-          </button>
+          <select
+            value={statusFilter}
+            onChange={(event) => setStatusFilter(event.target.value)}
+            aria-label="Filter by status"
+            className="h-8 rounded-md border border-border bg-background px-2 text-xs text-foreground"
+          >
+            <option value="all">All statuses</option>
+            <option value="draft">Draft</option>
+            <option value="review">In review</option>
+            <option value="published">Published</option>
+            <option value="archived">Archived</option>
+          </select>
         </div>
 
         {/* The Table */}
         <div className="divide-y divide-border">
           {allPolicies.length === 0 ? (
             <PoliciesEmptyState />
+          ) : visiblePolicies.length === 0 ? (
+            <div className="px-4 py-10 text-center text-sm text-muted-foreground">
+              No policies match your search.
+            </div>
           ) : (
-            allPolicies.map((policy) => (
+            visiblePolicies.map((policy) => (
               <Link
                 key={policy.id}
                 href={`/app/policies/${policy.id}`}
@@ -162,15 +190,7 @@ export default function PoliciesPage() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <span
-                    className={`status-pill ${
-                      policy.status === 'published'
-                        ? 'status-pill-green'
-                        : 'status-pill-amber'
-                    }`}
-                  >
-                    {policy.status}
-                  </span>
+                  <StatusBadge {...documentStatus(policy.status)} />
                   <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground/70" />
                 </div>
               </Link>

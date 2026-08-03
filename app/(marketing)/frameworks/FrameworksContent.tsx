@@ -239,12 +239,12 @@ export default function FrameworksContent() {
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 lg:p-10">
               <div className="flex items-end justify-between gap-6">
                 <div>
-                  <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300">
-                    Included Framework Packs
+                  <h3 className="text-base font-semibold text-white">
+                    Included framework packs
                   </h3>
                   <p className="mt-2 text-sm text-slate-400">
                     Packs represent mapped control structures and workflow
-                    defaults. Actual applicability varies by organization and
+                    defaults. Actual applicability varies by organisation and
                     scope.
                   </p>
                 </div>

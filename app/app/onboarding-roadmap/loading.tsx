@@ -2,10 +2,16 @@ import { Skeleton, SkeletonCard } from '@/components/ui/skeleton';
 
 export default function OnboardingRoadmapLoading() {
   return (
-    <div className="space-y-6 pb-12 animate-in fade-in duration-300">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Loading the onboarding roadmap"
+      className="space-y-6 pb-12 animate-in fade-in duration-300"
+    >
+      {/* The heading names the org's industry, so it stays a placeholder
+          bar rather than guessing a title the page will replace. */}
       <div className="space-y-2">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground">Roadmap</p>
-        <h1 className="text-2xl font-bold text-foreground/70">Industry Roadmap</h1>
+        <Skeleton className="h-8 w-64" />
         <Skeleton className="h-4 w-72" />
       </div>
 
@@ -34,6 +40,8 @@ export default function OnboardingRoadmapLoading() {
           <SkeletonCard />
         </div>
       </div>
+
+      <span className="sr-only">Loading content, please wait.</span>
     </div>
   );
 }

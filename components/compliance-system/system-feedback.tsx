@@ -180,9 +180,10 @@ export function SystemFeedback({
         {onDismiss && (
           <button
             onClick={onDismiss}
+            aria-label="Dismiss"
             className="ml-auto p-1 rounded-lg hover:bg-surface-2 transition-colors"
           >
-            <X className="h-4 w-4 text-muted-foreground" />
+            <X aria-hidden="true" className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
       </div>
@@ -222,9 +223,10 @@ export function SystemFeedback({
         {onDismiss && (
           <button
             onClick={onDismiss}
+            aria-label="Dismiss"
             className="p-1.5 rounded-lg hover:bg-surface-2 transition-colors"
           >
-            <X className="h-4 w-4 text-muted-foreground" />
+            <X aria-hidden="true" className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
       </div>

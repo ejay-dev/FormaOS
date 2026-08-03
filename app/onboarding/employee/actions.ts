@@ -18,7 +18,7 @@ async function getEmployeeContext() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect('/auth/signin?redirect=/onboarding/employee');
+  if (!user) redirect('/auth/signin?next=/onboarding/employee');
 
   const { data: membership } = await supabase
     .from('org_members')

@@ -1,7 +1,30 @@
 'use client';
 
 import { ShieldCheck } from 'lucide-react';
+import { getPackClaim } from '@/lib/marketing/claims';
 import { SeoLandingTemplate } from '../components/shared/SeoLandingTemplate';
+
+/**
+ * Two packs, two numbers, and they must not be swapped: the readiness score
+ * is calculated from the scored SOC 2 pack (lib/soc2/readiness-engine.ts),
+ * while the full Trust Services Criteria pack is the deeper control set an
+ * organisation maps against. Buyers on this page know SOC 2, so a count that
+ * does not match what ships is the fastest way to lose them.
+ */
+const scoredPack = getPackClaim('soc2');
+const tscPack = getPackClaim('soc2-tsc');
+
+const evidenceCheckCoverage = scoredPack
+  ? `Automated evidence checks against your own data for ${scoredPack.automatedEvaluatorCount} of the ${scoredPack.controlCount} scored controls`
+  : 'Automated evidence checks against your own data for the scored controls';
+
+const tscPackCoverage = tscPack
+  ? `The full Trust Services Criteria pack ships ${tscPack.controlCount} controls, of which ${tscPack.automatedEvaluatorCount} are checked automatically against your data and ${tscPack.manualAttestationCount} are tracked as attestations you sign off.`
+  : null;
+
+const readinessSummary = scoredPack
+  ? `weighted readiness scoring across all five Trust Services Criteria domains, automated evidence checks for ${scoredPack.automatedEvaluatorCount} of the ${scoredPack.controlCount} scored controls, gap analysis with prioritised remediation, and milestone tracking through to a readiness report`
+  : 'weighted readiness scoring across all five Trust Services Criteria domains, automated evidence checks where a control can be measured from your data, gap analysis with prioritised remediation, and milestone tracking through to a readiness report';
 
 export default function Soc2Content() {
   return (
@@ -16,11 +39,11 @@ export default function Soc2Content() {
           </span>
         </>
       }
-      subheadline="Operationalize SOC 2 Trust Services Criteria with workflow enforcement and continuous evidence capture."
+      subheadline="Operationalise SOC 2 Trust Services Criteria with workflow enforcement and continuous evidence capture."
       introParagraphs={[
-        'SOC 2 has become table stakes for B2B SaaS companies, cloud service providers, and any organization handling customer data. Prospects and enterprise customers increasingly require SOC 2 Type II reports before signing contracts.',
-        'The challenge isn\'t understanding the Trust Service Criteria, it\'s operationalizing them. SOC 2 Type II requires demonstrating that controls operated effectively over an extended period, typically 6-12 months. This means your compliance program must run continuously, not just during audit preparation windows.',
-        'Most organizations start SOC 2 with a consultant engagement and a compliance automation tool. The consultant maps controls, the tool monitors configurations. But the gap between "controls documented" and "controls operating effectively" is where most teams struggle, and where auditors find exceptions.',
+        'SOC 2 has become table stakes for B2B SaaS companies, cloud service providers, and any organisation handling customer data. Prospects and enterprise customers increasingly require SOC 2 Type II reports before signing contracts.',
+        'The challenge isn\'t understanding the Trust Services Criteria, it\'s operationalising them. SOC 2 Type II requires demonstrating that controls operated effectively over an extended period, typically 6-12 months. This means your compliance program must run continuously, not just during audit preparation windows.',
+        'Most organisations start SOC 2 with a consultant engagement and a compliance automation tool. The consultant maps controls, the tool monitors configurations. But the gap between "controls documented" and "controls operating effectively" is where most teams struggle, and where auditors find exceptions.',
         'FormaOS bridges that gap by embedding compliance into operational workflows. Controls aren\'t just documented and monitored, they\'re executed through structured processes that automatically capture evidence of effectiveness.',
       ]}
       problemSections={[
@@ -48,22 +71,23 @@ export default function Soc2Content() {
       ]}
       solutionSections={[
         {
-          heading: 'AI-Powered Self-Certification Engine',
+          heading: 'SOC 2 readiness scoring and gap analysis',
           paragraphs: [
-            'FormaOS v2.2 introduces a purpose-built SOC 2 Self-Certification Engine with weighted domain scoring, automated evidence checks across 11 controls, and one-click certification reports.',
+            'FormaOS scores how ready you are against the Trust Services Criteria, checks the evidence sitting behind the scored controls, and exports a readiness report your auditor can work from. It does not issue an attestation: only an independent CPA firm can do that.',
           ],
           bullets: [
-            'Weighted readiness scoring across all 5 Trust Service Criteria domains (Security 30%, Availability 20%, Confidentiality 20%, Processing Integrity 15%, Privacy 15%)',
-            'Automated evidence collection checks for each of the 11 SOC 2 controls',
-            'AI-powered gap analysis with prioritized remediation actions and implementation guidance',
-            'Milestone tracking from framework enablement through certification report generation',
+            'Weighted readiness scoring across all 5 Trust Services Criteria domains (Security 30%, Availability 20%, Confidentiality 20%, Processing Integrity 15%, Privacy 15%)',
+            evidenceCheckCoverage,
+            'Gap analysis with prioritised remediation actions and implementation guidance',
+            'Milestone tracking from framework enablement through to an auditor-ready readiness report',
             'AI Compliance Assistant for policy drafting, evidence guidance, and interactive gap analysis',
           ],
         },
         {
-          heading: 'Trust Service Criteria mapping',
+          heading: 'Trust Services Criteria mapping',
           paragraphs: [
             'Map controls across all five TSC categories with clear ownership, testing frequency, and evidence requirements.',
+            ...(tscPackCoverage ? [tscPackCoverage] : []),
           ],
           bullets: [
             'Security (Common Criteria), CC1 through CC9 control mapping',
@@ -80,7 +104,7 @@ export default function Soc2Content() {
           bullets: [
             'Task completions linked to specific SOC 2 controls',
             'Access review workflows with approval evidence and timestamps',
-            'Change management records with authorization and testing evidence',
+            'Change management records with authorisation and testing evidence',
             'Incident response timelines with full activity logging',
           ],
         },
@@ -99,7 +123,7 @@ export default function Soc2Content() {
         {
           heading: 'Auditor-ready reporting',
           paragraphs: [
-            'Generate evidence packages organized by TSC, control description, and testing period. Reduce auditor back-and-forth by providing complete, well-organized documentation.',
+            'Generate evidence packages organised by TSC, control description, and testing period. Reduce auditor back-and-forth by providing complete, well-organised documentation.',
           ],
           bullets: [
             'Evidence packages mapped to TSC requirements',
@@ -125,10 +149,10 @@ export default function Soc2Content() {
       }}
       faq={[
         { question: 'Does FormaOS support SOC 2 Type II?', answer: 'Yes. FormaOS is designed for continuous compliance, which aligns directly with the SOC 2 Type II requirement to demonstrate controls operating effectively over a period of time, not just at a point in time.' },
-        { question: 'Which Trust Service Criteria does FormaOS cover?', answer: 'FormaOS supports all five Trust Service Criteria: Security (Common Criteria), Availability, Processing Integrity, Confidentiality, and Privacy. Controls can be mapped across one or multiple criteria.' },
+        { question: 'Which Trust Services Criteria does FormaOS cover?', answer: 'FormaOS supports all five Trust Services Criteria: Security (Common Criteria), Availability, Processing Integrity, Confidentiality, and Privacy. Controls can be mapped across one or multiple criteria.' },
         { question: 'Can FormaOS generate auditor-ready evidence packages?', answer: 'Yes. FormaOS generates exportable evidence packages that map directly to TSC requirements, including control descriptions, testing results, and exception tracking with timestamps and attribution.' },
         { question: 'How does FormaOS work alongside configuration monitoring tools?', answer: 'FormaOS complements technical monitoring tools by covering the operational and administrative controls that configuration scanners can\'t address, access reviews, change management, vendor management, and incident response workflows.' },
-        { question: 'What is the SOC 2 Self-Certification Engine?', answer: 'Introduced in FormaOS v2.2 Vanguard, the Self-Certification Engine provides weighted readiness scoring across all 5 TSC domains, automated evidence checks for 11 controls, AI-powered gap analysis with prioritized remediation, milestone tracking, and one-click certification report generation.' },
+        { question: 'Can FormaOS certify us against SOC 2?', answer: `No, and neither can any other platform: a SOC 2 report is an attestation issued by an independent CPA firm after its own testing. What FormaOS does is get you ready for that engagement, with ${readinessSummary}.` },
         { question: 'Can the AI Assistant help with SOC 2 preparation?', answer: 'Yes. The AI Compliance Assistant understands your live compliance data and can draft SOC 2 policies, suggest evidence for specific controls, run interactive gap analysis, and provide step-by-step implementation guidance, all within a streaming chat interface.' },
       ]}
       relatedLinks={[
@@ -140,7 +164,7 @@ export default function Soc2Content() {
         { label: 'Trust Center', href: '/trust', description: 'Review our security and compliance posture.' },
       ]}
       ctaTitle="Build continuous SOC 2 compliance"
-      ctaDescription="Type II demands evidence of control effectiveness over time. FormaOS turns Trust Service Criteria into operational workflows that generate evidence continuously."
+      ctaDescription="Type II demands evidence of control effectiveness over time. FormaOS turns Trust Services Criteria into operational workflows that generate evidence continuously."
       mediaSrc="/marketing-media/soc2-compliance-automation.jpg"
     />
   );

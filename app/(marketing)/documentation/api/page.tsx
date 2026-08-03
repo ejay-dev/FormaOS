@@ -60,23 +60,20 @@ export default function ApiDocumentationPage() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-16 text-slate-100">
       <header className="max-w-3xl">
-        <p className="text-xs font-black uppercase tracking-[0.28em] text-slate-500">
-          FormaOS API
-        </p>
-        <h1 className="mt-3 text-5xl font-black tracking-tight">
-          Compliance data, automation events, and delivery primitives in one
-          surface.
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+          FormaOS v1 REST API
         </h1>
         <p className="mt-5 text-base leading-7 text-slate-300">
           The v1 API supports bearer API keys and authenticated sessions, scoped
-          per organization, with rate limits, cursor pagination, and signed
-          webhooks.
+          per organisation, with rate limits, cursor pagination, and signed
+          webhooks. The endpoint table and specification below are generated
+          from the live route metadata.
         </p>
       </header>
 
       <section className="grid gap-6 rounded-[2rem] border border-white/10 bg-white/5 p-8 lg:grid-cols-3">
-        <div>
-          <h2 className="text-lg font-black">Authentication</h2>
+        <div id="authentication" className="scroll-mt-24">
+          <h2 className="text-lg font-semibold">Authentication</h2>
           <p className="mt-3 text-sm text-slate-300">
             Use{' '}
             <code className="rounded bg-black/30 px-1 py-0.5">
@@ -86,16 +83,16 @@ export default function ApiDocumentationPage() {
             fallback.
           </p>
         </div>
-        <div>
-          <h2 className="text-lg font-black">Rate Limits</h2>
+        <div id="rate-limits" className="scroll-mt-24">
+          <h2 className="text-lg font-semibold">Rate limits</h2>
           <p className="mt-3 text-sm text-slate-300">
             Every response includes <code>X-RateLimit-Limit</code>,{' '}
             <code>X-RateLimit-Remaining</code>, and{' '}
-            <code>X-RateLimit-Reset</code>.
+            <code>X-RateLimit-Reset</code>. Exceeding a limit returns 429.
           </p>
         </div>
         <div>
-          <h2 className="text-lg font-black">Envelope</h2>
+          <h2 className="text-lg font-semibold">Envelope</h2>
           <p className="mt-3 text-sm text-slate-300">
             All list endpoints return{' '}
             <code>{`{ data, meta: { cursor, hasMore, total } }`}</code>.
@@ -105,8 +102,11 @@ export default function ApiDocumentationPage() {
 
       <section className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="space-y-8">
-          <div className="rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
-            <h2 className="text-2xl font-black">Endpoint Reference</h2>
+          <div
+            id="endpoints"
+            className="scroll-mt-24 rounded-[2rem] border border-white/10 bg-white/[0.03] p-6"
+          >
+            <h2 className="text-2xl font-bold">Endpoint reference</h2>
             <div className="mt-6 space-y-4">
               {V1_OPENAPI_ROUTES.map((route) => (
                 <div
@@ -114,14 +114,14 @@ export default function ApiDocumentationPage() {
                   className="rounded-2xl border border-white/10 bg-white/5 p-4"
                 >
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="rounded-full bg-white/[0.06] border border-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-slate-200">
+                    <span className="rounded-full bg-white/[0.06] border border-white/10 px-3 py-1 text-xs font-semibold text-slate-200">
                       {route.method}
                     </span>
                     <code className="text-sm text-slate-100">{route.path}</code>
                   </div>
                   <p className="mt-3 text-sm text-slate-300">{route.summary}</p>
                   {route.scopes?.length ? (
-                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-slate-500">
+                    <p className="mt-2 text-xs text-slate-500">
                       Scopes: {route.scopes.join(', ')}
                     </p>
                   ) : null}
@@ -130,8 +130,11 @@ export default function ApiDocumentationPage() {
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
-            <h2 className="text-2xl font-black">Webhook Events</h2>
+          <div
+            id="webhooks"
+            className="scroll-mt-24 rounded-[2rem] border border-white/10 bg-white/[0.03] p-6"
+          >
+            <h2 className="text-2xl font-bold">Webhook events</h2>
             <div className="mt-6 grid gap-3 md:grid-cols-2">
               {Object.entries(RELAY_EVENT_LABELS).map(([event, label]) => (
                 <div
@@ -149,25 +152,25 @@ export default function ApiDocumentationPage() {
         </div>
 
         <div className="space-y-8">
-          <div className="rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
-            <h2 className="text-2xl font-black">Scopes</h2>
+          <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
+            <h2 className="text-2xl font-bold">Scopes</h2>
             <div className="mt-4 flex flex-wrap gap-2">
               {API_KEY_SCOPES.map((scope) => (
-                <span
+                <code
                   key={scope}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200"
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-200"
                 >
                   {scope}
-                </span>
+                </code>
               ))}
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
-            <h2 className="text-2xl font-black">Examples</h2>
+          <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
+            <h2 className="text-2xl font-bold">Examples</h2>
             <div className="mt-6 space-y-4">
               <div>
-                <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-slate-500">
+                <p className="mb-2 text-xs font-medium text-slate-400">
                   cURL
                 </p>
                 <pre className="overflow-x-auto rounded-2xl bg-black/30 p-4 text-xs text-slate-200">
@@ -175,7 +178,7 @@ export default function ApiDocumentationPage() {
                 </pre>
               </div>
               <div>
-                <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-slate-500">
+                <p className="mb-2 text-xs font-medium text-slate-400">
                   JavaScript
                 </p>
                 <pre className="overflow-x-auto rounded-2xl bg-black/30 p-4 text-xs text-slate-200">
@@ -183,7 +186,7 @@ export default function ApiDocumentationPage() {
                 </pre>
               </div>
               <div>
-                <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-slate-500">
+                <p className="mb-2 text-xs font-medium text-slate-400">
                   Python
                 </p>
                 <pre className="overflow-x-auto rounded-2xl bg-black/30 p-4 text-xs text-slate-200">
@@ -193,8 +196,8 @@ export default function ApiDocumentationPage() {
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
-            <h2 className="text-2xl font-black">OpenAPI 3.1</h2>
+          <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
+            <h2 className="text-2xl font-bold">OpenAPI 3.1</h2>
             <p className="mt-3 text-sm text-slate-300">
               The spec below is generated from route metadata and can be used to
               bootstrap SDKs.
@@ -204,8 +207,8 @@ export default function ApiDocumentationPage() {
             </pre>
           </div>
 
-          <div className="rounded-[2rem] border border-rose-400/20 bg-rose-500/10 p-6">
-            <h2 className="text-2xl font-black">Error Codes</h2>
+          <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-6">
+            <h2 className="text-2xl font-bold">Error codes</h2>
             <ul className="mt-4 space-y-2 text-sm text-slate-200">
               <li>
                 <code>400</code> Invalid request body, query params, or scope

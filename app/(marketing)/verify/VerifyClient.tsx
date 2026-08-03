@@ -60,10 +60,7 @@ export default function VerifyClient() {
   return (
     <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:py-14">
       <header className="mb-8 sm:mb-10">
-        <p className="text-xs uppercase tracking-wider text-muted-foreground">
-          Audit transparency
-        </p>
-        <h1 className="mt-1 text-3xl font-bold sm:text-4xl">
+        <h1 className="text-3xl font-bold sm:text-4xl">
           Verify a FormaOS audit export
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -75,7 +72,7 @@ export default function VerifyClient() {
       </header>
 
       <section
-        className="mb-10 rounded-2xl border border-slate-800 bg-card/40 p-5 sm:p-6"
+        className="mb-10 rounded-2xl border border-border bg-card p-5 sm:p-6"
         data-testid="verify-merkle-section"
       >
         <h2 className="text-lg font-semibold sm:text-xl">1. Merkle bundle verifier</h2>
@@ -89,7 +86,7 @@ export default function VerifyClient() {
           rows={8}
           spellCheck={false}
           placeholder='{"manifest": {...}, "merkle": {...}, "entries": [...]}'
-          className="mt-3 w-full rounded-md border border-slate-700 bg-slate-950/40 px-3 py-2 font-mono text-xs"
+          className="mt-3 w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-xs text-foreground"
           data-testid="merkle-input"
         />
         <div className="mt-3 flex items-center gap-3">
@@ -105,13 +102,13 @@ export default function VerifyClient() {
           {merkleResult && <ResultBadge ok={merkleResult.ok} />}
         </div>
         {merkleError && (
-          <p className="mt-3 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+          <p className="mt-3 rounded-md border border-border bg-muted/30 px-3 py-2 text-xs text-destructive">
             Parse error: {merkleError}
           </p>
         )}
         {merkleResult && <StepList steps={merkleResult.steps} />}
         {merkleResult && merkleResult.summary.root && (
-          <dl className="mt-4 grid gap-2 rounded-md border border-slate-800 bg-slate-950/40 p-3 text-xs sm:grid-cols-3">
+          <dl className="mt-4 grid gap-2 rounded-md border border-border bg-muted/30 p-3 text-xs sm:grid-cols-3">
             <SummaryRow label="Root" value={merkleResult.summary.root} mono />
             <SummaryRow
               label="Tree size"
@@ -126,7 +123,7 @@ export default function VerifyClient() {
       </section>
 
       <section
-        className="rounded-2xl border border-slate-800 bg-card/40 p-5 sm:p-6"
+        className="rounded-2xl border border-border bg-card p-5 sm:p-6"
         data-testid="verify-rekor-section"
       >
         <h2 className="text-lg font-semibold sm:text-xl">2. Rekor anchor verifier</h2>
@@ -136,7 +133,7 @@ export default function VerifyClient() {
         </p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">
+            <span className="text-xs font-medium text-foreground">
               Rekor entry UUID
             </span>
             <input
@@ -144,12 +141,12 @@ export default function VerifyClient() {
               onChange={(e) => setRekorUuid(e.target.value)}
               spellCheck={false}
               placeholder="24296fb24b8ad77a…"
-              className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950/40 px-3 py-2 font-mono text-xs"
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-xs text-foreground"
               data-testid="rekor-uuid-input"
             />
           </label>
           <label className="block">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">
+            <span className="text-xs font-medium text-foreground">
               Expected top-of-chain hash (hex)
             </span>
             <input
@@ -157,7 +154,7 @@ export default function VerifyClient() {
               onChange={(e) => setRekorHash(e.target.value)}
               spellCheck={false}
               placeholder="8c6ae24fa604c7da…"
-              className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950/40 px-3 py-2 font-mono text-xs"
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 font-mono text-xs text-foreground"
               data-testid="rekor-hash-input"
             />
           </label>
@@ -179,13 +176,13 @@ export default function VerifyClient() {
           {rekorResult && <ResultBadge ok={rekorResult.ok} />}
         </div>
         {rekorError && (
-          <p className="mt-3 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+          <p className="mt-3 rounded-md border border-border bg-muted/30 px-3 py-2 text-xs text-destructive">
             {rekorError}
           </p>
         )}
         {rekorResult && <StepList steps={rekorResult.steps} />}
         {rekorResult && rekorResult.summary.recorded_hash && (
-          <dl className="mt-4 grid gap-2 rounded-md border border-slate-800 bg-slate-950/40 p-3 text-xs sm:grid-cols-2">
+          <dl className="mt-4 grid gap-2 rounded-md border border-border bg-muted/30 p-3 text-xs sm:grid-cols-2">
             <SummaryRow label="Recorded hash" value={rekorResult.summary.recorded_hash} mono />
             <SummaryRow label="Integrated at" value={rekorResult.summary.integrated_at ?? '—'} />
             <SummaryRow
@@ -213,15 +210,13 @@ export default function VerifyClient() {
 function ResultBadge({ ok }: { ok: boolean }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-wider ${
-        ok
-          ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-          : 'bg-red-500/15 text-red-300 border border-red-500/30'
+      className={`inline-flex items-center rounded-full border border-border bg-muted/30 px-2.5 py-1 text-xs font-semibold ${
+        ok ? 'text-success' : 'text-destructive'
       }`}
       data-testid="verify-result-badge"
       data-result={ok ? 'pass' : 'fail'}
     >
-      {ok ? 'verified' : 'failed'}
+      {ok ? 'Verified' : 'Failed'}
     </span>
   );
 }
@@ -232,13 +227,11 @@ function StepList({ steps }: { steps: VerificationStep[] }) {
       {steps.map((step, idx) => (
         <li
           key={idx}
-          className="flex items-start gap-3 rounded-md border border-slate-800 bg-slate-950/30 px-3 py-2"
+          className="flex items-start gap-3 rounded-md border border-border bg-muted/20 px-3 py-2"
         >
           <span
-            className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-              step.status === 'pass'
-                ? 'bg-emerald-500/20 text-emerald-300'
-                : 'bg-red-500/20 text-red-300'
+            className={`mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-bold ${
+              step.status === 'pass' ? 'text-success' : 'text-destructive'
             }`}
           >
             {step.status === 'pass' ? '✓' : '✗'}
@@ -258,7 +251,7 @@ function StepList({ steps }: { steps: VerificationStep[] }) {
 function SummaryRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
     <div>
-      <dt className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</dt>
+      <dt className="text-[11px] text-muted-foreground">{label}</dt>
       <dd className={`mt-0.5 ${mono ? 'font-mono break-all' : ''}`}>{value}</dd>
     </div>
   );

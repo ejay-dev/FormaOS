@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { brand } from '@/config/brand';
 import { requireFounderAccess } from '@/app/app/admin/access';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import {
@@ -195,7 +196,7 @@ export async function POST(request: Request) {
   const ctaHref = payload.ctaHref;
 
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL || 'Formaos.team@gmail.com';
+  const from = process.env.RESEND_FROM_EMAIL || brand.email.senderEmail;
 
   if (!apiKey) {
     return NextResponse.json(

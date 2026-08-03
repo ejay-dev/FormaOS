@@ -356,7 +356,7 @@ function TasksPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantTask
             <div key={status} className="flex items-center gap-1.5 text-[10px]">
               <TaskStatusIcon status={status} />
               <span className="text-muted-foreground">{count}</span>
-              <span className="text-muted-foreground/40 hidden sm:inline">{status.replace('-', ' ')}</span>
+              <span className="text-muted-foreground hidden sm:inline">{status.replace('-', ' ')}</span>
             </div>
           );
         })}
@@ -495,7 +495,7 @@ function ControlsPanel() {
                 <p className="text-foreground/90 truncate font-medium">{ctrl.code} {ctrl.title}</p>
               </div>
               <span className="text-[9px] text-muted-foreground/60 hidden sm:block">{fw?.shortName}</span>
-              <span className="text-[9px] text-muted-foreground/40">{ctrl.evidenceCount} evidence</span>
+              <span className="text-[9px] text-muted-foreground">{ctrl.evidenceCount} evidence</span>
               <span className={`text-[9px] font-medium ${cfg.color}`}>{cfg.label}</span>
             </motion.div>
           );

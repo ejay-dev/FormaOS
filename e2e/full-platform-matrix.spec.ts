@@ -476,7 +476,7 @@ test.describe('Full platform matrix', () => {
     await page.getByLabel('Email Address').fill(email);
     await page.getByLabel('Password', { exact: true }).fill(password);
     await page.getByLabel('Confirm Password', { exact: true }).fill(password);
-    await page.getByRole('button', { name: 'Create FormaOS Account' }).click();
+    await page.getByTestId('signup-submit-button').click();
 
     await page.waitForURL(/\/auth\/check-email/, { timeout: 20_000 });
     await expect(page.getByText(/Check.*Email/i)).toBeVisible();
@@ -519,7 +519,7 @@ test.describe('Full platform matrix', () => {
     await signInPassword.fill(passwordUser.password);
     await expect(signInEmail).toHaveValue(passwordUser.email);
     await expect(signInPassword).toHaveValue(passwordUser.password);
-    await page.getByRole('button', { name: 'Access FormaOS' }).click();
+    await page.getByTestId('signin-submit-button').click();
 
     await page.waitForURL(/\/(app|onboarding)/, { timeout: 30_000 });
     await expect(page.locator('body')).toContainText(

@@ -2,13 +2,15 @@ import { Skeleton, SkeletonCard } from '@/components/ui/skeleton';
 
 export default function NotificationSettingsLoading() {
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Loading notification settings"
+      className="space-y-8 animate-in fade-in duration-300"
+    >
       <header className="space-y-3">
-        <p className="text-xs font-black uppercase tracking-[0.26em] text-muted-foreground">
-          Notifications
-        </p>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground/70">
-          Delivery Preferences
+          Delivery preferences
         </h1>
         <Skeleton className="h-4 w-[32rem]" />
       </header>
@@ -32,6 +34,8 @@ export default function NotificationSettingsLoading() {
           </div>
         ))}
       </div>
+
+      <span className="sr-only">Loading content, please wait.</span>
     </div>
   );
 }

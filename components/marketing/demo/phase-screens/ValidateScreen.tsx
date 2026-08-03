@@ -154,7 +154,7 @@ export default function ValidateScreen() {
                   {entry.action.toLowerCase()}{' '}
                   <span className="text-muted-foreground">{entry.target}</span>
                 </span>
-                <span className="text-muted-foreground/40 flex-shrink-0 text-[9px]">{entry.timestamp}</span>
+                <span className="text-muted-foreground flex-shrink-0 text-[9px]">{entry.timestamp}</span>
               </motion.div>
             );
           })}

@@ -49,14 +49,14 @@ export function TheOutcome() {
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="text-center mb-12">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <p className="mb-4 text-xs font-semibold text-zinc-500">
               The Outcome
             </p>
 
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
               What regulated organizations achieve with FormaOS
             </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-zinc-400 max-w-2xl mx-auto leading-relaxed">
               These are the operating conditions teams can standardize when
               compliance runs as a system instead of a periodic project.
             </p>
@@ -73,9 +73,9 @@ export function TheOutcome() {
                   key={outcome}
                   className="flex items-center gap-3 rounded-xl border border-white/[0.05] bg-white/[0.02] px-4 py-3 hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-200"
                 >
-                  <CheckCircle className="w-4 h-4 text-slate-400 shrink-0" />
-                  <span className="text-sm text-slate-300 flex-1 leading-snug">{outcome}</span>
-                  <span className="text-xs font-bold text-slate-500 shrink-0 tabular-nums">{stat}</span>
+                  <CheckCircle className="w-4 h-4 text-zinc-400 shrink-0" />
+                  <span className="text-sm text-zinc-300 flex-1 leading-snug">{outcome}</span>
+                  <span className="text-xs font-bold text-zinc-500 shrink-0 tabular-nums">{stat}</span>
                 </div>
               ))}
             </SectionChoreography>

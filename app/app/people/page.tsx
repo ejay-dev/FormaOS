@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   UserPlus,
   Shield,
-  User,
   CheckSquare,
   ShieldCheck,
   Search,
@@ -16,6 +15,10 @@ import {
   fetchPeopleOverview,
   type PeopleOverviewMember,
 } from '@/app/app/actions/people';
+import {
+  getOrgMemberIdentities,
+  type MemberIdentityMap,
+} from '@/lib/team/member-identity';
 import { useAppStore } from '@/lib/stores/app';
 import { TeamEmptyState } from '@/components/empty-states';
 
@@ -24,6 +27,7 @@ const ALL_FILTER = 'all';
 export default function PeoplePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [members, setMembers] = useState<PeopleOverviewMember[]>([]);
+  const [identities, setIdentities] = useState<MemberIdentityMap>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
@@ -40,6 +44,7 @@ export default function PeoplePage() {
       if (!isHydrated) return;
       if (!orgId) {
         setMembers([]);
+        setIdentities({});
         setLoading(false);
         return;
       }
@@ -48,14 +53,19 @@ export default function PeoplePage() {
       setError(null);
 
       try {
-        const payload = await fetchPeopleOverview();
+        const [payload, identityMap] = await Promise.all([
+          fetchPeopleOverview(),
+          getOrgMemberIdentities(),
+        ]);
         if (cancelled) return;
         setMembers(payload.members);
+        setIdentities(identityMap);
       } catch (err) {
         if (cancelled) return;
         console.error('[PeoplePage] Failed to fetch personnel data:', err);
         setMembers([]);
-        setError('Unable to load personnel records right now.');
+        setIdentities({});
+        setError('Unable to load people right now.');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -92,8 +102,10 @@ export default function PeoplePage() {
       const normalizedCompliance = (
         member.compliance_status ?? 'active'
       ).toLowerCase();
+      const identity = identities[member.user_id];
       const searchableText = [
-        member.user_id,
+        identity?.name ?? '',
+        identity?.email ?? '',
         member.department ?? '',
         normalizedRole,
         normalizedCompliance,
@@ -111,7 +123,7 @@ export default function PeoplePage() {
 
       return matchesQuery && matchesRole && matchesCompliance;
     });
-  }, [members, query, roleFilter, complianceFilter]);
+  }, [members, identities, query, roleFilter, complianceFilter]);
 
   return (
     <div className="space-y-8 pb-12">
@@ -122,30 +134,30 @@ export default function PeoplePage() {
 
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">
-            Personnel Oversight
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            People
           </h1>
-          <p className="mt-1 text-muted-foreground font-medium tracking-tight">
-            Workforce access, role, and compliance activity.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Everyone in your workspace, with their role and compliance status.
           </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-surface-2 text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
+          className="flex items-center gap-2 bg-surface-2 text-foreground px-5 py-2.5 rounded-md text-sm font-medium hover:bg-surface-3 transition-colors motion-safe:active:scale-95"
         >
           <UserPlus className="h-4 w-4" />
-          Provision Access
+          Invite person
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_auto] items-center gap-3 bg-surface-1 p-2 rounded-2xl border border-edge-2 shadow-sm">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_auto] items-center gap-3 bg-card p-2 rounded-lg border border-border shadow-sm">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
               type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search by member ID, department, or role..."
+            placeholder="Search by name, email, department, or role"
             aria-label="Search people"
             className="w-full pl-12 pr-4 py-2.5 text-sm font-medium outline-none bg-transparent"
               enterKeyHint="search"
@@ -159,9 +171,9 @@ export default function PeoplePage() {
           value={roleFilter}
           onChange={(event) => setRoleFilter(event.target.value)}
           aria-label="Filter by role"
-          className="h-10 rounded-xl border border-edge-2 bg-surface-1 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
+          className="h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground"
         >
-          <option value={ALL_FILTER}>All Roles</option>
+          <option value={ALL_FILTER}>All roles</option>
           {roleOptions.map((role) => (
             <option key={role} value={role}>
               {role}
@@ -173,9 +185,9 @@ export default function PeoplePage() {
           value={complianceFilter}
           onChange={(event) => setComplianceFilter(event.target.value)}
           aria-label="Filter by compliance status"
-          className="h-10 rounded-xl border border-edge-2 bg-surface-1 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
+          className="h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground"
         >
-          <option value={ALL_FILTER}>All Statuses</option>
+          <option value={ALL_FILTER}>All statuses</option>
           {complianceOptions.map((status) => (
             <option key={status} value={status}>
               {status}
@@ -185,7 +197,7 @@ export default function PeoplePage() {
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
           {error}
         </div>
       ) : null}
@@ -193,9 +205,7 @@ export default function PeoplePage() {
       <div className="grid grid-cols-1 gap-4">
         {loading ? (
           <div className="py-20 text-center animate-pulse">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              Synchronizing Personnel Records...
-            </p>
+            <p className="text-sm text-muted-foreground">Loading people…</p>
           </div>
         ) : filteredMembers.length === 0 ? (
           // v4-031: distinguish "no data at all" (open the invite modal)
@@ -207,9 +217,9 @@ export default function PeoplePage() {
               <TeamEmptyState onInviteAction={() => setIsModalOpen(true)} />
             </div>
           ) : (
-            <div className="rounded-3xl border border-edge-2 bg-surface-1 py-14 text-center">
+            <div className="rounded-lg border border-border bg-card py-14 text-center">
               <p className="text-sm font-semibold text-foreground/90">
-                No personnel match the current filters.
+                No one matches the current filters.
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Adjust search terms or filters and try again.
@@ -221,28 +231,29 @@ export default function PeoplePage() {
             const complianceStatus = (
               member.compliance_status ?? 'active'
             ).toLowerCase();
-            const roleLabel = (member.role ?? 'member').toUpperCase();
+            const roleLabel = (member.role ?? 'member').toLowerCase();
             const joinedDate = new Date(
               member.start_date ?? member.created_at,
             ).toLocaleDateString();
+            const identity = identities[member.user_id];
 
             return (
               <div
                 key={member.user_id}
-                className="group bg-surface-1 border border-edge-2 rounded-[2.5rem] p-6 hover:border-edge-2 transition-all shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+                className="group bg-card border border-border rounded-xl p-5 transition-colors hover:bg-muted/20 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
               >
                 <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 rounded-[1.25rem] bg-surface-2 border border-edge-2 flex items-center justify-center text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-300">
-                    <User className="h-6 w-6" />
+                  <div className="h-14 w-14 rounded-lg bg-surface-2 border border-border flex items-center justify-center text-sm font-semibold text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-300">
+                    {identity?.initials ?? '?'}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-black text-foreground leading-none">
-                        Workspace Member
+                      <p className="text-sm font-semibold text-foreground leading-none">
+                        {identity?.name ?? 'Unknown member'}
                       </p>
 
                       <div
-                        className={`px-2 py-0.5 rounded-md border text-xs font-semibold uppercase tracking-wide flex items-center gap-1 ${
+                        className={`px-2 py-0.5 rounded-md border text-xs font-medium flex items-center gap-1 ${
                           complianceStatus === 'active'
                             ? 'bg-success/10 text-success border-success/20'
                             : 'bg-destructive/10 text-destructive border-destructive/20'
@@ -256,45 +267,50 @@ export default function PeoplePage() {
                         {complianceStatus}
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-2">
-                      {member.department || 'General Staff'} • Joined{' '}
+                    {identity?.email ? (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {identity.email}
+                      </p>
+                    ) : null}
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {member.department || 'No department'} · Joined{' '}
                       {joinedDate}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-8 md:gap-16 border-t md:border-t-0 pt-6 md:pt-0 border-edge-2">
+                <div className="flex items-center gap-8 md:gap-16 border-t md:border-t-0 pt-6 md:pt-0 border-border">
                   <div className="text-center">
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                    <p className="mb-2 text-xs text-muted-foreground">
                       Tasks
                     </p>
                     <div className="flex items-center gap-2 justify-center">
                       <CheckSquare className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-sm font-black text-foreground">
+                      <span className="text-sm font-semibold tabular-nums text-foreground">
                         {member.taskCount}
                       </span>
                     </div>
                   </div>
                   <div className="text-center">
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                    <p className="mb-2 text-xs text-muted-foreground">
                       Evidence
                     </p>
                     <div className="flex items-center gap-2 justify-center">
                       <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-sm font-black text-foreground">
+                      <span className="text-sm font-semibold tabular-nums text-foreground">
                         {member.evidenceCount}
                       </span>
                     </div>
                   </div>
                   <div className="text-center">
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                    <p className="mb-2 text-xs text-muted-foreground">
                       Role
                     </p>
                     <div className="flex items-center gap-2 justify-center">
                       <Shield
-                        className={`h-3.5 w-3.5 ${roleLabel === 'ADMIN' ? 'text-primary' : 'text-muted-foreground'}`}
+                        className={`h-3.5 w-3.5 ${roleLabel === 'admin' ? 'text-primary' : 'text-muted-foreground'}`}
                       />
-                      <span className="text-xs font-semibold text-foreground/70 uppercase tracking-wider">
+                      <span className="text-xs font-medium capitalize text-foreground/70">
                         {roleLabel}
                       </span>
                     </div>
@@ -304,9 +320,9 @@ export default function PeoplePage() {
                 <div className="flex items-center gap-3">
                   <Link
                     href={`/app/staff-compliance?member=${member.user_id}`}
-                    className="px-6 py-3 bg-surface-2 text-foreground rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all"
+                    className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/40 transition-colors"
                   >
-                    View Records
+                    View records
                   </Link>
                 </div>
               </div>

@@ -10,7 +10,6 @@ import {
   CreditCard,
   FileClock,
   Globe,
-  Mail,
   PlugZap,
   ShieldCheck,
   UserCog,
@@ -20,7 +19,6 @@ import {
 import { updateOrganization } from '@/app/app/actions/org';
 import { AppearanceSettings } from '@/components/settings/appearance-settings';
 import { PlainEnglishToggle } from '@/components/settings/plain-english-toggle';
-import { SaveButton } from '@/components/ui/submit-button';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getBranding, getDefaultFeatures, getFeatureToggles } from '@/lib/settings/settings-engine';
 import { roleRequiresMFA } from '@/lib/security/mfa-enforcement';
@@ -263,6 +261,7 @@ export default async function SettingsPage() {
   const aiRows = aiIndexResult.data ?? [];
   const aiIndexedCount = aiRows.filter((row) => row.status === 'indexed').length;
   const aiFailedCount = aiRows.filter((row) => row.status === 'failed').length;
+  const aiPendingCount = aiRows.filter((row) => row.status === 'pending').length;
 
   const verifiedChannelCount = notificationChannels.filter(
     (channel) => channel.verified,
@@ -353,9 +352,9 @@ export default async function SettingsPage() {
       ],
     },
     {
-      title: 'Notifications',
+      title: 'Communications',
       description:
-        'In-app, email, Slack, and Teams delivery rules with quiet hours support.',
+        'Channel routing, quiet hours, the emails you receive, and the executive digest.',
       href: '/app/settings/notifications',
       icon: BellRing,
       summary: [
@@ -363,51 +362,30 @@ export default async function SettingsPage() {
           label: 'Channels',
           value:
             notificationChannels.length > 0
-              ? `${notificationChannels.length} connected`
+              ? `${notificationChannels.length} connected, ${verifiedChannelCount} verified`
               : 'None connected',
           tone: notificationChannels.length > 0 ? 'positive' : 'default',
-        },
-        {
-          label: 'Verified',
-          value: `${verifiedChannelCount}`,
-          tone: verifiedChannelCount > 0 ? 'positive' : 'default',
         },
         {
           label: 'Quiet hours',
           value: quietHoursEnabled ? 'On' : 'Off',
           tone: quietHoursEnabled ? 'positive' : 'default',
         },
-      ],
-    },
-    {
-      title: 'Email & executive digests',
-      description:
-        'User email preferences, delivery history, and leadership digest routing.',
-      href: '/app/settings/email-preferences',
-      icon: Mail,
-      summary: [
         {
           label: 'Email alerts',
-          value: emailPreferences?.enabled === false
-            ? 'Unsubscribed'
-            : enabledEmailEvents.includes('compliance_alert')
-              ? 'Enabled'
-              : 'Default',
+          value:
+            emailPreferences?.enabled === false
+              ? 'Turned off'
+              : enabledEmailEvents.includes('compliance_alert')
+                ? 'On'
+                : 'Default',
           tone: emailPreferences?.enabled === false ? 'warning' : 'default',
-        },
-        {
-          label: 'Weekly digest',
-          value: emailPreferences?.frequency === 'weekly_digest' ? 'On' : 'Off',
-          tone:
-            emailPreferences?.frequency === 'weekly_digest'
-              ? 'positive'
-              : 'default',
         },
         {
           label: 'Executive digest',
           value: executiveDigestEnabled
-            ? `${titleCase(executiveDigestFrequency)}`
-            : 'Disabled',
+            ? `${titleCase(executiveDigestFrequency)} to ${executiveDigestRecipientCount} recipient${executiveDigestRecipientCount === 1 ? '' : 's'}`
+            : 'Off',
           tone: executiveDigestEnabled ? 'positive' : 'default',
         },
       ],
@@ -511,11 +489,9 @@ export default async function SettingsPage() {
           tone: aiFailedCount > 0 ? 'danger' : 'default',
         },
         {
-          label: 'Executive digest',
-          value:
-            executiveDigestRecipientCount > 0
-              ? `${executiveDigestRecipientCount} recipients`
-              : 'No recipients',
+          label: 'Pending docs',
+          value: `${aiPendingCount}`,
+          tone: aiPendingCount > 0 ? 'warning' : 'default',
         },
       ],
     },
@@ -528,11 +504,6 @@ export default async function SettingsPage() {
       summary: [
         { label: 'Plan', value: planName, tone: 'positive' },
         { label: 'Status', value: titleCase(planSummary) },
-        {
-          label: 'Branding',
-          value: brandingCustomized ? 'Customized' : 'Default',
-          tone: brandingCustomized ? 'positive' : 'default',
-        },
       ],
     },
   ];
@@ -572,7 +543,6 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-8 pb-24" data-tour="settings-header">
       <PageHero
-        eyebrow="Administration · Settings"
         title="Workspace settings"
         subtitle="Manage organization identity, security, communications, governance, integrations, and personal preferences from one place."
         metrics={heroMetrics}
@@ -598,9 +568,8 @@ export default async function SettingsPage() {
             <div className="space-y-1">
               {hasMissingIdentityData ? (
                 <p>
-                  Complete your organization identity by adding both a
-                  industry and team size so workspace routing, onboarding, and
-                  reporting stay aligned.
+                  Add an industry and a team size so workspace routing,
+                  onboarding, and reporting stay aligned.
                 </p>
               ) : null}
               {atRiskCount > 0 ? (
@@ -621,12 +590,12 @@ export default async function SettingsPage() {
           configuration-area cards, so the page rendered every value twice. */}
       <form
         action={saveWorkspaceProfileAction}
-        className="rounded-[2rem] border border-border bg-card p-6 shadow-sm sm:p-8"
+        className="rounded-xl border border-border bg-card p-6 shadow-sm sm:p-8"
       >
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Building2 className="h-5 w-5" />
               </div>
               <div>
@@ -701,6 +670,10 @@ export default async function SettingsPage() {
             value={branding?.custom_domain ?? 'Default FormaOS domain'}
           />
           <ReadOnlyField
+            label="Branding"
+            value={brandingCustomized ? 'Customised' : 'FormaOS default'}
+          />
+          <ReadOnlyField
             label="Frameworks"
             value={
               frameworkLabels.length > 0
@@ -710,7 +683,7 @@ export default async function SettingsPage() {
           />
         </div>
 
-        <div className="mt-6 rounded-[1.5rem] border border-border bg-background/40 p-4 text-sm text-muted-foreground">
+        <div className="mt-6 rounded-lg border border-border bg-background/40 p-4 text-sm text-muted-foreground">
           Organization profile changes are recorded to the audit trail and
           scoped to <span className="font-medium text-foreground">{organization.name}</span>.
         </div>
@@ -722,9 +695,12 @@ export default async function SettingsPage() {
               : 'You have read-only access to organization-wide settings.'}
           </p>
           {canManageWorkspace ? (
-            <div className="w-full lg:w-64">
-              <SaveButton />
-            </div>
+            <button
+              type="submit"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Save changes
+            </button>
           ) : null}
         </div>
       </form>
@@ -743,6 +719,35 @@ export default async function SettingsPage() {
         <div className="grid gap-4 lg:grid-cols-2">
           {settingsAreas.map((area) => (
             <SettingsAreaCard key={area.title} area={area} />
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-foreground">
+            Feature modules
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Which parts of FormaOS are switched on for this workspace. Contact
+            support to change them.
+          </p>
+        </div>
+        <div className="divide-y divide-border rounded-xl border border-border bg-card">
+          {featureEntries.map((feature) => (
+            <div
+              key={feature.key}
+              className="flex items-center justify-between gap-4 px-5 py-3"
+            >
+              <p className="text-sm text-foreground">{feature.label}</p>
+              <span
+                className={`shrink-0 text-sm ${
+                  feature.enabled ? 'text-success' : 'text-muted-foreground'
+                }`}
+              >
+                {feature.enabled ? 'On' : 'Off'}
+              </span>
+            </div>
           ))}
         </div>
       </section>
@@ -802,10 +807,10 @@ function SettingsAreaCard({ area }: { area: SettingsArea }) {
   const Icon = area.icon;
 
   return (
-    <section className="rounded-[1.75rem] border border-border bg-card p-5 shadow-sm">
+    <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <Icon className="h-5 w-5" />
           </div>
           <div>
@@ -880,7 +885,7 @@ function Field({
           defaultValue={defaultValue}
           disabled={disabled}
           placeholder={placeholder}
-          className={`w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground shadow-sm transition focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-70 ${
+          className={`w-full rounded-md border border-border bg-background px-4 py-3 text-sm text-foreground shadow-sm transition focus:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-70 ${
             Icon ? 'pl-11' : ''
           }`}
         />
@@ -904,7 +909,7 @@ function ReadOnlyField({
     <div className="space-y-2">
       <span className="text-sm font-medium text-foreground">{label}</span>
       <div
-        className={`flex items-center gap-2 rounded-2xl border border-border bg-background/60 px-4 py-3 text-sm text-foreground ${
+        className={`flex items-center gap-2 rounded-md border border-border bg-background/60 px-4 py-3 text-sm text-foreground ${
           mono ? 'font-mono text-xs break-all' : ''
         }`}
       >

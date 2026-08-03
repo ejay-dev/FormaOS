@@ -78,7 +78,7 @@ export function ComplianceIntelligence() {
         <ScrollReveal variant="blurIn" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              <p className="mb-4 text-xs font-semibold text-zinc-500">
                 Compliance Intelligence Dashboard
               </p>
             </ScrollReveal>
@@ -119,10 +119,10 @@ export function ComplianceIntelligence() {
               return (
                 <div
                   key={feature.label}
-                  className="product-panel product-panel--interactive backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-5 hover:border-white/20 transition-all"
+                  className="product-panel product-panel--interactive bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-5 hover:border-white/20 transition-all"
                 >
                   <div className="w-10 h-10 rounded-xl bg-white/[0.05] flex items-center justify-center mb-3">
-                    <Icon className="w-5 h-5 text-slate-300" />
+                    <Icon className="w-5 h-5 text-zinc-300" />
                   </div>
                   <h3 className="text-sm font-semibold text-white mb-1.5">
                     {feature.label}

@@ -40,28 +40,28 @@ const STATUS_CONFIG: Record<
 > = {
   required: {
     icon: AlertTriangle,
-    color: 'text-yellow-600',
-    bg: 'bg-yellow-100 dark:bg-yellow-900/30',
+    color: 'text-warning',
+    bg: 'bg-warning/10',
   },
   draft: {
     icon: FileText,
-    color: 'text-blue-600',
-    bg: 'bg-blue-100 dark:bg-blue-900/30',
+    color: 'text-info',
+    bg: 'bg-info/10',
   },
   submitted: {
     icon: CheckCircle2,
-    color: 'text-green-600',
-    bg: 'bg-green-100 dark:bg-green-900/30',
+    color: 'text-success',
+    bg: 'bg-success/10',
   },
   acknowledged: {
     icon: CheckCircle2,
-    color: 'text-green-700',
-    bg: 'bg-green-200 dark:bg-green-900/40',
+    color: 'text-success',
+    bg: 'bg-success/20',
   },
   overdue: {
     icon: AlertTriangle,
-    color: 'text-red-600',
-    bg: 'bg-red-100 dark:bg-red-900/30',
+    color: 'text-destructive',
+    bg: 'bg-destructive/10',
   },
 };
 
@@ -128,7 +128,7 @@ export function RegulatoryNotificationTracker({
   return (
     <div data-testid="regulatory-notification-tracker">
       {overdueCount > 0 && (
-        <div className="flex items-center gap-2 p-3 mb-4 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-400">
+        <div className="flex items-center gap-2 p-3 mb-4 rounded-lg bg-destructive/10 border border-destructive/30 text-sm text-destructive">
           <AlertTriangle className="h-4 w-4 shrink-0" />
           {overdueCount} notification{overdueCount > 1 ? 's' : ''} overdue —
           submit immediately to avoid regulatory penalties.
@@ -220,7 +220,7 @@ export function RegulatoryNotificationTracker({
                         </button>
                       </div>
                       {submitError && (
-                        <p role="alert" className="text-xs text-red-600">
+                        <p role="alert" className="text-xs text-destructive">
                           {submitError}
                         </p>
                       )}

@@ -103,36 +103,49 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
             ))}
           </div>
         ) : conversations.length === 0 ? (
-          <div className="px-3 py-6 text-center text-xs text-muted-foreground/40">
+          <div className="px-3 py-6 text-center text-xs text-muted-foreground">
             No conversations yet
           </div>
         ) : (
           conversations.map((conv) => (
-            <button
+            // Row is a container, not a control: delete cannot be nested
+            // inside the select button.
+            <div
               key={conv.id}
-              onClick={() => onSelect(conv.id)}
-              className={`group flex w-full items-start gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
+              className={`group flex w-full items-start gap-2 rounded-lg px-3 py-2 transition-colors ${
                 activeId === conv.id
                   ? 'bg-primary/10 border border-primary/20'
                   : 'hover:bg-surface-2 border border-transparent'
               }`}
             >
-              <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/60" />
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-xs font-medium text-foreground/70">
-                  {conv.title}
-                </div>
-                <div className="text-[10px] text-muted-foreground/40">
-                  {formatRelativeDate(conv.updatedAt)}
-                </div>
-              </div>
               <button
-                onClick={(e) => handleDelete(e, conv.id)}
-                className="shrink-0 rounded p-0.5 opacity-0 hover:bg-destructive/20 group-hover:opacity-100 transition-opacity"
+                type="button"
+                onClick={() => onSelect(conv.id)}
+                aria-current={activeId === conv.id ? 'true' : undefined}
+                className="flex min-w-0 flex-1 items-start gap-2 text-left"
               >
-                <Trash2 className="h-3 w-3 text-destructive" />
+                <MessageSquare
+                  aria-hidden="true"
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/60"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-xs font-medium text-foreground/70">
+                    {conv.title}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground">
+                    {formatRelativeDate(conv.updatedAt)}
+                  </div>
+                </div>
               </button>
-            </button>
+              <button
+                type="button"
+                onClick={(e) => handleDelete(e, conv.id)}
+                aria-label={`Delete conversation ${conv.title}`}
+                className="shrink-0 rounded p-0.5 opacity-0 hover:bg-destructive/20 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
+              >
+                <Trash2 aria-hidden="true" className="h-3 w-3 text-destructive" />
+              </button>
+            </div>
           ))
         )}
       </div>

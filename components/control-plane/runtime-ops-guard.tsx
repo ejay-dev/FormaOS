@@ -33,7 +33,7 @@ export function RuntimeOpsGuard({
 
   return (
     <>
-      <div className="sticky top-0 z-[var(--z-overlay)] border-b border-amber-500/40 bg-amber-500/10 px-4 py-2 text-xs text-amber-100 backdrop-blur-sm">
+      <div className="sticky top-0 z-[var(--z-overlay)] border-b border-warning/20 bg-warning/10 px-4 py-2 text-xs text-warning backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl items-center gap-2">
           <AlertTriangle className="h-3.5 w-3.5" />
           <span>
@@ -43,20 +43,20 @@ export function RuntimeOpsGuard({
                 ? 'Maintenance mode is active. Some surfaces may be temporarily limited.'
                 : 'Read-only mode is active. Mutating actions are blocked for safety.'}
           </span>
-          <span className="ml-auto rounded border border-amber-500/40 px-1.5 py-0.5 uppercase tracking-wider text-xs">
+          <span className="ml-auto rounded border border-warning/20 px-1.5 py-0.5 text-xs">
             {surface}
           </span>
         </div>
       </div>
 
       {flags.emergencyLockdown && surface === 'marketing' ? (
-        <div className="pointer-events-none fixed inset-0 z-[var(--z-overlay)] bg-slate-950/60 backdrop-blur-[2px]">
-          <div className="pointer-events-auto fixed left-1/2 top-24 w-[min(92vw,640px)] -translate-x-1/2 rounded-xl border border-rose-500/40 bg-slate-950/95 p-5 text-rose-100 shadow-2xl">
+        <div className="pointer-events-none fixed inset-0 z-[var(--z-overlay)] bg-background/60 backdrop-blur-[2px]">
+          <div className="pointer-events-auto fixed left-1/2 top-24 w-[min(92vw,640px)] -translate-x-1/2 rounded-xl border border-destructive/20 bg-background/95 p-5 text-destructive shadow-2xl">
             <div className="mb-2 flex items-center gap-2 text-sm font-semibold">
               <ShieldAlert className="h-4 w-4" />
               Emergency Lock-down Enabled
             </div>
-            <p className="text-xs text-rose-100/90">
+            <p className="text-xs text-destructive">
               Customer-facing writes and sensitive workflows are disabled while incident controls run.
             </p>
           </div>

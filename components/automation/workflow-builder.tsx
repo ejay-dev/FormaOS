@@ -264,8 +264,9 @@ export function WorkflowBuilder({
                 })
               }
               disabled={history.length === 0 || readOnly}
+              aria-label="Undo"
             >
-              <Undo2 className="h-4 w-4" />
+              <Undo2 aria-hidden="true" className="h-4 w-4" />
             </button>
             <button
               type="button"
@@ -281,22 +282,25 @@ export function WorkflowBuilder({
                 })
               }
               disabled={future.length === 0 || readOnly}
+              aria-label="Redo"
             >
-              <Redo2 className="h-4 w-4" />
+              <Redo2 aria-hidden="true" className="h-4 w-4" />
             </button>
             <button
               type="button"
               className="rounded-xl border border-border p-2 text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => setZoom((current) => Math.max(0.7, current - 0.1))}
+              aria-label="Zoom out"
             >
-              <Minus className="h-4 w-4" />
+              <Minus aria-hidden="true" className="h-4 w-4" />
             </button>
             <button
               type="button"
               className="rounded-xl border border-border p-2 text-foreground/90 hover:bg-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               onClick={() => setZoom((current) => Math.min(1.6, current + 0.1))}
+              aria-label="Zoom in"
             >
-              <Plus className="h-4 w-4" />
+              <Plus aria-hidden="true" className="h-4 w-4" />
             </button>
             {!readOnly ? (
               <button

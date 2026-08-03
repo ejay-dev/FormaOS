@@ -691,6 +691,7 @@ function IntegrationCard({
           hover:bg-white/[0.04] hover:border-white/[0.12]"
         onClick={() => setExpanded(!expanded)}
         role="button"
+        aria-expanded={expanded}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -717,7 +718,7 @@ function IntegrationCard({
                 {integration.name}
               </h3>
               <span
-                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusConfig.bg} ${statusConfig.border} ${statusConfig.text}`}
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${statusConfig.bg} ${statusConfig.border} ${statusConfig.text}`}
               >
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${statusConfig.dotColor}`}
@@ -757,7 +758,7 @@ function IntegrationCard({
             >
               <div className="pt-4 mt-4 border-t border-white/[0.06]">
                 <div className="mb-3">
-                  <span className="text-[10px] text-slate-500 uppercase tracking-wider font-medium">
+                  <span className="text-[10px] text-slate-500 font-medium">
                     Compliance Use Case
                   </span>
                   <p className="text-xs text-slate-300 leading-relaxed mt-1">
@@ -925,9 +926,6 @@ function ArchitectureSection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              How It Works
-            </p>
             <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
               Integration architecture
             </h2>
@@ -1046,13 +1044,6 @@ function CategoryBreakdown() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <div className="mb-4 flex items-center justify-center gap-3">
-              <span className="h-px w-8 bg-white/25" />
-              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                Coverage
-              </span>
-              <span className="h-px w-8 bg-white/25" />
-            </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Integration coverage
             </h2>
@@ -1144,18 +1135,15 @@ function IntegrationsCTA() {
     <DeferredSection minHeight={350}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
-          <div className="relative rounded-3xl border border-white/[0.06] bg-slate-950/60 overflow-hidden">
+          <div className="relative rounded-3xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Get Connected
-                </p>
                 <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                   Don&apos;t see your tool?
                 </h2>
                 <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
-                  We&apos;re adding new integrations every month based on
-                  customer demand. Request an integration or build your own with
+                  New connectors get added as regulated operators ask for
+                  them. Request an integration or build your own with
                   our API.
                 </p>
 
@@ -1244,19 +1232,6 @@ function IntegrationsHero() {
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
         className="relative z-10 mx-auto max-w-5xl px-6 lg:px-8 py-32 sm:py-40 text-center"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="mb-8 flex items-center justify-center gap-4"
-        >
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
-            Integrations
-          </span>
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-        </motion.div>
-
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}

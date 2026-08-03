@@ -48,7 +48,7 @@ export function TransactionMonitoringWidget() {
           </div>
         ) : !hasData ? (
           <div className="text-center py-4 space-y-2">
-            <Settings className="h-8 w-8 text-muted-foreground/40 mx-auto" />
+            <Settings className="h-8 w-8 text-muted-foreground mx-auto" />
             <p className="text-sm text-muted-foreground">
               Configure AML/CTF thresholds in Settings
             </p>

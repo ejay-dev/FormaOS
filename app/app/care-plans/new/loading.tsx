@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="New" cards={2} tableRows={4} />;
+export default function AppCarePlansNewLoading() {
+  return <PageSkeleton title="New care plan" cards={2} tableRows={0} />;
 }

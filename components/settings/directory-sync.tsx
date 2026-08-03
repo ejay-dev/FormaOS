@@ -71,7 +71,7 @@ export function DirectorySyncPanel({
   return (
     <section className="rounded-3xl border border-border bg-surface-1 p-6 space-y-5">
       <div>
-        <h2 className="text-xl font-black text-foreground">Directory Sync</h2>
+        <h2 className="text-xl font-semibold text-foreground">Directory sync</h2>
         <p className="text-sm text-muted-foreground">
           Pull users and groups from Azure AD, Okta, or Google Workspace on demand.
         </p>
@@ -82,7 +82,7 @@ export function DirectorySyncPanel({
 
       <div className="grid gap-4 lg:grid-cols-[220px_180px_1fr]">
         <label className="space-y-2 text-sm text-foreground/90">
-          <span className="block text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+          <span className="block text-sm font-medium text-foreground">
             Provider
           </span>
           <select
@@ -98,7 +98,7 @@ export function DirectorySyncPanel({
           </select>
         </label>
         <label className="space-y-2 text-sm text-foreground/90">
-          <span className="block text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+          <span className="block text-sm font-medium text-foreground">
             Schedule Minutes
           </span>
           <input
@@ -111,7 +111,7 @@ export function DirectorySyncPanel({
           />
         </label>
         <label className="space-y-2 text-sm text-foreground/90">
-          <span className="block text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+          <span className="block text-sm font-medium text-foreground">
             Connection Config JSON
           </span>
           <textarea
@@ -179,7 +179,7 @@ export function DirectorySyncPanel({
                 <div key={run.id} className="rounded-xl border border-border bg-surface-1 p-3">
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-semibold text-foreground">{run.provider}</span>
-                    <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{run.status}</span>
+                    <span className="text-xs text-muted-foreground">{run.status}</span>
                   </div>
                   <div className="mt-1 text-xs text-muted-foreground">
                     Started {new Date(run.started_at).toLocaleString()}

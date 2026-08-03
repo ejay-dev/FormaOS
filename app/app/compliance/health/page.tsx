@@ -7,10 +7,12 @@ import { SkeletonCard } from '@/components/ui/skeleton';
 import { getCurrentOrgId } from '@/lib/frameworks/org-frameworks';
 import { getOrgHealthAggregate } from '@/lib/compliance/health/fetch';
 import { getOrgHealthTrend, type HealthTrendPoint } from '@/lib/compliance/health/trend';
-import type {
-  FrameworkHealth,
-  OutstandingControl,
-} from '@/lib/compliance/health/aggregate';
+import {
+  StatusBadge,
+  controlStatus,
+  severityStatus,
+} from '@/components/compliance/StatusBadge';
+import type { FrameworkHealth } from '@/lib/compliance/health/aggregate';
 
 export const metadata = {
   title: 'Compliance Health | FormaOS',
@@ -39,12 +41,15 @@ function formatDate(value: string | null): string {
   });
 }
 
-const RISK_PILL: Record<OutstandingControl['risk_level'], string> = {
-  critical: 'bg-destructive/15 text-destructive border-destructive/30',
-  high: 'bg-warning/15 text-warning border-warning/30',
-  medium: 'bg-warning/15 text-warning border-warning/30',
-  low: 'bg-muted text-muted-foreground border-border',
-};
+// Controls keep one vocabulary across the suite: Compliant / At risk /
+// Non-compliant / Manual check. The evaluator's pass|partial|fail|not_evaluated
+// keys map onto it via controlStatus().
+const STATUS_TILES = [
+  { key: 'pass', countKey: 'pass', tone: 'success' },
+  { key: 'partial', countKey: 'partial', tone: 'warning' },
+  { key: 'fail', countKey: 'fail', tone: 'danger' },
+  { key: 'not_evaluated', countKey: 'not_evaluated', tone: 'neutral' },
+] as const;
 
 async function HealthBody({ orgId }: { orgId: string }) {
   const [aggregate, trend] = await Promise.all([
@@ -97,10 +102,14 @@ async function HealthBody({ orgId }: { orgId: string }) {
         </div>
 
         <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
-          <StatusTile label="Pass" value={overall.status_counts.pass} tone="success" />
-          <StatusTile label="Partial" value={overall.status_counts.partial} tone="warning" />
-          <StatusTile label="Fail" value={overall.status_counts.fail} tone="danger" />
-          <StatusTile label="Manual" value={overall.status_counts.not_evaluated} tone="neutral" />
+          {STATUS_TILES.map((tile) => (
+            <StatusTile
+              key={tile.key}
+              label={controlStatus(tile.key).label}
+              value={overall.status_counts[tile.countKey]}
+              tone={tile.tone}
+            />
+          ))}
         </div>
 
         <TrendChart trend={trend} />
@@ -167,20 +176,8 @@ async function HealthBody({ orgId }: { orgId: string }) {
                     {row.control_title ?? 'No control title in framework pack'}
                   </p>
                 </div>
-                <span
-                  className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-semibold uppercase tracking-wide ${RISK_PILL[row.risk_level]}`}
-                >
-                  {row.risk_level}
-                </span>
-                <span
-                  className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-semibold uppercase tracking-wide ${
-                    row.status === 'fail'
-                      ? 'bg-destructive/15 text-destructive border-destructive/30'
-                      : 'bg-warning/15 text-warning border-warning/30'
-                  }`}
-                >
-                  {row.status}
-                </span>
+                <StatusBadge {...severityStatus(row.risk_level)} />
+                <StatusBadge {...controlStatus(row.status)} />
               </li>
             ))}
           </ol>
@@ -194,8 +191,8 @@ function TrendChart({ trend }: { trend: HealthTrendPoint[] }) {
   if (trend.length === 0) {
     return (
       <div className="mt-5 rounded-lg border border-dashed border-border p-4 text-xs text-muted-foreground" data-testid="health-trend-empty">
-        Trend chart will populate after the first weekly snapshot
-        (/api/cron/compliance-health-snapshot runs Monday at 07:00 UTC).
+        The trend chart fills in after the first weekly snapshot. Snapshots are
+        taken every Monday morning.
       </div>
     );
   }
@@ -295,10 +292,26 @@ function FrameworkCard({ framework }: { framework: FrameworkHealth }) {
       </div>
 
       <div className="mt-3 grid grid-cols-4 gap-1.5 text-xs">
-        <Mini label="Pass" value={framework.status_counts.pass} color="text-success" />
-        <Mini label="Partial" value={framework.status_counts.partial} color="text-warning" />
-        <Mini label="Fail" value={framework.status_counts.fail} color="text-destructive" />
-        <Mini label="Manual" value={framework.status_counts.not_evaluated} color="text-muted-foreground" />
+        <Mini
+          label={controlStatus('pass').label}
+          value={framework.status_counts.pass}
+          color="text-success"
+        />
+        <Mini
+          label={controlStatus('partial').label}
+          value={framework.status_counts.partial}
+          color="text-warning"
+        />
+        <Mini
+          label={controlStatus('fail').label}
+          value={framework.status_counts.fail}
+          color="text-destructive"
+        />
+        <Mini
+          label={controlStatus('not_evaluated').label}
+          value={framework.status_counts.not_evaluated}
+          color="text-muted-foreground"
+        />
       </div>
     </div>
   );
@@ -319,8 +332,8 @@ export default async function ComplianceHealthPage() {
   return (
     <div className="space-y-6 pb-12 animate-in fade-in duration-500">
       <PageHero
-        eyebrow="Compliance · Health"
-        title="Compliance Health"
+        eyebrow="Compliance"
+        title="Compliance health"
         subtitle="Cross-framework posture, top outstanding controls, and evaluator coverage in one view."
       />
 

@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function ParticipantsLoading() {
-  return <PageSkeleton title="Participants" tableRows={5} />;
+export default function AppParticipantsLoading() {
+  return <PageSkeleton hero label="participants" heroMetrics={4} tableRows={5} />;
 }

@@ -210,7 +210,7 @@ export function BulkOperations({ orgs }: { orgs: Org[] }) {
 
       {/* Step 3: Preview */}
       {preview && step === 'preview' && (
-        <div className="p-4 border border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950/30 rounded-lg">
+        <div className="p-4 border border-warning/20 bg-warning/10 rounded-lg">
           <h3 className="text-sm font-medium mb-2">Blast Radius Preview</h3>
           <div className="grid grid-cols-2 gap-3 text-sm mb-3">
             <div>
@@ -229,7 +229,7 @@ export function BulkOperations({ orgs }: { orgs: Org[] }) {
               {preview.warnings.map((w, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-1.5 text-sm text-yellow-700 dark:text-yellow-400"
+                  className="flex items-center gap-1.5 text-sm text-warning"
                 >
                   <AlertTriangle className="h-3.5 w-3.5 shrink-0" /> {w}
                 </div>
@@ -239,7 +239,7 @@ export function BulkOperations({ orgs }: { orgs: Org[] }) {
           <button
             onClick={handleExecute}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -256,12 +256,12 @@ export function BulkOperations({ orgs }: { orgs: Org[] }) {
         <div className="p-4 border border-border rounded-lg">
           <h3 className="text-sm font-medium mb-3">Results</h3>
           <div className="flex gap-4 text-sm mb-3">
-            <span className="text-green-600 dark:text-green-400">
+            <span className="text-success">
               <CheckCircle2 className="inline h-4 w-4 mr-1" />
               {result.succeeded} succeeded
             </span>
             {result.failed > 0 && (
-              <span className="text-red-600 dark:text-red-400">
+              <span className="text-destructive">
                 <XCircle className="inline h-4 w-4 mr-1" />
                 {result.failed} failed
               </span>
@@ -272,7 +272,7 @@ export function BulkOperations({ orgs }: { orgs: Org[] }) {
             .map((r) => (
               <div
                 key={r.orgId}
-                className="text-sm text-red-600 dark:text-red-400"
+                className="text-sm text-destructive"
               >
                 {r.orgId}: {r.error}
               </div>

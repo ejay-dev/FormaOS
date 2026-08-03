@@ -18,7 +18,6 @@ import {
   CheckCircle2,
   ArrowRight,
   Building2,
-  Server,
   ChevronDown,
   ChevronRight,
   Database,
@@ -41,6 +40,7 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { demoHref, PUBLIC_CTA_LABELS, salesHref } from '@/lib/marketing/cta';
+import { getPackClaim } from '@/lib/marketing/claims';
 
 /* ─── Easing ──────────────────────────────────────────────── */
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -75,7 +75,7 @@ function MobileStickyCta() {
           animate={{ y: 0 }}
           exit={reduce ? undefined : { y: '110%' }}
           transition={{ duration: reduce ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0a0f1c]/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur-md md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#181a1c]/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 md:hidden"
         >
           <Link
             href={stickySalesHref}
@@ -89,7 +89,7 @@ function MobileStickyCta() {
                 variant: 'primary',
               })
             }
-            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-slate-900 transition active:bg-slate-100"
+            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-zinc-900 transition active:bg-zinc-100"
           >
             {PUBLIC_CTA_LABELS.talkToSales}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -101,13 +101,11 @@ function MobileStickyCta() {
 }
 
 function CenteredHeader({
-  label,
   title,
   emphasis,
   description,
   className = 'mb-14',
 }: {
-  label: string;
   title: string;
   emphasis: string;
   description: string;
@@ -119,25 +117,20 @@ function CenteredHeader({
       range={[0, 0.3]}
       className={`text-center ${className}`}
     >
-      <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-        {label}
-      </p>
       <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
-        {title} <span className="text-slate-400">{emphasis}</span>
+        {title} <span className="text-zinc-400">{emphasis}</span>
       </h2>
-      <p className="text-base text-slate-400 max-w-xl mx-auto">{description}</p>
+      <p className="text-base text-zinc-400 max-w-xl mx-auto">{description}</p>
     </ScrollReveal>
   );
 }
 
 function EditorialHeader({
-  label,
   title,
   emphasis,
   description,
   className = 'mb-14',
 }: {
-  label: string;
   title: string;
   emphasis: string;
   description: string;
@@ -150,18 +143,12 @@ function EditorialHeader({
       className={`grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:grid-cols-12 lg:items-end ${className}`}
     >
       <div className="lg:col-span-7">
-        <div className="mb-5 flex items-center gap-3">
-          <span className="h-px w-8 bg-white/25" />
-          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            {label}
-          </span>
-        </div>
         <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
-          {title} <span className="text-slate-400">{emphasis}</span>
+          {title} <span className="text-zinc-400">{emphasis}</span>
         </h2>
       </div>
       <div className="lg:col-span-5">
-        <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+        <p className="max-w-md text-sm leading-relaxed text-zinc-400 sm:text-base">
           {description}
         </p>
       </div>
@@ -183,13 +170,13 @@ const trustBadges: TrustBadge[] = [
     icon: ShieldCheck,
     label: 'Security review ready',
     detail: 'Procurement materials available on request',
-    colorRgb: '203,213,225',
+    colorRgb: '212,212,216',
   },
   {
     icon: Scale,
     label: 'Audit-ready exports',
     detail: 'Evidence and control context preserved',
-    colorRgb: '148,163,184',
+    colorRgb: '161,161,170',
   },
   {
     icon: Globe,
@@ -201,7 +188,7 @@ const trustBadges: TrustBadge[] = [
     icon: HeartPulse,
     label: 'Public status visibility',
     detail: 'Operational updates and uptime checks published',
-    colorRgb: '203,213,225',
+    colorRgb: '212,212,216',
   },
   {
     icon: Building2,
@@ -213,7 +200,7 @@ const trustBadges: TrustBadge[] = [
     icon: Lock,
     label: 'DPA and subprocessor docs',
     detail: 'Available for enterprise review',
-    colorRgb: '148,163,184',
+    colorRgb: '161,161,170',
   },
 ];
 
@@ -239,7 +226,7 @@ const securityLayers: SecurityLayer[] = [
       'Dependency and vulnerability review',
       'Controlled release and rollback procedures',
     ],
-    colorRgb: '203,213,225',
+    colorRgb: '212,212,216',
   },
   {
     name: 'Authentication & Identity',
@@ -252,7 +239,7 @@ const securityLayers: SecurityLayer[] = [
       'Session policy controls',
       'Audited role and access changes',
     ],
-    colorRgb: '148,163,184',
+    colorRgb: '161,161,170',
   },
   {
     name: 'Data Protection',
@@ -291,7 +278,7 @@ const securityLayers: SecurityLayer[] = [
       'Configurable retention controls',
       'Documented incident handling',
     ],
-    colorRgb: '203,213,225',
+    colorRgb: '212,212,216',
   },
 ];
 
@@ -305,6 +292,10 @@ interface EnterpriseFeature {
   highlights: string[];
   colorRgb: string;
 }
+
+/* The readiness engine scores against the SOC 2 Trust Services Criteria pack.
+   Missing pack drops the number rather than printing a stale one. */
+const soc2Tsc = getPackClaim('soc2-tsc');
 
 const enterpriseFeatures: EnterpriseFeature[] = [
   {
@@ -321,7 +312,7 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'MFA',
       'Session policies',
     ],
-    colorRgb: '148,163,184',
+    colorRgb: '161,161,170',
   },
   {
     icon: Database,
@@ -366,7 +357,7 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'SHA-256 verification',
       'Chain of custody',
     ],
-    colorRgb: '203,213,225',
+    colorRgb: '212,212,216',
   },
   {
     icon: GitBranch,
@@ -381,22 +372,27 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Configurable retention',
       'Bulk export',
     ],
-    colorRgb: '203,213,225',
+    colorRgb: '212,212,216',
   },
   {
     icon: ShieldCheck,
     title: 'SOC 2 Readiness Engine',
     description:
       'Automated readiness scoring with weighted domain analysis and one-click certification reports.',
-    longDescription:
-      'Evaluate SOC 2 readiness across all five Trust Service Criteria domains with weighted scoring. Automated evidence checks across 11 controls, a gap analyzer with prioritized remediation actions, milestone tracking from enablement to certification, and one-click report generation that packages everything auditors need.',
+    longDescription: `Evaluate SOC 2 readiness across all five Trust Services Criteria domains with weighted scoring. ${
+      soc2Tsc
+        ? `${soc2Tsc.controlCount} controls are mapped and ${soc2Tsc.automatedEvaluatorCount} of them are checked automatically against your live data.`
+        : 'Mapped controls are checked automatically wherever a live data signal exists.'
+    } A gap analyser prioritises remediation actions, milestones track progress from enablement to certification, and report generation packages what an auditor asks for.`,
     highlights: [
       'Weighted domain scoring',
-      '11 automated checks',
+      soc2Tsc
+        ? `${soc2Tsc.automatedEvaluatorCount} automated checks`
+        : 'Automated checks',
       'Gap remediation',
       'Certification reports',
     ],
-    colorRgb: '148,163,184',
+    colorRgb: '161,161,170',
   },
 ];
 
@@ -437,7 +433,7 @@ function EnterpriseResourceLinks({
               variant: 'resource',
             })
           }
-          className="font-medium text-slate-300 underline decoration-white/20 underline-offset-4 hover:text-white"
+          className="font-medium text-zinc-300 underline decoration-white/20 underline-offset-4 hover:text-white"
         >
           {link.label}
         </Link>
@@ -493,6 +489,8 @@ const procurementItems: ProcurementItem[] = [
 
 /* ─── SLA Commitments ─────────────────────────────────────── */
 
+/* Only commitments with a real number get the numeral treatment. The rest are
+   assurances, and forcing them into a stat tile made them harder to read. */
 interface SLAItem {
   metric: string;
   value: string;
@@ -502,40 +500,37 @@ interface SLAItem {
 
 const slaItems: SLAItem[] = [
   {
-    metric: 'Status Visibility',
+    metric: 'Status visibility',
     value: '24/7',
     unit: '',
     detail: 'Public uptime checks and operational updates',
   },
   {
-    metric: 'Maintenance Notice',
+    metric: 'Maintenance notice',
     value: '72',
     unit: 'h',
     detail: 'Advance notice target for planned maintenance',
   },
+];
+
+const slaAssurances: Array<{ metric: string; detail: string }> = [
   {
-    metric: 'Procurement Artifacts',
-    value: 'DPA',
-    unit: '+',
-    detail: 'Trust packet, subprocessor, and review materials',
+    metric: 'Procurement artifacts',
+    detail:
+      'Data processing agreement, trust packet, subprocessor list, and security review materials',
   },
   {
-    metric: 'Priority Support',
-    value: '1',
-    unit: 'path',
-    detail: 'Named enterprise escalation path for active reviews',
+    metric: 'Priority support',
+    detail:
+      'A named escalation path for the duration of an active enterprise review',
   },
   {
-    metric: 'Data Export',
-    value: 'Self',
-    unit: '-serve',
-    detail: 'Audit-ready exports and portability workflows',
+    metric: 'Data export',
+    detail: 'Self-serve audit-ready exports and portability workflows',
   },
   {
-    metric: 'Identity Controls',
-    value: 'SAML',
-    unit: '+',
-    detail: 'Enterprise SSO, MFA, and session controls',
+    metric: 'Identity controls',
+    detail: 'SAML 2.0 single sign-on, MFA enforcement, and session policies',
   },
 ];
 
@@ -550,49 +545,36 @@ interface DeploymentOption {
   colorRgb: string;
 }
 
+/* Only the multi-tenant cloud ships today. Anything beyond it is described as
+   a procurement conversation, matching the hedged voice of the FAQ above. */
 const deploymentOptions: DeploymentOption[] = [
   {
-    name: 'Multi-Tenant Cloud',
+    name: 'Multi-tenant AU cloud',
     description:
-      'Shared infrastructure with logical tenant isolation. Fastest deployment with automatic updates and zero maintenance overhead.',
+      'How every organisation runs FormaOS today. Shared infrastructure hosted in Australia, with tenant isolation enforced in the database rather than in application code.',
     features: [
-      'Logical tenant isolation',
+      'Row-level tenant isolation enforced in Postgres',
+      'Australian hosting by default',
       'Automatic platform updates',
-      'Shared infrastructure cost efficiency',
-      'Instant provisioning',
-      'Standard data residency options',
+      'Self-serve sign-up with guided onboarding',
+      'Documented subprocessor list',
     ],
     icon: Globe,
-    colorRgb: '203,213,225',
+    recommended: true,
+    colorRgb: '212,212,216',
   },
   {
-    name: 'Dedicated Cloud',
+    name: 'Dedicated arrangements',
     description:
-      'Isolated cloud infrastructure with dedicated compute, storage, and network resources for your organization.',
+      'If your review requires stronger separation than the shared platform provides, we scope what is feasible during procurement rather than listing it as shipping.',
     features: [
-      'Dedicated compute & storage',
-      'Network-level isolation (VPC)',
-      'Custom update schedule',
-      'Enhanced performance SLAs',
-      'Extended data residency options',
+      'Isolation requirements assessed against current architecture',
+      'Residency and retention terms set in the agreement',
+      'Update and maintenance windows agreed in writing',
+      'Feasibility and timing confirmed before contract',
     ],
     icon: CloudCog,
-    recommended: true,
     colorRgb: '161,161,170',
-  },
-  {
-    name: 'On-Premise / Private Cloud',
-    description:
-      'Deploy FormaOS within your own infrastructure. Full control over data, networking, and compliance boundary.',
-    features: [
-      'Your infrastructure, your rules',
-      'Air-gapped deployment support',
-      'Custom integration endpoints',
-      'Internal PKI certificate support',
-      'Full compliance boundary control',
-    ],
-    icon: Server,
-    colorRgb: '148,163,184',
   },
 ];
 
@@ -622,9 +604,9 @@ function AnimatedStat({
     >
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-1">
         {value}
-        <span className="text-slate-400 text-xl sm:text-2xl">{unit}</span>
+        <span className="text-zinc-400 text-xl sm:text-2xl">{unit}</span>
       </div>
-      <div className="text-xs sm:text-sm text-slate-400 font-medium">
+      <div className="text-xs sm:text-sm text-zinc-400 font-medium">
         {label}
       </div>
     </motion.div>
@@ -662,6 +644,7 @@ function FeatureCard({
           hover:shadow-[0_0_40px_rgba(0,0,0,0.15)]"
         onClick={() => setExpanded(!expanded)}
         role="button"
+        aria-expanded={expanded}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -695,7 +678,7 @@ function FeatureCard({
             <h3 className="text-base font-semibold text-white leading-snug mb-1">
               {feature.title}
             </h3>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <p className="text-sm text-zinc-400 leading-relaxed">
               {feature.description}
             </p>
           </div>
@@ -704,7 +687,7 @@ function FeatureCard({
             transition={{ duration: 0.3 }}
             className="shrink-0 mt-1"
           >
-            <ChevronDown className="w-4 h-4 text-slate-500" />
+            <ChevronDown className="w-4 h-4 text-zinc-500" />
           </motion.div>
         </div>
 
@@ -724,7 +707,7 @@ function FeatureCard({
             </span>
           ))}
           {feature.highlights.length > 3 && (
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-medium border border-white/[0.06] bg-white/[0.02] text-slate-500">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-medium border border-white/[0.06] bg-white/[0.02] text-zinc-500">
               +{feature.highlights.length - 3} more
             </span>
           )}
@@ -741,7 +724,7 @@ function FeatureCard({
               className="overflow-hidden"
             >
               <div className="pt-4 mt-4 border-t border-white/[0.06]">
-                <p className="text-sm text-slate-300 leading-relaxed mb-4">
+                <p className="text-sm text-zinc-300 leading-relaxed mb-4">
                   {feature.longDescription}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -759,7 +742,7 @@ function FeatureCard({
                           color: `rgba(${feature.colorRgb}, 0.7)`,
                         }}
                       />
-                      <span className="text-xs text-slate-300">{h}</span>
+                      <span className="text-xs text-zinc-300">{h}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -780,7 +763,6 @@ function SecurityArchitecture() {
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <CenteredHeader
-            label="Defense in Depth"
             title="Five-layer"
             emphasis="security architecture"
             description="Every layer independently secured, monitored, and audited, because enterprise compliance demands defense in depth."
@@ -855,7 +837,7 @@ function DefenseFlow() {
       <div className="flex flex-col gap-3 border-b border-white/[0.08] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <p
           className={`text-sm leading-relaxed ${
-            mode === 'bypass' ? 'text-rose-300' : done ? 'text-emerald-300/90' : 'text-slate-300'
+            mode === 'bypass' ? 'text-rose-300' : done ? 'text-emerald-300/90' : 'text-zinc-300'
           }`}
         >
           {status}
@@ -871,7 +853,7 @@ function DefenseFlow() {
           <button
             type="button"
             onClick={bypass}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:border-rose-400/30 hover:text-rose-300 max-sm:min-h-[44px] max-sm:flex-1"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-zinc-400 transition hover:border-rose-400/30 hover:text-rose-300 max-sm:min-h-[44px] max-sm:flex-1"
           >
             Attempt bypass
           </button>
@@ -879,7 +861,7 @@ function DefenseFlow() {
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-500 transition hover:text-white max-sm:min-h-[44px] max-sm:flex-1"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-zinc-500 transition hover:text-white max-sm:min-h-[44px] max-sm:flex-1"
             >
               Reset
             </button>
@@ -904,7 +886,7 @@ function DefenseFlow() {
                 ? 'border-white/40 bg-white/[0.1] text-white'
                 : state === 'blocked'
                   ? 'border-rose-400/40 bg-rose-400/[0.08] text-rose-300'
-                  : 'border-white/[0.1] bg-white/[0.03] text-slate-400';
+                  : 'border-white/[0.1] bg-white/[0.03] text-zinc-400';
           return (
             <li
               key={layer.name}
@@ -937,26 +919,26 @@ function DefenseFlow() {
 
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] text-slate-600">
+                  <span className="font-mono text-[10px] text-zinc-600">
                     L{i + 1}
                   </span>
                   <h3 className="text-sm font-semibold text-white">{layer.name}</h3>
                   {state === 'blocked' ? (
-                    <span className="rounded bg-rose-400/10 px-1.5 text-[10px] font-semibold uppercase tracking-wider text-rose-300">
+                    <span className="rounded bg-rose-400/10 px-1.5 text-[10px] font-semibold text-rose-300">
                       Blocked
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-0.5 text-[13px] leading-relaxed text-slate-400">
+                <p className="mt-0.5 text-[13px] leading-relaxed text-zinc-400">
                   {layer.description}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
                   {layer.controls.map((c) => (
                     <span
                       key={c}
-                      className="inline-flex items-center gap-1.5 text-[11px] text-slate-500"
+                      className="inline-flex items-center gap-1.5 text-[11px] text-zinc-500"
                     >
-                      <span className="h-1 w-1 rounded-full bg-slate-600" />
+                      <span className="h-1 w-1 rounded-full bg-zinc-600" />
                       {c}
                     </span>
                   ))}
@@ -968,7 +950,7 @@ function DefenseFlow() {
       </ol>
 
       {/* Outcome footer */}
-      <div className="border-t border-white/[0.08] bg-white/[0.015] px-5 py-3 text-[11px] text-slate-500">
+      <div className="border-t border-white/[0.08] bg-white/[0.015] px-5 py-3 text-[11px] text-zinc-500">
         Five independent layers · no single point of failure · no bypass path.
       </div>
     </div>
@@ -983,7 +965,6 @@ function TrustBadgesSection() {
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <CenteredHeader
-            label="Trust & Compliance"
             title="Built for"
             emphasis="enterprise review"
             description="Trust signals that procurement, legal, and security teams expect to verify before signing."
@@ -1022,7 +1003,7 @@ function TrustBadgesSection() {
                       {badge.label}
                     </h3>
                   </div>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs text-zinc-400 leading-relaxed">
                     {badge.detail}
                   </p>
                 </div>
@@ -1043,7 +1024,6 @@ function SLASection() {
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <EditorialHeader
-            label="Service Commitments"
             title="Enterprise"
             emphasis="service commitments"
             description="Operational visibility, structured support paths, and enterprise controls, with specific terms defined during procurement."
@@ -1053,9 +1033,9 @@ function SLASection() {
           <SectionChoreography
             pattern="stagger-wave"
             stagger={0.06}
-            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-4 sm:grid-cols-2"
           >
-            {slaItems.map((item, i) => (
+            {slaItems.map((item) => (
               <div
                 key={item.metric}
                 className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5
@@ -1063,15 +1043,31 @@ function SLASection() {
               >
                 <div className="text-3xl sm:text-4xl font-bold text-white mb-1">
                   {item.value}
-                  <span className="text-slate-400 text-lg">{item.unit}</span>
+                  <span className="text-zinc-400 text-lg">{item.unit}</span>
                 </div>
                 <h3 className="text-sm font-semibold text-white mb-1">
                   {item.metric}
                 </h3>
-                <p className="text-xs text-slate-400">{item.detail}</p>
+                <p className="text-xs text-zinc-400">{item.detail}</p>
               </div>
             ))}
           </SectionChoreography>
+
+          <ul className="mt-4 divide-y divide-white/[0.06] rounded-2xl border border-white/[0.06] bg-white/[0.02]">
+            {slaAssurances.map((item) => (
+              <li
+                key={item.metric}
+                className="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-baseline sm:gap-6"
+              >
+                <span className="text-sm font-semibold text-white sm:w-52 sm:shrink-0">
+                  {item.metric}
+                </span>
+                <span className="text-sm leading-relaxed text-zinc-400">
+                  {item.detail}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </DeferredSection>
@@ -1086,16 +1082,15 @@ function DeploymentSection() {
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <CenteredHeader
-            label="Deployment Models"
-            title="Deploy"
-            emphasis="your way"
-            description="Choose the deployment model that matches your security requirements, regulatory constraints, and operational preferences."
+            title="How FormaOS"
+            emphasis="is deployed"
+            description="One deployment model is live today. Anything beyond it is scoped during procurement, so nothing here commits us to infrastructure we do not run."
           />
 
           <SectionChoreography
             pattern="cascade"
             stagger={0.08}
-            className="grid gap-6 lg:grid-cols-3"
+            className="grid gap-6 lg:grid-cols-2"
           >
             {deploymentOptions.map((option) => {
               const Icon = option.icon;
@@ -1112,8 +1107,8 @@ function DeploymentSection() {
                 >
                   {option.recommended && (
                     <div className="absolute -top-3 left-6">
-                      <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-200 border border-white/20 bg-white/[0.06]">
-                        Recommended
+                      <span className="px-3 py-1 rounded-full text-[10px] font-bold text-zinc-200 border border-white/20 bg-white/[0.06]">
+                        Live today
                       </span>
                     </div>
                   )}
@@ -1143,7 +1138,7 @@ function DeploymentSection() {
                     <h3 className="text-lg font-bold text-white mb-2">
                       {option.name}
                     </h3>
-                    <p className="text-sm text-slate-400 leading-relaxed mb-5">
+                    <p className="text-sm text-zinc-400 leading-relaxed mb-5">
                       {option.description}
                     </p>
                     <div className="space-y-2.5">
@@ -1155,7 +1150,7 @@ function DeploymentSection() {
                               color: `rgba(${option.colorRgb}, 0.6)`,
                             }}
                           />
-                          <span className="text-xs text-slate-300">{f}</span>
+                          <span className="text-xs text-zinc-300">{f}</span>
                         </div>
                       ))}
                     </div>
@@ -1180,7 +1175,6 @@ function ProcurementFAQ() {
       <section className="mk-section relative">
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
           <EditorialHeader
-            label="Procurement Ready"
             title="Security"
             emphasis="questionnaire"
             description="Answers to the questions your procurement, legal, and information security teams need answered before signing."
@@ -1215,7 +1209,7 @@ function ProcurementFAQ() {
                       onClick={() => setExpandedIndex(isExpanded ? null : i)}
                     >
                       <div className="w-8 h-8 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center shrink-0">
-                        <Icon className="w-4 h-4 text-slate-300" />
+                        <Icon className="w-4 h-4 text-zinc-300" />
                       </div>
                       <span className="flex-1 text-sm font-medium text-white">
                         {item.question}
@@ -1224,7 +1218,7 @@ function ProcurementFAQ() {
                         animate={{ rotate: isExpanded ? 180 : 0 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <ChevronDown className="w-4 h-4 text-slate-500" />
+                        <ChevronDown className="w-4 h-4 text-zinc-500" />
                       </motion.div>
                     </button>
 
@@ -1241,7 +1235,7 @@ function ProcurementFAQ() {
                           className="overflow-hidden"
                         >
                           <div className="px-4 pb-4 ml-11">
-                            <p className="text-sm text-slate-300 leading-relaxed">
+                            <p className="text-sm text-zinc-300 leading-relaxed">
                               {item.answer}
                             </p>
                           </div>
@@ -1274,19 +1268,19 @@ function EnterpriseCTA() {
           scrim="center"
         />
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
-          <div className="relative rounded-3xl border border-white/[0.06] bg-slate-950/60 overflow-hidden">
+          <div className="relative rounded-3xl border border-white/[0.06] bg-zinc-950/60 overflow-hidden">
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                <p className="mb-4 text-xs font-semibold text-zinc-500">
                   Enterprise Ready
                 </p>
                 <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                   Start your{' '}
-                  <span className="text-slate-400">
+                  <span className="text-zinc-400">
                     enterprise evaluation
                   </span>
                 </h2>
-                <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
+                <p className="text-base sm:text-lg text-zinc-400 max-w-xl mx-auto mb-10">
                   Request the security review packet, run a proof-of-concept, or
                   bring your procurement team into a structured review. We
                   support the process your organization already follows.
@@ -1306,9 +1300,9 @@ function EnterpriseCTA() {
                       })
                     }
                     className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-                      bg-white text-slate-950 font-semibold text-sm
+                      bg-white text-zinc-950 font-semibold text-sm
                       shadow-lg shadow-black/20
-                      hover:bg-slate-100 hover:shadow-xl
+                      hover:bg-zinc-100 hover:shadow-xl
                       transition-all duration-300"
                   >
                     Contact Enterprise Sales
@@ -1342,7 +1336,7 @@ function EnterpriseCTA() {
                   section="final_cta"
                 />
 
-                <div className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-slate-500">
+                <div className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-zinc-500">
                   {[
                     'Audit-ready exports',
                     'AU-hosted by default',
@@ -1351,7 +1345,7 @@ function EnterpriseCTA() {
                     'Custom enterprise terms',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-slate-400/60" />
+                      <CheckCircle2 className="w-3 h-3 text-zinc-400/60" />
                       <span>{signal}</span>
                     </div>
                   ))}
@@ -1389,52 +1383,26 @@ function EnterpriseHero() {
         opacity={0.85}
         scrim="center"
       />
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
-            backgroundSize: '72px 72px',
-          }}
-        />
-      </div>
-
       <motion.div
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
         className="relative z-10 mx-auto max-w-5xl px-6 lg:px-8 py-20 sm:py-40 text-center"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="mb-8 flex items-center justify-center gap-4"
-        >
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
-            Enterprise
-          </span>
-          <span className="hidden h-px w-10 bg-white/20 sm:block" />
-        </motion.div>
-
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: EASE_OUT_EXPO }}
           className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[1.08] mb-6"
         >
-          One Evaluation Path from
+          One evaluation path from
           <br />
-          <span className="text-slate-400">
-            Security Review to Rollout
-          </span>
+          <span className="text-zinc-400">security review to rollout</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO }}
-          className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
+          className="text-base sm:text-lg lg:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           SAML SSO, audit-ready evidence exports, and structured procurement
           materials for organizations where compliance is an operational
@@ -1460,9 +1428,9 @@ function EnterpriseHero() {
               })
             }
             className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-              bg-white text-slate-950 font-semibold text-sm
+              bg-white text-zinc-950 font-semibold text-sm
               shadow-lg shadow-black/20
-              hover:bg-slate-100 hover:shadow-xl
+              hover:bg-zinc-100 hover:shadow-xl
               transition-all duration-300"
           >
             {PUBLIC_CTA_LABELS.talkToSales}
@@ -1516,7 +1484,7 @@ function EnterpriseHero() {
                   className="w-3.5 h-3.5"
                   style={{ color: `rgba(${badge.colorRgb}, 0.7)` }}
                 />
-                <span className="text-slate-300">{badge.label}</span>
+                <span className="text-zinc-300">{badge.label}</span>
               </div>
             );
           })}
@@ -1551,7 +1519,6 @@ export default function EnterprisePageContent() {
         <section className="mk-section relative">
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <EditorialHeader
-              label="Enterprise Capabilities"
               title="Built for"
               emphasis="security teams"
               description="Every feature designed around enterprise security requirements, compliance obligations, and operational excellence."

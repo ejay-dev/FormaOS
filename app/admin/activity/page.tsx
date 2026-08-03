@@ -123,7 +123,7 @@ export default function UserActivityPage() {
     <div className="space-y-6 p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">User Activity</h1>
+          <h1 className="text-3xl font-bold text-foreground">User activity</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {activity.length} recent action{activity.length === 1 ? '' : 's'}.
           </p>
@@ -132,7 +132,7 @@ export default function UserActivityPage() {
           <span
             className={`rounded-md border px-2.5 py-1 text-xs font-semibold ${
               connected
-                ? 'border-emerald-700 bg-emerald-900/20 text-emerald-300'
+                ? 'border-success/20 bg-success/10 text-success'
                 : 'border-border bg-muted text-muted-foreground'
             }`}
           >
@@ -151,7 +151,7 @@ export default function UserActivityPage() {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-800/40 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           {error}
         </div>
       )}
@@ -161,7 +161,7 @@ export default function UserActivityPage() {
           visibleActivity.map((item) => (
             <div
               key={item.id}
-              className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-card/70"
+              className="rounded-lg border border-border bg-card p-4 transition-colors hover:bg-muted/50"
             >
               <div className="flex items-start gap-3">
                 <div className="rounded-lg border border-border bg-muted/50 p-2 text-muted-foreground">
@@ -206,7 +206,7 @@ export default function UserActivityPage() {
           ))
         ) : (
           <div className="rounded-lg border border-border bg-card p-12 text-center">
-            <Activity className="mx-auto mb-4 h-16 w-16 text-muted-foreground/30" />
+            <Activity className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
             <p className="text-muted-foreground">No activity recorded.</p>
           </div>
         )}

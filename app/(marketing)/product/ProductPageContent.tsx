@@ -10,6 +10,7 @@ import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DepthSection } from '@/components/motion/DepthSection';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 import { ProductHeroSection } from '@/components/marketing/ProductHeroSection';
+import { WhatIsFormaOS } from './components/WhatIsFormaOS';
 import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 
@@ -36,7 +37,7 @@ function MobileStickyPlanCta() {
           animate={{ y: 0 }}
           exit={reduce ? undefined : { y: '110%' }}
           transition={{ duration: reduce ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0a0f1c]/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur-md md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#181a1c]/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 md:hidden"
         >
           <Link
             href={stickyPlanHref}
@@ -50,7 +51,7 @@ function MobileStickyPlanCta() {
                 variant: 'primary',
               })
             }
-            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-slate-900 transition active:bg-slate-100"
+            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-zinc-900 transition active:bg-zinc-100"
           >
             {PUBLIC_CTA_LABELS.compliancePlan}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -75,13 +76,6 @@ const ProductShowcaseSection = dynamic(
   },
 );
 
-const WhatIsFormaOS = dynamic(
-  () => import('./components/WhatIsFormaOS').then((m) => m.WhatIsFormaOS),
-  {
-    ssr: false,
-    loading: () => null,
-  },
-);
 const ObligationToExecution = dynamic(
   () =>
     import('./components/ObligationToExecution').then(
@@ -123,11 +117,9 @@ export default function ProductPageContent() {
 
       <FrameworkTrustStrip className="mt-4 mb-2" />
 
-      <DeferredSection minHeight={460}>
-        <DepthSection fade>
-          <WhatIsFormaOS />
-        </DepthSection>
-      </DeferredSection>
+      {/* Server-rendered: the plain-language definition of the product
+          belongs in the initial HTML, not behind a client-only chunk. */}
+      <WhatIsFormaOS />
       <DeferredSection minHeight={440}>
         <DepthSection fade>
           <ObligationToExecution />

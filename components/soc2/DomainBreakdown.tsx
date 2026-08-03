@@ -29,7 +29,7 @@ export function DomainBreakdown({ domains }: DomainBreakdownProps) {
           <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">
             {domain.domain}
           </div>
-          <div className={`mt-2 text-2xl font-black tabular-nums ${getScoreTextColor(domain.score)}`}>
+          <div className={`mt-2 text-2xl font-bold tabular-nums ${getScoreTextColor(domain.score)}`}>
             {Math.round(domain.score)}%
           </div>
 
@@ -57,7 +57,7 @@ export function DomainBreakdown({ domains }: DomainBreakdownProps) {
             </span>
           </div>
 
-          <div className="mt-2 text-[10px] text-muted-foreground/40">
+          <div className="mt-2 text-[10px] text-muted-foreground">
             {domain.totalControls} control{domain.totalControls !== 1 ? 's' : ''}
           </div>
         </div>

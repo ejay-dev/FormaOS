@@ -87,8 +87,8 @@ export default function CaseStudyTemplatePage() {
         bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<FileText className="w-8 h-8 text-slate-300" />}
-            color="148,163,184"
+            icon={<FileText className="w-8 h-8 text-zinc-300" />}
+            color="161,161,170"
           />
         }
       />

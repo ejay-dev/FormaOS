@@ -1,47 +1,44 @@
 'use client';
 
 import { useState } from 'react';
-import { GripVertical, User, Calendar, AlertTriangle } from 'lucide-react';
+import { GripVertical, Calendar } from 'lucide-react';
+import { SeverityBadge } from '@/components/care/severity-badge';
+import {
+  isTaskStatus,
+  TASK_STATUSES,
+  TASK_STATUS_LABELS,
+  type TaskStatus,
+} from '@/components/tasks/task-status';
 
-interface Task {
+export interface KanbanTask {
   id: string;
   title: string;
-  description?: string;
-  assignee_id?: string;
-  priority: string;
-  due_date?: string;
-  status: string;
+  description?: string | null;
+  priority?: string | null;
+  due_date?: string | null;
+  status: TaskStatus;
 }
 
 interface Props {
-  columns: Record<string, Task[]>;
-  onMoveTask?: (taskId: string, newStatus: string) => void;
-  onSelectTask?: (task: Task) => void;
+  columns: Record<TaskStatus, KanbanTask[]>;
+  /**
+   * Required, both of them: an earlier version defaulted these to no-ops and
+   * the board silently discarded every drag. A caller that cannot persist a
+   * move should not render this component.
+   */
+  onMoveTask: (taskId: string, newStatus: TaskStatus) => void;
+  onSelectTask: (task: KanbanTask) => void;
+  busy?: boolean;
 }
-
-const COLUMN_CONFIG: { key: string; label: string; color: string }[] = [
-  { key: 'todo', label: 'To Do', color: 'border-t-gray-400' },
-  { key: 'in_progress', label: 'In Progress', color: 'border-t-blue-500' },
-  { key: 'in_review', label: 'In Review', color: 'border-t-yellow-500' },
-  { key: 'done', label: 'Done', color: 'border-t-green-500' },
-  { key: 'blocked', label: 'Blocked', color: 'border-t-red-500' },
-];
-
-const PRIORITY_BADGE: Record<string, string> = {
-  critical: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
-  high: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300',
-  medium:
-    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300',
-  low: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-};
 
 export function KanbanBoard({
   columns,
-  onMoveTask = () => {},
-  onSelectTask = () => {},
+  onMoveTask,
+  onSelectTask,
+  busy = false,
 }: Props) {
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
-  const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<TaskStatus | null>(null);
 
   const handleDragStart = (e: React.DragEvent, taskId: string) => {
     setDraggedTaskId(taskId);
@@ -49,7 +46,7 @@ export function KanbanBoard({
     e.dataTransfer.setData('text/plain', taskId);
   };
 
-  const handleDragOver = (e: React.DragEvent, columnKey: string) => {
+  const handleDragOver = (e: React.DragEvent, columnKey: TaskStatus) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     setDragOverColumn(columnKey);
@@ -59,7 +56,7 @@ export function KanbanBoard({
     setDragOverColumn(null);
   };
 
-  const handleDrop = (e: React.DragEvent, columnKey: string) => {
+  const handleDrop = (e: React.DragEvent, columnKey: TaskStatus) => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData('text/plain');
     if (taskId) onMoveTask(taskId, columnKey);
@@ -67,96 +64,97 @@ export function KanbanBoard({
     setDragOverColumn(null);
   };
 
-  const isOverdue = (dueDate?: string) => {
+  const isOverdue = (dueDate?: string | null) => {
     if (!dueDate) return false;
     return new Date(dueDate) < new Date();
   };
 
   return (
-    <div className="flex gap-4 overflow-x-auto pb-4">
-      {COLUMN_CONFIG.map((col) => (
+    <div className="flex gap-4 overflow-x-auto pb-4" aria-busy={busy}>
+      {TASK_STATUSES.map((columnKey) => (
+        // Drag targets have no native element, so the drop handlers sit on a
+        // plain container. Every move is also reachable from the per-card
+        // status control below, which keyboard and touch users need because
+        // HTML5 drag events never fire for them.
+        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <div
-          key={col.key}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-            }
-          }}
-          className={`flex-shrink-0 w-72 rounded-lg border border-border bg-card border-t-4 ${col.color} ${
-            dragOverColumn === col.key
-              ? 'ring-2 ring-primary/50 bg-primary/5'
-              : ''
+          key={columnKey}
+          className={`flex-shrink-0 w-72 rounded-lg border bg-card ${
+            dragOverColumn === columnKey
+              ? 'border-primary ring-1 ring-primary/40'
+              : 'border-border'
           }`}
-          onDragOver={(e) => handleDragOver(e, col.key)}
+          onDragOver={(e) => handleDragOver(e, columnKey)}
           onDragLeave={handleDragLeave}
-          onDrop={(e) => handleDrop(e, col.key)}
+          onDrop={(e) => handleDrop(e, columnKey)}
         >
-          <div className="p-3 border-b border-border flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground">
-              {col.label}
-            </h3>
-            <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-              {(columns[col.key] || []).length}
+          <div className="flex items-center justify-between border-b border-border p-3">
+            <h2 className="text-sm font-semibold text-foreground">
+              {TASK_STATUS_LABELS[columnKey]}
+            </h2>
+            <span className="rounded-full bg-muted px-2 py-0.5 text-xs tabular-nums text-muted-foreground">
+              {(columns[columnKey] || []).length}
             </span>
           </div>
-          <div className="p-2 space-y-2 min-h-[200px]">
-            {(columns[col.key] || []).map((task) => (
-              <div
+          <ul className="min-h-[200px] space-y-2 p-2">
+            {(columns[columnKey] || []).map((task) => (
+              <li
                 key={task.id}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onSelectTask(task);
-                  }
-                }}
                 draggable
                 onDragStart={(e) => handleDragStart(e, task.id)}
-                onClick={() => onSelectTask(task)}
-                className={`rounded-lg border border-border bg-background p-3 cursor-pointer hover:shadow-md transition-shadow ${
+                className={`rounded-lg border border-border bg-background p-3 transition-colors hover:border-foreground/20 ${
                   draggedTaskId === task.id ? 'opacity-50' : ''
                 }`}
               >
                 <div className="flex items-start gap-2">
-                  <GripVertical className="h-4 w-4 text-muted-foreground mt-0.5 cursor-grab" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
+                  <GripVertical
+                    className="mt-0.5 h-4 w-4 cursor-grab text-muted-foreground"
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <button
+                      type="button"
+                      onClick={() => onSelectTask(task)}
+                      className="block w-full truncate text-left text-sm font-medium text-foreground hover:underline"
+                    >
                       {task.title}
-                    </p>
-                    <div className="flex items-center gap-2 mt-2 flex-wrap">
-                      <span
-                        className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${PRIORITY_BADGE[task.priority] || PRIORITY_BADGE.medium}`}
-                      >
-                        {task.priority}
-                      </span>
-                      {task.assignee_id && (
-                        <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
-                          <User className="h-3 w-3" />
-                        </span>
-                      )}
+                    </button>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <SeverityBadge level={task.priority} size="sm" />
                       {task.due_date && (
                         <span
-                          className={`inline-flex items-center gap-1 text-[10px] ${isOverdue(task.due_date) ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'}`}
+                          className={`inline-flex items-center gap-1 text-[11px] ${
+                            isOverdue(task.due_date)
+                              ? 'text-destructive'
+                              : 'text-muted-foreground'
+                          }`}
                         >
-                          <Calendar className="h-3 w-3" />
+                          <Calendar className="h-3 w-3" aria-hidden="true" />
                           {new Date(task.due_date).toLocaleDateString()}
-                        </span>
-                      )}
-                      {col.key === 'blocked' && (
-                        <span className="inline-flex items-center gap-1 text-[10px] text-red-600">
-                          <AlertTriangle className="h-3 w-3" />
-                          Blocked
+                          {isOverdue(task.due_date) ? ' overdue' : ''}
                         </span>
                       )}
                     </div>
+                    <select
+                      aria-label={`Status for ${task.title}`}
+                      value={task.status}
+                      onChange={(e) => {
+                        const next = e.target.value;
+                        if (isTaskStatus(next)) onMoveTask(task.id, next);
+                      }}
+                      className="mt-2 h-7 w-full rounded-md border border-border bg-background px-1.5 text-[11px] text-muted-foreground"
+                    >
+                      {TASK_STATUSES.map((status) => (
+                        <option key={status} value={status}>
+                          {TASK_STATUS_LABELS[status]}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       ))}
     </div>

@@ -5,19 +5,14 @@ const siteUrl = brand.seo.siteUrl.replace(/\/$/, '');
 /**
  * Author registry for blog bylines.
  *
- * The blog currently bylines posts under editorial group names (e.g.
- * "FormaOS Team", "Compliance Team") rather than individual people.
- * That's accurate to how the content is produced today — a small group
- * of advisors and engineers contributes under shared bylines reviewed
- * by the FormaOS team.
+ * Every published post carries the same byline, so this registry holds one
+ * entry. An /author/[slug] page and its structured data are a claim that a
+ * writing identity exists; an entry with no posts behind it is an empty claim,
+ * so a byline only belongs here once something is published under it.
  *
- * Each group has an /author/[slug] page so AI answer engines and Google
- * have a stable entity to attribute citations to. When individual
- * humans take ownership of specific surfaces (e.g. the founder writing
- * platform announcements), promote them to first-class entries with
- * type: 'person' and add a `sameAs` array linking to LinkedIn / X.
- *
- * AEO sprint 2026-05-23.
+ * When a named person takes ownership of a surface, add them with
+ * kind: 'person' and a `sameAs` array — the author page emits Person schema
+ * for those and Organization schema for a shared byline.
  */
 
 export type AuthorKind = 'person' | 'collective';
@@ -28,7 +23,7 @@ export interface Author {
   name: string;
   /** What this byline represents — kept honest, no marketing puff. */
   bio: string;
-  /** "Senior Compliance Engineer" etc. for Person; "Editorial collective" for collectives. */
+  /** "Senior Compliance Engineer" etc. for a person; what the byline is for a collective. */
   role: string;
   kind: AuthorKind;
   /** External profiles for E-E-A-T sameAs */
@@ -41,51 +36,9 @@ const AUTHORS: readonly Author[] = [
   {
     slug: 'formaos-team',
     name: 'FormaOS Team',
-    role: 'Editorial collective',
+    role: 'Standing byline for the FormaOS blog',
     kind: 'collective',
-    bio: 'General platform updates and cross-functional posts. Reviewed by the FormaOS engineering and compliance leads before publishing. We byline this name when no single subject-matter group is the primary author.',
-  },
-  {
-    slug: 'compliance-team',
-    name: 'Compliance Team',
-    role: 'Compliance and regulatory subject-matter group',
-    kind: 'collective',
-    bio: 'Posts on NDIS Practice Standards, NSQHS, AHPRA, ACECQA, AFS licence obligations, and audit-readiness practice. Written by FormaOS staff with prior experience inside regulated AU operators — disability, aged care, healthcare, and financial services — and reviewed by an external compliance advisor before publishing.',
-  },
-  {
-    slug: 'security-team',
-    name: 'Security Team',
-    role: 'Security and trust engineering group',
-    kind: 'collective',
-    bio: 'Posts on SOC 2 readiness, immutable audit trails, security architecture, identity and access, and data residency. Written by FormaOS security engineers responsible for the live production posture (the same people who answer enterprise security questionnaires).',
-  },
-  {
-    slug: 'product-team',
-    name: 'Product Team',
-    role: 'Product and design group',
-    kind: 'collective',
-    bio: 'Posts about how the FormaOS platform works — feature releases, workflow design choices, integration patterns, and the reasoning behind specific UX trade-offs in a compliance product where every screen has audit implications.',
-  },
-  {
-    slug: 'engineering-team',
-    name: 'Engineering Team',
-    role: 'Engineering group',
-    kind: 'collective',
-    bio: 'Technical posts on the engineering behind FormaOS — Postgres row-level security, evidence-chain immutability, the framework-mapping graph, Next.js server-side rendering choices, and the testing posture that supports a compliance product.',
-  },
-  {
-    slug: 'compliance-strategy',
-    name: 'Compliance Strategy',
-    role: 'Strategy and benchmarking group',
-    kind: 'collective',
-    bio: 'Higher-level pieces on compliance program design — how to structure a control library, how to negotiate framework scope with an assessor, how to set realistic timelines for SOC 2 attestation. Written for compliance leaders responsible for program-level decisions, not individual controls.',
-  },
-  {
-    slug: 'product-updates',
-    name: 'Product Updates',
-    role: 'Release notes byline',
-    kind: 'collective',
-    bio: 'Standing byline for release notes and product update posts. Sourced from the active engineering changelog.',
+    bio: 'Every post on the FormaOS blog is published under this byline rather than an individual name, so citations have one stable entity to point at. Posts cover compliance frameworks, audit readiness, and how the platform works. Where a post states a regulatory requirement, the regulator or standard it comes from is named in the text so you can check it.',
   },
 ];
 

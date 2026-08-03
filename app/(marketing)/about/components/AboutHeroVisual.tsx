@@ -14,11 +14,11 @@ import { useCursorPosition } from '@/components/motion/CursorContext';
  */
 
 const MILESTONES = [
-  { year: '2022', label: 'Founded', color: 'rgb(203,213,225)', z: -10 },
+  { year: '2022', label: 'Founded', color: 'rgb(212,212,216)', z: -10 },
   { year: '2023', label: 'First Client', color: 'rgb(161,161,170)', z: -25 },
-  { year: '2024', label: 'SOC 2', color: 'rgb(148,163,184)', z: -35 },
-  { year: '2025', label: 'Series A', color: 'rgb(148,163,184)', z: -45 },
-  { year: '2026', label: 'Global', color: 'rgb(100,116,139)', z: -50 },
+  { year: '2024', label: 'SOC 2', color: 'rgb(161,161,170)', z: -35 },
+  { year: '2025', label: 'Series A', color: 'rgb(161,161,170)', z: -45 },
+  { year: '2026', label: 'Global', color: 'rgb(113,113,122)', z: -50 },
 ] as const;
 
 function AboutHeroVisualInner() {
@@ -36,7 +36,7 @@ function AboutHeroVisualInner() {
   if (shouldReduceMotion) {
     return (
       <div className="hidden lg:flex items-center justify-center pointer-events-none w-[300px] h-[450px]">
-        <div className="relative w-[40px] h-[400px] rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02]">
+        <div className="relative w-[40px] h-[400px] rounded-2xl border border-white/[0.10] bg-gradient-to-br from-white/[0.08] to-white/[0.02]">
           {MILESTONES.map((m, i) => {
             const isLeft = i % 2 === 0;
             const top = i * nodeSpacing;
@@ -50,7 +50,7 @@ function AboutHeroVisualInner() {
                 }}
               >
                 <div
-                  className="rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-2 py-1 flex items-center gap-1.5"
+                  className="rounded-2xl border border-white/[0.10] bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-2 py-1 flex items-center gap-1.5"
                   style={{ width: 90, height: 30 }}
                 >
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: m.color }} />
@@ -81,7 +81,7 @@ function AboutHeroVisualInner() {
       >
         {/* Central glass pillar */}
         <motion.div
-          className="absolute left-1/2 top-[25px] -translate-x-1/2 rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] overflow-hidden"
+          className="absolute left-1/2 top-[25px] -translate-x-1/2 rounded-2xl border border-white/[0.10] bg-gradient-to-br from-white/[0.08] to-white/[0.02] overflow-hidden"
           style={{
             width: 40,
             height: pillarHeight,
@@ -96,7 +96,7 @@ function AboutHeroVisualInner() {
             className="absolute inset-0"
             style={{
               background:
-                'repeating-linear-gradient(0deg, transparent 0px, transparent 30px, rgba(148,163,184,0.25) 30px, rgba(148,163,184,0.25) 60px)',
+                'repeating-linear-gradient(0deg, transparent 0px, transparent 30px, rgba(161,161,170,0.25) 30px, rgba(161,161,170,0.25) 60px)',
               backgroundSize: '100% 120px',
             }}
             animate={{ backgroundPositionY: [0, -120] }}
@@ -142,7 +142,7 @@ function AboutHeroVisualInner() {
             >
               {/* Glass card node */}
               <div
-                className="rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-2 py-1 flex items-center gap-1.5"
+                className="rounded-2xl border border-white/[0.10] bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-2 py-1 flex items-center gap-1.5"
                 style={{ width: 90, height: 30 }}
               >
                 {/* Colored dot */}

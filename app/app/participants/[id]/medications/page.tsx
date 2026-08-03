@@ -59,7 +59,7 @@ export default async function ParticipantMedicationsPage({
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold">Medications</h1>
+          <h1 className="page-title">Medications</h1>
           <p className="text-sm text-muted-foreground">
             {participant.full_name}
           </p>

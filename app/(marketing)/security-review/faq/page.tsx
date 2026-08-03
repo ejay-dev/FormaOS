@@ -95,11 +95,11 @@ const faqs = [
   },
   {
     q: 'Do you have an uptime SLA?',
-    a: 'Enterprise agreements can include SLA terms. We also publish status and uptime checks on our public status page.',
+    a: 'Enterprise agreements can include SLA terms. Self-serve plans operate on a best-effort model. Live platform health checks are published at formaos.com.au/status.',
   },
   {
     q: 'Do you have a public status page?',
-    a: 'Yes. A status page with published uptime checks is available publicly.',
+    a: 'Yes. formaos.com.au/status is available without sign-in. It reports current subsystem health checks and audit-chain anchoring, sampled every 30 seconds, rather than a historical uptime percentage.',
   },
   {
     q: 'How do you handle backups and recovery?',
@@ -186,6 +186,9 @@ export default function SecurityReviewFaqPage() {
             className="text-primary hover:underline"
           >
             Vendor Assurance →
+          </Link>
+          <Link href="/status" className="text-primary hover:underline">
+            Platform status →
           </Link>
         </div>
       </div>

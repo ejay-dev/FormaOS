@@ -2,14 +2,16 @@
  * New Staff Credential Form Page
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createStaffCredential } from '@/app/app/actions/care-operations';
 import { SubmitButton } from '@/components/ui/submit-button';
-import { resolveUserLabels } from '@/lib/identity/user-directory';
+import {
+  getOrgMemberIdentities,
+  type MemberIdentity,
+} from '@/lib/team/member-identity';
 
 const CREDENTIAL_TYPES = [
   { value: 'wwcc', label: 'Working With Children Check' },
@@ -28,39 +30,13 @@ export default async function NewCredentialPage() {
   const systemState = await fetchSystemState();
   if (!systemState) redirect('/auth/signin');
 
-  const { organization } = systemState;
-  const db = createSupabaseAdminClient();
-
-  // Fetch staff members for dropdown. `users:user_id(...)` cannot be embedded —
-  // org_members.user_id points at auth.users and the production schema declares
-  // no FK to a public table — so profiles are resolved in a second query.
-  const { data: members, error: membersError } = await db
-    .from('org_members')
-    .select('user_id')
-    .eq('organization_id', organization.id);
-
-  if (membersError) {
-    throw new Error(`Failed to load staff members: ${membersError.message}`);
-  }
-
-  const memberIds = Array.from(
-    new Set(
-      (members ?? [])
-        .map((member) => member.user_id as string)
-        .filter(Boolean),
-    ),
-  );
-
-  // user_profiles.full_name and .email are NULL for all 2,598 production rows,
-  // so building the picker from that table produced a list of blank options.
-  // auth.users is the only populated source and is not reachable through
-  // PostgREST, hence the admin-API directory lookup.
-  const profileLabelById = await resolveUserLabels(db, memberIds);
-
-  const staffMembers = memberIds.map((userId) => ({
-    user_id: userId,
-    label: profileLabelById.get(userId) ?? userId,
-  }));
+  // Names for the staff picker. org_members has no declared FK to the
+  // profile table, so a nested select would return nothing and leave the
+  // dropdown showing user ids.
+  const identities = await getOrgMemberIdentities();
+  const staffMembers = Object.values(identities)
+    .filter((identity): identity is MemberIdentity => Boolean(identity))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -73,7 +49,7 @@ export default async function NewCredentialPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Add Credential</h1>
+          <h1 className="page-title">Add credential</h1>
           <p className="text-muted-foreground">
             Record a staff qualification or check
           </p>
@@ -90,7 +66,7 @@ export default async function NewCredentialPage() {
       >
         {/* Staff & Credential Type */}
         <div className="rounded-xl border border-border p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Credential Details</h2>
+          <h2 className="text-lg font-semibold">Credential details</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -98,7 +74,7 @@ export default async function NewCredentialPage() {
                 htmlFor="field-52"
                 className="block text-sm font-medium mb-1"
               >
-                Staff Member <span className="text-red-500">*</span>
+                Staff member <span className="text-destructive">*</span>
               </label>
               <select
                 id="field-52"
@@ -108,8 +84,8 @@ export default async function NewCredentialPage() {
                 defaultValue={systemState.user.id}
               >
                 {staffMembers.map((member) => (
-                  <option key={member.user_id} value={member.user_id}>
-                    {member.label}
+                  <option key={member.userId} value={member.userId}>
+                    {member.name}
                   </option>
                 ))}
               </select>
@@ -119,7 +95,7 @@ export default async function NewCredentialPage() {
                 htmlFor="field-51"
                 className="block text-sm font-medium mb-1"
               >
-                Credential Type <span className="text-red-500">*</span>
+                Credential type <span className="text-destructive">*</span>
               </label>
               <select
                 id="field-51"
@@ -142,7 +118,7 @@ export default async function NewCredentialPage() {
               htmlFor="field-50"
               className="block text-sm font-medium mb-1"
             >
-              Credential Name <span className="text-red-500">*</span>
+              Credential name <span className="text-destructive">*</span>
             </label>
             <input
               id="field-50"
@@ -160,7 +136,7 @@ export default async function NewCredentialPage() {
                 htmlFor="field-49"
                 className="block text-sm font-medium mb-1"
               >
-                Credential Number
+                Credential number
               </label>
               <input
                 id="field-49"
@@ -175,7 +151,7 @@ export default async function NewCredentialPage() {
                 htmlFor="field-48"
                 className="block text-sm font-medium mb-1"
               >
-                Issuing Authority
+                Issuing authority
               </label>
               <input
                 id="field-48"
@@ -190,7 +166,7 @@ export default async function NewCredentialPage() {
 
         {/* Dates */}
         <div className="rounded-xl border border-border p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Validity Period</h2>
+          <h2 className="text-lg font-semibold">Validity period</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -198,7 +174,7 @@ export default async function NewCredentialPage() {
                 htmlFor="field-47"
                 className="block text-sm font-medium mb-1"
               >
-                Issue Date
+                Issue date
               </label>
               <input
                 id="field-47"
@@ -212,7 +188,7 @@ export default async function NewCredentialPage() {
                 htmlFor="field-46"
                 className="block text-sm font-medium mb-1"
               >
-                Expiry Date
+                Expiry date
               </label>
               <input
                 id="field-46"
@@ -226,7 +202,7 @@ export default async function NewCredentialPage() {
 
         {/* Notes */}
         <div className="rounded-xl border border-border p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Additional Notes</h2>
+          <h2 className="text-lg font-semibold">Notes</h2>
 
           <div>
             <label
@@ -260,7 +236,7 @@ export default async function NewCredentialPage() {
             loadingText="Adding…"
             className="px-4 rounded-lg"
           >
-            Add Credential
+            Add credential
           </SubmitButton>
         </div>
       </form>

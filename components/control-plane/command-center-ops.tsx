@@ -29,9 +29,9 @@ export function CommandCenterOps({
 }: CommandCenterOpsProps) {
   return (
     <>
-      <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+      <section className="rounded-xl border border-border bg-card p-6">
         <div className="mb-4 flex items-center gap-2">
-          <Shield className="h-4 w-4 text-rose-300" />
+          <Shield className="h-4 w-4 text-destructive" />
           <h2 className="text-lg font-semibold text-foreground">
             Ops & Security
           </h2>
@@ -45,15 +45,15 @@ export function CommandCenterOps({
             }
             className={`rounded-lg border p-3 text-left ${
               maintenanceMode
-                ? 'border-amber-700/50 bg-amber-900/20'
-                : 'border-slate-800 bg-slate-950/50'
+                ? 'border-warning/20 bg-warning/10'
+                : 'border-border bg-background/50'
             }`}
           >
             <div className="text-sm text-foreground">Maintenance mode</div>
             <div className="mt-1 text-xs text-muted-foreground">
               Block customer operations during controlled maintenance windows.
             </div>
-            <div className="mt-2 text-xs text-amber-200">
+            <div className="mt-2 text-xs text-warning">
               {maintenanceMode ? 'Enabled' : 'Disabled'}
             </div>
           </button>
@@ -65,15 +65,15 @@ export function CommandCenterOps({
             }
             className={`rounded-lg border p-3 text-left ${
               readOnlyMode
-                ? 'border-cyan-700/50 bg-cyan-900/20'
-                : 'border-slate-800 bg-slate-950/50'
+                ? 'border-info/30 bg-info/10'
+                : 'border-border bg-background/50'
             }`}
           >
             <div className="text-sm text-foreground">Read-only mode</div>
             <div className="mt-1 text-xs text-muted-foreground">
               Freeze mutating writes while preserving read access.
             </div>
-            <div className="mt-2 text-xs text-cyan-200">
+            <div className="mt-2 text-xs text-info">
               {readOnlyMode ? 'Enabled' : 'Disabled'}
             </div>
           </button>
@@ -85,8 +85,8 @@ export function CommandCenterOps({
             }
             className={`rounded-lg border p-3 text-left ${
               emergencyLockdown
-                ? 'border-rose-700/50 bg-rose-900/20'
-                : 'border-slate-800 bg-slate-950/50'
+                ? 'border-destructive/20 bg-destructive/10'
+                : 'border-border bg-background/50'
             }`}
           >
             <div className="text-sm text-foreground">Emergency lock-down</div>
@@ -94,12 +94,12 @@ export function CommandCenterOps({
               Immediate incident response gate across app and marketing
               surfaces.
             </div>
-            <div className="mt-2 text-xs text-rose-200">
+            <div className="mt-2 text-xs text-destructive">
               {emergencyLockdown ? 'Enabled' : 'Disabled'}
             </div>
           </button>
 
-          <div className="rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+          <div className="rounded-lg border border-border bg-background/50 p-3">
             <div className="text-sm text-foreground">Rate limit multiplier</div>
             <div className="mt-1 text-xs text-muted-foreground">
               Increase or reduce API throttle globally.
@@ -112,33 +112,33 @@ export function CommandCenterOps({
               onBlur={(event) =>
                 onUpdateRateLimitMultiplier(Number(event.target.value || 1))
               }
-              className="mt-2 w-full rounded border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-foreground"
+              className="mt-2 w-full rounded border border-border bg-card px-2 py-1 text-xs text-foreground"
             />
           </div>
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-3">
-          <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
+          <div className="rounded border border-border bg-background/50 p-3">
             <div className="flex items-center gap-2 text-sm text-foreground/90">
-              <Database className="h-4 w-4 text-cyan-300" />
-              DB Latency
+              <Database className="h-4 w-4 text-muted-foreground" />
+              Database latency
             </div>
             <p className="mt-2 text-2xl font-semibold text-foreground">
               {health.databaseLatencyMs}ms
             </p>
           </div>
-          <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
+          <div className="rounded border border-border bg-background/50 p-3">
             <div className="flex items-center gap-2 text-sm text-foreground/90">
-              <Gauge className="h-4 w-4 text-emerald-300" />
+              <Gauge className="h-4 w-4 text-success" />
               API Health
             </div>
             <p className="mt-2 text-2xl font-semibold text-foreground">
               {health.apiHealthy ? 'Healthy' : 'Degraded'}
             </p>
           </div>
-          <div className="rounded border border-slate-800 bg-slate-950/50 p-3">
+          <div className="rounded border border-border bg-background/50 p-3">
             <div className="flex items-center gap-2 text-sm text-foreground/90">
-              <Shield className="h-4 w-4 text-amber-300" />
+              <Shield className="h-4 w-4 text-warning" />
               Queue status
             </div>
             <p className="mt-2 text-sm text-foreground/70">
@@ -149,9 +149,9 @@ export function CommandCenterOps({
         </div>
       </section>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+      <section className="rounded-xl border border-border bg-card p-6">
         <div className="mb-4 flex items-center gap-2">
-          <PlayCircle className="h-4 w-4 text-emerald-300" />
+          <PlayCircle className="h-4 w-4 text-success" />
           <h2 className="text-lg font-semibold text-foreground">
             Admin Automation
           </h2>
@@ -164,7 +164,7 @@ export function CommandCenterOps({
               type="button"
               disabled={pendingAction !== null}
               onClick={() => onEnqueueJob(action)}
-              className="rounded border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-foreground/90 hover:bg-slate-800 disabled:opacity-60"
+              className="rounded border border-border bg-background px-3 py-1.5 text-xs text-foreground/90 hover:bg-muted disabled:opacity-60"
             >
               {labelFromJobType(action)}
             </button>
@@ -177,16 +177,16 @@ export function CommandCenterOps({
           height={360}
           getKey={(item) => item.id}
           renderItem={(job) => (
-            <div className="rounded border border-slate-800 bg-slate-950/40 p-3">
+            <div className="rounded border border-border bg-background/40 p-3">
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span>{labelFromJobType(job.job_type)}</span>
                 <span>
                   {job.status} • {job.progress}%
                 </span>
               </div>
-              <div className="mt-2 h-1.5 w-full rounded bg-slate-800">
+              <div className="mt-2 h-1.5 w-full rounded bg-muted">
                 <div
-                  className="h-1.5 rounded bg-cyan-500"
+                  className="h-1.5 rounded bg-primary"
                   style={{ width: `${job.progress}%` }}
                 />
               </div>
@@ -194,7 +194,7 @@ export function CommandCenterOps({
                 {job.logs[job.logs.length - 1]?.message || 'No logs yet'}
               </div>
               {job.status === 'failed' && job.error_message ? (
-                <div className="mt-1 text-xs text-rose-300">
+                <div className="mt-1 text-xs text-destructive">
                   {job.error_message}
                 </div>
               ) : null}
@@ -203,11 +203,11 @@ export function CommandCenterOps({
         />
       </section>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-6">
+      <section className="rounded-xl border border-border bg-card p-6">
         <div className="mb-4 flex items-center gap-2">
           <Lock className="h-4 w-4 text-foreground/90" />
           <h2 className="text-lg font-semibold text-foreground">
-            Live Audit Stream
+            Live audit stream
           </h2>
         </div>
 
@@ -217,7 +217,7 @@ export function CommandCenterOps({
           height={420}
           getKey={(item) => item.id}
           renderItem={(entry) => (
-            <div className="rounded border border-slate-800 bg-slate-950/40 p-3">
+            <div className="rounded border border-border bg-background/40 p-3">
               <div className="flex items-center justify-between text-xs text-muted-foreground">
                 <span className="font-mono text-foreground/90">
                   {entry.event_type}
@@ -236,14 +236,14 @@ export function CommandCenterOps({
         />
       </section>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-xs text-muted-foreground">
+      <section className="rounded-xl border border-border bg-card p-4 text-xs text-muted-foreground">
         <div className="flex flex-wrap items-center gap-2">
-          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-300" />
+          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
           Every write is persisted to Supabase and appended to immutable
           `audit_log`.
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <AlertTriangle className="h-3.5 w-3.5 text-amber-300" />
+          <AlertTriangle className="h-3.5 w-3.5 text-warning" />
           Destructive actions require confirmation; toggles expose undo for 10
           seconds.
         </div>

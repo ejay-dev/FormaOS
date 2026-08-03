@@ -23,31 +23,31 @@ const BASE = APP_URL.replace(/\/$/, '');
 
 // Shared styles
 const main = {
-  backgroundColor: '#0f172a',
-  fontFamily: 'Inter,-apple-system,BlinkMacSystemFont,sans-serif',
+  backgroundColor: '#111213',
+  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif',
 };
 const container = {
   margin: '0 auto',
   maxWidth: '600px',
-  backgroundColor: '#1e293b',
+  backgroundColor: '#1c1e1f',
   borderRadius: '12px',
   overflow: 'hidden' as const,
 };
 const header = {
   padding: '32px 40px',
   textAlign: 'center' as const,
-  background: 'linear-gradient(135deg,#0f172a 0%,#1e293b 100%)',
-  borderBottom: '1px solid rgba(34,211,238,0.2)',
+  background: '#16181a',
+  borderBottom: '1px solid rgba(255,255,255,0.2)',
 };
 const logo = {
-  color: '#22d3ee',
+  color: '#ffffff',
   fontSize: '28px',
   fontWeight: 800,
   letterSpacing: '-0.5px',
   margin: 0,
 };
 const tagline = {
-  color: '#94a3b8',
+  color: '#b8b8b8',
   fontSize: '12px',
   letterSpacing: '0.1em',
   textTransform: 'uppercase' as const,
@@ -55,39 +55,42 @@ const tagline = {
 };
 const content = { padding: '36px 40px' };
 const h2 = {
-  color: '#f1f5f9',
+  color: '#ededed',
   fontSize: '22px',
   lineHeight: 1.3,
   marginBottom: '16px',
 };
-const text = { color: '#94a3b8', fontSize: '15px', lineHeight: 1.7 };
+const text = { color: '#b8b8b8', fontSize: '15px', lineHeight: 1.7 };
 const cta = {
   display: 'inline-block',
   padding: '14px 32px',
-  backgroundColor: '#22d3ee',
+  backgroundColor: '#ffffff',
   borderRadius: '8px',
-  color: '#0f172a',
+  color: '#111213',
   fontSize: '15px',
   fontWeight: 700,
   textDecoration: 'none',
 };
 const ctaDanger = { ...cta, backgroundColor: '#f87171', color: '#ffffff' };
-const ctaWarn = { ...cta, backgroundColor: '#fb923c', color: '#0f172a' };
+const ctaWarn = { ...cta, backgroundColor: '#fb923c', color: '#111213' };
 const footer = {
-  color: '#475569',
+  color: '#6b6b6b',
   fontSize: '13px',
   fontStyle: 'italic' as const,
   margin: 0,
 };
 const statBox = {
-  background: '#0f172a',
-  border: '1px solid rgba(34,211,238,0.15)',
+  background: '#111213',
+  border: '1px solid rgba(255,255,255,0.15)',
   borderRadius: '10px',
   padding: '16px 20px',
   margin: '20px 0',
 };
-const statRow = { color: '#e2e8f0', fontSize: '14px', margin: '4px 0' };
-const cyan = { color: '#3f3f46' };
+const statRow = { color: '#e5e5e5', fontSize: '14px', margin: '4px 0' };
+// Emphasis inside body copy. This was left at a near-black zinc during the
+// cyan retirement, so emphasised words rendered at roughly 1.3:1 against
+// the container — invisible in every client.
+const emphasis = { color: '#ffffff' };
 
 // ============================================================
 // 1. Trial Welcome Email
@@ -116,18 +119,18 @@ export function TrialWelcomeEmail({
           <Section style={content}>
             <Heading style={h2}>Welcome to FormaOS, {userName}!</Heading>
             <Text style={text}>
-              You&apos;re set up for <strong style={cyan}>{industry}</strong>{' '}
+              You&apos;re set up for <strong style={emphasis}>{industry}</strong>{' '}
               compliance. Here&apos;s how to get started:
             </Text>
             <Section style={statBox}>
               <Text style={statRow}>
-                <strong style={cyan}>1.</strong> Activate your first framework
+                <strong style={emphasis}>1.</strong> Activate your first framework
               </Text>
               <Text style={statRow}>
-                <strong style={cyan}>2.</strong> Create your first obligation
+                <strong style={emphasis}>2.</strong> Create your first obligation
               </Text>
               <Text style={statRow}>
-                <strong style={cyan}>3.</strong> Invite your team
+                <strong style={emphasis}>3.</strong> Invite your team
               </Text>
             </Section>
             <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
@@ -135,11 +138,11 @@ export function TrialWelcomeEmail({
                 Go to FormaOS →
               </Button>
             </Section>
-            <Text style={{ ...text, fontSize: '13px', color: '#64748b' }}>
+            <Text style={{ ...text, fontSize: '13px', color: '#808080' }}>
               {trialDaysRemaining} days remaining in your trial
             </Text>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>
               PS: Questions? Reply to this email. — The FormaOS Team
@@ -174,16 +177,14 @@ export function ActivationNudgeEmail({
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
-            <Heading style={h2}>
-              Your compliance journey starts with a framework
-            </Heading>
+            <Heading style={h2}>Activate a framework to get started</Heading>
             <Text style={text}>
-              Hi {userName}, your compliance journey starts with activating a
-              framework.
+              Hi {userName}, nothing is being scored yet because no framework is
+              active on your workspace.
             </Text>
             <Text style={text}>
               We have pre-built frameworks for{' '}
-              <strong style={cyan}>{industry}</strong> ready to go. Takes less
+              <strong style={emphasis}>{industry}</strong> ready to go. Takes less
               than 2 minutes.
             </Text>
             <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
@@ -192,7 +193,7 @@ export function ActivationNudgeEmail({
               </Button>
             </Section>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -240,17 +241,17 @@ export function Day7ProgressEmail({
             <Section style={statBox}>
               <Text style={statRow}>
                 Obligations created:{' '}
-                <strong style={cyan}>{obligationsCreated}</strong>
+                <strong style={emphasis}>{obligationsCreated}</strong>
               </Text>
               <Text style={statRow}>
-                Tasks completed: <strong style={cyan}>{tasksCompleted}</strong>
+                Tasks completed: <strong style={emphasis}>{tasksCompleted}</strong>
               </Text>
               <Text style={statRow}>
-                Team members: <strong style={cyan}>{teamMembers}</strong>
+                Team members: <strong style={emphasis}>{teamMembers}</strong>
               </Text>
               <Text style={statRow}>
                 Compliance score:{' '}
-                <strong style={cyan}>{complianceScore}%</strong>
+                <strong style={emphasis}>{complianceScore}%</strong>
               </Text>
             </Section>
             <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
@@ -259,7 +260,7 @@ export function Day7ProgressEmail({
               </Button>
             </Section>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -301,9 +302,9 @@ export function TrialExpiringEmail({
             </Heading>
             <Text style={text}>
               You&apos;ve built{' '}
-              <strong style={cyan}>{obligationsCreated} obligations</strong> and
+              <strong style={emphasis}>{obligationsCreated} obligations</strong> and
               collected{' '}
-              <strong style={cyan}>{evidenceItems} evidence items</strong>.
+              <strong style={emphasis}>{evidenceItems} evidence items</strong>.
               Upgrade to keep everything.
             </Text>
             <Section style={statBox}>
@@ -319,7 +320,7 @@ export function TrialExpiringEmail({
               </Button>
             </Section>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -375,7 +376,7 @@ export function TrialFinalWarningEmail({
               </Button>
             </Section>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -407,7 +408,7 @@ export function TrialExpiredEmail({
             <Heading style={h2}>Your trial has ended</Heading>
             <Text style={text}>
               Hi {userName}, your trial has ended but{' '}
-              <strong style={cyan}>your data is safe</strong>. We keep it for 30
+              <strong style={emphasis}>your data is safe</strong>. We keep it for 30
               days.
             </Text>
             <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
@@ -416,7 +417,7 @@ export function TrialExpiredEmail({
               </Button>
             </Section>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -463,7 +464,7 @@ export function PaymentFailedEmail({
               </Text>
             </Section>
             <Text style={text}>
-              You have <strong style={{ color: '#f1f5f9' }}>3 days</strong>{' '}
+              You have <strong style={{ color: '#ededed' }}>3 days</strong>{' '}
               before access is restricted.
             </Text>
             <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
@@ -472,7 +473,7 @@ export function PaymentFailedEmail({
               </Button>
             </Section>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -512,7 +513,7 @@ export function PaymentRecoveredEmail({
               </Button>
             </Section>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -551,15 +552,15 @@ export function PlanUpgradedEmail({
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
-            <Heading style={h2}>Welcome to FormaOS {planName}! 🎉</Heading>
+            <Heading style={h2}>Welcome to FormaOS {planName}</Heading>
             <Text style={text}>
-              Your plan is now <strong style={cyan}>{planName}</strong>. New
+              Your plan is now <strong style={emphasis}>{planName}</strong>. New
               features unlocked:
             </Text>
             <Section style={statBox}>
               {features.map((f, i) => (
                 <Text key={i} style={statRow}>
-                  <span style={cyan}>✓</span> {f}
+                  <span style={emphasis}>✓</span> {f}
                 </Text>
               ))}
             </Section>
@@ -569,7 +570,7 @@ export function PlanUpgradedEmail({
               </Button>
             </Section>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -604,7 +605,7 @@ export function PlanDowngradedEmail({
           <Section style={content}>
             <Heading style={h2}>Your plan has been updated</Heading>
             <Text style={text}>
-              Your FormaOS plan is now <strong style={cyan}>{planName}</strong>.
+              Your FormaOS plan is now <strong style={emphasis}>{planName}</strong>.
               Your data is all still there.
             </Text>
             <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
@@ -613,7 +614,7 @@ export function PlanDowngradedEmail({
               </Button>
             </Section>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -645,7 +646,7 @@ export function SubscriptionCancelledEmail({
             <Heading style={h2}>We&apos;re sorry to see you go</Heading>
             <Text style={text}>
               Your subscription has been cancelled. Your data is kept for{' '}
-              <strong style={cyan}>30 days</strong>.
+              <strong style={emphasis}>30 days</strong>.
             </Text>
             <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
               <Button href={`${BASE}/app/billing`} style={cta}>
@@ -657,7 +658,7 @@ export function SubscriptionCancelledEmail({
               just reply to this email.
             </Text>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>
@@ -694,8 +695,8 @@ export function TeamInviteEmail({
           <Section style={content}>
             <Heading style={h2}>You&apos;ve been invited!</Heading>
             <Text style={text}>
-              <strong style={{ color: '#f1f5f9' }}>{inviterName}</strong> has
-              invited you to join <strong style={cyan}>{orgName}</strong> on
+              <strong style={{ color: '#ededed' }}>{inviterName}</strong> has
+              invited you to join <strong style={emphasis}>{orgName}</strong> on
               FormaOS — the compliance operating system for modern teams.
             </Text>
             <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
@@ -703,11 +704,11 @@ export function TeamInviteEmail({
                 Accept Invitation →
               </Button>
             </Section>
-            <Text style={{ ...text, fontSize: '13px', color: '#64748b' }}>
+            <Text style={{ ...text, fontSize: '13px', color: '#808080' }}>
               This invitation expires in 7 days.
             </Text>
             <Hr
-              style={{ borderColor: 'rgba(34,211,238,0.1)', margin: '24px 0' }}
+              style={{ borderColor: 'rgba(255,255,255,0.1)', margin: '24px 0' }}
             />
             <Text style={footer}>— The FormaOS Team</Text>
           </Section>

@@ -1,131 +1,183 @@
+import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { listAuditorAccess, getAuditorActivity } from '@/lib/auditor/portal';
 import {
-  listAuditorAccess,
-  getAuditorActivity,
-  revokeAuditorAccess,
-} from '@/lib/auditor/portal';
+  dismissIssuedAuditorToken,
+  revokeAuditorGrant,
+} from '@/app/app/actions/auditor-access';
+import { ISSUED_TOKEN_COOKIE } from '@/lib/auditor/issued-token';
 import { Shield, Clock, Eye, Plus } from 'lucide-react';
+import {
+  SettingsPageHeader,
+  SettingsPageShell,
+} from '@/components/settings/settings-page-header';
+import { StatusBadge, type StatusTone } from '@/components/compliance/StatusBadge';
+import { AuditorLink } from './auditor-link';
+import { getAppBaseUrl } from '@/lib/urls';
 
-export const metadata = { title: 'Auditor Access | Settings | FormaOS' };
+export const metadata = { title: 'Auditor access | Settings | FormaOS' };
 
-async function revokeAccess(formData: FormData) {
-  'use server';
-  const state = await fetchSystemState();
-  if (!state) redirect('/auth/signin');
+const GRANT_STATUS: Record<string, { label: string; tone: StatusTone }> = {
+  active: { label: 'Active', tone: 'success' },
+  expired: { label: 'Expired', tone: 'neutral' },
+  revoked: { label: 'Revoked', tone: 'danger' },
+};
 
-  const tokenId = String(formData.get('token_id') ?? '').trim();
-  if (!tokenId) {
-    redirect('/app/settings/auditor-access?error=missing-grant-id');
-  }
-
-  // redirect() signals by throwing NEXT_REDIRECT, so only the revoke call is
-  // guarded — a catch spanning the redirect below would swallow it.
-  await revokeAuditorAccess(tokenId, state.organization.id).catch(
-    (err: unknown): never => {
-      const message =
-        err instanceof Error ? err.message : 'Failed to revoke access';
-      redirect(
-        `/app/settings/auditor-access?error=${encodeURIComponent(message)}`,
-      );
-    },
-  );
-
-  revalidatePath('/app/settings/auditor-access');
-}
+const ERROR_MESSAGES: Record<string, string> = {
+  forbidden:
+    'Only workspace owners and admins can grant or revoke auditor access.',
+  'revoke-failed': 'That grant could not be revoked. Refresh and try again.',
+};
 
 export default async function AuditorAccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ granted?: string; revoked?: string; error?: string }>;
 }) {
   const state = await fetchSystemState();
   if (!state) redirect('/auth/signin');
-  const { error } = await searchParams;
 
+  const { granted, revoked, error } = await searchParams;
+  const canManage = state.role === 'owner' || state.role === 'admin';
   const tokens = await listAuditorAccess(state.organization.id);
   const activity = await getAuditorActivity(state.organization.id);
-
-  const statusBadge: Record<string, string> = {
-    active: 'bg-green-500/10 text-green-400',
-    expired: 'bg-gray-500/10 text-gray-400',
-    revoked: 'bg-red-500/10 text-red-400',
-  };
+  // `granted` is only a flag. The raw token itself comes from a short-lived
+  // httpOnly cookie set by grantAuditorAccess, so it never reaches the address
+  // bar, browser history, the Referer header, or CDN access logs. A crafted
+  // ?granted=1 link therefore cannot fabricate a link panel either — without
+  // the cookie there is no token to render.
+  const issuedToken =
+    granted === '1'
+      ? ((await cookies()).get(ISSUED_TOKEN_COOKIE)?.value ?? null)
+      : null;
+  const grantedUrl = issuedToken
+    ? `${getAppBaseUrl()}/audit-portal/${issuedToken}`
+    : null;
+  // Flag present but cookie gone: the 10-minute window elapsed, or the operator
+  // already dismissed it. Say so rather than silently rendering nothing.
+  const issuedTokenExpired = granted === '1' && !issuedToken;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Auditor Access</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage external auditor access to your compliance data.
+    <SettingsPageShell>
+      <SettingsPageHeader
+        title="Auditor access"
+        description="Time-limited, read-only links you issue to an external auditor."
+        action={
+          canManage ? (
+            <Link
+              href="/app/settings/auditor-access/new"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Plus className="h-4 w-4" />
+              Grant access
+            </Link>
+          ) : null
+        }
+      />
+
+      {error ? (
+        <p className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+          {ERROR_MESSAGES[error] ?? 'Something went wrong. Try again.'}
+        </p>
+      ) : null}
+
+      {revoked ? (
+        <p className="rounded-md border border-border bg-muted/40 px-3 py-2 text-sm text-foreground">
+          Access revoked. The link no longer opens the auditor portal.
+        </p>
+      ) : null}
+
+      {grantedUrl ? (
+        <section className="rounded-lg border border-border bg-card p-5">
+          <h2 className="text-base font-semibold text-foreground">
+            Send this link to the auditor
+          </h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            This is the only time the link is shown — it is stored hashed, so
+            it cannot be looked up later. If you lose it, revoke the grant and
+            issue a new one.
           </p>
-        </div>
-        <a
-          href="/app/settings/auditor-access/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4" />
-          Grant Access
-        </a>
-      </div>
+          <AuditorLink url={grantedUrl} />
+          {/* Clears the cookie so the link stops being retrievable on revisit,
+              rather than lingering for the rest of its 10-minute TTL. */}
+          <form action={dismissIssuedAuditorToken} className="mt-3">
+            <button
+              type="submit"
+              className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+            >
+              I&rsquo;ve copied the link
+            </button>
+          </form>
+        </section>
+      ) : issuedTokenExpired ? (
+        <section className="rounded-lg border border-border bg-card p-5">
+          <h2 className="text-base font-semibold text-foreground">
+            Link no longer available
+          </h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            The grant was created, but the one-time link is no longer shown. It
+            is stored hashed and cannot be looked up. Revoke the grant below and
+            issue a new one if you still need to send it.
+          </p>
+        </section>
+      ) : null}
 
-      {error && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive">
-          {error}
-        </div>
-      )}
-
-      {/* Active tokens */}
       <div className="rounded-lg border border-border bg-card overflow-hidden">
         <div className="border-b border-border px-4 py-3">
-          <h2 className="font-semibold">Access Grants ({tokens.length})</h2>
+          <h2 className="font-semibold">Access grants ({tokens.length})</h2>
         </div>
         <div className="divide-y divide-border">
-          {tokens.map((t) => (
-            <div
-              key={t.id}
-              className="flex items-center justify-between px-4 py-3"
-            >
-              <div className="flex items-center gap-3">
-                <Shield className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <p className="text-sm font-medium">{t.auditor_name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {t.auditor_email}{' '}
-                    {t.auditor_company ? `• ${t.auditor_company}` : ''}
-                  </p>
+          {tokens.map((t) => {
+            const status = GRANT_STATUS[t.status] ?? GRANT_STATUS.expired;
+
+            return (
+              <div
+                key={t.id}
+                className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <Shield className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{t.auditor_name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t.auditor_email}{' '}
+                      {t.auditor_company ? `• ${t.auditor_company}` : ''}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Eye className="h-3 w-3" />
+                    {t.access_count ?? 0} views
+                  </span>
+                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    {t.status === 'revoked'
+                      ? 'Revoked'
+                      : `Expires ${new Date(t.expires_at).toLocaleDateString()}`}
+                  </span>
+                  <StatusBadge label={status.label} tone={status.tone} />
+                  {canManage && t.status === 'active' ? (
+                    <form action={revokeAuditorGrant}>
+                      <input type="hidden" name="tokenId" value={t.id} />
+                      <button
+                        type="submit"
+                        className="rounded-md border border-border px-2.5 py-1 text-sm font-medium text-foreground hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        Revoke
+                        <span className="sr-only">
+                          {' '}
+                          access for {t.auditor_name}
+                        </span>
+                      </button>
+                    </form>
+                  ) : null}
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Eye className="h-3 w-3" />
-                  {t.access_count ?? 0} views
-                </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  {new Date(t.expires_at).toLocaleDateString()}
-                </div>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${statusBadge[t.status] ?? ''}`}
-                >
-                  {t.status}
-                </span>
-                {t.status === 'active' && (
-                  <form action={revokeAccess}>
-                    <input type="hidden" name="token_id" value={t.id} />
-                    <button
-                      type="submit"
-                      className="rounded-md border border-border px-2 py-1 text-xs hover:bg-muted"
-                    >
-                      Revoke
-                    </button>
-                  </form>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
           {tokens.length === 0 && (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">
               No auditor access grants yet.
@@ -134,10 +186,9 @@ export default async function AuditorAccessPage({
         </div>
       </div>
 
-      {/* Recent activity */}
       <div className="rounded-lg border border-border bg-card overflow-hidden">
         <div className="border-b border-border px-4 py-3">
-          <h2 className="font-semibold">Recent Activity</h2>
+          <h2 className="font-semibold">Recent activity</h2>
         </div>
         <div className="max-h-[300px] overflow-y-auto divide-y divide-border">
           {activity.slice(0, 50).map((a) => (
@@ -163,6 +214,6 @@ export default async function AuditorAccessPage({
           )}
         </div>
       </div>
-    </div>
+    </SettingsPageShell>
   );
 }

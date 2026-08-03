@@ -563,7 +563,7 @@ export default function PhaseDemo() {
               {/* Phase sidebar (desktop, simulation mode) */}
               {isSimulation && (
                 <div className="hidden md:flex md:w-[180px] lg:w-[200px] flex-shrink-0 flex-col bg-[#060d1a] border-r border-white/[0.05] p-3">
-                  <div className="text-[9px] text-muted-foreground/40 uppercase tracking-wider font-semibold mb-3 px-2">
+                  <div className="text-[9px] text-muted-foreground uppercase tracking-wider font-semibold mb-3 px-2">
                     Operating Model
                   </div>
                   <div className="space-y-1">
@@ -599,7 +599,7 @@ export default function PhaseDemo() {
                             }`} />
                           </div>
                           <div className="relative z-10 min-w-0">
-                            <div className={`text-[9px] uppercase tracking-wider ${isActive ? 'text-muted-foreground' : 'text-muted-foreground/40'}`}>
+                            <div className={`text-[9px] uppercase tracking-wider ${isActive ? 'text-muted-foreground' : 'text-muted-foreground/60'}`}>
                               Phase {config.number}
                             </div>
                             <div className={`text-[11px] font-medium truncate ${
@@ -736,7 +736,7 @@ export default function PhaseDemo() {
         </div>
 
         {/* Simulated demo note */}
-        <p className="text-center text-[11px] text-muted-foreground/40 mt-3">
+        <p className="text-center text-[11px] text-muted-foreground mt-3">
           {isSimulation
             ? 'Simulated demo with sample data - no real systems connected'
             : 'Interactive sandbox with pre-seeded demo data - fully client-side, no API calls'}

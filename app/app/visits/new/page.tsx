@@ -3,65 +3,73 @@
  */
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { getOrgMemberIdentities } from '@/lib/team/member-identity';
 import { createVisit } from '@/app/app/actions/care-operations';
 import { SubmitButton } from '@/components/ui/submit-button';
-import { resolveUserLabels } from '@/lib/identity/user-directory';
 
-export default async function NewVisitPage() {
+export default async function NewVisitPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ client_id?: string }>;
+}) {
   const systemState = await fetchSystemState();
   if (!systemState) redirect('/auth/signin');
 
   const { organization } = systemState;
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const preselectedClientId = resolvedSearchParams.client_id ?? '';
   const supabase = await createSupabaseServerClient();
 
   // Fetch clients for dropdown
-  const { data: clients } = await supabase
+  const { data: activeClients } = await supabase
     .from('org_patients')
     .select('id, full_name')
     .eq('organization_id', organization.id)
     .eq('care_status', 'active')
     .order('full_name');
 
-  // Fetch staff members for dropdown. `users:user_id(...)` cannot be embedded —
-  // org_members.user_id points at auth.users and the production schema declares
-  // no FK to a public table — so profiles are resolved in a second query.
-  const db = createSupabaseAdminClient();
-
-  const { data: members, error: membersError } = await db
-    .from('org_members')
-    .select('user_id')
-    .eq('organization_id', organization.id);
-
-  if (membersError) {
-    throw new Error(`Failed to load staff members: ${membersError.message}`);
+  // A visit can be booked from a paused client's profile, and that client is
+  // not in the active list — without this the preselection silently vanishes.
+  let clients = activeClients ?? [];
+  if (
+    preselectedClientId &&
+    !clients.some((client) => client.id === preselectedClientId)
+  ) {
+    const { data: preselected } = await supabase
+      .from('org_patients')
+      .select('id, full_name')
+      .eq('organization_id', organization.id)
+      .eq('id', preselectedClientId)
+      .maybeSingle();
+    if (preselected) clients = [preselected, ...clients];
   }
 
-  const memberIds = Array.from(
-    new Set(
-      (members ?? [])
-        .map((member) => member.user_id as string)
-        .filter(Boolean),
-    ),
-  );
+  // Staff names come from the shared identity helper: org_members has no
+  // foreign key to a profile table, so a PostgREST embed cannot resolve them.
+  const [{ data: staffMembers }, identities] = await Promise.all([
+    supabase
+      .from('org_members')
+      .select('user_id')
+      .eq('organization_id', organization.id),
+    getOrgMemberIdentities(),
+  ]);
 
-  // user_profiles.full_name and .email are NULL for all 2,598 production rows,
-  // so building the picker from that table produced a list of blank options.
-  // auth.users is the only populated source and is not reachable through
-  // PostgREST, hence the admin-API directory lookup.
-  const profileLabelById = await resolveUserLabels(db, memberIds);
-
-  const staffMembers = memberIds.map((userId) => ({
-    user_id: userId,
-    label: profileLabelById.get(userId) ?? userId,
-  }));
+  const staffOptions = ((staffMembers ?? []) as Array<{
+    user_id: string | null;
+  }>)
+    .map((member) => member.user_id)
+    .filter((userId): userId is string => Boolean(userId))
+    .map((userId) => ({
+      userId,
+      name: identities[userId]?.name ?? 'Unknown member',
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   type Client = NonNullable<typeof clients>[number];
-  type StaffMember = (typeof staffMembers)[number];
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -74,7 +82,7 @@ export default async function NewVisitPage() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">Schedule Visit</h1>
+          <h1 className="page-title">Schedule visit</h1>
           <p className="text-muted-foreground">
             Create a new service delivery entry
           </p>
@@ -99,12 +107,13 @@ export default async function NewVisitPage() {
                 htmlFor="field-66"
                 className="block text-sm font-medium mb-1"
               >
-                Client <span className="text-red-500">*</span>
+                Client <span className="text-destructive">*</span>
               </label>
               <select
                 id="field-66"
                 name="client_id"
                 required
+                defaultValue={preselectedClientId}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
                 <option value="">Select client...</option>
@@ -128,9 +137,9 @@ export default async function NewVisitPage() {
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
                 <option value="">Assign later...</option>
-                {staffMembers.map((member: StaffMember) => (
-                  <option key={member.user_id} value={member.user_id}>
-                    {member.label}
+                {staffOptions.map((staff) => (
+                  <option key={staff.userId} value={staff.userId}>
+                    {staff.name}
                   </option>
                 ))}
               </select>
@@ -148,7 +157,7 @@ export default async function NewVisitPage() {
                 htmlFor="field-64"
                 className="block text-sm font-medium mb-1"
               >
-                Start Date/Time <span className="text-red-500">*</span>
+                Start Date/Time <span className="text-destructive">*</span>
               </label>
               <input
                 id="field-64"

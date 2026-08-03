@@ -31,26 +31,26 @@ function formatDate(date: string | null) {
 function getStatusIcon(status: string) {
   switch (status) {
     case 'approved':
-      return <CheckCircle className="h-4 w-4 text-green-400" />;
+      return <CheckCircle className="h-4 w-4 text-success" />;
     case 'rejected':
-      return <XCircle className="h-4 w-4 text-red-400" />;
+      return <XCircle className="h-4 w-4 text-destructive" />;
     case 'reviewed':
-      return <Eye className="h-4 w-4 text-blue-400" />;
+      return <Eye className="h-4 w-4 text-info" />;
     default:
-      return <Clock className="h-4 w-4 text-amber-400" />;
+      return <Clock className="h-4 w-4 text-warning" />;
   }
 }
 
 function getStatusBadge(status: string) {
   switch (status) {
     case 'approved':
-      return 'bg-green-500/10 text-green-400 border-green-500/20';
+      return 'bg-success/10 text-success border-success/20';
     case 'rejected':
-      return 'bg-red-500/10 text-red-400 border-red-500/20';
+      return 'bg-destructive/10 text-destructive border-destructive/20';
     case 'reviewed':
-      return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+      return 'bg-info/10 text-info border-info/20';
     default:
-      return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+      return 'bg-warning/10 text-warning border-warning/20';
   }
 }
 
@@ -163,7 +163,7 @@ export default async function FormSubmissionsPage({
             <ArrowLeft className="h-4 w-4" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
+            <h1 className="page-title">
               {form.title} — Submissions
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -196,15 +196,15 @@ export default async function FormSubmissionsPage({
           <p className="text-sm text-muted-foreground">Total</p>
         </div>
         <div className="p-4 rounded-xl bg-card border border-border">
-          <p className="text-2xl font-bold text-amber-400">{stats.submitted}</p>
+          <p className="text-2xl font-bold text-warning">{stats.submitted}</p>
           <p className="text-sm text-muted-foreground">Pending Review</p>
         </div>
         <div className="p-4 rounded-xl bg-card border border-border">
-          <p className="text-2xl font-bold text-green-400">{stats.approved}</p>
+          <p className="text-2xl font-bold text-success">{stats.approved}</p>
           <p className="text-sm text-muted-foreground">Approved</p>
         </div>
         <div className="p-4 rounded-xl bg-card border border-border">
-          <p className="text-2xl font-bold text-red-400">{stats.rejected}</p>
+          <p className="text-2xl font-bold text-destructive">{stats.rejected}</p>
           <p className="text-sm text-muted-foreground">Rejected</p>
         </div>
       </div>
@@ -218,9 +218,9 @@ export default async function FormSubmissionsPage({
             </h2>
             <div className="mt-4 space-y-3">
               {[
-                ['Submitted', stats.submitted, 'bg-amber-400'],
-                ['Approved', stats.approved, 'bg-green-400'],
-                ['Rejected', stats.rejected, 'bg-red-400'],
+                ['Submitted', stats.submitted, 'bg-warning'],
+                ['Approved', stats.approved, 'bg-success'],
+                ['Rejected', stats.rejected, 'bg-destructive'],
               ].map(([label, value, color]) => {
                 const pct =
                   stats.total > 0

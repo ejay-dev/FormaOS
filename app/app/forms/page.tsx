@@ -14,6 +14,10 @@ import {
   RecordCard,
   RecordList,
 } from '@/components/mobile/record-card';
+import {
+  StatusBadge,
+  documentStatus,
+} from '@/components/compliance/StatusBadge';
 
 const FORMS_PAGE_SIZE = 50;
 
@@ -24,19 +28,6 @@ function formatDate(date: string | null) {
     month: 'short',
     year: 'numeric',
   });
-}
-
-function getStatusBadge(status: string) {
-  switch (status) {
-    case 'published':
-      return 'bg-success/10 text-success border-success/20';
-    case 'draft':
-      return 'bg-warning/10 text-warning border-warning/20';
-    case 'archived':
-      return 'bg-muted text-muted-foreground border-border';
-    default:
-      return 'bg-muted text-muted-foreground border-border';
-  }
 }
 
 export default async function FormsPage({
@@ -226,15 +217,7 @@ export default async function FormsPage({
                     href={`/app/forms/builder/${form.id}`}
                     title={form.title}
                     subtitle={form.description ?? undefined}
-                    status={
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${getStatusBadge(
-                          form.status,
-                        )}`}
-                      >
-                        {form.status}
-                      </span>
-                    }
+                    status={<StatusBadge {...documentStatus(form.status)} />}
                     meta={[
                       { label: 'Submissions', value: String(subCount) },
                       { label: 'Version', value: `v${form.version ?? 1}` },
@@ -292,13 +275,7 @@ export default async function FormsPage({
                           )}
                         </td>
                         <td className="px-4 py-3">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadge(
-                              form.status,
-                            )}`}
-                          >
-                            {form.status}
-                          </span>
+                          <StatusBadge {...documentStatus(form.status)} />
                         </td>
                         <td className="px-4 py-3 hidden md:table-cell text-sm text-muted-foreground">
                           {subCount}

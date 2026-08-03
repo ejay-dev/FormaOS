@@ -44,11 +44,11 @@ export default async function WorkflowDetailPage({
   if (entitlement?.enabled !== true) {
     return (
       <div className="space-y-6 p-6">
-        <section className="rounded-[28px] border border-cyan-400/30 bg-cyan-500/10 p-6">
+        <section className="rounded-[28px] border border-border bg-card p-6">
           <div className="flex items-start gap-3">
-            <LockKeyhole className="mt-0.5 h-5 w-5 text-cyan-100" />
+            <LockKeyhole className="mt-0.5 h-5 w-5 text-foreground" />
             <div>
-              <h1 className="text-xl font-semibold text-foreground">
+              <h1 className="page-title text-foreground">
                 Workflow automation is not enabled
               </h1>
               <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
@@ -57,7 +57,7 @@ export default async function WorkflowDetailPage({
               </p>
               <Link
                 href="/app/workflows"
-                className="mt-5 inline-flex rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+                className="mt-5 inline-flex rounded-xl border bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
               >
                 Back to Workflows
               </Link>

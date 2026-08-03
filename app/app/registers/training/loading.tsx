@@ -1,5 +1,5 @@
 import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
-  return <PageSkeleton title="Training" cards={2} tableRows={4} />;
+export default function AppRegistersTrainingLoading() {
+  return <PageSkeleton title="Training register" cards={2} tableRows={4} />;
 }

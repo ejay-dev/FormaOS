@@ -1,7 +1,9 @@
 import { brand } from '@/config/brand';
 import { getFromEmail, getResendClient } from '@/lib/email/resend-client';
 
-const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || 'Formaos.team@gmail.com';
+// Visible support address printed in the security notice and footer, not the
+// sending identity — that comes from getFromEmail().
+const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || brand.email.contactEmail;
 
 export type AuthEmailTemplate =
   | 'confirm-signup'

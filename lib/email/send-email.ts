@@ -237,18 +237,26 @@ async function checkEmailPreferences(
     }
 
     if (!prefs) return true; // No settings found (e.g. new invite), allow email
-    if (prefs.unsubscribed_all) return false;
 
-    switch (emailType) {
-      case 'welcome':
-        return prefs.welcome_emails;
-      case 'invite':
-        return prefs.invitation_emails;
-      case 'alert':
-        return prefs.alert_emails;
-      default:
-        return true;
-    }
+    // email_preferences carries `enabled` and `enabled_events`. This branch
+    // used to read unsubscribed_all / welcome_emails / invitation_emails /
+    // alert_emails, none of which are columns on the table, so every value
+    // was undefined: the opt-out never applied and the per-type checks
+    // returned undefined rather than a decision.
+    if (prefs.enabled === false) return false;
+
+    const enabledEvents = Array.isArray(prefs.enabled_events)
+      ? (prefs.enabled_events as unknown[]).filter(
+          (value): value is string => typeof value === 'string',
+        )
+      : [];
+
+    // An empty list means the user has not narrowed anything down, which is
+    // the default state — narrowing to nothing would silently mute a
+    // workspace that never visited the settings page.
+    if (enabledEvents.length === 0) return true;
+
+    return enabledEvents.includes(emailType);
   } catch (error) {
     consoleShim.error('[checkEmailPreferences] Unexpected Error:', error);
     return true;

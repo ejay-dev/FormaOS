@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Trash2, Lock, Database } from 'lucide-react';
+import { Trash2, Lock, Database, Shield, FileCheck } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
@@ -47,37 +47,93 @@ export default function DataHandlingPage() {
             <div className="flex items-center gap-2 mb-3">
               <Lock className="h-5 w-5 text-primary" aria-hidden="true" />
               <h2 className="text-lg font-semibold text-foreground">
-                Storage And Encryption
+                Storage and encryption
               </h2>
             </div>
             <ul className="list-disc pl-6 space-y-2 text-sm text-muted-foreground">
               <li>
-                Data is encrypted in transit and at rest using platform
-                primitives.
+                Customer data is encrypted at rest with AES-256 and in transit
+                with TLS 1.3. Requests over plain HTTP are rejected.
               </li>
               <li>
-                Access is governed by organization membership and role-based
-                controls.
+                Production data sits in Supabase managed PostgreSQL and object
+                storage, hosted in Australia by default, and is delivered
+                through Vercel. Both maintain their own SOC 2 reports, which we
+                can point you to during review.
               </li>
               <li>
-                Audit logs provide traceability for sensitive actions and
-                exports.
+                Evidence files and audit exports live in storage buckets with
+                bucket-level policies, so an object is only readable through a
+                path your organisation membership authorises.
               </li>
             </ul>
           </section>
 
           <section className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-2 mb-3">
-              <Trash2 className="h-5 w-5 text-primary" aria-hidden="true" />
+              <Shield className="h-5 w-5 text-primary" aria-hidden="true" />
               <h2 className="text-lg font-semibold text-foreground">
-                Retention And Deletion
+                Tenant isolation and access
+              </h2>
+            </div>
+            <ul className="list-disc pl-6 space-y-2 text-sm text-muted-foreground">
+              <li>
+                Isolation is enforced in the database by row-level security
+                policies scoped to organisation membership, not by application
+                filtering. A query that omits the org predicate returns nothing
+                rather than another tenant&apos;s rows.
+              </li>
+              <li>
+                Access within an organisation is role-based, with privileged
+                actions restricted to owner and admin roles and TOTP
+                multi-factor available for enforcement.
+              </li>
+              <li>
+                Administrative access to production is restricted, environments
+                are separated, and security-relevant actions are recorded in the
+                audit log.
+              </li>
+            </ul>
+          </section>
+
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <FileCheck className="h-5 w-5 text-primary" aria-hidden="true" />
+              <h2 className="text-lg font-semibold text-foreground">
+                Audit trail integrity
               </h2>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Retention periods and deletion timelines are governed by contract
-              terms and may be tailored to your regulatory requirements. On
-              termination, FormaOS supports deletion requests and can provide
-              written confirmation upon completion.
+              Audit rows are chained with an HMAC-SHA256 signature over the
+              preceding row, the chain top is anchored daily to an external
+              transparency log, and a database trigger rejects any update or
+              delete against audit rows. That is what stands behind the
+              tamper-evident and chain-of-custody claims made elsewhere on the
+              site.
+            </p>
+            <Link
+              href="/trust#trust-audit-chain-heading"
+              className="mt-4 inline-flex text-sm text-primary hover:underline"
+            >
+              Read how the audit chain is verified
+            </Link>
+          </section>
+
+          <section className="rounded-2xl border border-border bg-card p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Trash2 className="h-5 w-5 text-primary" aria-hidden="true" />
+              <h2 className="text-lg font-semibold text-foreground">
+                Retention and deletion
+              </h2>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Retention periods are configurable per organisation and can be set
+              to match the rules you are subject to, for example NDIS evidence
+              retention or seven-year financial records. Compliance data,
+              evidence artefacts, and audit records export as CSV, JSON, or ZIP
+              before deletion. Deletion timing and written confirmation on
+              completion are set in your executed agreement rather than promised
+              generally here.
             </p>
           </section>
         </div>
@@ -90,7 +146,7 @@ export default function DataHandlingPage() {
             href="/trust/subprocessors"
             className="text-primary hover:underline"
           >
-            Subprocessors →
+            Sub-processors →
           </Link>
         </div>
       </div>

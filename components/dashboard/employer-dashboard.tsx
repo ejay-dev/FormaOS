@@ -15,7 +15,6 @@ import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedC
 import { SystemStatusPanel } from '@/components/trust/SystemStatusPanel';
 import { ComplianceIntelligenceSummary } from '@/components/intelligence/ComplianceIntelligenceSummary';
 import { FrameworkHealthWidget } from '@/components/intelligence/FrameworkHealthWidget';
-import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplianceAssistantPanel';
 import { ComplianceScoreHistory } from '@/components/compliance/ComplianceScoreHistory';
 import { IndustryGuidancePanel } from '@/components/dashboard/IndustryGuidancePanel';
 import { ComplianceHeroBand } from '@/components/compliance/ComplianceHeroBand';
@@ -113,8 +112,8 @@ function ActivationMilestones({
       ) : (
         <>
           <div className="mb-4 rounded-xl border border-border bg-surface-2 px-4 py-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Time-To-First-Proof Tracker
+            <p className="text-sm font-medium text-foreground">
+              Setup progress
             </p>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-surface-1">
               <div
@@ -171,27 +170,6 @@ export function EmployerDashboard({
   expiringCertsCount = 0,
   openTasksCount = 0,
 }: EmployerDashboardProps) {
-  const aiSuggestions = [
-    {
-      title: 'Draft remediation plan',
-      detail: 'Generate owner-ready remediation actions for at-risk controls.',
-      href: '/app/tasks',
-      icon: 'remediation' as const,
-    },
-    {
-      title: 'Find missing evidence',
-      detail: 'Locate high-priority controls with incomplete evidence chains.',
-      href: '/app/vault',
-      icon: 'evidence' as const,
-    },
-    {
-      title: 'Interpret policy gaps',
-      detail: 'Summarize policy coverage gaps against selected frameworks.',
-      href: '/app/policies',
-      icon: 'policy' as const,
-    },
-  ];
-
   const [completionCounts, setCompletionCounts] =
     useState<ChecklistCompletionCounts>({
       tasks: 0,
@@ -249,70 +227,41 @@ export function EmployerDashboard({
   ];
 
   const entityLabel = getEntityLabel(industry);
-  const actionQueue: ActionQueueItem[] = [
-    {
+  // Only rows with a live count behind them; an empty queue renders nothing.
+  const actionQueue: ActionQueueItem[] = [];
+
+  if (openTasksCount > 0) {
+    actionQueue.push({
       id: 'queue-open-tasks',
-      title:
-        openTasksCount > 0
-          ? `${openTasksCount} open ${entityLabel} tasks require action`
-          : `Review active ${entityLabel} tasks`,
-      detail:
-        openTasksCount > 0
-          ? `Prioritize overdue ${entityLabel} items and assign owners.`
-          : `No backlog detected. Confirm this week's ${entityLabel} cadence.`,
+      title: `${openTasksCount} open ${entityLabel} task${openTasksCount === 1 ? '' : 's'}`,
+      detail: 'Assign an owner and a due date to each one.',
       href: '/app/tasks',
       icon: CheckSquare,
-      priority:
-        openTasksCount > 10
-          ? 'critical'
-          : openTasksCount > 0
-            ? 'high'
-            : 'normal',
-      ownerLabel: 'Compliance Ops',
-      slaLabel: openTasksCount > 0 ? '24h' : 'Weekly',
-    },
-    {
+      priority: openTasksCount > 10 ? 'critical' : 'high',
+    });
+  }
+
+  if (expiringCertsCount > 0) {
+    actionQueue.push({
       id: 'queue-expiring-evidence',
-      title:
-        expiringCertsCount > 0
-          ? `${expiringCertsCount} certifications are expiring soon`
-          : 'Validate certificate and evidence expiry status',
-      detail:
-        expiringCertsCount > 0
-          ? 'Renew or replace evidence before renewal windows close.'
-          : 'No urgent expiries. Keep monthly checks scheduled.',
+      title: `${expiringCertsCount} certification${expiringCertsCount === 1 ? '' : 's'} expiring soon`,
+      detail: 'Renew or replace them before the validity window closes.',
       href: '/app/certificates',
       icon: FileText,
-      priority:
-        expiringCertsCount > 5
-          ? 'critical'
-          : expiringCertsCount > 0
-            ? 'high'
-            : 'normal',
-      ownerLabel: 'Evidence Owners',
-      slaLabel: expiringCertsCount > 0 ? '7d' : 'Monthly',
-    },
-    {
-      id: 'queue-evidence-verification',
-      title: 'Verify pending evidence submissions',
-      detail: `Move pending ${entityLabel} artifacts through approval to keep chain-of-custody current.`,
-      href: '/app/vault/review',
-      icon: CheckCircle2,
-      priority: 'high',
-      ownerLabel: 'Approvers',
-      slaLabel: '48h',
-    },
-    {
-      id: 'queue-team-readiness',
-      title: 'Review team assignment coverage',
-      detail: `Confirm ${entityLabel} ownership and reduce unassigned accountability gaps.`,
-      href: '/app/team',
+      priority: expiringCertsCount > 5 ? 'critical' : 'high',
+    });
+  }
+
+  if (complianceScore > 0 && complianceScore < 75) {
+    actionQueue.push({
+      id: 'queue-readiness',
+      title: `Readiness is ${complianceScore}%`,
+      detail: 'Below the level an auditor expects. Review the gaps by framework.',
+      href: '/app/reports',
       icon: Users,
-      priority: complianceScore < 75 ? 'critical' : 'normal',
-      ownerLabel: 'Org Owner/Admin',
-      slaLabel: complianceScore < 75 ? '72h' : 'Weekly',
-    },
-  ];
+      priority: complianceScore < 50 ? 'critical' : 'high',
+    });
+  }
 
   // Fetch completion counts for industry guidance
   useEffect(() => {
@@ -515,11 +464,11 @@ export function EmployerDashboard({
       )}
 
       <ComplianceIntelligenceSummary />
-      <AIComplianceAssistantPanel suggestions={aiSuggestions} />
 
-      {/* Compliance Score History with Trend Analytics */}
       <div>
-        <h2 className="text-sm font-semibold mb-3">Compliance Score History</h2>
+        <h2 className="text-sm font-semibold mb-3">
+          Compliance score — last 30 days
+        </h2>
         <ComplianceScoreHistory
           orgId={organizationId}
           frameworkSlug="all"

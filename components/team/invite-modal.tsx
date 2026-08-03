@@ -197,14 +197,18 @@ export function InviteModal({
             {/* Email Input */}
             <div className="space-y-2">
               <label
-                htmlFor="field-228"
+                htmlFor="invite-email"
                 className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1"
               >
                 Identity / Email
               </label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 group-focus-within:text-neutral-900 transition-colors" />
+                <Mail
+                  aria-hidden="true"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 group-focus-within:text-neutral-900 transition-colors"
+                />
                 <input
+                  id="invite-email"
                   required
                   type="email"
                   value={email}
@@ -217,16 +221,23 @@ export function InviteModal({
 
             {/* Role Selection */}
             <div className="space-y-3">
-              <label
-                htmlFor="field-227"
-                className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1"
+              {/* Group label, not a <label>: the control is three toggle
+                  buttons, which htmlFor cannot address. */}
+              <span
+                id="invite-role-label"
+                className="block text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1"
               >
                 Access Level
-              </label>
-              <div className="grid grid-cols-3 gap-3">
+              </span>
+              <div
+                role="group"
+                aria-labelledby="invite-role-label"
+                className="grid grid-cols-3 gap-3"
+              >
                 {/* Viewer */}
                 <button
                   type="button"
+                  aria-pressed={role === 'viewer'}
                   onClick={() => setRole('viewer')}
                   className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all motion-safe:hover:scale-[1.02] motion-safe:active:scale-[0.98] ${
                     role === 'viewer'
@@ -235,6 +246,7 @@ export function InviteModal({
                   }`}
                 >
                   <Eye
+                    aria-hidden="true"
                     className={`h-5 w-5 ${role === 'viewer' ? 'text-white' : 'text-neutral-400'}`}
                   />
                   <span className="text-xs font-black uppercase tracking-wider">
@@ -245,6 +257,7 @@ export function InviteModal({
                 {/* Member */}
                 <button
                   type="button"
+                  aria-pressed={role === 'member'}
                   onClick={() => setRole('member')}
                   className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all motion-safe:hover:scale-[1.02] motion-safe:active:scale-[0.98] ${
                     role === 'member'
@@ -253,6 +266,7 @@ export function InviteModal({
                   }`}
                 >
                   <User
+                    aria-hidden="true"
                     className={`h-5 w-5 ${role === 'member' ? 'text-white' : 'text-neutral-400'}`}
                   />
                   <span className="text-xs font-black uppercase tracking-wider">
@@ -263,6 +277,7 @@ export function InviteModal({
                 {/* Admin */}
                 <button
                   type="button"
+                  aria-pressed={role === 'admin'}
                   onClick={() => setRole('admin')}
                   className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all motion-safe:hover:scale-[1.02] motion-safe:active:scale-[0.98] ${
                     role === 'admin'
@@ -271,6 +286,7 @@ export function InviteModal({
                   }`}
                 >
                   <Shield
+                    aria-hidden="true"
                     className={`h-5 w-5 ${role === 'admin' ? 'text-white' : 'text-neutral-400'}`}
                   />
                   <span className="text-xs font-black uppercase tracking-wider">

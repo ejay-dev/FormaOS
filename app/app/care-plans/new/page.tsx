@@ -71,12 +71,13 @@ export default async function NewCarePlanPage({
       <div className="flex items-center gap-4">
         <Link
           href="/app/care-plans"
+          aria-label="Back to care plans"
           className="min-h-[44px] md:min-h-0 p-2 rounded-lg hover:bg-muted transition-colors"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft aria-hidden="true" className="h-5 w-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold">New {label}</h1>
+          <h1 className="page-title">New {label.toLowerCase()}</h1>
           <p className="text-muted-foreground">
             Create a new plan for a {clientLabel.toLowerCase()}
           </p>
@@ -97,7 +98,7 @@ export default async function NewCarePlanPage({
 
           <div>
             <label htmlFor="title" className="block text-sm font-medium mb-1">
-              Plan Title <span className="text-red-500">*</span>
+              Plan Title <span className="text-destructive">*</span>
             </label>
             <input
               id="title"
@@ -115,7 +116,7 @@ export default async function NewCarePlanPage({
                 htmlFor="client_id"
                 className="block text-sm font-medium mb-1"
               >
-                {clientLabel} <span className="text-red-500">*</span>
+                {clientLabel} <span className="text-destructive">*</span>
               </label>
               <select
                 id="client_id"
@@ -180,7 +181,7 @@ export default async function NewCarePlanPage({
                 htmlFor="start_date"
                 className="block text-sm font-medium mb-1"
               >
-                Start Date <span className="text-red-500">*</span>
+                Start Date <span className="text-destructive">*</span>
               </label>
               <input
                 id="start_date"

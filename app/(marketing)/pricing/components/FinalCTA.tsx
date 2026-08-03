@@ -57,18 +57,18 @@ export function FinalCTA() {
         >
           <div className="mb-5 flex items-center justify-center gap-4">
             <span className="h-px w-10 bg-white/20" />
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <span className="text-xs font-semibold text-zinc-500">
               Two ways to start
             </span>
             <span className="h-px w-10 bg-white/20" />
           </div>
           <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Stop relying on people to{' '}
-            <span className="text-slate-500">remember</span> compliance.
+            <span className="text-zinc-500">remember</span> compliance.
             <br className="hidden sm:block" />
             Let the system enforce it.
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-400">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-zinc-400">
             Choose a path that matches your buying motion. Same compliance
             engine, same architecture, just different procurement and onboarding.
           </p>
@@ -87,7 +87,7 @@ export function FinalCTA() {
                   className="relative overflow-hidden rounded-3xl border border-white/[0.1] bg-white/[0.025] p-7 transition-colors duration-300 hover:border-white/[0.18] sm:p-9"
                 >
                   <div className="mb-6 flex items-center justify-between">
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    <span className="text-[11px] font-semibold tracking-[0.2em] text-zinc-500">
                       {path.label}
                     </span>
                     <span className="h-px flex-1 mx-4 bg-gradient-to-r from-white/10 to-transparent" />
@@ -96,7 +96,7 @@ export function FinalCTA() {
                   <div className="flex items-start gap-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03]">
                       <Icon
-                        className="h-5 w-5 text-slate-200"
+                        className="h-5 w-5 text-zinc-200"
                         aria-hidden="true"
                       />
                     </div>
@@ -104,7 +104,7 @@ export function FinalCTA() {
                       <h3 className="text-2xl font-semibold tracking-tight text-white">
                         {path.title}
                       </h3>
-                      <p className="mt-2 text-[15px] leading-relaxed text-slate-400">
+                      <p className="mt-2 text-[15px] leading-relaxed text-zinc-400">
                         {path.body}
                       </p>
                     </div>
@@ -115,9 +115,9 @@ export function FinalCTA() {
                     {path.bullets.map((b) => (
                       <li
                         key={b}
-                        className="flex items-start gap-2.5 text-[13px] leading-snug text-slate-300"
+                        className="flex items-start gap-2.5 text-[13px] leading-snug text-zinc-300"
                       >
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-zinc-400" />
                         <span>{b}</span>
                       </li>
                     ))}
@@ -154,22 +154,22 @@ export function FinalCTA() {
         <ScrollReveal
           variant="fadeUp"
           range={[0.1, 0.45]}
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/[0.06] pt-6 text-[10px] uppercase tracking-[0.22em] text-slate-500"
+          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/[0.06] pt-6 text-[10px] text-zinc-500"
         >
           <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
             Assessment-led scoping
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
             No arbitrary feature gates
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
             Full platform access
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
             Procurement-ready
           </span>
         </ScrollReveal>

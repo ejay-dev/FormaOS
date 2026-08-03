@@ -1,15 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import {
   Briefcase,
   CheckCircle2,
   CheckSquare,
   FileText,
   Home,
-  LineChart,
-  Table2,
   Users,
   type LucideIcon,
 } from 'lucide-react';
@@ -18,7 +15,6 @@ import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedC
 import { SystemStatusPanel } from '@/components/trust/SystemStatusPanel';
 import { ComplianceIntelligenceSummary } from '@/components/intelligence/ComplianceIntelligenceSummary';
 import { FrameworkHealthWidget } from '@/components/intelligence/FrameworkHealthWidget';
-import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplianceAssistantPanel';
 import { ComplianceScoreHistory } from '@/components/compliance/ComplianceScoreHistory';
 import { IndustryGuidancePanel } from '@/components/dashboard/IndustryGuidancePanel';
 import { MyActionsWidget } from '@/components/compliance/MyActionsWidget';
@@ -60,15 +56,9 @@ import {
   PriorityActionQueue,
   type ActionQueueItem,
 } from '@/components/dashboard/attention-rail';
-import {
-  StatTile,
-  GaugeCard,
-} from '@/components/dashboard/tabler-primitives';
+import { StatTile } from '@/components/dashboard/tabler-primitives';
 import { NextActionsStrip } from '@/components/dashboard/next-actions-strip';
 import { KpiBar, type KpiItem } from '@/components/dashboard/kpi-bar';
-import { FilterBar, type FilterChip } from '@/components/ui/filter-bar';
-import { Download, Search, SlidersHorizontal } from 'lucide-react';
-import { OrgHealthOverview } from '@/components/dashboard/employer-tables';
 import {
   useComplianceStore,
   useComplianceSummary,
@@ -93,7 +83,7 @@ export interface CommandCenterProps {
   firstSessionActive?: boolean;
 }
 
-type TabKey = 'command' | 'operations' | 'readiness' | 'pulse' | 'records';
+type TabKey = 'command' | 'operations' | 'readiness';
 
 interface TabDef {
   key: TabKey;
@@ -134,7 +124,7 @@ export function CommandCenter({
   organizationName: _organizationName,
   industry,
   userEmail: _userEmail,
-  teamMemberCount = 0,
+  teamMemberCount: _teamMemberCount = 0,
   complianceScore: complianceScoreProp = 0,
   expiringCertsCount: expiringCertsCountProp = 0,
   openTasksCount: openTasksCountProp = 0,
@@ -170,7 +160,6 @@ export function CommandCenter({
     useState<ChecklistCompletionCounts>(EMPTY_COUNTS);
   const [isLoadingCounts, setIsLoadingCounts] = useState(true);
   const [countsError, setCountsError] = useState<string | null>(null);
-  const [recordFilters, setRecordFilters] = useState<FilterChip[]>([]);
 
   useEffect(() => {
     if (!organizationId) return;
@@ -301,99 +290,61 @@ export function CommandCenter({
     (milestonesDone / activationMilestones.length) * 100,
   );
 
-  const actionQueue: ActionQueueItem[] = useMemo(
-    () => [
-      {
+  // Every row here has to trace back to a live count. Items with nothing
+  // behind them are omitted rather than shown as busywork.
+  const actionQueue: ActionQueueItem[] = useMemo(() => {
+    const queue: ActionQueueItem[] = [];
+
+    if (overdueTasksCount > 0) {
+      queue.push({
+        id: 'queue-overdue-tasks',
+        title: `${overdueTasksCount} overdue ${entityLabel} task${overdueTasksCount === 1 ? '' : 's'}`,
+        detail: 'Past their due date — clear these before anything else.',
+        href: '/app/tasks?filter=overdue',
+        icon: CheckSquare,
+        priority: 'critical',
+      });
+    }
+
+    if (openTasksCount > 0) {
+      queue.push({
         id: 'queue-open-tasks',
-        title:
-          openTasksCount > 0
-            ? `${openTasksCount} open ${entityLabel} tasks require action`
-            : `Review active ${entityLabel} tasks`,
-        detail:
-          openTasksCount > 0
-            ? `Prioritize overdue ${entityLabel} items and assign owners.`
-            : `No backlog detected. Confirm this week's ${entityLabel} cadence.`,
+        title: `${openTasksCount} open ${entityLabel} task${openTasksCount === 1 ? '' : 's'}`,
+        detail: 'Assign an owner and a due date to each one.',
         href: '/app/tasks?filter=assigned_to_me',
         icon: CheckSquare,
-        priority:
-          openTasksCount > 10
-            ? 'critical'
-            : openTasksCount > 0
-              ? 'high'
-              : 'normal',
-        ownerLabel: 'Compliance Ops',
-        slaLabel: openTasksCount > 0 ? '24h' : 'Weekly',
-      },
-      {
+        priority: openTasksCount > 10 ? 'critical' : 'high',
+      });
+    }
+
+    if (expiringCertsCount > 0) {
+      queue.push({
         id: 'queue-expiring-evidence',
-        title:
-          expiringCertsCount > 0
-            ? `${expiringCertsCount} certifications are expiring soon`
-            : 'Validate certificate and evidence expiry status',
-        detail:
-          expiringCertsCount > 0
-            ? 'Renew or replace evidence before renewal windows close.'
-            : 'No urgent expiries. Keep monthly checks scheduled.',
+        title: `${expiringCertsCount} certification${expiringCertsCount === 1 ? '' : 's'} expiring soon`,
+        detail: 'Renew or replace them before the validity window closes.',
         href: '/app/staff-compliance?filter=expiring',
         icon: FileText,
-        priority:
-          expiringCertsCount > 5
-            ? 'critical'
-            : expiringCertsCount > 0
-              ? 'high'
-              : 'normal',
-        ownerLabel: 'Evidence Owners',
-        slaLabel: expiringCertsCount > 0 ? '7d' : 'Monthly',
-      },
-      {
-        id: 'queue-evidence-verification',
-        title: 'Verify pending evidence submissions',
-        detail: `Move pending ${entityLabel} artifacts through approval to keep chain-of-custody current.`,
-        href: '/app/vault/review',
-        icon: CheckCircle2,
-        priority: 'high',
-        ownerLabel: 'Approvers',
-        slaLabel: '48h',
-      },
-      {
-        id: 'queue-team-readiness',
-        title: 'Review team assignment coverage',
-        detail: `Confirm ${entityLabel} ownership and reduce unassigned accountability gaps.`,
-        href: '/app/team',
+        priority: expiringCertsCount > 5 ? 'critical' : 'high',
+      });
+    }
+
+    if (complianceScore > 0 && complianceScore < 75) {
+      queue.push({
+        id: 'queue-readiness',
+        title: `Readiness is ${complianceScore}%`,
+        detail: 'Below the level an auditor expects. Review the gaps by framework.',
+        href: '/app/reports',
         icon: Users,
-        priority: complianceScore < 75 ? 'critical' : 'normal',
-        ownerLabel: 'Org Owner/Admin',
-        slaLabel: complianceScore < 75 ? '72h' : 'Weekly',
-      },
-    ],
-    [openTasksCount, expiringCertsCount, complianceScore, entityLabel],
-  );
+        priority: complianceScore < 50 ? 'critical' : 'high',
+      });
+    }
+
+    return queue;
+  }, [overdueTasksCount, openTasksCount, expiringCertsCount, complianceScore, entityLabel]);
 
   const criticalQueueCount = actionQueue.filter(
     (item) => item.priority === 'critical',
   ).length;
-
-  const aiSuggestions = [
-    {
-      title: 'Draft remediation plan',
-      detail: 'Generate owner-ready remediation actions for at-risk controls.',
-      href: '/app/tasks',
-      icon: 'remediation' as const,
-    },
-    {
-      title: 'Find missing evidence',
-      detail:
-        'Locate high-priority controls with incomplete evidence chains.',
-      href: '/app/vault',
-      icon: 'evidence' as const,
-    },
-    {
-      title: 'Interpret policy gaps',
-      detail: 'Summarize policy coverage gaps against selected frameworks.',
-      href: '/app/policies',
-      icon: 'policy' as const,
-    },
-  ];
 
   const tabs: TabDef[] = [
     {
@@ -420,11 +371,13 @@ export function CommandCenter({
           : undefined,
       countTone: 'warning',
     },
-    { key: 'pulse', label: 'Pulse', icon: LineChart },
-    { key: 'records', label: 'Records', icon: Table2 },
   ];
 
   const industryPanel = renderIndustryWidgets(industry);
+
+  // A failed /api/onboarding/checklist call used to render as a confident 0.
+  // Anything derived from those counts shows an em dash until they load.
+  const countsUnavailable = countsError !== null;
 
   const operationsKpis: KpiItem[] = [
     {
@@ -437,7 +390,7 @@ export function CommandCenter({
     {
       id: 'completed',
       label: 'Completed',
-      value: completionCounts.tasksCompleted,
+      value: countsUnavailable ? '—' : completionCounts.tasksCompleted,
       tone: 'emerald',
       href: '/app/tasks?status=completed',
     },
@@ -447,13 +400,15 @@ export function CommandCenter({
     {
       id: 'milestones',
       label: 'Milestones',
-      value: `${milestonesDone} / ${activationMilestones.length}`,
+      value: countsUnavailable
+        ? '—'
+        : `${milestonesDone} / ${activationMilestones.length}`,
       tone: 'emerald',
     },
     {
       id: 'progress',
       label: 'Progress',
-      value: `${milestonesPct}%`,
+      value: countsUnavailable ? '—' : `${milestonesPct}%`,
       tone: 'blue',
     },
     {
@@ -477,14 +432,11 @@ export function CommandCenter({
     },
   ];
 
-  const filtersForBar: FilterChip[] = recordFilters.map((f) => ({
-    ...f,
-    onRemove: () =>
-      setRecordFilters((prev) => prev.filter((x) => x.id !== f.id)),
-  }));
-
   const liveSnapshotTiles = (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div
+      data-tour="dashboard-overview"
+      className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+    >
       <StatTile
         value={liveDataReady ? openTasksCount : '—'}
         label="Open obligations"
@@ -621,6 +573,16 @@ export function CommandCenter({
                     <FrameworkHealthWidget />
                   </ErrorBoundary>
                   <PriorityActionQueue items={actionQueue} />
+                  <div>
+                    <h2 className="col-head mb-2">
+                      Compliance score — last 30 days
+                    </h2>
+                    <ComplianceScoreHistory
+                      orgId={organizationId}
+                      frameworkSlug="all"
+                      days={30}
+                    />
+                  </div>
                 </div>
                 <aside className="space-y-3 lg:col-span-4 lg:sticky lg:top-16 lg:self-start">
                   <MyActionsWidget />
@@ -639,6 +601,11 @@ export function CommandCenter({
           {activeTab === 'operations' && (
             <>
               <KpiBar items={operationsKpis} />
+              {countsUnavailable ? (
+                <p className="text-xs text-muted-foreground">
+                  Some counts couldn&apos;t load. Refresh the page to try again.
+                </p>
+              ) : null}
 
               <QuickActionTiles industry={industry} />
 
@@ -655,199 +622,33 @@ export function CommandCenter({
           {activeTab === 'readiness' && (
             <>
               <KpiBar items={readinessKpis} />
+              {countsUnavailable ? (
+                <p className="text-xs text-muted-foreground">
+                  Some counts couldn&apos;t load. Refresh the page to try again.
+                </p>
+              ) : null}
 
               <GettingStartedChecklist industry={industry} />
 
-              {industry && industry !== 'other' && (
-                <>
-                  {countsError ? (
-                    <div className="rounded-md border border-warning/20 bg-warning/10 px-4 py-3 text-sm text-warning">
-                      {countsError}. Refresh the page to try again.
-                    </div>
-                  ) : (
-                    <IndustryGuidancePanel
-                      industry={industry}
-                      completionCounts={completionCounts}
-                      complianceScore={complianceScore}
-                      showFullRoadmap={true}
-                      isLoading={isLoadingCounts}
-                      onActionClickAction={handleIndustryActionClick}
-                    />
-                  )}
-                </>
-              )}
-            </>
-          )}
-
-          {activeTab === 'pulse' && (
-            <>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <StatTile
-                  label="Readiness score"
-                  value={`${complianceScore}%`}
-                  tone={
-                    complianceScore >= 85
-                      ? 'emerald'
-                      : complianceScore >= 70
-                        ? 'amber'
-                        : 'rose'
-                  }
-                  caption={
-                    complianceScore >= 85
-                      ? 'Buyer-ready'
-                      : complianceScore >= 70
-                        ? 'Approaching'
-                        : 'Needs work'
-                  }
-                  href="/app/reports"
-                />
-                <StatTile
-                  label="Open tasks"
-                  value={openTasksCount}
-                  tone="blue"
-                  href="/app/tasks?status=open"
-                />
-                <StatTile
-                  label="Expiring certs"
-                  value={expiringCertsCount}
-                  tone={expiringCertsCount > 0 ? 'amber' : 'slate'}
-                  href="/app/staff-compliance"
-                />
-                <StatTile
-                  label="Team members"
-                  value={teamMemberCount}
-                  tone="slate"
-                  href="/app/team"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
-                <GaugeCard
-                  className="lg:col-span-4"
-                  label="Overall readiness"
-                  value={complianceScore}
-                  target={85}
-                  sublabel={
-                    complianceScore >= 85
-                      ? 'Buyer-ready'
-                      : complianceScore >= 70
-                        ? 'Approaching'
-                        : 'Needs work'
-                  }
-                  footer={
-                    <dl className="space-y-1.5 text-xs">
-                      <div className="flex items-center justify-between gap-3">
-                        <dt className="text-muted-foreground">Open tasks</dt>
-                        <dd className="font-semibold tabular-nums text-foreground">
-                          {openTasksCount}
-                        </dd>
-                      </div>
-                      <div className="flex items-center justify-between gap-3">
-                        <dt className="text-muted-foreground">
-                          Certs expiring
-                        </dt>
-                        <dd className="font-semibold tabular-nums text-foreground">
-                          {expiringCertsCount}
-                        </dd>
-                      </div>
-                      <div className="flex items-center justify-between gap-3">
-                        <dt className="text-muted-foreground">Team active</dt>
-                        <dd className="font-semibold tabular-nums text-foreground">
-                          {teamMemberCount}
-                        </dd>
-                      </div>
-                    </dl>
-                  }
-                />
-                <div className="lg:col-span-8">
-                  <h2 className="col-head mb-2">
-                    Compliance Score — last 30d
-                  </h2>
-                  <ComplianceScoreHistory
-                    orgId={organizationId}
-                    frameworkSlug="all"
-                    days={30}
-                  />
-                </div>
-              </div>
-
-              <div data-tour="dashboard-overview">
-                <h2 className="col-head mb-2">Organization Health</h2>
-                <OrgHealthOverview
+              {industry && industry !== 'other' && !countsUnavailable ? (
+                <IndustryGuidancePanel
                   industry={industry}
-                  teamMemberCount={teamMemberCount}
+                  completionCounts={completionCounts}
                   complianceScore={complianceScore}
-                  expiringCertsCount={expiringCertsCount}
-                  openTasksCount={openTasksCount}
+                  showFullRoadmap={true}
+                  isLoading={isLoadingCounts}
+                  onActionClickAction={handleIndustryActionClick}
                 />
-              </div>
+              ) : null}
+
+              <ErrorBoundary
+                name="ComplianceIntelligenceSummary"
+                level="component"
+              >
+                <ComplianceIntelligenceSummary />
+              </ErrorBoundary>
 
               <SystemStatusPanel />
-              <ComplianceIntelligenceSummary />
-              <AIComplianceAssistantPanel suggestions={aiSuggestions} />
-            </>
-          )}
-
-          {activeTab === 'records' && (
-            <>
-              <div className="rounded-lg border border-border bg-[hsl(var(--card))] p-4">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <div>
-                    <h2 className="text-sm font-semibold tracking-tight text-foreground">
-                      Audit trail
-                    </h2>
-                    <p className="text-[11px] text-muted-foreground">
-                      Immutable, hash-chained activity log for your workspace.
-                    </p>
-                  </div>
-                  <Link
-                    href="/app/audit-trail"
-                    className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <Download className="h-3 w-3" />
-                    Open audit trail
-                  </Link>
-                </div>
-                <FilterBar
-                  className="mb-4"
-                  filters={filtersForBar}
-                  onClearAll={() => setRecordFilters([])}
-                  emptyLabel="No filters applied"
-                  actions={
-                    <>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      >
-                        <Search className="h-3 w-3" />
-                        Search
-                      </button>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      >
-                        <SlidersHorizontal className="h-3 w-3" />
-                        Filters
-                      </button>
-                    </>
-                  }
-                />
-                <div className="rounded-md border border-dashed border-border/80 bg-surface-1 p-6 text-center">
-                  <p className="text-xs font-medium text-foreground">
-                    Detailed events live in the audit trail
-                  </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
-                    Open the full audit log for hash-chain integrity, export,
-                    and search across every workspace action.
-                  </p>
-                  <Link
-                    href="/app/audit-trail"
-                    className="mt-3 inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    View audit trail
-                  </Link>
-                </div>
-              </div>
             </>
           )}
         </div>

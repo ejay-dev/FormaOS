@@ -12,6 +12,7 @@ import {
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
+import { TRUST_DOCUMENT_REVISIONS } from '@/lib/trust/document-revisions';
 import { siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
@@ -51,7 +52,7 @@ export default function DPAPage() {
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <p className="text-sm text-muted-foreground mt-2 mb-12">
-          Last updated: February 2026
+          Last updated: {TRUST_DOCUMENT_REVISIONS.dpa}
         </p>
 
         <div className="space-y-10">

@@ -147,7 +147,11 @@ export function LoadingOverlay({
   const displayMessage = message || OPERATION_MESSAGES[operation as keyof typeof OPERATION_MESSAGES] || "Processing…";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
+    >
       <div className="flex flex-col items-center gap-4 p-8 rounded-2xl bg-popover border border-border shadow-2xl">
         {/* Animated spinner */}
         <div className="relative h-12 w-12">

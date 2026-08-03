@@ -121,7 +121,7 @@ function DeadlinesInner() {
   if (deadlines.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-8 text-center">
-        <Calendar className="h-8 w-8 text-muted-foreground/40" />
+        <Calendar className="h-8 w-8 text-muted-foreground" />
         <p className="text-sm text-muted-foreground">
           No upcoming deadlines in the next 30 days.
         </p>

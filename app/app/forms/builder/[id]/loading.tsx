@@ -2,7 +2,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function FormBuilderLoading() {
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-label="Loading the form builder"
+      className="space-y-6 animate-in fade-in duration-300"
+    >
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="space-y-2">
           <Skeleton className="h-8 w-56" />
@@ -36,6 +41,8 @@ export default function FormBuilderLoading() {
           <Skeleton className="h-32 w-full rounded-2xl" />
         </div>
       </div>
+
+      <span className="sr-only">Loading content, please wait.</span>
     </div>
   );
 }

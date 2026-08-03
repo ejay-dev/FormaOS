@@ -48,7 +48,7 @@ export function FullControlMapSection() {
         >
           <div className="mb-5 flex items-center justify-center gap-3">
             <span className="h-px w-8 bg-white/25" />
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <span className="text-xs font-semibold text-zinc-500">
               Full Compliance Coverage Map
             </span>
             <span className="h-px w-8 bg-white/25" />
@@ -60,7 +60,7 @@ export function FullControlMapSection() {
             <span className="text-white/80">One living map.</span>
           </h2>
 
-          <p className="mx-auto mb-10 max-w-2xl text-base leading-relaxed text-slate-400">
+          <p className="mx-auto mb-10 max-w-2xl text-base leading-relaxed text-zinc-400">
             70+ controls across 7 enterprise frameworks, all interconnected,
             continuously monitored, and audit-ready. Hover any node to trace its
             cross-framework compliance chain.
@@ -71,13 +71,13 @@ export function FullControlMapSection() {
             {frameworkChips.map((fw) => (
               <div
                 key={fw.id}
-                className="group flex items-center gap-2 rounded-xl border border-white/[0.06] bg-slate-950/60 px-3 py-2 transition-colors hover:border-white/[0.14] hover:bg-slate-900/60 sm:px-4 sm:py-2.5"
+                className="group flex items-center gap-2 rounded-xl border border-white/[0.06] bg-zinc-950/60 px-3 py-2 transition-colors hover:border-white/[0.14] hover:bg-zinc-900/60 sm:px-4 sm:py-2.5"
               >
-                <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                <div className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
                 <span className="text-xs font-medium text-white/80 sm:text-sm">
                   {fw.label}
                 </span>
-                <span className="rounded-md bg-white/[0.04] px-1.5 py-0.5 text-[10px] tabular-nums text-slate-500 sm:text-xs">
+                <span className="rounded-md bg-white/[0.04] px-1.5 py-0.5 text-[10px] tabular-nums text-zinc-500 sm:text-xs">
                   {fw.count}
                 </span>
               </div>
@@ -90,26 +90,26 @@ export function FullControlMapSection() {
           {/* Mobile: tap-to-trace list (the SVG galaxy is unreadable < sm) */}
           <FullControlMapMobile />
 
-          <div className="relative hidden overflow-hidden rounded-3xl border border-white/[0.08] bg-slate-950 sm:block">
+          <div className="relative hidden overflow-hidden rounded-3xl border border-white/[0.08] bg-zinc-950 sm:block">
             {/* Subtle graph substrate, masked dot grid */}
-            <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_center,rgba(148,163,184,0.25)_0.8px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(circle_at_center,black_20%,transparent_80%)]" />
+            <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_center,rgba(161,161,170,0.25)_0.8px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(circle_at_center,black_20%,transparent_80%)]" />
 
             {/* Coverage summary cards (desktop), static, no telemetry chrome */}
             <div className="pointer-events-none absolute inset-x-5 top-5 z-20 hidden lg:flex items-start justify-between gap-4">
-              <div className="max-w-[35%] rounded-xl border border-white/[0.08] bg-slate-950/70 px-5 py-3.5">
-                <p className="mb-1.5 text-[10px] uppercase tracking-[0.18em] text-slate-400">
+              <div className="max-w-[35%] rounded-xl border border-white/[0.08] bg-zinc-950/70 px-5 py-3.5">
+                <p className="mb-1.5 text-[10px] text-zinc-400">
                   Full Coverage Map
                 </p>
-                <p className="text-xs text-slate-300/80 leading-relaxed">
+                <p className="text-xs text-zinc-300/80 leading-relaxed">
                   All {brand.frameworks.controlCount}+ controls mapped across {brand.frameworks.count} frameworks with cross-linked
                   compliance chains.
                 </p>
               </div>
-              <div className="max-w-[35%] rounded-xl border border-white/[0.08] bg-slate-950/70 px-5 py-3.5 text-right">
-                <p className="mb-1.5 text-[10px] uppercase tracking-[0.18em] text-slate-400">
+              <div className="max-w-[35%] rounded-xl border border-white/[0.08] bg-zinc-950/70 px-5 py-3.5 text-right">
+                <p className="mb-1.5 text-[10px] text-zinc-400">
                   Cross-Framework Mapping
                 </p>
-                <p className="text-xs text-slate-300/80 leading-relaxed">
+                <p className="text-xs text-zinc-300/80 leading-relaxed">
                   Cross-framework intelligence automatically maps shared
                   obligations.
                 </p>
@@ -118,14 +118,14 @@ export function FullControlMapSection() {
 
             {/* Coverage stat row (desktop) */}
             <div className="pointer-events-none absolute inset-x-5 bottom-5 z-20 hidden lg:flex items-center">
-              <div className="flex items-center gap-3.5 rounded-lg border border-white/[0.08] bg-slate-950/70 px-4 py-2">
+              <div className="flex items-center gap-3.5 rounded-lg border border-white/[0.08] bg-zinc-950/70 px-4 py-2">
                 {statBlocks.map((s, i) => (
                   <span key={s.label} className="flex items-center gap-2">
-                    {i > 0 && <span className="h-3 w-px bg-slate-700/50" />}
-                    <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                    {i > 0 && <span className="h-3 w-px bg-zinc-700/50" />}
+                    <span className="text-[10px] text-zinc-500">
                       {s.label}
                     </span>
-                    <span className="text-xs tabular-nums text-slate-300">
+                    <span className="text-xs tabular-nums text-zinc-300">
                       {s.value}
                     </span>
                   </span>
@@ -141,15 +141,15 @@ export function FullControlMapSection() {
 
           {/* Footer caption */}
           <div className="mt-6 text-center">
-            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-slate-950/50 px-5 py-2.5 text-xs text-slate-400 backdrop-blur-sm sm:text-sm">
-              <span className="h-px w-6 bg-gradient-to-r from-transparent to-slate-600" />
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-zinc-950/50 px-5 py-2.5 text-xs text-zinc-400 sm:text-sm">
+              <span className="h-px w-6 bg-gradient-to-r from-transparent to-zinc-600" />
               <span className="hidden sm:inline">
                 Tap or hover any node to trace cross-framework compliance chains
               </span>
               <span className="sm:hidden">
                 Tap a shared control to trace its frameworks
               </span>
-              <span className="h-px w-6 bg-gradient-to-l from-transparent to-slate-600" />
+              <span className="h-px w-6 bg-gradient-to-l from-transparent to-zinc-600" />
             </span>
           </div>
         </ScrollReveal>

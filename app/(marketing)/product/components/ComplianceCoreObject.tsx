@@ -143,7 +143,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
                 return (
                   <div
                     key={angle}
-                    className="absolute w-2 h-2 rounded-full bg-slate-400/50 shadow-[0_0_6px_rgba(161,161,170,0.4)]"
+                    className="absolute w-2 h-2 rounded-full bg-zinc-400/50 shadow-[0_0_6px_rgba(161,161,170,0.4)]"
                     style={{
                       top: `${50 + Math.sin(rad) * 50}%`,
                       left: `${50 + Math.cos(rad) * 50}%`,
@@ -179,7 +179,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               }}
             >
               <div className="flex items-center gap-1.5 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                <div className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
                 <span className="text-[9px] sm:text-[10px] font-semibold text-white/70">Controls</span>
               </div>
               <div className="space-y-1">
@@ -204,7 +204,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               }}
             >
               <div className="flex items-center gap-1.5 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                <div className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
                 <span className="text-[9px] sm:text-[10px] font-semibold text-white/70">Evidence</span>
               </div>
               <div className="space-y-1">
@@ -228,14 +228,14 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               }}
             >
               <div className="flex items-center gap-1.5 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                <div className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
                 <span className="text-[9px] sm:text-[10px] font-semibold text-white/70">Audit</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="relative w-8 h-8 sm:w-10 sm:h-10">
                   <svg viewBox="0 0 48 48" className="w-full h-full -rotate-90">
                     <circle cx="24" cy="24" r="20" fill="none" strokeWidth="3" className="stroke-white/[0.06]" />
-                    <circle cx="24" cy="24" r="20" fill="none" strokeWidth="3" strokeLinecap="round" className="stroke-slate-300"
+                    <circle cx="24" cy="24" r="20" fill="none" strokeWidth="3" strokeLinecap="round" className="stroke-zinc-300"
                       strokeDasharray={2 * Math.PI * 20} strokeDashoffset={2 * Math.PI * 20 * 0.06}
                       style={{ filter: 'drop-shadow(0 0 3px rgba(161,161,170,0.4))' }}
                     />
@@ -265,7 +265,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
             {allowInteractiveMotion && [0, 72, 144, 216, 288].map((angle, i) => (
               <motion.div
                 key={angle}
-                className="absolute top-1/2 left-1/2 w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-slate-300/50 pointer-events-none"
+                className="absolute top-1/2 left-1/2 w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-zinc-300/50 pointer-events-none"
                 animate={{
                   x: [Math.cos((angle * Math.PI) / 180) * 100, Math.cos(((angle + 360) * Math.PI) / 180) * 100],
                   y: [Math.sin((angle * Math.PI) / 180) * 100, Math.sin(((angle + 360) * Math.PI) / 180) * 100],
@@ -312,7 +312,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
             <div className="hidden sm:flex flex-col w-[130px] lg:w-[150px] border-r border-white/[0.04] p-2.5 gap-1">
               {['Dashboard', 'Controls', 'Evidence', 'Tasks', 'Reports', 'Settings'].map((item, i) => (
                 <div key={item} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[10px] ${i === 0 ? 'bg-white/[0.05] text-white/80' : 'text-white/30'}`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-slate-300' : 'bg-white/15'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-zinc-300' : 'bg-white/15'}`} />
                   {item}
                 </div>
               ))}
@@ -334,7 +334,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               {/* Stats */}
               <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
                 {[
-                  { v: '142', l: 'Controls', c: 'text-slate-300' },
+                  { v: '142', l: 'Controls', c: 'text-zinc-300' },
                   { v: '98%', l: 'Evidence', c: 'text-emerald-400' },
                   { v: '3', l: 'Findings', c: 'text-amber-400' },
                 ].map((s) => (

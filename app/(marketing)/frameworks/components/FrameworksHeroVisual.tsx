@@ -75,8 +75,8 @@ const FRAMEWORKS = [
   },
 ] as const;
 
-const GLASS =
-  'rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02]';
+const CARD_SURFACE =
+  'rounded-2xl border border-white/[0.10] bg-white/[0.05]';
 
 function FrameworksHeroVisualInner() {
   const shouldReduceMotion = useReducedMotion();
@@ -89,7 +89,7 @@ function FrameworksHeroVisualInner() {
           {[...FRAMEWORKS].reverse().map((fw) => (
             <div
               key={fw.name}
-              className={`absolute left-1/2 top-1/2 ${GLASS} ${fw.accentBorder} p-4 flex flex-col items-center justify-center`}
+              className={`absolute left-1/2 top-1/2 ${CARD_SURFACE} ${fw.accentBorder} p-4 flex flex-col items-center justify-center`}
               style={{
                 width: 160,
                 height: 100,
@@ -144,7 +144,7 @@ function FrameworksHeroVisualInner() {
           return (
             <motion.div
               key={fw.name}
-              className={`absolute left-1/2 top-1/2 ${GLASS} ${fw.accentBorder} p-4 flex flex-col items-center justify-center`}
+              className={`absolute left-1/2 top-1/2 ${CARD_SURFACE} ${fw.accentBorder} p-4 flex flex-col items-center justify-center`}
               style={{
                 width: 160,
                 height: 100,

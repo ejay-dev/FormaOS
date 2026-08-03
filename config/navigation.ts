@@ -23,6 +23,7 @@ export const solutionLinks = [
   { href: '/industries', label: 'Industries' },
   { href: '/ndis-providers', label: 'NDIS Providers' },
   { href: '/healthcare-compliance', label: 'Healthcare' },
+  { href: '/mental-health-compliance', label: 'Mental Health' },
   { href: '/financial-services-compliance', label: 'Financial Services' },
   { href: '/childcare-compliance', label: 'Childcare' },
   { href: '/construction-compliance', label: 'Construction' },
@@ -36,6 +37,7 @@ export const trustLinks = [
   { href: '/trust', label: 'Trust Center' },
   { href: '/security-review', label: 'Security Review Packet' },
   { href: '/enterprise-proof', label: 'Enterprise Proof' },
+  { href: '/verify', label: 'Verify an audit export' },
 ] as const;
 
 export const resourceLinks = [
@@ -47,8 +49,8 @@ export const resourceLinks = [
 ] as const;
 
 /**
- * Outcome journey links, used in mobile nav and footer.
- * Kept as a separate group but not in the primary desktop nav bar.
+ * The four outcome pages, read in order. Also listed under Platform in the
+ * footer so they are reachable without opening the mobile menu.
  */
 export const outcomeLinks = [
   { href: '/evaluate', label: 'Evaluate' },
@@ -82,11 +84,16 @@ export const footerLinks = {
     { href: '/frameworks', label: 'Framework Coverage' },
     { href: '/integrations', label: 'Integrations' },
     { href: '/pricing', label: 'Pricing' },
+    { href: '/evaluate', label: 'Evaluate' },
+    { href: '/prove', label: 'Prove' },
+    { href: '/operate', label: 'Operate' },
+    { href: '/govern', label: 'Govern' },
   ],
   solutions: [
     { href: '/industries', label: 'Industries' },
     { href: '/ndis-providers', label: 'NDIS Providers' },
     { href: '/healthcare-compliance', label: 'Healthcare' },
+    { href: '/mental-health-compliance', label: 'Mental Health' },
     { href: '/financial-services-compliance', label: 'Financial Services' },
     { href: '/childcare-compliance', label: 'Childcare' },
     { href: '/construction-compliance', label: 'Construction' },
@@ -97,8 +104,13 @@ export const footerLinks = {
   resources: [
     { href: '/documentation', label: 'Documentation' },
     { href: '/blog', label: 'Blog' },
+    { href: '/security', label: 'Security' },
     { href: '/trust', label: 'Trust Center' },
     { href: '/security-review', label: 'Security Review Packet' },
+    { href: '/enterprise-proof', label: 'Enterprise Proof' },
+    { href: '/verify', label: 'Verify an audit export' },
+    { href: '/status', label: 'Platform Status' },
+    { href: '/roadmap', label: 'Roadmap' },
     { href: '/changelog', label: 'Changelog' },
     { href: '/faq', label: 'FAQ' },
   ],

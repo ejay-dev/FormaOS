@@ -26,13 +26,13 @@ import { useLabel } from '@/lib/labels/use-label';
 function ragClass(days: number): string {
   if (days < 0)
     return 'bg-[var(--wire-alert)]/15 text-[var(--wire-alert)] border-[var(--wire-alert)]/30';
-  if (days <= 30) return 'bg-amber-500/15 text-amber-400 border-amber-400/30';
+  if (days <= 30) return 'bg-warning/15 text-warning border-warning/30';
   return 'bg-[var(--wire-success)]/15 text-[var(--wire-success)] border-[var(--wire-success)]/30';
 }
 
 function ragDot(days: number): string {
   if (days < 0) return 'bg-[var(--wire-alert)]';
-  if (days <= 30) return 'bg-amber-400';
+  if (days <= 30) return 'bg-warning';
   return 'bg-[var(--wire-success)]';
 }
 
@@ -115,7 +115,7 @@ export function NDISWorkerScreeningWidget() {
                     className="border-b border-border/50 h-8"
                   >
                     <td className="px-2 py-1 font-medium">{w.name}</td>
-                    <td className="px-2 py-1 font-mono text-muted-foreground">
+                    <td className="px-2 py-1 tabular-nums text-muted-foreground">
                       {new Date(w.expiryDate).toLocaleDateString()}
                     </td>
                     <td className="px-2 py-1 text-right">
@@ -164,13 +164,13 @@ export function NDISParticipantSnapshot() {
     <ErrorBoundary name="NDISParticipantSnapshot" level="component">
       <div className="grid grid-cols-3 gap-2">
         <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
-          <p className="text-xl font-bold font-mono">{data?.total ?? '—'}</p>
+          <p className="text-xl font-bold tabular-nums">{data?.total ?? '—'}</p>
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
             Participants
           </p>
         </div>
         <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
-          <p className="text-xl font-bold font-mono text-amber-400">
+          <p className="text-xl font-bold tabular-nums text-warning">
             {data?.plansOverdue ?? '—'}
           </p>
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
@@ -178,7 +178,7 @@ export function NDISParticipantSnapshot() {
           </p>
         </div>
         <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
-          <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
+          <p className="text-xl font-bold tabular-nums text-[var(--wire-alert)]">
             {data?.restrictivePractices ?? '—'}
           </p>
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
@@ -217,19 +217,19 @@ export function NDISSIRSTrackerWidget() {
       >
         <div className="grid grid-cols-3 gap-2">
           <div className="text-center">
-            <p className="text-lg font-bold font-mono text-[var(--wire-alert)]">
+            <p className="text-lg font-bold tabular-nums text-[var(--wire-alert)]">
               {counts?.open ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Open</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold font-mono text-amber-400">
+            <p className="text-lg font-bold tabular-nums text-warning">
               {counts?.notified ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Notified</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold font-mono text-[var(--wire-action)]">
+            <p className="text-lg font-bold tabular-nums text-[var(--wire-action)]">
               {counts?.investigating ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Investigating</p>
@@ -261,13 +261,13 @@ export function MentalHealthConsumerSnapshot() {
     <ErrorBoundary name="MentalHealthConsumerSnapshot" level="component">
       <div className="grid grid-cols-3 gap-2">
         <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
-          <p className="text-xl font-bold font-mono">{data?.total ?? '—'}</p>
+          <p className="text-xl font-bold tabular-nums">{data?.total ?? '—'}</p>
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
             Consumers
           </p>
         </div>
         <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
-          <p className="text-xl font-bold font-mono text-amber-400">
+          <p className="text-xl font-bold tabular-nums text-warning">
             {data?.plansOverdue ?? '—'}
           </p>
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
@@ -275,7 +275,7 @@ export function MentalHealthConsumerSnapshot() {
           </p>
         </div>
         <div className="rounded-xl border border-border bg-surface-1 p-3 text-center">
-          <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
+          <p className="text-xl font-bold tabular-nums text-[var(--wire-alert)]">
             {data?.restrictivePractices ?? '—'}
           </p>
           <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
@@ -312,7 +312,7 @@ export function MentalHealthCarePlanWidget() {
       >
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-lg border border-border bg-surface-1 p-3 text-center">
-            <p className="text-xl font-bold font-mono text-amber-400">
+            <p className="text-xl font-bold tabular-nums text-warning">
               {data?.dueThisMonth ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground uppercase">
@@ -320,7 +320,7 @@ export function MentalHealthCarePlanWidget() {
             </p>
           </div>
           <div className="rounded-lg border border-border bg-surface-1 p-3 text-center">
-            <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
+            <p className="text-xl font-bold tabular-nums text-[var(--wire-alert)]">
               {data?.overdue ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground uppercase">
@@ -359,19 +359,19 @@ export function MentalHealthIncidentWatchWidget() {
       >
         <div className="grid grid-cols-3 gap-2">
           <div className="text-center">
-            <p className="text-lg font-bold font-mono text-[var(--wire-alert)]">
+            <p className="text-lg font-bold tabular-nums text-[var(--wire-alert)]">
               {counts?.open ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Open</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold font-mono text-amber-400">
+            <p className="text-lg font-bold tabular-nums text-warning">
               {counts?.notified ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Notified</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold font-mono text-[var(--wire-action)]">
+            <p className="text-lg font-bold tabular-nums text-[var(--wire-action)]">
               {counts?.investigating ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Investigating</p>
@@ -479,7 +479,7 @@ export function HealthcarePractitionerWidget() {
                       </div>
                     </div>
                     <span
-                      className={`text-[10px] font-mono ${ragClass(p.indemnityDaysRemaining).split(' ')[1]}`}
+                      className={`text-[10px] tabular-nums ${ragClass(p.indemnityDaysRemaining).split(' ')[1]}`}
                     >
                       Indemnity: {p.indemnityDaysRemaining}d
                     </span>
@@ -551,11 +551,11 @@ export function HealthcareNSQHSWidget() {
               s.progress >= 80
                 ? 'bg-[var(--wire-success)]'
                 : s.progress >= 50
-                  ? 'bg-amber-400'
+                  ? 'bg-warning'
                   : 'bg-[var(--wire-alert)]';
             return (
               <div key={s.id} className="flex items-center gap-3">
-                <span className="text-[10px] font-mono text-muted-foreground w-4 shrink-0">
+                <span className="text-[10px] tabular-nums text-muted-foreground w-4 shrink-0">
                   {s.number}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -567,7 +567,7 @@ export function HealthcareNSQHSWidget() {
                     />
                   </div>
                 </div>
-                <span className="text-[10px] font-mono font-bold text-muted-foreground w-8 text-right">
+                <span className="text-[10px] font-bold tabular-nums text-muted-foreground w-8 text-right">
                   {s.progress}%
                 </span>
               </div>
@@ -604,7 +604,7 @@ export function AgedCareCarePlanWidget() {
       >
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-lg border border-border bg-surface-1 p-3 text-center">
-            <p className="text-xl font-bold font-mono text-amber-400">
+            <p className="text-xl font-bold tabular-nums text-warning">
               {data?.dueThisMonth ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground uppercase">
@@ -612,7 +612,7 @@ export function AgedCareCarePlanWidget() {
             </p>
           </div>
           <div className="rounded-lg border border-border bg-surface-1 p-3 text-center">
-            <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
+            <p className="text-xl font-bold tabular-nums text-[var(--wire-alert)]">
               {data?.overdue ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground uppercase">
@@ -643,7 +643,7 @@ export function AgedCareStarRatingWidget() {
     pct >= 80
       ? 'text-[var(--wire-success)]'
       : pct >= 50
-        ? 'text-amber-400'
+        ? 'text-warning'
         : 'text-[var(--wire-alert)]';
 
   return (
@@ -654,11 +654,11 @@ export function AgedCareStarRatingWidget() {
         icon={Star}
       >
         <div className="flex items-center gap-4">
-          <div className={`text-3xl font-bold font-mono ${color}`}>{pct}%</div>
+          <div className={`text-3xl font-bold tabular-nums ${color}`}>{pct}%</div>
           <div className="flex-1">
             <div className="h-3 w-full rounded-full bg-surface-2">
               <div
-                className={`h-3 rounded-full transition-all ${pct >= 80 ? 'bg-[var(--wire-success)]' : pct >= 50 ? 'bg-amber-400' : 'bg-[var(--wire-alert)]'}`}
+                className={`h-3 rounded-full transition-all ${pct >= 80 ? 'bg-[var(--wire-success)]' : pct >= 50 ? 'bg-warning' : 'bg-[var(--wire-alert)]'}`}
                 style={{ width: `${pct}%` }}
               />
             </div>
@@ -883,7 +883,7 @@ export function ChildcareNQFWidget() {
                     />
                   </svg>
                   <span
-                    className="absolute inset-0 flex items-center justify-center text-[9px] font-mono font-bold"
+                    className="absolute inset-0 flex items-center justify-center text-[9px] font-bold tabular-nums"
                     style={{ color }}
                   >
                     {a.progress}%
@@ -927,19 +927,19 @@ export function FinancialBreachRegisterWidget() {
       >
         <div className="grid grid-cols-3 gap-2">
           <div className="text-center rounded-lg border border-border bg-surface-1 p-3">
-            <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
+            <p className="text-xl font-bold tabular-nums text-[var(--wire-alert)]">
               {data?.openBreaches ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Open</p>
           </div>
           <div className="text-center rounded-lg border border-border bg-surface-1 p-3">
-            <p className="text-xl font-bold font-mono text-[var(--wire-action)]">
+            <p className="text-xl font-bold tabular-nums text-[var(--wire-action)]">
               {data?.selfReported ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Self-Reported</p>
           </div>
           <div className="text-center rounded-lg border border-border bg-surface-1 p-3">
-            <p className="text-xl font-bold font-mono text-foreground">
+            <p className="text-xl font-bold tabular-nums text-foreground">
               {data?.daysSinceDetection ?? '—'}
             </p>
             <p className="text-[10px] text-muted-foreground">Days Since</p>

@@ -98,7 +98,9 @@
     "tracetest:local": "node scripts/run-tracetest-local.mjs",
     "test:db:tenant-isolation": "node scripts/check-tenant-isolation-behaviour.mjs",
     "lint:supabase-errors": "eslint --no-config-lookup --config eslint.supabase-errors.config.mjs lib/ app/",
-    "check:supabase-error-ratchet": "node scripts/check-unchecked-supabase-error-ratchet.mjs"
+    "check:supabase-error-ratchet": "node scripts/check-unchecked-supabase-error-ratchet.mjs",
+    "claims:rehash": "node scripts/build-marketing-claims.mjs",
+    "check:claims": "node scripts/check-marketing-claims.mjs"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.41",

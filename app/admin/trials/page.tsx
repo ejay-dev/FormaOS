@@ -111,7 +111,7 @@ export default async function AdminTrialsPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Trial Management</h1>
+        <h1 className="text-3xl font-bold text-foreground">Trials</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Live trial lifecycle data with extension controls.
         </p>

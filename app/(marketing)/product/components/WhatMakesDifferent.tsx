@@ -75,7 +75,7 @@ export function WhatMakesDifferent() {
           <div className="text-center mb-14">
             <div className="mb-4 flex items-center justify-center gap-3">
               <span className="h-px w-8 bg-white/25" />
-              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              <span className="text-xs font-semibold text-zinc-500">
                 What Makes FormaOS Different
               </span>
               <span className="h-px w-8 bg-white/25" />
@@ -87,7 +87,7 @@ export function WhatMakesDifferent() {
                 compliance tool
               </span>
             </h2>
-            <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
               FormaOS is infrastructure. It orchestrates governance, execution,
               and evidence across your organization - not just records.
             </p>
@@ -113,13 +113,13 @@ export function WhatMakesDifferent() {
 
                 {/* Icon */}
                 <div className="inline-flex items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.05] p-3 mb-4">
-                  <Icon className="w-5 h-5 text-slate-300" />
+                  <Icon className="w-5 h-5 text-zinc-300" />
                 </div>
 
                 <h3 className="text-base font-semibold mb-2 text-white">
                   {item.title}
                 </h3>
-                <p className="text-sm text-slate-400 leading-relaxed mb-4">
+                <p className="text-sm text-zinc-400 leading-relaxed mb-4">
                   {item.description}
                 </p>
 
@@ -128,9 +128,9 @@ export function WhatMakesDifferent() {
                   {item.details.map((detail) => (
                     <li
                       key={detail}
-                      className="flex items-start gap-2 text-xs text-slate-500 leading-relaxed"
+                      className="flex items-start gap-2 text-xs text-zinc-500 leading-relaxed"
                     >
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500" />
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-zinc-500" />
                       {detail}
                     </li>
                   ))}

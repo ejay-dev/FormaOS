@@ -25,7 +25,7 @@ export function HeaderCTA() {
             variant: 'secondary',
           })
         }
-        className="px-3.5 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-colors whitespace-nowrap"
+        className="px-3.5 py-1.5 rounded-lg font-medium text-zinc-400 hover:text-white transition-colors whitespace-nowrap"
       >
         Login
       </Link>
