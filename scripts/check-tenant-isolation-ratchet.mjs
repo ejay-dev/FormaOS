@@ -33,7 +33,18 @@ import process from 'node:process';
 // ENGINEERING_CHANGE_MATRIX "Tenant Data Access" guidance).
 // Lower this number when you land another batch of migrations or
 // justifications and the count goes down.
-const BASELINE = 263;
+// Audit 2026-08-03: re-measured. `main` itself reports 266, so the previously
+// recorded 263 had been stale for some time — consistent with the discovery
+// that this script had never actually been wired into a CI workflow despite the
+// "Wire-in" note above, so nothing was holding the line. It runs in
+// qa-pipeline.yml as of this branch.
+//
+// 267 is main's 266 plus one site in lib/frameworks/provisioning.ts introduced
+// by the audit remediation. The remediation's other new sites were either
+// converted to createSupabaseOrgClient (lib/compliance/attestations.ts, which
+// also makes the org filter structural rather than hand-written) or justified
+// in place with an eslint-disable and a reason.
+const BASELINE = 267;
 
 const RULE = 'formaos/no-admin-client-with-org-filter';
 

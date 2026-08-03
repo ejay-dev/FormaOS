@@ -1,6 +1,5 @@
 import 'server-only';
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 // Audit Sprint 6c (2026-05-23): data layer for the manual-attestation
@@ -158,13 +157,13 @@ export async function listControlsNeedingAttestation(
     .select('*')
     .order('claimed_at', { ascending: false });
 
-  // org_control_attestations does not exist in production: migration
-  // 20260624021 is recorded in the ledger but the table is absent
-  // (`select to_regclass('public.org_control_attestations')` returns NULL),
-  // one instance of the known repo-vs-prod migration divergence. Treating a
-  // missing relation as "no attestations yet" keeps the page rendering the
-  // "awaiting attestation" bucket instead of returning a 500 the moment an
-  // evaluator starts emitting gap codes. A genuine query failure still throws.
+  // org_control_attestations was absent from production until it was backfilled
+  // on 2026-08-03 (migration 20260624021 had been recorded in the ledger while
+  // the table itself was never created — the known repo-vs-prod divergence).
+  // The tolerance is kept for environments still in that state: a missing
+  // relation reads as "no attestations yet" and the page renders the
+  // "awaiting attestation" bucket, rather than 500ing the moment an evaluator
+  // emits a gap code. A genuine query failure still throws.
   const attestationTableMissing =
     attError?.code === '42P01' ||
     attError?.code === 'PGRST205' ||
@@ -272,13 +271,18 @@ export async function updateAttestationReview(
       'updateAttestationReview: rejected_reason required when rejecting',
     );
   }
-  const admin = createSupabaseAdminClient();
+  // Audit 2026-08-02: this ran on the raw admin client filtered by id alone, so
+  // any authenticated user who knew an attestation UUID could approve or reject
+  // another tenant's compliance attestation. Switched to the org-scoped client
+  // — which the rest of this module already uses — rather than hand-writing
+  // .eq('organization_id', ...) on each statement: the wrapper stamps the
+  // filter structurally, so a future statement added here cannot forget it.
+  const supabase = createSupabaseOrgClient(input.organizationId);
 
-  const { data: existing, error: readError } = await admin
+  const { data: existing, error: readError } = await supabase
     .from('org_control_attestations')
     .select('id, claimed_by, status')
     .eq('id', input.attestationId)
-    .eq('organization_id', input.organizationId)
     .maybeSingle();
 
   if (readError) {
@@ -313,15 +317,10 @@ export async function updateAttestationReview(
           rejected_reason: input.rejectedReason?.trim() ?? null,
         };
 
-  const { data: updated, error: updateError } = await admin
+  const { data: updated, error: updateError } = await supabase
     .from('org_control_attestations')
     .update(patch)
     .eq('id', input.attestationId)
-    // Repeated on the write even though the read above already established the
-    // row belongs to this org: the two statements are not in one transaction,
-    // so the filter here is what actually guarantees the UPDATE cannot land on
-    // another tenant's row.
-    .eq('organization_id', input.organizationId)
     .select()
     .single();
 

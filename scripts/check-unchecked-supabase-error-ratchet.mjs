@@ -27,7 +27,10 @@ import process from 'node:process';
 
 // Baseline measured 2026-08-03 across lib/ and app/ (tests excluded). Lower
 // this number in the same PR whenever you land a batch of fixes.
-const BASELINE = 284;
+//
+// 284 -> 270: the audit remediation checked 14 of these while fixing the
+// silent-write bugs they were causing.
+const BASELINE = 270;
 
 const RULE = 'formaos/no-unchecked-supabase-error';
 

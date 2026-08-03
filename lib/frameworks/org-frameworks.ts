@@ -28,10 +28,12 @@ async function getOrgFrameworkLimit(
   admin: ReturnType<typeof createSupabaseAdminClient>,
   orgId: string,
 ): Promise<number | null> {
+  // Single-org plan lookup during framework-provisioning sync; orgId is
+  // server-derived, not request input.
+  // eslint-disable-next-line formaos/no-admin-client-with-org-filter
   const { data } = await admin
     .from('org_subscriptions')
     .select('plan_key')
-    // eslint-disable-next-line formaos/no-admin-client-with-org-filter -- single-org plan lookup during framework-provisioning sync; orgId is server-derived, not request input.
     .eq('organization_id', orgId)
     .maybeSingle();
   const planKey = resolvePlanKey(data?.plan_key) ?? 'basic';
@@ -97,10 +99,12 @@ export async function syncOrgFrameworksFromOrgRecord(orgId: string) {
       ? await getOrgFrameworkLimit(admin, orgId)
       : null;
   if (limit !== null && slugs.length > limit) {
+    // Single-org read to retain already-enabled frameworks under the plan cap;
+    // orgId is server-derived.
+    // eslint-disable-next-line formaos/no-admin-client-with-org-filter
     const { data: existing } = await admin
       .from('org_frameworks')
       .select('framework_slug')
-      // eslint-disable-next-line formaos/no-admin-client-with-org-filter -- single-org read to retain already-enabled frameworks under the plan cap; orgId is server-derived.
       .eq('organization_id', orgId);
     const existingSlugs = new Set(
       (existing ?? []).map((r: { framework_slug: string }) => r.framework_slug),

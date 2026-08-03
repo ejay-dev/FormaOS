@@ -177,6 +177,7 @@ describe('updateAttestationReview', () => {
     await expect(
       updateAttestationReview({
         attestationId: 'att-1',
+      organizationId: 'org-1',
         reviewerUserId: 'user-2',
         decision: 'reject',
       }),
@@ -193,6 +194,7 @@ describe('updateAttestationReview', () => {
     await expect(
       updateAttestationReview({
         attestationId: 'att-1',
+      organizationId: 'org-1',
         reviewerUserId: 'user-1',
         decision: 'approve',
       }),
@@ -209,6 +211,7 @@ describe('updateAttestationReview', () => {
     await expect(
       updateAttestationReview({
         attestationId: 'att-1',
+      organizationId: 'org-1',
         reviewerUserId: 'user-2',
         decision: 'approve',
       }),
@@ -245,6 +248,7 @@ describe('updateAttestationReview', () => {
 
     const row = await updateAttestationReview({
       attestationId: 'att-1',
+      organizationId: 'org-1',
       reviewerUserId: 'user-2',
       decision: 'approve',
     });
