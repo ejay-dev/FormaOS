@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-08-02T17:20:26.606Z",
+  "takenAt": "2026-08-03T02:47:58.049Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1101,6 +1101,10 @@
     {
       "version": "20260803001",
       "name": "audit_2026_08_02_fix_cross_tenant_rls"
+    },
+    {
+      "version": "20260803024547",
+      "name": "audit_2026_08_03_isolation_probe_statement_timeout"
     }
   ]
 }

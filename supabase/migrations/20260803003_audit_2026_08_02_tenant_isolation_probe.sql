@@ -39,6 +39,12 @@ RETURNS TABLE (
 LANGUAGE plpgsql
 SECURITY INVOKER
 SET search_path = public, pg_temp
+-- The sweep covers ~141 tables x up to 5 roles in one call, which exceeds the
+-- default statement_timeout on a loaded production database (observed failing
+-- twice consecutively right after a deploy). A gate that fails spuriously gets
+-- ignored — exactly the outcome this probe exists to prevent. Scoped to this
+-- function only; it does not change the role or database default.
+SET statement_timeout = '180s'
 AS $$
 DECLARE
   v_tables text[];
