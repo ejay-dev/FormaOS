@@ -66,7 +66,7 @@ export function PriorityActionQueue({ items }: { items: ActionQueueItem[] }) {
             >
               {label[item.priority]}
             </span>
-            <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/40 transition-transform group-hover:translate-x-0.5" />
+            <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
           </Link>
         ))}
       </div>

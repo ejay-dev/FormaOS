@@ -4,7 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { validateSubmission } from '@/lib/forms/submission-engine';
 import type { FormField } from '@/lib/forms/types';
-import { SubmitButton } from '@/components/ui/submit-button';
+import { PublicForm, type PublicFormState } from '@/components/forms/public-form';
 import {
   checkRateLimit,
   getClientIdentifier,
@@ -12,10 +12,33 @@ import {
 
 export const dynamic = 'force-dynamic';
 
+// File answers have no attachment store on this public endpoint, so they are
+// never collected or validated. The builder does not offer a file question
+// either — the two have to stay in step or a form becomes unsubmittable.
+function answerableFields(fields: FormField[]) {
+  return fields.filter((field) => field.type !== 'file');
+}
+
+// Echo back every visible answer so a re-render restores what the respondent
+// typed. Underscore-prefixed inputs are internal (honeypot, idempotency token).
+function collectValues(formData: FormData): Record<string, string> {
+  const values: Record<string, string> = {};
+  for (const [key, value] of formData.entries()) {
+    if (key.startsWith('_')) continue;
+    if (typeof value === 'string') values[key] = value;
+  }
+  return values;
+}
+
 // ---------------------------------------------------------------------------
 // Server Action — handles the public POST submission
 // ---------------------------------------------------------------------------
-async function handleSubmit(formId: string, orgId: string, formData: FormData) {
+async function handleSubmit(
+  formId: string,
+  orgId: string,
+  _state: PublicFormState,
+  formData: FormData,
+): Promise<PublicFormState> {
   'use server';
 
   // Honeypot — a hidden field bots routinely fill. Real users never see it,
@@ -25,6 +48,8 @@ async function handleSubmit(formId: string, orgId: string, formData: FormData) {
   if (honeypot.trim()) {
     redirect(`/submit/${formId}?success=true`);
   }
+
+  const values = collectValues(formData);
 
   // Per-client rate limit. 10 submissions per 5 min per IP-derived
   // identifier — enough for legitimate "submit, fix typo, resubmit" but
@@ -40,7 +65,11 @@ async function handleSubmit(formId: string, orgId: string, formData: FormData) {
     `${formId}:${identifier}`,
   );
   if (!rl.success) {
-    redirect(`/submit/${formId}?error=rate_limited`);
+    return {
+      values,
+      formError:
+        'Too many attempts from this device. Wait a few minutes and try again.',
+    };
   }
 
   const admin = createSupabaseAdminClient();
@@ -53,7 +82,10 @@ async function handleSubmit(formId: string, orgId: string, formData: FormData) {
     .single();
 
   if (!form || form.status !== 'published') {
-    redirect(`/submit/${formId}?error=unavailable`);
+    return {
+      values,
+      formError: 'This form is no longer accepting responses.',
+    };
   }
 
   const settings = (form.settings ?? {}) as Record<string, unknown>;
@@ -79,12 +111,15 @@ async function handleSubmit(formId: string, orgId: string, formData: FormData) {
       .select('id', { count: 'exact', head: true })
       .eq('form_id', formId);
     if ((count ?? 0) >= maxSubs) {
-      redirect(`/submit/${formId}?error=max_submissions`);
+      return {
+        values,
+        formError: 'This form has reached its response limit.',
+      };
     }
   }
 
   // Build submission data from form fields
-  const fields = form.fields as FormField[];
+  const fields = answerableFields(form.fields as FormField[]);
   const data: Record<string, unknown> = {};
   for (const field of fields) {
     const raw = formData.get(`field_${field.id}`);
@@ -94,8 +129,9 @@ async function handleSubmit(formId: string, orgId: string, formData: FormData) {
   // Validate
   const errors = validateSubmission(fields, data);
   if (errors.length > 0) {
-    const msg = errors.map((e) => e.message).join(', ');
-    redirect(`/submit/${formId}?error=${encodeURIComponent(msg)}`);
+    const fieldErrors: Record<string, string> = {};
+    for (const error of errors) fieldErrors[error.fieldId] = error.message;
+    return { values, fieldErrors };
   }
 
   const respondentEmail = (formData.get('respondent_email') as string) ?? null;
@@ -147,7 +183,10 @@ async function handleSubmit(formId: string, orgId: string, formData: FormData) {
     (error as { code?: string }).code === '23505';
 
   if (error && !isDuplicate) {
-    redirect(`/submit/${formId}?error=server_error`);
+    return {
+      values,
+      formError: 'Your answers could not be sent just now. Please try again.',
+    };
   }
 
   redirect(`/submit/${formId}?success=true`);
@@ -161,7 +200,7 @@ export default async function PublicFormPage({
   searchParams,
 }: {
   params: Promise<{ formId: string }>;
-  searchParams?: Promise<{ success?: string; error?: string }>;
+  searchParams?: Promise<{ success?: string }>;
 }) {
   const { formId } = await params;
   const qp = (await searchParams) ?? {};
@@ -193,8 +232,26 @@ export default async function PublicFormPage({
     }
   }
 
+  // Respondents arrive from a link with no other context, so the form says
+  // plainly who is collecting the answers.
+  const { data: organisation } = await admin
+    .from('organizations')
+    .select('name')
+    .eq('id', form.org_id)
+    .maybeSingle();
+  const orgName = (organisation?.name as string | undefined)?.trim() || null;
+
   const submitAction = handleSubmit.bind(null, form.id, form.org_id);
   const fields = form.fields as FormField[];
+  const submitButtonText =
+    typeof settings.submitButtonText === 'string' &&
+    settings.submitButtonText.trim()
+      ? settings.submitButtonText.trim()
+      : 'Submit';
+  const successMessage =
+    typeof settings.successMessage === 'string' && settings.successMessage.trim()
+      ? settings.successMessage.trim()
+      : `Thank you for completing ${form.title}.`;
   // Single idempotency token per page render. Refresh = new token; double-
   // click on the rendered button = same token, so the partial unique index
   // on (form_id, submission_uuid) collapses both POSTs to one row.
@@ -202,13 +259,13 @@ export default async function PublicFormPage({
 
   if (qp.success === 'true') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="max-w-md w-full rounded-lg border border-border bg-card p-8 text-center space-y-4">
-          <h1 className="text-2xl font-bold text-foreground">
+      <div className="min-h-screen bg-background px-4 py-12">
+        <div className="mx-auto max-w-xl rounded-lg border border-border bg-card p-6 sm:p-8">
+          <h1 className="text-2xl font-semibold text-foreground">
             Submission received
           </h1>
-          <p className="text-muted-foreground">
-            Thank you for completing {form.title}.
+          <p className="mt-3 text-base text-muted-foreground">
+            {successMessage}
           </p>
         </div>
       </div>
@@ -216,112 +273,30 @@ export default async function PublicFormPage({
   }
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
-      <div className="max-w-xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">{form.title}</h1>
+    <div className="min-h-screen bg-background px-4 py-10 sm:py-12">
+      <div className="mx-auto max-w-xl space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
+            {form.title}
+          </h1>
           {form.description && (
-            <p className="text-muted-foreground mt-2">{form.description}</p>
+            <p className="text-base text-muted-foreground">
+              {form.description}
+            </p>
+          )}
+          {orgName && (
+            <p className="text-sm text-muted-foreground">
+              Your answers go to {orgName}.
+            </p>
           )}
         </div>
 
-        {qp.error && (
-          <div className="rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-            {decodeURIComponent(qp.error)}
-          </div>
-        )}
-
-        <form action={submitAction} className="space-y-5">
-          <input type="hidden" name="_submission_uuid" value={submissionUuid} />
-          {/* Honeypot field — visually hidden, off-screen, no label,
-              tabindex=-1, autocomplete off. Real users never fill this. */}
-          <div
-            aria-hidden="true"
-            style={{
-              position: 'absolute',
-              left: '-10000px',
-              width: '1px',
-              height: '1px',
-              overflow: 'hidden',
-            }}
-          >
-            <label htmlFor="hp-company">
-              Company (leave blank)
-              <input
-                id="hp-company"
-                name="_company"
-                type="text"
-                tabIndex={-1}
-                autoComplete="off"
-                defaultValue=""
-              />
-            </label>
-          </div>
-          {fields.map((field) => (
-            <div key={field.id} className="space-y-1">
-              <label
-                htmlFor={`field_${field.id}`}
-                className="block text-sm font-medium text-foreground"
-              >
-                {field.label}
-                {field.validation?.required && (
-                  <span className="text-destructive ml-1">*</span>
-                )}
-              </label>
-              {field.helpText && (
-                <p className="text-xs text-muted-foreground">
-                  {field.helpText}
-                </p>
-              )}
-              {field.type === 'textarea' ? (
-                <textarea
-                  id={`field_${field.id}`}
-                  name={`field_${field.id}`}
-                  rows={4}
-                  required={Boolean(field.validation?.required)}
-                  placeholder={field.placeholder ?? ''}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-              ) : (
-                <input
-                  id={`field_${field.id}`}
-                  name={`field_${field.id}`}
-                  type={
-                    field.type === 'date'
-                      ? 'date'
-                      : field.type === 'number'
-                        ? 'number'
-                        : field.type === 'email'
-                          ? 'email'
-                          : 'text'
-                  }
-                  required={Boolean(field.validation?.required)}
-                  placeholder={field.placeholder ?? ''}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-              )}
-            </div>
-          ))}
-
-          <div className="space-y-1">
-            <label
-              htmlFor="respondent_email"
-              className="block text-sm font-medium text-foreground"
-            >
-              Your email (optional)
-            </label>
-            <input
-              id="respondent_email"
-              name="respondent_email"
-              type="email"
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
-
-          <SubmitButton size="md" loadingText="Submitting…" className="rounded-md">
-            Submit
-          </SubmitButton>
-        </form>
+        <PublicForm
+          fields={fields}
+          action={submitAction}
+          submitButtonText={submitButtonText}
+          submissionUuid={submissionUuid}
+        />
       </div>
     </div>
   );

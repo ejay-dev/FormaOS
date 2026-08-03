@@ -1,7 +1,9 @@
 'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
+import { taskStatusLabel } from '@/components/tasks/task-status';
 
 interface Task {
   id: string;
@@ -12,8 +14,8 @@ interface Task {
 }
 
 // Same four severity steps as SeverityBadge, as dots. The chip prints the
-// task title, and the dot carries a title attribute naming the priority, so
-// colour is never the only signal.
+// task title and its title attribute names the priority and status in words,
+// so colour is never the only signal.
 const PRIORITY_DOT: Record<string, string> = {
   critical: 'bg-destructive',
   high: 'bg-destructive/60',
@@ -108,18 +110,20 @@ export function TaskCalendarView({ tasks }: { tasks: Task[] }) {
                 </span>
                 <div className="space-y-0.5 mt-0.5">
                   {(tasksByDate.get(day) || []).slice(0, 3).map((task) => (
-                    <div
+                    <Link
                       key={task.id}
-                      className="flex items-center gap-1 px-1 py-0.5 rounded bg-muted/30 truncate"
+                      href={`/app/tasks?q=${encodeURIComponent(task.title)}`}
+                      title={`${task.title} · ${task.priority} priority · ${taskStatusLabel(task.status)}`}
+                      className="flex items-center gap-1 px-1 py-0.5 rounded bg-muted/30 truncate hover:bg-muted"
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${PRIORITY_DOT[task.priority] || PRIORITY_DOT.medium}`}
-                        title={`${task.priority} priority`}
+                        aria-hidden="true"
                       />
                       <span className="text-[10px] text-foreground truncate">
                         {task.title}
                       </span>
-                    </div>
+                    </Link>
                   ))}
                   {(tasksByDate.get(day) || []).length > 3 && (
                     <span className="text-[10px] text-muted-foreground px-1">

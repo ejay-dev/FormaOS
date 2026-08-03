@@ -30,6 +30,7 @@ export function RouteErrorCard({
   description,
   homeHref = '/app',
   homeLabel = 'Back to dashboard',
+  fullHeight = false,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
@@ -39,6 +40,12 @@ export function RouteErrorCard({
   description?: string;
   homeHref?: string;
   homeLabel?: string;
+  /**
+   * Fill the viewport. Set on boundaries that render without the app or
+   * admin shell (root, auth, marketing, the standalone flows) — there the
+   * default 60vh leaves the card stranded near the top of an empty window.
+   */
+  fullHeight?: boolean;
 }) {
   const pathname = usePathname();
 
@@ -63,7 +70,11 @@ export function RouteErrorCard({
   }, [error, pathname, area]);
 
   return (
-    <div className="flex min-h-[60vh] items-center justify-center bg-background px-6 text-foreground">
+    <div
+      className={`flex items-center justify-center bg-background px-6 text-foreground ${
+        fullHeight ? 'min-h-[100dvh]' : 'min-h-[60vh]'
+      }`}
+    >
       <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-8 text-center">
         <h1 className="text-xl font-semibold">
           {title ?? `${area} could not be loaded`}

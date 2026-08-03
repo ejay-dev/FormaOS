@@ -239,7 +239,11 @@ export default async function AppLayout({
         >
          <OnboardingProvider state={firstSession}>
           {showOnboardingWizard && <OnboardingWizard />}
-          <div className="app-shell app-theme relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
+          {/* min-h-dvh, not min-h-screen: on a phone 100vh is measured
+              against the browser with its toolbars collapsed, so the shell
+              runs taller than the visible viewport and the bottom of the
+              scroll area sits underneath the browser chrome. */}
+          <div className="app-shell app-theme relative flex min-h-dvh w-full overflow-hidden bg-background text-foreground">
             {/* App shell grid */}
             <div className="flex h-full w-full min-w-0">
               {/* Sidebar */}
@@ -257,8 +261,9 @@ export default async function AppLayout({
                 </div>
               </aside>
 
-              {/* Main application area */}
-              <section className="relative flex h-full flex-1 flex-col overflow-hidden">
+              {/* Main application area. min-w-0 keeps a wide table inside
+                  its own scroll region instead of stretching the shell. */}
+              <section className="relative flex h-full min-w-0 flex-1 flex-col overflow-hidden">
                 <header className="sticky top-0 z-40 flex h-12 w-full items-center glass-panel-strong border-b border-border">
                   <div className="flex h-full w-full items-center px-3 sm:px-6">
                     <TopBar
@@ -282,14 +287,20 @@ export default async function AppLayout({
                   id="main-content"
                   className="relative flex flex-1 flex-col overflow-y-auto bg-background"
                 >
-                  <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+5rem)] sm:pb-6">
+                  {/* The bottom nav is fixed and renders until md, so the
+                      clearance underneath the content has to hold to the
+                      same breakpoint or the bar covers the last rows. */}
+                  <div className="mx-auto w-full max-w-[1600px] px-4 py-4 pb-[calc(env(safe-area-inset-bottom)+5rem)] sm:px-6 md:pb-6">
                     {children}
                   </div>
                 </main>
               </section>
             </div>
 
-            <CommandPalette />
+            <CommandPalette
+              industry={systemState.organization.industry}
+              role={systemState.role}
+            />
             <HelpAssistant />
             <AiAssistant />
             <NotificationToast
@@ -306,7 +317,10 @@ export default async function AppLayout({
             <RuntimeDebugIndicator />
             <OnboardingSuccessToast />
             <OnboardingGuide />
-            <MobileBottomNav />
+            <MobileBottomNav
+              industry={systemState.organization.industry}
+              role={systemState.role}
+            />
           </div>
          </OnboardingProvider>
         </AppProviders>

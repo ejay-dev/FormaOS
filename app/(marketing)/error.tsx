@@ -13,6 +13,7 @@ export default function MarketingError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Marketing"
       title="This page could not be loaded"
       homeHref="/"

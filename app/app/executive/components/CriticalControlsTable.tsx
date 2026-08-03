@@ -98,9 +98,10 @@ function ControlRow({ control }: { control: CriticalControl }) {
 
           <Link
             href={`/app/compliance?control=${control.controlCode}`}
+            aria-label={`Open control ${control.controlCode}`}
             className="p-2 rounded-lg border border-edge-2 hover:bg-surface-2 transition-colors"
           >
-            <ExternalLink className="h-4 w-4 text-muted-foreground" />
+            <ExternalLink aria-hidden="true" className="h-4 w-4 text-muted-foreground" />
           </Link>
         </div>
       </div>

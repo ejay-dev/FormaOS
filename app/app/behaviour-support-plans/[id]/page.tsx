@@ -106,9 +106,10 @@ export default async function BehaviourSupportPlanDetailPage({
         <div className="flex items-center gap-3">
           <Link
             href="/app/behaviour-support-plans"
+            aria-label="Back to behaviour support plans"
             className="rounded-lg p-2 transition-colors hover:bg-muted"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft aria-hidden="true" className="h-5 w-5" />
           </Link>
           <div>
             <h1 className="page-title">

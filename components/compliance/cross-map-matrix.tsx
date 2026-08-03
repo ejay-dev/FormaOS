@@ -58,6 +58,7 @@ export function CrossMapMatrix({ frameworks, mappings }: Props) {
               {frameworks.map((fw) => (
                 <th
                   key={fw}
+                  scope="col"
                   className="p-2 text-center text-sm font-medium text-foreground border-b border-border"
                 >
                   {fw}
@@ -68,9 +69,12 @@ export function CrossMapMatrix({ frameworks, mappings }: Props) {
           <tbody>
             {frameworks.map((src) => (
               <tr key={src}>
-                <td className="p-2 text-sm font-medium text-foreground border-r border-border">
+                <th
+                  scope="row"
+                  className="p-2 text-left text-sm font-medium text-foreground border-r border-border"
+                >
                   {src}
-                </td>
+                </th>
                 {frameworks.map((tgt) => {
                   if (src === tgt) {
                     return (
@@ -81,23 +85,26 @@ export function CrossMapMatrix({ frameworks, mappings }: Props) {
                   }
                   const strength = getCellStrength(src, tgt);
                   const count = getCellMappings(src, tgt).length;
+                  const isSelected =
+                    selectedCell?.src === src && selectedCell?.tgt === tgt;
                   return (
                     <td
                       key={tgt}
-                      className={`p-2 text-center cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all ${
-                        selectedCell?.src === src && selectedCell?.tgt === tgt
-                          ? 'ring-2 ring-primary'
-                          : ''
+                      className={`p-2 text-center transition-all ${
+                        isSelected ? 'ring-2 ring-primary' : ''
                       }`}
-                      onClick={() => count > 0 && setSelectedCell({ src, tgt })}
                     >
                       {strength ? (
-                        <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${STRENGTH_COLORS[strength]}`}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCell({ src, tgt })}
+                          aria-pressed={isSelected}
+                          aria-label={`Show ${count} ${src} to ${tgt} mappings`}
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover:ring-2 hover:ring-primary/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${STRENGTH_COLORS[strength]}`}
                         >
-                          <Link2 className="h-3 w-3" />
+                          <Link2 aria-hidden="true" className="h-3 w-3" />
                           {count}
-                        </span>
+                        </button>
                       ) : (
                         <span className="text-xs text-muted-foreground">—</span>
                       )}

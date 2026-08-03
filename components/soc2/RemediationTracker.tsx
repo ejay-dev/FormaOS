@@ -113,7 +113,7 @@ export function RemediationTracker({ actions }: RemediationTrackerProps) {
               >
                 <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
                 <span className="text-sm text-muted-foreground line-through">{action.title}</span>
-                <span className="rounded border border-border bg-surface-1 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground/40">
+                <span className="rounded border border-border bg-surface-1 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
                   {action.controlCode}
                 </span>
               </div>

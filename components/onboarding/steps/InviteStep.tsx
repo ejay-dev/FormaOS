@@ -131,9 +131,10 @@ export function InviteStep({
         <>
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Mail aria-hidden="true" className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <input
                 type="email"
+                aria-label="Team member email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="colleague@company.com"
@@ -142,6 +143,7 @@ export function InviteStep({
               />
             </div>
             <select
+              aria-label="Role for this invite"
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
@@ -156,9 +158,10 @@ export function InviteStep({
               type="button"
               onClick={addInvite}
               disabled={!email.trim() || invites.length >= 3}
+              aria-label="Add invite"
               className="rounded-lg border border-border px-3 py-2 hover:bg-muted transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <UserPlus className="h-4 w-4" />
+              <UserPlus aria-hidden="true" className="h-4 w-4" />
             </button>
           </div>
 
@@ -179,9 +182,10 @@ export function InviteStep({
                   <button
                     type="button"
                     onClick={() => removeInvite(idx)}
+                    aria-label={`Remove ${inv.email}`}
                     className="text-muted-foreground hover:text-foreground"
                   >
-                    <X className="h-4 w-4" />
+                    <X aria-hidden="true" className="h-4 w-4" />
                   </button>
                 </div>
               ))}

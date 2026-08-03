@@ -24,20 +24,13 @@
     #27272a 60%,
     #18181b 100%
   );
-  --mk-gradient-surface: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.03) 55%,
-    rgba(255, 255, 255, 0.06) 100%
-  );
   --mk-gradient-shell: linear-gradient(
     180deg,
     rgba(17, 18, 19, 0.96) 0%,
     rgba(17, 18, 19, 0.92) 100%
   );
 
-  --mk-glass-bg: rgba(255, 255, 255, 0.06);
-  --mk-glass-bg-strong: rgba(255, 255, 255, 0.1);
+  /* Hairline on panels, buttons and dividers. Not a fill: panels are opaque. */
   --mk-glass-border: rgba(255, 255, 255, 0.12);
 
   --mk-shadow-md:
@@ -175,43 +168,38 @@
   color: rgba(148, 163, 184, 1); /* slate-400 */
 }
 
-/* Glass - canonical values from globals.css: blur(20px) saturate(150%) */
+/* Canonical card: an opaque charcoal panel, a 1px hairline and a real shadow.
+   Depth comes from the shadow, not from a translucent fill.
+   backdrop-filter is reserved for the two surfaces that genuinely sit over
+   moving content — the sticky header and the mobile sheet — because that is
+   the only case where blurring what is behind conveys anything. */
 .mk-glass-card,
 .glass-intense {
-  background: var(--mk-gradient-surface);
+  background: var(--mk-card);
   border: 1px solid var(--mk-glass-border);
-  backdrop-filter: blur(20px) saturate(150%);
   box-shadow: var(--mk-shadow-md);
 }
 
 .mk-surface-card {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.07) 0%,
-    rgba(255, 255, 255, 0.03) 100%
-  );
+  background: var(--mk-card);
   border: 1px solid var(--mk-glass-border);
   border-radius: var(--mk-radius-card);
   box-shadow: var(--mk-shadow-lg);
 }
 
+/* Overlays content while the page scrolls beneath — blur earns its place. */
 .mk-dropdown-surface {
-  background: linear-gradient(
-    135deg,
-    rgba(10, 16, 31, 0.97) 0%,
-    rgba(5, 7, 17, 0.98) 100%
-  );
-  backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(24, 26, 28, 0.97);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--mk-shadow-lg);
 }
 
 .mk-mobile-sheet {
-  background: linear-gradient(
-    180deg,
-    rgba(10, 16, 31, 0.98) 0%,
-    rgba(5, 7, 17, 0.98) 100%
-  );
+  background: rgba(20, 22, 24, 0.98);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow:
     0 40px 80px rgba(6, 7, 8, 0.5),
@@ -336,15 +324,11 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
-/* Keep marketing sections on one rhythm scale without changing structure */
-.mk-shell section[class*='py-20'],
-.mk-shell section[class*='py-24'],
-.mk-shell section[class*='py-28'],
-.mk-shell section[class*='py-32'],
-.mk-shell section[class*='py-36'] {
-  padding-top: var(--mk-section-y);
-  padding-bottom: var(--mk-section-y);
-}
+/* A section opts into the shared rhythm with `.mk-section`. The rules that
+   used to sit here matched on class substrings (`section[class*='py-24']`),
+   so they also caught responsive variants like `lg:py-24` and overwrote the
+   breakpoint the author wrote. Sections that state their own padding now
+   keep it. */
 
 .mk-shell main {
   background: linear-gradient(
@@ -378,19 +362,19 @@
   scroll-margin-top: calc(var(--mk-nav-height) + 1.5rem);
 }
 
-.mk-marketing-flow section:first-of-type,
+/* Hero proportions are opt-in: a page asks for them by putting `.mk-hero` on
+   the section that is its hero (ImmersiveHero, CompactHero and the blog post
+   header already do). The rule this replaced also keyed off
+   `section:first-of-type`, which matches the first <section> of *any* parent —
+   so a card written as a <section> inside a grid picked up a 32rem min-height
+   and 9.5rem of hero padding, and every legal or utility page rendered a
+   near-full-viewport hero it never asked for. */
 .mk-marketing-flow .mk-hero {
   position: relative;
   min-height: clamp(32rem, 72vh, 48rem);
   padding-top: clamp(7rem, 10vw, 9.5rem);
   padding-bottom: clamp(3rem, 5vw, 4.75rem);
   overflow: hidden;
-}
-
-.mk-marketing-flow .pricing-hero--dense {
-  min-height: clamp(30rem, 74vh, 46rem);
-  padding-top: clamp(5.75rem, 8vw, 7.25rem);
-  padding-bottom: clamp(2.75rem, 5vw, 4rem);
 }
 
 .mk-marketing-flow .contact-hero--focused {
@@ -400,14 +384,12 @@
 }
 
 @media (max-width: 767px) {
-  .mk-marketing-flow section:first-of-type,
   .mk-marketing-flow .mk-hero {
     min-height: clamp(24rem, 64vh, 34rem);
     padding-top: clamp(5rem, 8vw, 6.5rem);
     padding-bottom: clamp(2.25rem, 4vw, 3rem);
   }
 
-  .mk-marketing-flow .pricing-hero--dense,
   .mk-marketing-flow .contact-hero--focused {
     min-height: clamp(26rem, 68vh, 34rem);
     padding-top: clamp(4.75rem, 7vw, 5.75rem);
@@ -416,9 +398,7 @@
 }
 
 .mk-marketing-flow .mk-hero h1,
-.mk-marketing-flow .mk-hero h2,
-.mk-marketing-flow section:first-of-type h1,
-.mk-marketing-flow section:first-of-type h2 {
+.mk-marketing-flow .mk-hero h2 {
   text-wrap: balance;
 }
 
@@ -435,24 +415,17 @@
   padding-bottom: clamp(2rem, 4vw, 3.5rem);
 }
 
-.mk-marketing-flow .mk-hero > [class*='max-w-4xl'],
-.mk-marketing-flow .mk-hero > [class*='max-w-5xl'],
-.mk-marketing-flow .mk-hero > [class*='max-w-6xl'],
-.mk-marketing-flow section:first-of-type > [class*='max-w-4xl'],
-.mk-marketing-flow section:first-of-type > [class*='max-w-5xl'],
-.mk-marketing-flow section:first-of-type > [class*='max-w-6xl'] {
-  max-width: 80rem;
-}
+/* A hero container keeps the measure it was written with. The rule removed
+   here forced max-w-4xl/5xl/6xl to 80rem, so an author asking for a 56rem
+   reading measure silently got a 80rem one. */
 
-.mk-marketing-flow .mk-hero h1,
-.mk-marketing-flow section:first-of-type h1 {
+.mk-marketing-flow .mk-hero h1 {
   letter-spacing: -0.025em;
   line-height: 1.05;
   text-wrap: balance;
 }
 
-.mk-marketing-flow .mk-hero p,
-.mk-marketing-flow section:first-of-type p {
+.mk-marketing-flow .mk-hero p {
   line-height: 1.7;
 }
 
@@ -478,14 +451,19 @@
   white-space: nowrap;
 }
 
-/* One visual treatment for glass/card/shadow primitives - blur(20px) saturate(150%) matches globals.css */
+/* The `.glass-*` names are kept as aliases so older pages keep compiling, but
+   they resolve to the same opaque panel as `.mk-glass-card`. The pair of
+   `[class*='backdrop-blur'][class*='border-white/10']` selectors that used to
+   sit here rewrote the background, border and shadow of any element whose
+   class list happened to contain both fragments — an author styling a card
+   inline had it silently replaced. */
+.mk-shell .mk-glass-card,
 .mk-shell .glass-panel,
 .mk-shell .glass-panel-strong,
 .mk-shell .glass-intense,
 .mk-shell .mk-glass-panel {
-  background: var(--mk-gradient-surface);
+  background: var(--mk-card);
   border: 1px solid var(--mk-glass-border);
-  backdrop-filter: blur(20px) saturate(150%);
   box-shadow: var(--mk-shadow-md);
 }
 
@@ -493,19 +471,6 @@
 .mk-shell .mk-surface-card {
   border-color: var(--mk-glass-border);
   box-shadow: var(--mk-shadow-lg);
-}
-
-.mk-shell .mk-glass-card,
-.mk-shell .glass-panel,
-.mk-shell .glass-panel-strong,
-.mk-shell .glass-intense,
-.mk-shell .mk-glass-panel,
-.mk-shell [class*='backdrop-blur'][class*='border-white/10'],
-.mk-shell [class*='backdrop-blur'][class*='border-white/[0.1]'] {
-  background: var(--mk-gradient-surface);
-  border: 1px solid var(--mk-glass-border);
-  backdrop-filter: blur(20px) saturate(150%);
-  box-shadow: var(--mk-shadow-md);
 }
 
 /* Legacy .btn classes align to mk-btn so older pages match current CTA language */
@@ -623,11 +588,7 @@
   --mk-depth-factor: 0.055;
 }
 
-.mk-marketing-flow .mk-section,
-.mk-marketing-flow section[class*='py-12'],
-.mk-marketing-flow section[class*='py-14'],
-.mk-marketing-flow section[class*='py-16'],
-.mk-marketing-flow section[class*='py-18'] {
+.mk-marketing-flow .mk-section {
   padding-top: var(--mk-section-y);
   padding-bottom: var(--mk-section-y);
 }
@@ -689,24 +650,16 @@
 }
 
 @media (max-width: 767px) {
-  .mk-shell section[class*='py-20'],
-  .mk-shell section[class*='py-24'],
-  .mk-shell section[class*='py-28'],
-  .mk-shell section[class*='py-32'],
-  .mk-shell section[class*='py-36'] {
-    padding-top: clamp(4rem, 10vw, 5rem);
-    padding-bottom: clamp(4rem, 10vw, 5rem);
-  }
-
+  /* `.mk-section` already tightens on handhelds through --mk-section-y in the
+     mobile token block below; sections that state their own padding keep it. */
   .mk-header-premium {
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
   }
 
-  .mk-shell .mk-glass-card,
-  .mk-shell .glass-panel,
-  .mk-shell .glass-panel-strong,
-  .mk-shell .glass-intense,
+  /* Caps the cost of any remaining ad-hoc `backdrop-blur-*` utility on
+     handhelds. A blur radius is a per-frame compositing cost, so this is a
+     performance ceiling, not a restyle. */
   .mk-shell [class*='backdrop-blur'] {
     backdrop-filter: blur(10px) saturate(115%);
     -webkit-backdrop-filter: blur(10px) saturate(115%);

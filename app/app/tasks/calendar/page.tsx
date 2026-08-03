@@ -2,8 +2,7 @@ import { redirect } from 'next/navigation';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { TaskCalendarView } from '@/components/tasks/task-calendar-view';
-import { LayoutGrid, List, Calendar } from 'lucide-react';
-import Link from 'next/link';
+import { TaskViewSwitcher } from '@/components/tasks/task-view-switcher';
 
 export default async function TasksCalendarPage() {
   const state = await fetchSystemState();
@@ -18,36 +17,20 @@ export default async function TasksCalendarPage() {
     .order('due_date', { ascending: true });
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="flex h-full flex-col">
+      <div className="page-header">
         <div>
-          <h1 className="page-title text-foreground">
-            Tasks — Calendar View
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            See tasks organized by due date
+          <h1 className="page-title text-foreground">Task calendar</h1>
+          <p className="page-description">
+            Tasks with a due date, by the month they fall in.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/app/tasks"
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs rounded border border-border text-muted-foreground hover:bg-muted"
-          >
-            <List className="h-3 w-3" /> List
-          </Link>
-          <Link
-            href="/app/tasks/board"
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs rounded border border-border text-muted-foreground hover:bg-muted"
-          >
-            <LayoutGrid className="h-3 w-3" /> Board
-          </Link>
-          <span className="inline-flex items-center gap-1 px-3 py-1.5 text-xs rounded bg-primary text-primary-foreground">
-            <Calendar className="h-3 w-3" /> Calendar
-          </span>
-        </div>
+        <TaskViewSwitcher current="calendar" />
       </div>
 
-      <TaskCalendarView tasks={tasks || []} />
+      <div className="page-content">
+        <TaskCalendarView tasks={tasks || []} />
+      </div>
     </div>
   );
 }

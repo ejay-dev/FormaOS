@@ -652,7 +652,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
         {/* Empty state */}
         {filteredArtifacts.length === 0 && (
           <div className="py-8 border border-dashed border-border rounded-lg flex flex-col items-center justify-center max-h-32">
-            <FileUp className="h-8 w-8 text-muted-foreground/40 mb-2" />
+            <FileUp className="h-8 w-8 text-muted-foreground mb-2" />
             <p className="text-sm text-muted-foreground">
               {allArtifacts.length === 0
                 ? 'Vault is empty — upload your first artifact.'

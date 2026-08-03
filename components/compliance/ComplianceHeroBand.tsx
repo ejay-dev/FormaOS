@@ -151,7 +151,7 @@ function Tile({
         <span className="font-mono text-xl font-bold text-foreground tabular-nums">
           {isLoading ? '—' : value}
         </span>
-        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/40 transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground" />
+        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-muted-foreground" />
       </div>
     </Link>
   );

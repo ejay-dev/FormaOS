@@ -13,6 +13,7 @@ export default function SigninError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Sign in"
       homeHref="/"
       homeLabel="Back to home"

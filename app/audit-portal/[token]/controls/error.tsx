@@ -17,6 +17,7 @@ export default function AuditPortalTokenControlsError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Controls"
       homeHref={params?.token ? `/audit-portal/${params.token}` : '/'}
       homeLabel="Back to portal overview"

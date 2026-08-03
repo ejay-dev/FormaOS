@@ -57,7 +57,7 @@ export function DomainBreakdown({ domains }: DomainBreakdownProps) {
             </span>
           </div>
 
-          <div className="mt-2 text-[10px] text-muted-foreground/40">
+          <div className="mt-2 text-[10px] text-muted-foreground">
             {domain.totalControls} control{domain.totalControls !== 1 ? 's' : ''}
           </div>
         </div>

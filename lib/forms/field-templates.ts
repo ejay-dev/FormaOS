@@ -1,42 +1,51 @@
 import { FormField } from './types';
 
+/**
+ * The question types the builder offers. Each template is copied into a new
+ * field, so its label is both the button in the builder and the question a
+ * respondent first sees.
+ *
+ * FieldType also allows 'file', but there is deliberately no template for it:
+ * the public form at /submit/[formId] has no attachment store, so a file
+ * question could be published and then never answered.
+ */
 export const FIELD_TEMPLATES: Record<string, Omit<FormField, 'id' | 'order'>> = {
   text: {
     type: 'text',
-    label: 'Text Field',
-    placeholder: 'Enter text...',
+    label: 'Short answer',
+    placeholder: '',
     validation: { required: false },
   },
   email: {
     type: 'email',
-    label: 'Email Address',
-    placeholder: 'email@example.com',
+    label: 'Email address',
+    placeholder: 'name@example.com',
     validation: { required: true },
   },
   number: {
     type: 'number',
-    label: 'Number Field',
-    placeholder: '0',
+    label: 'Number',
+    placeholder: '',
     validation: { required: false },
   },
   textarea: {
     type: 'textarea',
-    label: 'Text Area',
-    placeholder: 'Enter detailed text...',
+    label: 'Long answer',
+    placeholder: '',
     validation: { required: false },
   },
   select: {
     type: 'select',
     label: 'Dropdown',
     options: [
-      { label: 'Option 1', value: 'option1' },
-      { label: 'Option 2', value: 'option2' },
+      { label: 'First choice', value: 'first-choice' },
+      { label: 'Second choice', value: 'second-choice' },
     ],
     validation: { required: false },
   },
   radio: {
     type: 'radio',
-    label: 'Radio Buttons',
+    label: 'Multiple choice',
     options: [
       { label: 'Yes', value: 'yes' },
       { label: 'No', value: 'no' },
@@ -45,7 +54,7 @@ export const FIELD_TEMPLATES: Record<string, Omit<FormField, 'id' | 'order'>> = 
   },
   checkbox: {
     type: 'checkbox',
-    label: 'Checkbox',
+    label: 'Tick to confirm',
     validation: { required: false },
   },
   date: {

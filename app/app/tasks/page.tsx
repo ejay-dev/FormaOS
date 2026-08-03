@@ -1,9 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
-  CheckCircle2,
-  Circle,
   Clock,
-  MoreVertical,
   ShieldCheck,
   Search,
   Filter,
@@ -14,13 +11,22 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { EvidenceButton } from '@/components/tasks/evidence-button';
-import { createTask } from '@/app/app/actions/tasks';
+import { createTask, updateTaskStatus } from '@/app/app/actions/tasks';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { redirect } from 'next/navigation';
 import { normalizeTaskPriority } from '@/lib/tasks/priority';
 import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
 import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 import { SeverityBadge } from '@/components/care/severity-badge';
+import { StatusBadge } from '@/components/compliance/StatusBadge';
+import { TaskViewSwitcher } from '@/components/tasks/task-view-switcher';
+import {
+  isTaskOpen,
+  normaliseTaskStatus,
+  taskStatus,
+  TASK_STATUSES,
+  TASK_STATUS_LABELS,
+} from '@/components/tasks/task-status';
 
 type TaskRow = {
   id: string;
@@ -48,6 +54,14 @@ function parseSingleValue(input: string | string[] | undefined): string {
   return Array.isArray(input) ? (input[0] ?? '') : (input ?? '');
 }
 
+// 'open' stays accepted because links written before the three views shared
+// one vocabulary still point at it.
+const STATUS_FILTER_VALUES = new Set<string>([
+  'all',
+  ...TASK_STATUSES,
+  'open',
+]);
+
 export default async function TasksPage({ searchParams }: TasksPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const queryRaw = parseSingleValue(resolvedSearchParams.q).trim();
@@ -63,11 +77,10 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   )
     ? priorityFilterRaw
     : 'all';
-  const statusFilter = ['all', 'open', 'in_progress', 'completed'].includes(
-    statusFilterRaw,
-  )
-    ? statusFilterRaw
-    : 'all';
+  const statusFilter =
+    STATUS_FILTER_VALUES.has(statusFilterRaw) && statusFilterRaw !== 'all'
+      ? normaliseTaskStatus(statusFilterRaw)
+      : 'all';
   const filterKey = parseSingleValue(resolvedSearchParams.filter)
     .trim()
     .toLowerCase();
@@ -101,7 +114,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 
   const filteredTasks = allTasks.filter((task) => {
     const normalizedPriority = normalizeTaskPriority(task.priority);
-    const normalizedStatus = (task.status ?? '').toLowerCase();
+    const normalizedStatus = normaliseTaskStatus(task.status);
 
     const matchesPriority =
       priorityFilter === 'all' || normalizedPriority === priorityFilter;
@@ -119,11 +132,11 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
         return false;
       }
     } else if (filterKey === 'overdue') {
-      if (normalizedStatus === 'completed') return false;
+      if (!isTaskOpen(task.status)) return false;
       if (!task.due_date) return false;
       if (Date.parse(task.due_date) >= now) return false;
     } else if (filterKey === 'due_soon' || filterKey === 'this-week') {
-      if (normalizedStatus === 'completed') return false;
+      if (!isTaskOpen(task.status)) return false;
       if (!task.due_date) return false;
       const dueMs = Date.parse(task.due_date);
       if (dueMs < now || dueMs > now + weekMs) return false;
@@ -140,16 +153,15 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
     return haystack.includes(query);
   });
 
-  const completed = allTasks.filter((t) => t.status === 'completed');
+  const completed = allTasks.filter(
+    (t) => normaliseTaskStatus(t.status) === 'completed',
+  );
   const overdue = allTasks.filter(
-    (t) =>
-      t.status !== 'completed' &&
-      t.due_date &&
-      Date.parse(t.due_date) < now,
+    (t) => isTaskOpen(t.status) && t.due_date && Date.parse(t.due_date) < now,
   ).length;
   const critical = allTasks.filter(
     (t) =>
-      t.status !== 'completed' &&
+      isTaskOpen(t.status) &&
       normalizeTaskPriority(t.priority) === 'critical',
   ).length;
   const hasFilters = Boolean(
@@ -159,7 +171,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   const heroMetrics: PageHeroMetric[] = [
     { label: 'Total', value: allTasks.length, sub: 'tasks' },
     {
-      label: 'Verified',
+      label: 'Completed',
       value: completed.length,
       sub: allTasks.length > 0 ? `of ${allTasks.length}` : 'none yet',
       tone: 'success',
@@ -183,101 +195,104 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
       <OnboardingBanner stepId="review-task" />
 
       <PageHero
-        eyebrow="Compliance · Roadmap"
-        title="Compliance Roadmap"
-        subtitle="Execute mandatory controls and link evidence artifacts."
+        title="Tasks"
+        subtitle="Compliance actions and care follow-ups, with the evidence attached to each one."
         metrics={heroMetrics}
         actions={
-          <details className="group relative">
-            <summary className="list-none cursor-pointer inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90">
-              <Plus className="h-3.5 w-3.5" />
-              Add
-            </summary>
-            <div className="absolute right-0 mt-2 bg-card border border-border rounded-lg p-4 shadow-lg w-80 z-20">
-              <form
-                action={async (fd: FormData) => {
-                  'use server';
-                  await createTask(fd);
-                }}
-                className="space-y-3"
-              >
-                <div className="space-y-1.5">
-                  <label
-                    htmlFor="task-title"
-                    className="text-xs font-medium text-muted-foreground"
-                  >
-                    Title
-                  </label>
-                  <input
-                    id="task-title"
-                    name="title"
-                    required
-                    placeholder="e.g. Verify staff credential renewal"
-                    className="w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
-                  />
-                </div>
-                <div className="grid gap-3 grid-cols-2">
+          <>
+            <TaskViewSwitcher current="list" />
+            <details className="group relative">
+              <summary className="list-none cursor-pointer inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90">
+                <Plus className="h-3.5 w-3.5" />
+                Add
+              </summary>
+              <div className="absolute right-0 mt-2 bg-card border border-border rounded-lg p-4 shadow-lg w-80 z-20">
+                <form
+                  action={async (fd: FormData) => {
+                    'use server';
+                    await createTask(fd);
+                  }}
+                  className="space-y-3"
+                >
                   <div className="space-y-1.5">
                     <label
-                      htmlFor="task-priority"
+                      htmlFor="task-title"
                       className="text-xs font-medium text-muted-foreground"
                     >
-                      Priority
+                      Title
                     </label>
-                    <select
-                      id="task-priority"
-                      name="priority"
-                      defaultValue="medium"
+                    <input
+                      id="task-title"
+                      name="title"
+                      required
+                      placeholder="e.g. Verify staff credential renewal"
                       className="w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
-                    >
-                      <option value="critical">Critical</option>
-                      <option value="high">High</option>
-                      <option value="medium">Medium</option>
-                    </select>
+                    />
+                  </div>
+                  <div className="grid gap-3 grid-cols-2">
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="task-priority"
+                        className="text-xs font-medium text-muted-foreground"
+                      >
+                        Priority
+                      </label>
+                      <select
+                        id="task-priority"
+                        name="priority"
+                        defaultValue="medium"
+                        className="w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+                      >
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="task-due-date"
+                        className="text-xs font-medium text-muted-foreground"
+                      >
+                        Due date
+                      </label>
+                      <div className="relative">
+                        <Calendar className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                        <input
+                          id="task-due-date"
+                          type="date"
+                          name="dueDate"
+                          className="w-full rounded-md border border-border bg-background pl-8 pr-2 py-1.5 text-sm"
+                        />
+                      </div>
+                    </div>
                   </div>
                   <div className="space-y-1.5">
                     <label
-                      htmlFor="task-due-date"
+                      htmlFor="task-recurrence-days"
                       className="text-xs font-medium text-muted-foreground"
                     >
-                      Due date
+                      Recurrence (days)
                     </label>
                     <div className="relative">
-                      <Calendar className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                      <RefreshCcw className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                       <input
-                        id="task-due-date"
-                        type="date"
-                        name="dueDate"
+                        id="task-recurrence-days"
+                        type="number"
+                        name="recurrenceDays"
+                        min={0}
+                        placeholder="0"
                         className="w-full rounded-md border border-border bg-background pl-8 pr-2 py-1.5 text-sm"
                       />
                     </div>
                   </div>
-                </div>
-                <div className="space-y-1.5">
-                  <label
-                    htmlFor="task-recurrence-days"
-                    className="text-xs font-medium text-muted-foreground"
-                  >
-                    Recurrence (days)
-                  </label>
-                  <div className="relative">
-                    <RefreshCcw className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                    <input
-                      id="task-recurrence-days"
-                      type="number"
-                      name="recurrenceDays"
-                      min={0}
-                      placeholder="0"
-                      className="w-full rounded-md border border-border bg-background pl-8 pr-2 py-1.5 text-sm"
-                    />
-                  </div>
-                </div>
-                <button className="w-full rounded-md bg-primary text-primary-foreground text-sm font-medium py-1.5 hover:bg-primary/90 transition-colors">
-                  Save
-                </button>
-              </form>
-            </div>
-          </details>
+                  <button className="w-full rounded-md bg-primary text-primary-foreground text-sm font-medium py-1.5 hover:bg-primary/90 transition-colors">
+                    Save
+                  </button>
+                </form>
+              </div>
+            </details>
+          </>
         }
       />
 
@@ -293,7 +308,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               type="search"
               name="q"
               defaultValue={queryRaw}
-              placeholder="Search controls..."
+              placeholder="Search tasks"
               aria-label="Search tasks"
               className="w-full pl-9 pr-3 h-9 text-sm rounded-md border border-border bg-background"
               enterKeyHint="search"
@@ -312,6 +327,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             <option value="critical">Critical</option>
             <option value="high">High</option>
             <option value="medium">Medium</option>
+            <option value="low">Low</option>
           </select>
           <select
             name="status"
@@ -320,9 +336,11 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             className="h-9 rounded-md border border-border bg-background px-2 text-xs"
           >
             <option value="all">All status</option>
-            <option value="open">Open</option>
-            <option value="in_progress">In Progress</option>
-            <option value="completed">Completed</option>
+            {TASK_STATUSES.map((status) => (
+              <option key={status} value={status}>
+                {TASK_STATUS_LABELS[status]}
+              </option>
+            ))}
           </select>
           <button
             type="submit"
@@ -347,13 +365,11 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             <table className="min-w-[760px] w-full text-left">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="px-4 py-3 text-sm font-medium w-12">Status</th>
-                  <th className="px-4 py-3 text-sm font-medium">
-                    Control / Requirement
-                  </th>
+                  <th className="px-4 py-3 text-sm font-medium">Status</th>
+                  <th className="px-4 py-3 text-sm font-medium">Task</th>
                   <th className="px-4 py-3 text-sm font-medium">Priority</th>
                   <th className="px-4 py-3 text-sm font-medium">Evidence</th>
-                  <th className="px-4 py-3 text-sm font-medium">Due Date</th>
+                  <th className="px-4 py-3 text-sm font-medium">Due date</th>
                   <th className="px-4 py-3 text-sm font-medium text-right">
                     Actions
                   </th>
@@ -366,11 +382,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                     className="group hover:bg-muted/30 transition-colors"
                   >
                     <td className="px-4 py-3">
-                      {task.status === 'completed' ? (
-                        <CheckCircle2 className="h-4 w-4 text-success" />
-                      ) : (
-                        <Circle className="h-4 w-4 text-muted-foreground" />
-                      )}
+                      <StatusBadge {...taskStatus(task.status)} />
                     </td>
 
                     <td className="px-4 py-3">
@@ -427,13 +439,25 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                     </td>
 
                     <td className="px-4 py-3 text-right">
-                      <button
-                        type="button"
-                        aria-label="Task actions"
-                        className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                      <form
+                        action={async () => {
+                          'use server';
+                          await updateTaskStatus(
+                            task.id,
+                            isTaskOpen(task.status) ? 'completed' : 'pending',
+                          );
+                        }}
                       >
-                        <MoreVertical className="h-4 w-4" aria-hidden="true" />
-                      </button>
+                        <button
+                          type="submit"
+                          className="inline-flex min-h-[32px] items-center rounded-md border border-border px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent/30 hover:text-foreground"
+                        >
+                          {isTaskOpen(task.status)
+                            ? 'Mark complete'
+                            : 'Reopen'}
+                          <span className="sr-only"> {task.title}</span>
+                        </button>
+                      </form>
                     </td>
                   </tr>
                 ))}
@@ -445,15 +469,15 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <p className="text-sm text-muted-foreground">
                 {allTasks.length === 0
-                  ? 'Your compliance roadmap is currently empty.'
-                  : 'No requirements match the current filters.'}
+                  ? 'No tasks yet.'
+                  : 'No tasks match the current filters.'}
               </p>
               {allTasks.length === 0 ? (
                 <Link
                   href="/app"
                   className="text-xs text-primary hover:underline mt-2"
                 >
-                  Select an Industry Pack to begin
+                  Choose an industry pack to generate your first tasks
                 </Link>
               ) : null}
             </div>

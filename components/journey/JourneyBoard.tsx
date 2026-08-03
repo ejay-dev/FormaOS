@@ -453,7 +453,7 @@ export function JourneyBoard({
 
               {idx < grouped.length - 1 && (
                 <div
-                  className="flex w-4 shrink-0 items-center justify-center text-muted-foreground/40"
+                  className="flex w-4 shrink-0 items-center justify-center text-muted-foreground"
                   aria-hidden="true"
                 >
                   <ArrowRight className="h-3.5 w-3.5" />

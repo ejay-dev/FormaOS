@@ -94,7 +94,7 @@ export default function TasksScreen() {
             <div key={status} className="flex items-center gap-1.5 text-[10px]">
               <TaskStatusIcon status={status} />
               <span className={info.color}>{info.count}</span>
-              <span className="text-muted-foreground/40">{info.label}</span>
+              <span className="text-muted-foreground">{info.label}</span>
             </div>
           );
         })}
@@ -121,7 +121,7 @@ export default function TasksScreen() {
               </p>
             </div>
 
-            <span className="hidden sm:block text-[9px] text-muted-foreground/40 truncate max-w-[60px]">
+            <span className="hidden sm:block text-[9px] text-muted-foreground truncate max-w-[60px]">
               {task.framework}
             </span>
 

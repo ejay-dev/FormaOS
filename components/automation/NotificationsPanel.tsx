@@ -235,9 +235,10 @@ function NotificationItem({
                 e.stopPropagation();
                 onDismiss(notification.id);
               }}
-              className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
+              aria-label={`Dismiss notification: ${notification.title}`}
+              className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
             >
-              <X className="w-4 h-4" />
+              <X aria-hidden="true" className="w-4 h-4" />
             </button>
           </div>
           <p className="text-xs text-muted-foreground mb-2">{notification.message}</p>

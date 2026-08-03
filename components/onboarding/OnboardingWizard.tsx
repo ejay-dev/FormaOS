@@ -112,12 +112,23 @@ export function OnboardingWizard() {
   const userName = user?.name?.split(' ')[0] || 'there';
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-sm">
+    // The wizard covers the whole app shell, so it has to hold focus:
+    // without the trap, keyboard users tab into the app behind it.
+    <div
+      ref={panelRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="onboarding-wizard-step"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-background/95 backdrop-blur-sm"
+    >
       <div className="w-full max-w-2xl mx-auto px-4">
         {/* Step indicator */}
         <div className="mb-8">
           <StepIndicator currentStep={step} totalSteps={TOTAL_STEPS} />
-          <p className="text-center text-xs text-muted-foreground mt-2">
+          <p
+            id="onboarding-wizard-step"
+            className="text-center text-xs text-muted-foreground mt-2"
+          >
             {STEP_LABELS[step]}
           </p>
         </div>

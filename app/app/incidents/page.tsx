@@ -446,7 +446,7 @@ export default async function IncidentsPage({
                         colSpan={7}
                         className="px-4 py-8 text-center text-muted-foreground"
                       >
-                        <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-muted-foreground/40" />
+                        <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                         {hasFilters ? (
                           <>
                             <p>No incidents matched your filters</p>

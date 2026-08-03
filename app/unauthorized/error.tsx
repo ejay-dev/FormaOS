@@ -13,6 +13,7 @@ export default function UnauthorizedError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Access check"
       title="This page could not be loaded"
       homeHref="/"

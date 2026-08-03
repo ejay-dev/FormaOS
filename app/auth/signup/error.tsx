@@ -13,6 +13,7 @@ export default function AuthSignupError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Sign up"
       homeHref="/"
       homeLabel="Back to home"

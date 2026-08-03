@@ -5,13 +5,30 @@ import Link from 'next/link';
 import {
   ArrowLeft,
   AlertTriangle,
+  BadgeCheck,
+  CalendarDays,
   CalendarClock,
   ClipboardList,
   ClipboardCheck,
+  NotebookPen,
+  Pencil,
   Phone,
+  Pill,
   ShieldAlert,
   User,
 } from 'lucide-react';
+import { severityLabel } from '@/components/care/severity-badge';
+import { normalizeRole } from '@/app/app/actions/rbac';
+import {
+  createProgressNote,
+  signOffProgressNote,
+} from '@/app/app/actions/progress-notes';
+import { startShift, endShift } from '@/app/app/actions/patients';
+import { createTask } from '@/app/app/actions/tasks';
+import { logAuditEvent } from '@/app/app/actions/audit-events';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/app/participants/[id]');
 
 function getEntityLabel(industry: string | null): string {
   switch (industry) {
@@ -65,6 +82,13 @@ type ParticipantRow = {
   updated_at: string;
 };
 
+const NOTE_TAGS = [
+  { value: 'routine', label: 'Routine' },
+  { value: 'follow_up', label: 'Follow-up' },
+  { value: 'incident', label: 'Incident' },
+  { value: 'risk', label: 'Risk' },
+];
+
 export default async function ParticipantDetailPage({
   params,
 }: {
@@ -86,6 +110,11 @@ export default async function ParticipantDetailPage({
     { data: recentVisits },
     { data: recentIncidents },
     { data: carePlans },
+    { data: membership },
+    { count: activeMedications },
+    { data: progressNotes },
+    { data: linkedTasks },
+    { data: shifts },
   ] = await Promise.all([
     supabase
       .from('org_patients')
@@ -138,10 +167,113 @@ export default async function ParticipantDetailPage({
       .eq('client_id', participantId)
       .order('created_at', { ascending: false })
       .limit(6),
+    supabase
+      .from('org_members')
+      .select('role')
+      .eq('user_id', systemState.user.id)
+      .eq('organization_id', orgId)
+      .maybeSingle(),
+    // org_medications scopes by `org_id` / `participant_id`, unlike the
+    // rest of the care tables — see the medication chart and administer route.
+    supabase
+      .from('org_medications')
+      .select('id', { count: 'exact', head: true })
+      .eq('org_id', orgId)
+      .eq('participant_id', participantId)
+      .eq('status', 'active'),
+    supabase
+      .from('org_progress_notes')
+      .select(
+        'id, note_text, status_tag, created_at, signed_off_by, signed_off_at',
+      )
+      .eq('organization_id', orgId)
+      .eq('patient_id', participantId)
+      .order('created_at', { ascending: false })
+      .limit(8),
+    supabase
+      .from('org_tasks')
+      .select('id, title, status, due_date, priority')
+      .eq('organization_id', orgId)
+      .eq('patient_id', participantId)
+      .order('due_date', { ascending: true })
+      .limit(10),
+    supabase
+      .from('org_shifts')
+      .select('id, status, started_at, ended_at, staff_user_id')
+      .eq('organization_id', orgId)
+      .eq('patient_id', participantId)
+      .order('started_at', { ascending: false })
+      .limit(6),
   ]);
 
   const profile = participant as ParticipantRow | null;
   if (!profile) notFound();
+
+  const roleKey = normalizeRole(membership?.role ?? null);
+  // Same gates the server actions enforce: staff and above can record,
+  // manager and above can sign off and raise tasks.
+  const canWrite = ['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER', 'STAFF'].includes(
+    roleKey,
+  );
+  const canAdmin = ['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER'].includes(roleKey);
+
+  const notes = (progressNotes ?? []) as Array<{
+    id: string;
+    note_text: string;
+    status_tag: string | null;
+    created_at: string;
+    signed_off_by: string | null;
+  }>;
+  const tasks = (linkedTasks ?? []) as Array<{
+    id: string;
+    title: string;
+    status: string | null;
+    due_date: string | null;
+    priority: string | null;
+  }>;
+  const shiftRows = (shifts ?? []) as Array<{
+    id: string;
+    status: string;
+    started_at: string;
+    ended_at: string | null;
+    staff_user_id: string;
+  }>;
+
+  const activeShift = shiftRows.find(
+    (shift) =>
+      shift.status === 'active' && shift.staff_user_id === systemState.user.id,
+  );
+
+  // HIPAA §164.312(b) requires a read event on PHI, and this page loads full
+  // demographics, diagnosis, medications and incident history. Fire-and-forget
+  // so a slow audit insert never delays render, but a failed write is itself a
+  // compliance signal, so it is logged loudly rather than swallowed.
+  void logAuditEvent({
+    organizationId: orgId,
+    actorUserId: systemState.user.id,
+    actorRole: roleKey,
+    entityType: 'patient',
+    entityId: profile.id,
+    actionType: 'PATIENT_VIEWED',
+    afterState: {
+      view: 'detail',
+      notes_loaded: notes.length,
+      tasks_loaded: tasks.length,
+      incidents_loaded: (recentIncidents ?? []).length,
+    },
+    reason: 'phi_read',
+  }).catch((err) => {
+    log.error(
+      {
+        err,
+        organizationId: orgId,
+        actorUserId: systemState.user.id,
+        entityId: profile.id,
+        actionType: 'PATIENT_VIEWED',
+      },
+      'HIPAA PHI-read audit emission failed — compliance evidence missing',
+    );
+  });
 
   const openIncidents = (recentIncidents ?? []).filter(
     (item: { status?: string }) => item.status === 'open',
@@ -163,16 +295,24 @@ export default async function ParticipantDetailPage({
             {label} profile and linked operations
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Link
-            href="/app/visits/new"
+            href={`/app/participants/${participantId}/edit`}
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-sm hover:bg-accent transition-colors"
+            data-testid="edit-participant-btn"
+          >
+            <Pencil className="h-4 w-4" />
+            Edit details
+          </Link>
+          <Link
+            href={`/app/visits/new?client_id=${participantId}`}
             className="min-h-[44px] md:min-h-0 inline-flex items-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-sm hover:bg-accent transition-colors"
           >
             <CalendarClock className="h-4 w-4" />
             Schedule Visit
           </Link>
           <Link
-            href="/app/incidents/new"
+            href={`/app/incidents/new?client_id=${participantId}`}
             className="min-h-[44px] md:min-h-0 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             <AlertTriangle className="h-4 w-4" />
@@ -431,6 +571,339 @@ export default async function ParticipantDetailPage({
           )}
         </div>
       </section>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="rounded-xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              <Pill className="h-4 w-4" />
+              Medications
+            </h2>
+            <Link
+              href={`/app/participants/${participantId}/medications`}
+              className="text-xs text-primary hover:underline"
+            >
+              Medication chart
+            </Link>
+          </div>
+          <p className="mt-4 text-2xl font-semibold">{activeMedications ?? 0}</p>
+          <p className="text-sm text-muted-foreground">
+            {(activeMedications ?? 0) === 1
+              ? 'active medication'
+              : 'active medications'}
+          </p>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Dosages, as-needed rules, and the administration record are on the
+            chart.
+          </p>
+        </section>
+
+        <section className="rounded-xl border border-border bg-card p-5">
+          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <CalendarDays className="h-4 w-4" />
+            Shifts
+          </h2>
+          {canWrite ? (
+            <div className="mt-4">
+              {activeShift ? (
+                <div className="rounded-lg border border-border px-3 py-3">
+                  <p className="text-sm">
+                    Your shift started {formatDateTime(activeShift.started_at)}
+                  </p>
+                  <form
+                    action={async (fd: FormData) => {
+                      'use server';
+                      await endShift(fd);
+                    }}
+                    className="mt-3"
+                  >
+                    <input
+                      type="hidden"
+                      name="shiftId"
+                      value={activeShift.id}
+                    />
+                    <button
+                      type="submit"
+                      className="min-h-[44px] md:min-h-0 inline-flex items-center rounded-lg border border-input bg-background px-4 py-2 text-sm hover:bg-accent transition-colors"
+                    >
+                      End shift
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <form
+                  action={async (fd: FormData) => {
+                    'use server';
+                    await startShift(fd);
+                  }}
+                >
+                  <input type="hidden" name="patientId" value={profile.id} />
+                  <button
+                    type="submit"
+                    className="min-h-[44px] md:min-h-0 inline-flex items-center rounded-lg border border-input bg-background px-4 py-2 text-sm hover:bg-accent transition-colors"
+                  >
+                    Start shift
+                  </button>
+                </form>
+              )}
+            </div>
+          ) : null}
+          <div className="mt-4 space-y-2">
+            {shiftRows.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No shifts logged yet.
+              </p>
+            ) : (
+              shiftRows.map((shift) => (
+                <div
+                  key={shift.id}
+                  className="rounded-lg border border-border px-3 py-2 text-sm"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="capitalize">{shift.status}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {shift.ended_at ? 'Ended' : 'Started'}{' '}
+                      {formatDateTime(shift.ended_at ?? shift.started_at)}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="rounded-xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              <NotebookPen className="h-4 w-4" />
+              Progress Notes
+            </h2>
+            <Link
+              href="/app/progress-notes"
+              className="text-xs text-primary hover:underline"
+            >
+              All notes
+            </Link>
+          </div>
+          {canWrite ? (
+            <form
+              action={async (fd: FormData) => {
+                'use server';
+                await createProgressNote(fd);
+              }}
+              className="mt-4 grid gap-3"
+            >
+              <input type="hidden" name="patientId" value={profile.id} />
+              <div>
+                <label
+                  htmlFor="participant-note-tag"
+                  className="block text-sm font-medium mb-1"
+                >
+                  Status tag
+                </label>
+                <select
+                  id="participant-note-tag"
+                  name="statusTag"
+                  defaultValue="routine"
+                  className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
+                >
+                  {NOTE_TAGS.map((tag) => (
+                    <option key={tag.value} value={tag.value}>
+                      {tag.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="participant-note-text"
+                  className="block text-sm font-medium mb-1"
+                >
+                  Note
+                </label>
+                <textarea
+                  id="participant-note-text"
+                  name="noteText"
+                  rows={3}
+                  required
+                  className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
+                  placeholder="Document the interaction, outcome, or required follow-up."
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="min-h-[44px] md:min-h-0 inline-flex items-center rounded-lg border border-input bg-background px-4 py-2 text-sm hover:bg-accent transition-colors"
+                >
+                  Save note
+                </button>
+              </div>
+            </form>
+          ) : null}
+          <div className="mt-4 space-y-2">
+            {notes.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No progress notes yet.
+              </p>
+            ) : (
+              notes.map((note) => (
+                <div
+                  key={note.id}
+                  className="rounded-lg border border-border px-3 py-2 text-sm"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="capitalize">
+                      {(note.status_tag ?? 'routine').replace(/_/g, ' ')}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDateTime(note.created_at)}
+                    </span>
+                  </div>
+                  <p className="mt-2">{note.note_text}</p>
+                  <div className="mt-2 flex items-center gap-3">
+                    {note.signed_off_by ? (
+                      <span className="inline-flex items-center gap-1 text-xs text-success">
+                        <BadgeCheck className="h-3 w-3" />
+                        Signed off
+                      </span>
+                    ) : null}
+                    {canAdmin && !note.signed_off_by ? (
+                      <form
+                        action={async (fd: FormData) => {
+                          'use server';
+                          await signOffProgressNote(fd);
+                        }}
+                      >
+                        <input type="hidden" name="noteId" value={note.id} />
+                        <button
+                          type="submit"
+                          className="text-xs text-primary hover:underline"
+                        >
+                          Sign off
+                        </button>
+                      </form>
+                    ) : null}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              <ClipboardList className="h-4 w-4" />
+              Tasks
+            </h2>
+            <Link
+              href="/app/tasks"
+              className="text-xs text-primary hover:underline"
+            >
+              All tasks
+            </Link>
+          </div>
+          {canAdmin ? (
+            <form
+              action={async (fd: FormData) => {
+                'use server';
+                await createTask(fd);
+              }}
+              className="mt-4 grid gap-3 sm:grid-cols-2"
+            >
+              <input type="hidden" name="patientId" value={profile.id} />
+              <input type="hidden" name="recurrenceDays" value="0" />
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="participant-task-title"
+                  className="block text-sm font-medium mb-1"
+                >
+                  Task
+                </label>
+                <input
+                  id="participant-task-title"
+                  name="title"
+                  required
+                  className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
+                  placeholder={`What needs doing for this ${label.toLowerCase()}`}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="participant-task-priority"
+                  className="block text-sm font-medium mb-1"
+                >
+                  Priority
+                </label>
+                <select
+                  id="participant-task-priority"
+                  name="priority"
+                  defaultValue="medium"
+                  className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="participant-task-due"
+                  className="block text-sm font-medium mb-1"
+                >
+                  Due date
+                </label>
+                <input
+                  id="participant-task-due"
+                  type="date"
+                  name="dueDate"
+                  className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <button
+                  type="submit"
+                  className="min-h-[44px] md:min-h-0 inline-flex items-center rounded-lg border border-input bg-background px-4 py-2 text-sm hover:bg-accent transition-colors"
+                >
+                  Add task
+                </button>
+              </div>
+            </form>
+          ) : null}
+          <div className="mt-4 space-y-2">
+            {tasks.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No tasks linked to this {label.toLowerCase()}.
+              </p>
+            ) : (
+              tasks.map((task) => (
+                <div
+                  key={task.id}
+                  className="rounded-lg border border-border px-3 py-2 text-sm"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-medium">{task.title}</span>
+                    <span className="text-xs text-muted-foreground capitalize">
+                      {(task.status ?? 'pending').replace(/_/g, ' ')}
+                    </span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {task.due_date
+                      ? `Due ${new Date(task.due_date).toLocaleDateString('en-AU')}`
+                      : 'No due date'}
+                    {task.priority
+                      ? ` · ${severityLabel(task.priority)} priority`
+                      : ''}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+      </div>
 
       {profile.communication_needs || profile.cultural_considerations ? (
         <section className="rounded-xl border border-border bg-card p-5">

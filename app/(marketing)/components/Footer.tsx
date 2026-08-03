@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/brand/Logo';
 import { CURRENT_RELEASE_DISPLAY, CURRENT_RELEASE_TAG } from '@/config/release';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-import { footerLinks } from '@/config/navigation';
+import { footerLinks, trustLinks } from '@/config/navigation';
 import { brand } from '@/config/brand';
 import { compliancePlanHref, PUBLIC_CTA_LABELS, salesHref } from '@/lib/marketing/cta';
 import {
@@ -18,6 +18,15 @@ import {
 
 const compliancePlanUrl = compliancePlanHref('footer');
 const salesUrl = salesHref('footer');
+
+/* The header carries Security, Trust Center, the review packet, Enterprise
+   Proof and the export verifier as one Trust & Security group. Procurement
+   readers come to the footer looking for that group by name, so it gets its
+   own column here and drops out of Resources rather than appearing twice. */
+const trustHrefs = new Set<string>(trustLinks.map((link) => link.href));
+const resourceLinks = footerLinks.resources.filter(
+  (link) => !trustHrefs.has(link.href),
+);
 
 /* ── Footer CTA ──────────────────────────────────────────── */
 
@@ -168,7 +177,7 @@ export function Footer() {
 
         {/* Main Footer Content */}
         <div className="border-t border-white/[0.06] py-12 sm:py-14">
-          <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-8">
+          <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-10 lg:gap-8">
             {/* Brand column, wider */}
             <div className="col-span-2 sm:col-span-3 lg:col-span-2 mb-2 lg:mb-0">
               <Link
@@ -207,7 +216,8 @@ export function Footer() {
             {/* Link columns */}
             <FooterLinkColumn title="Platform" links={footerLinks.platform} />
             <FooterLinkColumn title="Solutions" links={footerLinks.solutions} />
-            <FooterLinkColumn title="Resources" links={footerLinks.resources} />
+            <FooterLinkColumn title="Trust & Security" links={trustLinks} />
+            <FooterLinkColumn title="Resources" links={resourceLinks} />
             <FooterLinkColumn title="Company" links={footerLinks.company} />
           </div>
         </div>
@@ -240,10 +250,9 @@ export function Footer() {
                 <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
                 {brand.address.locality}, {brand.address.region}, {brand.address.country}
               </div>
-              {/* /status badge removed 2026-05-13, was hardcoded
-                  "All systems operational" against 0% uptime data.
-                  Route will return when a real status provider is
-                  wired. */}
+              {/* No live/operational badge here: the bar has no uptime data to
+                  read, and /status is the page that does. It is linked from
+                  Resources above. */}
             </div>
           </div>
         </div>

@@ -45,9 +45,10 @@ export default async function NewPolicyPage() {
       <div className="flex items-center gap-4">
         <Link
           href="/app/policies"
+          aria-label="Back to policies"
           className="rounded-lg p-2 transition-colors hover:bg-muted"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft aria-hidden="true" className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="text-2xl font-bold">Create Policy</h1>

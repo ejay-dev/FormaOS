@@ -1221,9 +1221,12 @@
     font-weight: 800 !important;
   }
 
-  /* Generous hero subheadline */
+  /* Generous hero subheadline. Scoped to the hero itself: the rule this
+     replaced applied to every <p> in a page's first section, so labels,
+     captions and badges were dragged up to 17px with a 24px top margin and
+     authors had to write them as <span> or <div> to escape it. */
   .home-hero p,
-  .mk-marketing-flow section:first-of-type p {
+  .mk-marketing-flow .mk-hero p {
     font-size: 1.0625rem;
     line-height: 1.65;
     font-weight: 400;
@@ -1307,11 +1310,6 @@
     background-size: 100% 100%, 56px 56px;
   }
 
-  .mk-enterprise-flow section {
-    transform: translateY(8px) scale(1);
-    animation-duration: 0.45s;
-  }
-
   /* ============== FOOTER ============== */
   .mk-footer-premium li a {
     padding: 8px 0;
@@ -1377,25 +1375,12 @@
   }
 }
 
-/* ── Compare page visual polish ───────────────────────── */
-/* Feature table FormaOS column subtle glow on hover */
-.mk-enterprise-flow table tbody tr:hover td:nth-child(2) {
-  background: rgba(var(--mk-rgb-cyan), 0.06);
-}
-
-/* Differentiator card numbered badge pulse on hover */
-.mk-enterprise-flow article:hover > div > span:first-child {
-  border-color: rgba(var(--mk-rgb-cyan), 0.4);
-  box-shadow: 0 0 12px rgba(var(--mk-rgb-cyan), 0.15);
-}
-
-/* Mid-page CTA strip glow on hover */
-.mk-enterprise-flow .rounded-2xl[class*='from-teal'] {
-  transition: box-shadow 0.3s ease;
-}
-.mk-enterprise-flow .rounded-2xl[class*='from-teal']:hover {
-  box-shadow: 0 0 20px rgba(var(--mk-rgb-cyan), 0.08);
-}
+/* Three hover rules written for the compare page used to sit here. They were
+   scoped to `.mk-enterprise-flow`, which is on the marketing <main>, so they
+   applied site-wide: column two of *any* marketing table lit up on row hover,
+   and the first <span> of any <article> gained a glow. All three keyed off the
+   retired teal/cyan ramp, so with the palette neutralised they were spending
+   site-wide reach on an invisible effect. */
 
 /* ── Enterprise marketing flow upgrades ───────────────── */
 .mk-enterprise-flow {
@@ -1433,56 +1418,11 @@
   z-index: 1;
 }
 
-.mk-enterprise-flow section {
-  opacity: 0;
-  transform: translateY(18px) scale(0.995);
-  animation: mk-section-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  animation-delay: calc(var(--mk-section-index, 0) * 70ms);
-  will-change: transform, opacity;
-}
-
-.mk-enterprise-flow section:nth-of-type(1) {
-  --mk-section-index: 1;
-}
-
-.mk-enterprise-flow section:nth-of-type(2) {
-  --mk-section-index: 2;
-}
-
-.mk-enterprise-flow section:nth-of-type(3) {
-  --mk-section-index: 3;
-}
-
-.mk-enterprise-flow section:nth-of-type(4) {
-  --mk-section-index: 4;
-}
-
-.mk-enterprise-flow section:nth-of-type(5) {
-  --mk-section-index: 5;
-}
-
-.mk-enterprise-flow section:nth-of-type(6) {
-  --mk-section-index: 6;
-}
-
-.mk-enterprise-flow section:nth-of-type(7) {
-  --mk-section-index: 7;
-}
-
-.mk-enterprise-flow section:nth-of-type(8) {
-  --mk-section-index: 8;
-}
-
-@keyframes mk-section-rise {
-  from {
-    opacity: 0;
-    transform: translateY(18px) scale(0.995);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+/* Entrance motion is PageTransition's job alone. Every section used to start
+   at opacity 0 and rise on a time-based stagger, so sections below the fold
+   finished animating before anyone scrolled to them — the reader only ever saw
+   the finished state, while the page paid for a will-change layer per section
+   and risked leaving content invisible if the animation never ran. */
 
 /* ── Reduced motion ────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
@@ -1516,12 +1456,6 @@
   .product-panel--interactive:hover {
     transform: none;
     transition: none;
-  }
-
-  .mk-enterprise-flow section {
-    animation: none;
-    opacity: 1;
-    transform: none;
   }
 }
 

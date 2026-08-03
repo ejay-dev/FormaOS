@@ -549,9 +549,10 @@ export function InteractiveDashboard({
                         <button
                           type="button"
                           onClick={() => setSearchQuery('')}
+                          aria-label="Clear search"
                           className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/50"
                         >
-                          <X className="h-3 w-3" />
+                          <X aria-hidden="true" className="h-3 w-3" />
                         </button>
                       )}
                     </div>
@@ -692,9 +693,10 @@ export function InteractiveDashboard({
                               e.stopPropagation();
                               setExpandedRow(null);
                             }}
+                            aria-label="Collapse row"
                             className="text-white/30 hover:text-white/50"
                           >
-                            <X className="h-3 w-3" />
+                            <X aria-hidden="true" className="h-3 w-3" />
                           </button>
                         </div>
                         <div className="grid grid-cols-2 gap-2">

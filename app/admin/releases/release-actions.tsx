@@ -134,10 +134,11 @@ export function ReleaseActions({
 
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label htmlFor="field-202" className="block text-xs text-muted-foreground mb-1.5">
+              <label htmlFor="release-version-code" className="block text-xs text-muted-foreground mb-1.5">
                 Version Code
               </label>
               <input
+                id="release-version-code"
                 type="text"
                 value={versionCode}
                 onChange={(e) => setVersionCode(e.target.value)}
@@ -146,11 +147,12 @@ export function ReleaseActions({
               />
             </div>
             <div>
-              <label htmlFor="field-201" className="block text-xs text-muted-foreground mb-1.5">
+              <label htmlFor="release-name" className="block text-xs text-muted-foreground mb-1.5">
                 Release Name
               </label>
               <div className="flex gap-2">
                 <input
+                  id="release-name"
                   type="text"
                   value={releaseName}
                   onChange={(e) => setReleaseName(e.target.value)}
@@ -158,6 +160,7 @@ export function ReleaseActions({
                   className="flex-1 px-3 py-2 rounded-lg border border-border bg-muted text-foreground text-sm focus:outline-none focus:border-info/20"
                 />
                 <select
+                  aria-label="Pick a suggested release name"
                   value={releaseName}
                   onChange={(e) => setReleaseName(e.target.value)}
                   className="px-3 py-2 rounded-lg border border-border bg-muted text-foreground text-sm focus:outline-none focus:border-info/20"
@@ -173,10 +176,11 @@ export function ReleaseActions({
           </div>
 
           <div>
-            <label htmlFor="field-200" className="block text-xs text-muted-foreground mb-1.5">
+            <label htmlFor="release-notes" className="block text-xs text-muted-foreground mb-1.5">
               Release Notes (Markdown)
             </label>
             <textarea
+              id="release-notes"
               value={releaseNotes}
               onChange={(e) => setReleaseNotes(e.target.value)}
               rows={3}

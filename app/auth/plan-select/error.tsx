@@ -13,6 +13,7 @@ export default function AuthPlanSelectError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Plan selection"
       homeHref="/auth/signin"
       homeLabel="Back to sign in"

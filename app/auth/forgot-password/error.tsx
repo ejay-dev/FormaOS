@@ -13,6 +13,7 @@ export default function AuthForgotPasswordError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Password reset"
       homeHref="/auth/signin"
       homeLabel="Back to sign in"

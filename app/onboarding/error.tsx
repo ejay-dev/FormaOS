@@ -13,6 +13,7 @@ export default function OnboardingError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Onboarding"
     />
   );

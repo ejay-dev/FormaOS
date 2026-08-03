@@ -79,7 +79,7 @@ export default async function AdminRevenuePage() {
               {totalSubs} active subscription{totalSubs !== 1 ? 's' : ''}
             </p>
           </div>
-          <DollarSign className="h-12 w-12 text-muted-foreground/40" />
+          <DollarSign className="h-12 w-12 text-muted-foreground" />
         </div>
       </div>
 

@@ -1,71 +1,45 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  AlertTriangle,
-  Calendar,
-  ClipboardList,
-  CreditCard,
-  FileText,
-  Files,
-  GraduationCap,
-  Layers,
-  ListChecks,
-  Receipt,
-  Settings,
-  Shield,
-  ShieldAlert,
-  X,
-} from 'lucide-react';
+import { X, type LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type Group = {
+export type MoreSheetItem = {
+  href: string;
   label: string;
-  items: { href: string; label: string; Icon: typeof Settings }[];
+  Icon: LucideIcon;
 };
 
-const GROUPS: Group[] = [
-  {
-    label: 'Operations',
-    items: [
-      { href: '/app/incidents', label: 'Incidents', Icon: AlertTriangle },
-      { href: '/app/visits', label: 'Visits', Icon: Calendar },
-      { href: '/app/progress-notes', label: 'Progress notes', Icon: ClipboardList },
-      { href: '/app/forms', label: 'Forms', Icon: FileText },
-      { href: '/app/staff-compliance', label: 'Staff credentials', Icon: GraduationCap },
-      { href: '/app/ndis-claiming', label: 'NDIS claims', Icon: Receipt },
-    ],
-  },
-  {
-    label: 'Compliance',
-    items: [
-      { href: '/app/controls', label: 'Controls', Icon: Layers },
-      { href: '/app/policies', label: 'Policies', Icon: Files },
-      { href: '/app/registers', label: 'Registers', Icon: ListChecks },
-      { href: '/app/capa', label: 'CAPA', Icon: ShieldAlert },
-      { href: '/app/audit-trail', label: 'Audit trail', Icon: Shield },
-    ],
-  },
-  {
-    label: 'Account',
-    items: [
-      { href: '/app/billing', label: 'Billing', Icon: CreditCard },
-      { href: '/app/team', label: 'Team', Icon: GraduationCap },
-      { href: '/app/settings', label: 'Settings', Icon: Settings },
-    ],
-  },
-];
+export type MoreSheetGroup = {
+  label: string;
+  items: MoreSheetItem[];
+};
 
+/**
+ * The overflow half of the mobile navigation. Every group and item is
+ * handed in by the bottom nav, which builds them from the same
+ * getIndustryNavigation() call the desktop sidebar uses — so the sheet
+ * cannot offer a surface the sidebar lacks, name it differently, or show
+ * an aged-care organisation a route that only exists for NDIS providers.
+ */
 export function MobileMoreSheet({
   open,
   onClose,
+  groups,
 }: {
   open: boolean;
   onClose: () => void;
+  groups: MoreSheetGroup[];
 }) {
   const pathname = usePathname() ?? '';
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  // Pathname as at the moment the sheet opened. Used to close on a
+  // navigation the sheet did not initiate (browser back, for example)
+  // without closing on the render that opens it.
+  const openedAtPath = useRef<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -74,19 +48,28 @@ export function MobileMoreSheet({
     };
     document.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
+    returnFocusRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    closeButtonRef.current?.focus();
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
+      returnFocusRef.current?.focus();
     };
   }, [open, onClose]);
 
-  // Close the sheet automatically when a link is followed (URL changes).
-  // The eslint plugin for the new react-hooks rule isn't loaded in this
-  // project's lint config, so we omit the disable comment and reference
-  // `open`/`onClose` via refs-style closure — both are stable enough that
-  // re-running the effect on their identity change is acceptable.
   useEffect(() => {
-    if (open) onClose();
+    if (!open) {
+      openedAtPath.current = null;
+      return;
+    }
+    if (openedAtPath.current === null) {
+      openedAtPath.current = pathname;
+      return;
+    }
+    if (openedAtPath.current !== pathname) onClose();
   }, [pathname, open, onClose]);
 
   if (!open) return null;
@@ -101,40 +84,36 @@ export function MobileMoreSheet({
       <button
         type="button"
         aria-label="Close more navigation"
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150"
+        className="absolute inset-0 bg-black/60 animate-in fade-in duration-150"
         onClick={onClose}
       />
       <div
         className={cn(
-          'relative w-full rounded-t-3xl bg-card border-t border-border shadow-2xl',
+          'relative w-full rounded-t-2xl bg-card border-t border-border shadow-2xl',
           'animate-in slide-in-from-bottom duration-200',
           'pb-[max(env(safe-area-inset-bottom),1rem)]',
-          'max-h-[80vh] overflow-y-auto',
+          'max-h-[80dvh] overflow-y-auto overscroll-contain',
         )}
       >
-        <div className="sticky top-0 flex items-center justify-between px-5 py-4 bg-card/95 backdrop-blur border-b border-border/60">
-          <div>
-            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Navigate
-            </div>
-            <h2 className="text-lg font-bold text-foreground">More</h2>
-          </div>
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/60 bg-card px-4 py-3">
+          <h2 className="text-base font-semibold text-foreground">More</h2>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="h-10 w-10 rounded-full flex items-center justify-center text-muted-foreground hover:bg-muted/40 transition-colors"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted/40"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="px-3 py-3 space-y-5">
-          {GROUPS.map((group) => (
+        <div className="space-y-5 px-3 py-3">
+          {groups.map((group) => (
             <section key={group.label}>
-              <div className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+              <div className="px-2 pb-1.5 text-xs font-medium text-muted-foreground">
                 {group.label}
               </div>
-              <ul className="grid grid-cols-1 gap-1">
+              <ul className="grid grid-cols-1 gap-0.5">
                 {group.items.map((item) => {
                   const active =
                     pathname === item.href ||
@@ -144,16 +123,17 @@ export function MobileMoreSheet({
                       <Link
                         href={item.href}
                         onClick={onClose}
+                        aria-current={active ? 'page' : undefined}
                         className={cn(
-                          'flex items-center gap-3 rounded-xl px-3 py-3 min-h-[48px]',
+                          'flex min-h-[48px] items-center gap-3 rounded-lg px-3 py-3',
                           'transition-colors',
                           active
                             ? 'bg-foreground/10 text-foreground'
                             : 'text-foreground/85 hover:bg-muted/40',
                         )}
                       >
-                        <item.Icon className="h-5 w-5 opacity-80" />
-                        <span className="text-sm font-medium">
+                        <item.Icon className="h-5 w-5 shrink-0 opacity-80" />
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium">
                           {item.label}
                         </span>
                       </Link>

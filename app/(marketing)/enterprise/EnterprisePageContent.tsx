@@ -644,6 +644,7 @@ function FeatureCard({
           hover:shadow-[0_0_40px_rgba(0,0,0,0.15)]"
         onClick={() => setExpanded(!expanded)}
         role="button"
+        aria-expanded={expanded}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {

@@ -90,7 +90,7 @@ export default function DemoAuditTrailCard({
                 </div>
                 <div className="text-right flex-shrink-0">
                   <span className="text-[9px] text-muted-foreground/60 block">{entry.user.split(' ')[0]}</span>
-                  <span className="text-[8px] text-muted-foreground/40 block">{entry.time}</span>
+                  <span className="text-[8px] text-muted-foreground block">{entry.time}</span>
                 </div>
               </motion.div>
             );

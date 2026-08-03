@@ -13,6 +13,7 @@ export default function StandaloneAuthRedirectError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Sign in"
       title="This page could not be loaded"
       homeHref="/auth/signin"

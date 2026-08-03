@@ -365,7 +365,7 @@ export function PlanComparisonTable() {
                       {isCheck ? (
                         <Check className="h-4 w-4 text-success mx-auto" />
                       ) : isDash ? (
-                        <X className="h-4 w-4 text-muted-foreground/40 mx-auto" />
+                        <X className="h-4 w-4 text-muted-foreground mx-auto" />
                       ) : (
                         <span className="text-foreground/70">{value}</span>
                       )}

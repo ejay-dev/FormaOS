@@ -13,6 +13,7 @@ export default function AuditPortalTokenError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Auditor portal"
       homeHref="/"
       homeLabel="Back to home"

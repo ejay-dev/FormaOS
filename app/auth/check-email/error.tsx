@@ -13,6 +13,7 @@ export default function AuthCheckEmailError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Email confirmation"
       homeHref="/auth/signin"
       homeLabel="Back to sign in"

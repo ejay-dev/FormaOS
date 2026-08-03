@@ -706,11 +706,22 @@
   }
 }
 
+/* iOS Safari zooms the page in whenever a focused field is under 16px, and
+   it does not zoom back out. Visit times, dates and participant phone
+   numbers are entered on a phone in the field, so every input type used in
+   the product is covered here, including inputs with no type attribute. */
 @media (max-width: 640px) {
   input[type='text'],
   input[type='email'],
   input[type='password'],
   input[type='search'],
+  input[type='tel'],
+  input[type='url'],
+  input[type='number'],
+  input[type='date'],
+  input[type='datetime-local'],
+  input[type='time'],
+  input:not([type]),
   textarea,
   select {
     font-size: 1rem;
@@ -2179,6 +2190,32 @@
   }
 }
 
+
+/* =========================================================
+ * SMALL VIEWPORTS — SHARED APP PAGE LAYOUT
+ *
+ * .page-header and .page-content are the two layout classes used raw
+ * across the /app detail and sub pages. Both were written for a desktop
+ * column: the header puts a title and its actions in a single row that
+ * cannot wrap, and both carry 24px of their own padding on top of the
+ * 16px gutter the app shell already applies.
+ *
+ * Fixing them here rather than page by page keeps one definition of the
+ * page frame. Anything beyond the frame — dense tables, long forms —
+ * needs a real treatment on the page itself, not another override.
+ * ======================================================= */
+@media (max-width: 640px) {
+  .page-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .page-content {
+    padding: 1rem 0;
+  }
+}
 
 /* =========================================================
  * PRINT

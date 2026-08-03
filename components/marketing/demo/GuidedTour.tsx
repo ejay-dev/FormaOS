@@ -138,9 +138,10 @@ export function GuidedTourOverlay({
                     trackDemoEvent({ type: 'demo_tour_dismissed', step: currentStep });
                     onDismiss();
                   }}
+                  aria-label="Dismiss tour"
                   className="h-6 w-6 rounded-md flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
                 >
-                  <X className="h-3 w-3 text-muted-foreground" />
+                  <X aria-hidden="true" className="h-3 w-3 text-muted-foreground" />
                 </button>
               </div>
 
@@ -163,7 +164,7 @@ export function GuidedTourOverlay({
                   onClick={onPrev}
                   disabled={isFirst}
                   className={`flex items-center gap-1 text-[11px] font-medium transition-colors ${
-                    isFirst ? 'text-muted-foreground/40 cursor-not-allowed' : 'text-muted-foreground hover:text-foreground/90'
+                    isFirst ? 'text-muted-foreground cursor-not-allowed' : 'text-muted-foreground hover:text-foreground/90'
                   }`}
                 >
                   <ArrowLeft className="h-3 w-3" /> Previous

@@ -61,8 +61,8 @@ export function ChatInput({ value, onChange, onSubmit, isLoading, disabled }: Ch
         </button>
       </div>
       <div className="mt-1 flex items-center justify-between px-1">
-        <span className="text-[10px] text-muted-foreground/40">Shift+Enter for new line</span>
-        <span className="text-[10px] text-muted-foreground/40 tabular-nums">{value.length}</span>
+        <span className="text-[10px] text-muted-foreground">Shift+Enter for new line</span>
+        <span className="text-[10px] text-muted-foreground tabular-nums">{value.length}</span>
       </div>
     </div>
   );

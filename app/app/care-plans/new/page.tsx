@@ -71,9 +71,10 @@ export default async function NewCarePlanPage({
       <div className="flex items-center gap-4">
         <Link
           href="/app/care-plans"
+          aria-label="Back to care plans"
           className="min-h-[44px] md:min-h-0 p-2 rounded-lg hover:bg-muted transition-colors"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft aria-hidden="true" className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="page-title">New {label.toLowerCase()}</h1>

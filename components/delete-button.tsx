@@ -23,11 +23,12 @@ import {
  * DELETE BUTTON
  * Action: Removes node from compliance graph.
  *
- * Audit 2026-05-23 (Sprint 4c Phase 1): migrated from inline
- * confirm card to AlertDialog. The previous implementation had
- * no focus trap, no ESC handler, no aria-modal, and rendered
- * confirmation as a sibling element. AlertDialog gives all of
- * those for free.
+ * Deletion of a regulated record must be confirmed in an
+ * AlertDialog, not an inline card: the dialog is what supplies
+ * the focus trap, the ESC handler and aria-modal, so a keyboard
+ * or screen-reader user cannot destroy a record they never
+ * heard the warning for. Any other destructive control in the
+ * app should follow this shape.
  * =========================================================
  */
 
@@ -101,34 +102,41 @@ export function DeleteButton({ id, tableName, itemTitle, onDelete }: DeleteButto
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <button
-          className="group p-2 text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 rounded-lg border border-transparent hover:border-rose-500/20 transition-all motion-safe:active:scale-95"
-          title={`Delete ${nodeLabel.toLowerCase()}`}
+          type="button"
+          className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg border border-transparent hover:border-destructive/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-safe:active:scale-95"
+          aria-label={`Delete ${nodeLabel.toLowerCase()}: ${displayTitle}`}
         >
-          <Trash2 className="h-4 w-4 group-hover:animate-pulse" />
+          <Trash2 className="h-4 w-4" aria-hidden="true" />
         </button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete {nodeLabel.toLowerCase()}?</AlertDialogTitle>
           <AlertDialogDescription>
-            <span className="block text-slate-300">{displayTitle}</span>
+            <span className="block font-medium text-foreground">
+              {displayTitle}
+            </span>
             <span className="mt-2 block">
-              This will disconnect all linked nodes. The deletion is permanent
-              and will be recorded in the audit log.
+              Anything linked to this {nodeLabel.toLowerCase()} is disconnected.
+              The deletion is permanent and is recorded in the audit log.
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} disabled={loading}>
+          <AlertDialogAction
+            onClick={handleDelete}
+            disabled={loading}
+            aria-busy={loading}
+          >
             {loading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
                 Deleting…
               </>
             ) : (
               <>
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
                 Delete {nodeLabel.toLowerCase()}
               </>
             )}

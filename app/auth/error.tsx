@@ -13,6 +13,7 @@ export default function AuthError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Authentication"
       title="This page could not be loaded"
       homeHref="/auth/signin"

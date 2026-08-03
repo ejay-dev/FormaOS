@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { HELP_ARTICLES, type HelpArticle } from '@/lib/help/articles';
 import { useHelpAssistant } from '@/components/help/help-assistant-context';
+import { useModalA11y } from '@/lib/hooks/use-modal-a11y';
 import { useProductTour } from '@/lib/onboarding/product-tour';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +29,7 @@ export function HelpAssistant() {
   const { isOpen, panel, close, toggle, setPanel } = useHelpAssistant();
   const { startTour } = useProductTour();
   const pathname = usePathname();
+  const panelRef = useModalA11y<HTMLDivElement>(isOpen, close);
 
   const [query, setQuery] = useState('');
   const [activeArticle, setActiveArticle] = useState<HelpArticle | null>(null);
@@ -154,12 +156,20 @@ export function HelpAssistant() {
       </div>
 
       {isOpen ? (
-        <div className="fixed bottom-0 left-0 right-0 z-[var(--z-overlay)] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-border bg-card shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-border pb-[env(safe-area-inset-bottom)]">
+        <div
+          ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="help-assistant-title"
+          className="fixed bottom-0 left-0 right-0 z-[var(--z-overlay)] max-h-[85vh] overflow-hidden rounded-t-3xl border-t border-border bg-card shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-h-[80vh] sm:w-[380px] sm:rounded-2xl sm:border sm:border-border pb-[env(safe-area-inset-bottom)]"
+        >
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div className="flex items-center gap-2">
-              <LifeBuoy className="h-4 w-4 text-muted-foreground" />
+              <LifeBuoy aria-hidden="true" className="h-4 w-4 text-muted-foreground" />
               <div>
-                <p className="text-sm font-semibold text-foreground">Help Assistant</p>
+                <p id="help-assistant-title" className="text-sm font-semibold text-foreground">
+                  Help Assistant
+                </p>
                 <p className="text-xs text-muted-foreground">Find answers fast</p>
               </div>
             </div>

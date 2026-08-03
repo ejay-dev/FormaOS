@@ -206,7 +206,7 @@ export default function UserActivityPage() {
           ))
         ) : (
           <div className="rounded-lg border border-border bg-card p-12 text-center">
-            <Activity className="mx-auto mb-4 h-16 w-16 text-muted-foreground/30" />
+            <Activity className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
             <p className="text-muted-foreground">No activity recorded.</p>
           </div>
         )}

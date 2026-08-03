@@ -64,9 +64,10 @@ export default async function EditBehaviourSupportPlanPage({
       <div className="flex items-center gap-4">
         <Link
           href={`/app/behaviour-support-plans/${plan.id}`}
+          aria-label="Back to the plan"
           className="rounded-lg p-2 transition-colors hover:bg-muted"
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft aria-hidden="true" className="h-5 w-5" />
         </Link>
         <div>
           <h1 className="page-title">Edit behaviour support plan</h1>

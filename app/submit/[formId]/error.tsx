@@ -13,6 +13,7 @@ export default function SubmitFormIdError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Form"
       title="This form could not be loaded"
       homeHref="/"

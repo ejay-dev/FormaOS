@@ -71,7 +71,7 @@ function AuditTrailInner({
   if (entries.length === 0) {
     return (
       <div className="flex flex-col items-center gap-2 py-6 text-center">
-        <History className="h-6 w-6 text-muted-foreground/40" />
+        <History className="h-6 w-6 text-muted-foreground" />
         <p className="text-xs text-muted-foreground">
           No activity recorded yet.
         </p>

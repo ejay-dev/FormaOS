@@ -259,10 +259,10 @@ export default async function ProgressNotesPage() {
                     </p>
                     <div className="mt-3 flex flex-wrap items-center gap-3 text-xs">
                       <Link
-                        href={`/app/patients/${note.patient_id}`}
+                        href={`/app/participants/${note.patient_id}`}
                         className="text-primary hover:underline"
                       >
-                        View patient record
+                        View care record
                       </Link>
                       {canSignOff && !note.signed_off_by && (
                         <form

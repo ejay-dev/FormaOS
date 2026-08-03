@@ -17,6 +17,7 @@ export default function AuditPortalTokenEvidenceError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Evidence"
       homeHref={params?.token ? `/audit-portal/${params.token}` : '/'}
       homeLabel="Back to portal overview"

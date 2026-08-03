@@ -77,12 +77,12 @@ export default async function AuthorPage({
           ]),
         ]
       : [
-          // Collective bylines emit Organization rather than Person , 
-          // honest signal to crawlers about what the byline represents.
+          // A shared byline is not a person, so it emits Organization rather
+          // than Person and names FormaOS as the parent.
           {
             '@context': 'https://schema.org',
             '@type': 'Organization',
-            name: `FormaOS ${author.name}`,
+            name: author.name,
             url: `${siteUrl}/author/${author.slug}`,
             description: author.bio,
             parentOrganization: {

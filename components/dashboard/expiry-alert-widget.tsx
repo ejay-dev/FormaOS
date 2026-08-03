@@ -43,9 +43,10 @@ export function ExpiryAlertWidget({
             </div>
             <Link
               href={`/app/people`}
+              aria-label={`Open people records for ${doc.document_type}`}
               className="p-2 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight aria-hidden="true" className="h-4 w-4" />
             </Link>
           </div>
         ))}

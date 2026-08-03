@@ -13,6 +13,7 @@ export default function RootError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="App"
       title="Something went wrong"
       homeHref="/"

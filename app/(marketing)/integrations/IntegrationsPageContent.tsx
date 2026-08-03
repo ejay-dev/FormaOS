@@ -691,6 +691,7 @@ function IntegrationCard({
           hover:bg-white/[0.04] hover:border-white/[0.12]"
         onClick={() => setExpanded(!expanded)}
         role="button"
+        aria-expanded={expanded}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {

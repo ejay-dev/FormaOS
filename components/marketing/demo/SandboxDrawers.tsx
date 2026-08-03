@@ -54,9 +54,10 @@ function DrawerShell({ isOpen, onClose, title, icon, children }: DrawerProps) {
               <button
                 type="button"
                 onClick={onClose}
+                aria-label="Close"
                 className="h-6 w-6 rounded-md flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] transition-colors"
               >
-                <X className="h-3.5 w-3.5 text-muted-foreground" />
+                <X aria-hidden="true" className="h-3.5 w-3.5 text-muted-foreground" />
               </button>
             </div>
             {/* Content */}
@@ -442,7 +443,7 @@ export function AuditTimelineDrawer({
                     {entry.action.toLowerCase()}
                   </div>
                   <div className="text-[10px] text-muted-foreground/60 truncate">{entry.targetName}</div>
-                  <div className="text-[9px] text-muted-foreground/40 mt-0.5">{entry.timestamp}</div>
+                  <div className="text-[9px] text-muted-foreground mt-0.5">{entry.timestamp}</div>
                 </div>
               </motion.div>
             );
@@ -519,7 +520,7 @@ export function WorkflowActionDrawer({
             </div>
             <p className="text-[10px] text-muted-foreground mb-2.5">{trigger.action}</p>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] text-muted-foreground/40">
+              <span className="text-[9px] text-muted-foreground">
                 {trigger.lastFired ? `Last fired: ${trigger.lastFired}` : 'Never fired'}
               </span>
               <button

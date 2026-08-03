@@ -13,6 +13,7 @@ export default function AuthConfirmErrorError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Confirmation"
       homeHref="/auth/signin"
       homeLabel="Back to sign in"

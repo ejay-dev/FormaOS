@@ -13,6 +13,7 @@ export default function WorkspaceRecoveryError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Workspace recovery"
       homeHref="/auth/signin"
       homeLabel="Back to sign in"

@@ -13,6 +13,7 @@ export default function StandaloneAcceptInviteTokenError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Invitation"
       homeHref="/auth/signin"
       homeLabel="Back to sign in"

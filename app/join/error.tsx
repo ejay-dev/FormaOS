@@ -13,6 +13,7 @@ export default function JoinError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Join"
       title="This page could not be loaded"
       homeHref="/"

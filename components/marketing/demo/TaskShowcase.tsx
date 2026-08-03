@@ -128,10 +128,10 @@ export default function TaskShowcase() {
                           {isPast ? (
                             <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
                           ) : (
-                            <step.icon className={`h-3.5 w-3.5 ${isActive ? step.color : 'text-muted-foreground/40'}`} />
+                            <step.icon className={`h-3.5 w-3.5 ${isActive ? step.color : 'text-muted-foreground'}`} />
                           )}
                         </div>
-                        <span className={`text-[9px] font-medium ${isActive ? step.color : isPast ? 'text-emerald-400/60' : 'text-muted-foreground/40'}`}>
+                        <span className={`text-[9px] font-medium ${isActive ? step.color : isPast ? 'text-emerald-400/60' : 'text-muted-foreground'}`}>
                           {step.label}
                         </span>
                         {/* Connector line */}

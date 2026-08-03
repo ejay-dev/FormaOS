@@ -77,7 +77,7 @@ export function PageHero({
         {/* Title */}
         <div className="min-w-0">
           {eyebrow && (
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="text-sm font-medium text-muted-foreground">
               {eyebrow}
             </div>
           )}
@@ -129,7 +129,9 @@ function PageHeroMetricTile({
   const toneClass = valueToneClass[metric.tone ?? 'neutral'];
   return (
     <div className="min-w-0">
-      <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+      {/* Sentence case at a readable size: the app stylesheet floors anything
+          under 12px, so declaring 10px only fought that rule. */}
+      <div className="text-sm font-medium text-muted-foreground">
         {metric.label}
       </div>
       <div
@@ -142,7 +144,7 @@ function PageHeroMetricTile({
         {metric.value}
       </div>
       {metric.sub && (
-        <div className="mt-1.5 truncate text-[11px] text-muted-foreground">
+        <div className="mt-1.5 truncate text-xs text-muted-foreground">
           {metric.sub}
         </div>
       )}

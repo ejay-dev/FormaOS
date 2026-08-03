@@ -106,12 +106,15 @@ export default async function SearchPage({
 
   return (
     <div className="mx-auto max-w-6xl p-6">
+      {/* The search field carries the page visually; the heading exists for
+          screen readers and document outline. */}
+      <h1 className="sr-only">Search</h1>
       <div className="flex gap-6">
         {/* Sidebar: facets */}
         <div className="hidden w-48 shrink-0 space-y-1 lg:block">
-          <h3 className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
+          <h2 className="mb-2 text-xs font-semibold uppercase text-muted-foreground">
             Filter by type
-          </h3>
+          </h2>
           <Link
             href={`/app/search?q=${encodeURIComponent(q)}`}
             className={`block rounded px-2 py-1.5 text-sm ${!type ? 'bg-primary/10 font-medium text-primary' : 'text-muted-foreground hover:bg-muted/50'}`}

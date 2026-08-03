@@ -13,6 +13,11 @@ import {
 } from 'lucide-react';
 import { EntityEvidencePanel } from '@/components/compliance/EntityEvidencePanel';
 import {
+  StatusBadge,
+  certificateExpiry,
+  evidenceStatus,
+} from '@/components/compliance/StatusBadge';
+import {
   getOrgMemberIdentities,
   type MemberIdentityMap,
 } from '@/lib/team/member-identity';
@@ -43,7 +48,7 @@ type CredentialRow = {
   verified_by: string | null;
   notes: string | null;
   created_at: string;
-  staff: { id: string; email: string | null } | null;
+  staff: { id: string; name: string | null } | null;
 };
 
 export default async function StaffCredentialDetailPage({
@@ -101,7 +106,7 @@ export default async function StaffCredentialDetailPage({
     staff: staffRow
       ? {
           id: staffRow.user_id as string,
-          email: (staffRow.full_name as string | null) ?? null,
+          name: (staffRow.full_name as string | null) ?? null,
         }
       : null,
   };
@@ -153,44 +158,39 @@ export default async function StaffCredentialDetailPage({
 
       <div className="grid gap-4 md:grid-cols-4">
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">
-            Status
-          </p>
-          <p className="mt-1 text-2xl font-semibold capitalize">
-            {credential.status}
-          </p>
+          <p className="text-xs text-muted-foreground">Review status</p>
+          <div className="mt-2">
+            <StatusBadge {...evidenceStatus(credential.status)} size="md" />
+          </div>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">
-            Staff
-          </p>
+          <p className="text-xs text-muted-foreground">Staff member</p>
           <p className="mt-1 text-sm font-semibold">
-            {credential.staff?.email || 'N/A'}
+            {credential.staff?.name || 'Not recorded'}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">
-            Evidence
-          </p>
+          <p className="text-xs text-muted-foreground">Evidence</p>
           <p className="mt-1 text-sm font-semibold">
             {evidenceCount ?? 0} attached
           </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">
-            Expiry Date
-          </p>
+          <p className="text-xs text-muted-foreground">Expiry</p>
           <p className="mt-1 text-sm font-semibold">
             {formatDate(credential.expiry_date)}
           </p>
+          <div className="mt-2">
+            <StatusBadge {...certificateExpiry(credential.expiry_date)} />
+          </div>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-xl border border-border bg-card p-5">
-          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            <User className="h-4 w-4" />
-            Credential Metadata
+          <h2 className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <User className="h-4 w-4 text-muted-foreground" />
+            Credential details
           </h2>
           <dl className="mt-4 grid gap-3 text-sm">
             <div className="flex justify-between gap-3">
@@ -200,15 +200,15 @@ export default async function StaffCredentialDetailPage({
               </dd>
             </div>
             <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Credential Number</dt>
+              <dt className="text-muted-foreground">Credential number</dt>
               <dd>{credential.credential_number || 'N/A'}</dd>
             </div>
             <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Issuing Authority</dt>
+              <dt className="text-muted-foreground">Issuing authority</dt>
               <dd>{credential.issuing_authority || 'N/A'}</dd>
             </div>
             <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Verified At</dt>
+              <dt className="text-muted-foreground">Verified</dt>
               <dd>{formatDate(credential.verified_at)}</dd>
             </div>
             <div className="flex justify-between gap-3">
@@ -219,8 +219,8 @@ export default async function StaffCredentialDetailPage({
         </section>
 
         <section className="rounded-xl border border-border bg-card p-5">
-          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            <FileText className="h-4 w-4" />
+          <h2 className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <FileText className="h-4 w-4 text-muted-foreground" />
             Notes
           </h2>
           <p className="mt-3 whitespace-pre-wrap text-sm text-foreground">
@@ -238,7 +238,7 @@ export default async function StaffCredentialDetailPage({
 
       {isVerified ? (
         <section className="rounded-xl border border-success/30 bg-success/10 p-5">
-          <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-success">
+          <h2 className="inline-flex items-center gap-2 text-sm font-medium text-success">
             <BadgeCheck className="h-4 w-4" />
             Verified
           </h2>
@@ -252,8 +252,8 @@ export default async function StaffCredentialDetailPage({
         </section>
       ) : canVerify ? (
         <section className="rounded-xl border border-border bg-card p-5">
-          <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            <BadgeCheck className="h-4 w-4" />
+          <h2 className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
+            <BadgeCheck className="h-4 w-4 text-muted-foreground" />
             Verification
           </h2>
           <p className="mt-2 text-sm text-foreground">
@@ -281,10 +281,18 @@ export default async function StaffCredentialDetailPage({
       )}
 
       <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">
-        <div className="inline-flex items-center gap-2">
+        <div className="inline-flex flex-wrap items-center gap-2">
           <CalendarClock className="h-4 w-4" />
-          Track expiring credentials from the staff compliance list for renewal
-          actions.
+          <span>
+            Credentials lapsing in the next 90 days are listed under{' '}
+            <Link
+              href="/app/certificates"
+              className="font-medium text-foreground underline-offset-2 hover:underline"
+            >
+              Certificate renewals
+            </Link>
+            .
+          </span>
         </div>
       </div>
     </div>

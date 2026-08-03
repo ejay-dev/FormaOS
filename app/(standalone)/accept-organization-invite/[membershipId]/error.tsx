@@ -13,6 +13,7 @@ export default function StandaloneAcceptOrganizationInviteMembershipIdError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Invitation"
     />
   );

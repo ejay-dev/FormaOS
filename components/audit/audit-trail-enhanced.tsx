@@ -268,7 +268,7 @@ export function AuditTrailViewer({
 
       {entries.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-border bg-surface-1 py-12 text-center">
-          <Shield className="h-8 w-8 text-muted-foreground/40" />
+          <Shield className="h-8 w-8 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">
             No audit entries found
           </p>

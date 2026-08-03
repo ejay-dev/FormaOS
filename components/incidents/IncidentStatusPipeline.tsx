@@ -42,7 +42,7 @@ function PipelineInner({
         const isBlocked = step.id === blockedStep;
         const _isFuture = idx > currentIdx;
 
-        let dotColor = 'border-border text-muted-foreground/40';
+        let dotColor = 'border-border text-muted-foreground';
         let lineColor = 'bg-border';
         let labelColor = 'text-muted-foreground/60';
 

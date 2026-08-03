@@ -148,15 +148,18 @@ export function CreateAssetSheet() {
               {/* 1. Asset Name */}
               <div className="space-y-2">
                 <label
-                  htmlFor="field-89"
+                  htmlFor="asset-name"
                   className="text-xs font-bold uppercase text-muted-foreground tracking-wider"
                 >
                   Asset Name
                 </label>
                 <div className="relative">
-                  <Laptop className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Laptop
+                    aria-hidden="true"
+                    className="absolute left-3 top-3 h-4 w-4 text-muted-foreground"
+                  />
                   <input
-                    id="field-89"
+                    id="asset-name"
                     required
                     name="name"
                     placeholder="e.g. AWS Production Cluster"
@@ -168,13 +171,13 @@ export function CreateAssetSheet() {
               {/* 2. Asset Type */}
               <div className="space-y-2">
                 <label
-                  htmlFor="field-88"
+                  htmlFor="asset-type"
                   className="text-xs font-bold uppercase text-muted-foreground tracking-wider"
                 >
                   Category
                 </label>
                 <select
-                  id="field-88"
+                  id="asset-type"
                   name="type"
                   className="w-full rounded-xl border border-border p-3 text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring bg-surface-1"
                 >
@@ -188,19 +191,21 @@ export function CreateAssetSheet() {
               {/* 3. Owner (New Requirement) */}
               <div className="space-y-2">
                 <label
-                  htmlFor="field-87"
+                  htmlFor="asset-owner"
                   className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-1"
                 >
-                  <User className="h-3 w-3" />
+                  <User aria-hidden="true" className="h-3 w-3" />
                   Owner
                 </label>
                 <input
+                  id="asset-owner"
                   required
                   name="owner"
+                  aria-describedby="asset-owner-hint"
                   placeholder="e.g. DevOps Team or CTO"
                   className="w-full rounded-xl border border-border p-3 text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring transition-colors"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p id="asset-owner-hint" className="text-xs text-muted-foreground">
                   The person or team responsible for this asset.
                 </p>
               </div>
@@ -208,14 +213,15 @@ export function CreateAssetSheet() {
               {/* 4. Criticality */}
               <div className="space-y-2 pt-2">
                 <label
-                  htmlFor="field-86"
+                  htmlFor="asset-criticality"
                   className="text-xs font-bold uppercase text-muted-foreground tracking-wider flex items-center gap-1"
                 >
-                  <ShieldAlert className="h-3 w-3 text-warning" />
+                  <ShieldAlert aria-hidden="true" className="h-3 w-3 text-warning" />
                   Risk Level
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <select
+                    id="asset-criticality"
                     name="criticality"
                     className="col-span-2 w-full rounded-xl border border-border p-3 text-sm outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring bg-surface-1"
                   >

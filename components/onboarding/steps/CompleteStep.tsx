@@ -103,7 +103,7 @@ function SummaryItem({ done, label }: { done: boolean; label: string }) {
     <div className="flex items-center gap-3">
       <CheckCircle2
         className={`h-5 w-5 shrink-0 ${
-          done ? 'text-success' : 'text-muted-foreground/40'
+          done ? 'text-success' : 'text-muted-foreground'
         }`}
       />
       <span className={`text-sm ${done ? '' : 'text-muted-foreground'}`}>

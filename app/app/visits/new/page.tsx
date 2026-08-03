@@ -11,20 +11,42 @@ import { getOrgMemberIdentities } from '@/lib/team/member-identity';
 import { createVisit } from '@/app/app/actions/care-operations';
 import { SubmitButton } from '@/components/ui/submit-button';
 
-export default async function NewVisitPage() {
+export default async function NewVisitPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ client_id?: string }>;
+}) {
   const systemState = await fetchSystemState();
   if (!systemState) redirect('/auth/signin');
 
   const { organization } = systemState;
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const preselectedClientId = resolvedSearchParams.client_id ?? '';
   const supabase = await createSupabaseServerClient();
 
   // Fetch clients for dropdown
-  const { data: clients } = await supabase
+  const { data: activeClients } = await supabase
     .from('org_patients')
     .select('id, full_name')
     .eq('organization_id', organization.id)
     .eq('care_status', 'active')
     .order('full_name');
+
+  // A visit can be booked from a paused client's profile, and that client is
+  // not in the active list — without this the preselection silently vanishes.
+  let clients = activeClients ?? [];
+  if (
+    preselectedClientId &&
+    !clients.some((client) => client.id === preselectedClientId)
+  ) {
+    const { data: preselected } = await supabase
+      .from('org_patients')
+      .select('id, full_name')
+      .eq('organization_id', organization.id)
+      .eq('id', preselectedClientId)
+      .maybeSingle();
+    if (preselected) clients = [preselected, ...clients];
+  }
 
   // Staff names come from the shared identity helper: org_members has no
   // foreign key to a profile table, so a PostgREST embed cannot resolve them.
@@ -91,6 +113,7 @@ export default async function NewVisitPage() {
                 id="field-66"
                 name="client_id"
                 required
+                defaultValue={preselectedClientId}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
                 <option value="">Select client...</option>

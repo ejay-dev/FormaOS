@@ -268,16 +268,18 @@ export function WorkflowManagementClient({
                     className="rounded-xl border border-edge-2 p-2 text-foreground/90 hover:bg-surface-2"
                     onClick={() => toggleWorkflow(workflow)}
                     disabled={isPending}
+                    aria-label={`${workflow.enabled ? 'Disable' : 'Enable'} ${workflow.name}`}
                   >
-                    <Power className="h-4 w-4" />
+                    <Power aria-hidden="true" className="h-4 w-4" />
                   </button>
                   <button
                     type="button"
                     className="rounded-xl border border-primary/30 bg-primary/10 p-2 text-primary hover:bg-primary/20"
                     onClick={() => runWorkflow(workflow)}
                     disabled={isPending}
+                    aria-label={`Run ${workflow.name}`}
                   >
-                    <Play className="h-4 w-4" />
+                    <Play aria-hidden="true" className="h-4 w-4" />
                   </button>
                   <Link
                     href={`/app/workflows/${workflow.id}`}

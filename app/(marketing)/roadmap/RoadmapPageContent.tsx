@@ -627,6 +627,7 @@ function RoadmapCard({ item, index }: { item: RoadmapItem; index: number }) {
           }`}
         onClick={() => setExpanded(!expanded)}
         role="button"
+        aria-expanded={expanded}
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {

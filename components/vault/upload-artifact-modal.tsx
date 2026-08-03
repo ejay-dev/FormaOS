@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import {
   registerVaultArtifact,
   listOrgPoliciesForLinking,
+  getControlForEvidenceLink,
 } from '@/app/app/actions/vault';
 import {
   FileUp,
@@ -27,11 +29,11 @@ const uploadArtifactSchema = z.object({
 });
 
 /**
- * =========================================================
- * UPLOAD ARTIFACT MODAL
- * Node Type: Evidence
- * Creates a new evidence node in the compliance graph
- * =========================================================
+ * Upload dialog for the evidence vault.
+ *
+ * When the vault was opened from an evidence gap or a report finding, the
+ * `?control=` param names the control the upload is meant to close. The id
+ * is handed to the server action so the linkage is part of the insert.
  */
 
 export function UploadArtifactModal({
@@ -52,9 +54,14 @@ export function UploadArtifactModal({
   );
   const [policyId, setPolicyId] = useState<string>('');
   const [lastFailure, setLastFailure] = useState<string | null>(null);
+  const [controlLabel, setControlLabel] = useState<string | null>(null);
+  const [controlAttached, setControlAttached] = useState(true);
   const supabase = createSupabaseClient();
   const { evidenceAdded, reportError } = useComplianceAction();
   const orgId = useAppStore((state) => state.organization?.id ?? null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const controlId = searchParams?.get('control')?.trim() || '';
 
   const panelRef = useModalA11y<HTMLDivElement>(isOpen, onClose);
 
@@ -68,8 +75,31 @@ export function UploadArtifactModal({
       setValidationError(null);
       setPolicyId('');
       setLastFailure(null);
+      setControlAttached(true);
     }
   }, [isOpen]);
+
+  // Name the control the upload was started from, so the dialog can say
+  // what the file will be attached to rather than showing a raw id.
+  useEffect(() => {
+    if (!isOpen || !controlId) {
+      setControlLabel(null);
+      return;
+    }
+    let cancelled = false;
+    getControlForEvidenceLink(controlId).then((result) => {
+      if (cancelled) return;
+      if (result.success && result.control) {
+        const { code, title: controlTitle } = result.control;
+        setControlLabel([code, controlTitle].filter(Boolean).join(' · '));
+      } else {
+        setControlLabel(null);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, controlId]);
 
   // Lazy-fetch policies the first time the modal opens. The list is small
   // and rarely changes during a session, so we cache it on the component
@@ -125,25 +155,24 @@ export function UploadArtifactModal({
         throw new Error('Organization context missing');
       }
 
-      // 0. Compute SHA-256 checksum of file for chain-of-custody.
-      //    The hash also doubles as an idempotency key — using it as the
-      //    storage filename means a retry writes to the same path, and
-      //    Storage's upsert flag turns that into an idempotent operation.
-      //    A subsequent registerVaultArtifact insert is then caught by the
-      //    UNIQUE INDEX on org_evidence(organization_id, file_path) added
-      //    in 20260622_001_dedup_indexes.sql, which the action treats as
-      //    a successful retry rather than a duplicate.
+      // 0. Compute the SHA-256 of the file for chain-of-custody. The hash
+      //    also doubles as an idempotency key — using it as the storage
+      //    filename means a retry writes to the same path, and Storage's
+      //    upsert flag turns that into an idempotent operation. A
+      //    subsequent registerVaultArtifact insert is then caught by the
+      //    UNIQUE INDEX on org_evidence(organization_id, file_path), which
+      //    the action treats as a successful retry rather than a duplicate.
       const arrayBuffer = await file.arrayBuffer();
       const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
       const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const checksum = hashArray
+      const fileHash = hashArray
         .map((b) => b.toString(16).padStart(2, '0'))
         .join('');
 
       // 1. Upload Binary to Supabase Storage. Path is deterministic on
       //    file content so identical re-uploads collapse to one object.
       const fileExt = file.name.split('.').pop() || 'bin';
-      const filePath = `${orgId}/vault/${checksum}.${fileExt}`;
+      const filePath = `${orgId}/vault/${fileHash}.${fileExt}`;
 
       const { error: storageError } = await supabase.storage
         .from('evidence')
@@ -156,12 +185,11 @@ export function UploadArtifactModal({
 
       setUploadProgress(95);
 
-      // 2. Register Artifact in Database via Server Action (with checksum).
-      //    The action returns { success: false, error } on DB failure rather
-      //    than throwing — so the previous code that ignored the result was
-      //    showing the green "Evidence Secured" state on a row that never
-      //    persisted. Inspect the result and roll back the storage object
-      //    if the DB insert reports failure.
+      // 2. Register the row via the server action. The action returns
+      //    { success: false, error } on a database failure instead of
+      //    throwing, so the result has to be inspected — otherwise the
+      //    success state would show for a row that never persisted. On
+      //    failure the storage object is removed again.
       const artifactTitle = title || file.name;
       const result = await registerVaultArtifact({
         title: artifactTitle,
@@ -169,8 +197,9 @@ export function UploadArtifactModal({
         filePath: filePath,
         fileType: fileExt || 'unknown',
         fileSize: file.size,
-        checksum,
+        fileHash,
         policyId: policyId || undefined,
+        controlId: controlId || undefined,
       });
 
       if (!result || result.success !== true) {
@@ -189,15 +218,23 @@ export function UploadArtifactModal({
       setUploadProgress(100);
 
       // Show success state
+      const attachedToControl = controlId ? result.controlLinked === true : true;
+      setControlAttached(attachedToControl);
       setSuccess(true);
 
       // Report to compliance system
       evidenceAdded(artifactTitle);
 
-      // Close after animation
-      setTimeout(() => {
-        onClose();
-      }, 1500);
+      // Close after animation. The action revalidated /app/vault, so the
+      // refresh is what actually redraws the list behind the dialog. A
+      // failed control link stays on screen until the user dismisses it,
+      // because it is the one outcome they have to act on.
+      if (attachedToControl) {
+        setTimeout(() => {
+          onClose();
+          router.refresh();
+        }, 1500);
+      }
     } catch (error: unknown) {
       clearInterval(progressInterval);
       setUploadProgress(0);
@@ -231,11 +268,27 @@ export function UploadArtifactModal({
             id="upload-artifact-success-title"
             className="text-xl font-bold text-foreground"
           >
-            Evidence Secured
+            Evidence uploaded
           </h3>
           <p className="text-sm text-muted-foreground mt-2 text-center">
-            New evidence node added to your compliance graph
+            {controlLabel && controlAttached
+              ? `Attached to ${controlLabel}.`
+              : controlLabel && !controlAttached
+                ? `Saved to the vault, but it could not be attached to ${controlLabel}. Attach it from the control so the gap closes.`
+                : 'Saved to the vault and waiting for review.'}
           </p>
+          {!controlAttached && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                router.refresh();
+              }}
+              className="mt-5 min-h-[44px] rounded-xl border border-border px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Close
+            </button>
+          )}
         </div>
       </div>
     );
@@ -256,7 +309,7 @@ export function UploadArtifactModal({
               <div className="h-2 w-2 rounded-full bg-primary" />
             </div>
             <h3 id="upload-artifact-title" className="font-bold text-foreground">
-              Upload Evidence Artifact
+              Upload evidence
             </h3>
           </div>
           <button
@@ -274,6 +327,15 @@ export function UploadArtifactModal({
               {validationError}
             </div>
           )}
+          {controlLabel && (
+            <p className="rounded-xl border border-border bg-surface-1 p-3 text-sm text-muted-foreground">
+              This file will be attached to{' '}
+              <span className="font-medium text-foreground">
+                {controlLabel}
+              </span>
+              .
+            </p>
+          )}
           {/* File Dropzone */}
           <div className="group relative border-2 border-dashed border-border rounded-2xl p-8 transition-all hover:border-primary hover:bg-muted flex flex-col items-center justify-center text-center">
             <input
@@ -289,15 +351,15 @@ export function UploadArtifactModal({
                 <p className="text-sm font-bold text-foreground truncate max-w-[200px]">
                   {file.name}
                 </p>
-                <p className="text-xs text-muted-foreground uppercase font-bold mt-1">
-                  Ready to Secure
+                <p className="text-xs text-muted-foreground mt-1">
+                  Ready to upload
                 </p>
               </div>
             ) : (
               <>
                 <FileUp className="h-8 w-8 text-muted-foreground mb-3 group-hover:text-foreground transition-colors" />
                 <p className="text-sm font-bold text-foreground">
-                  Drop artifact here
+                  Drop a file here
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   PDF, JPG, PNG, DOC, XLS (Max 10MB)
@@ -311,7 +373,7 @@ export function UploadArtifactModal({
               htmlFor="field-104"
               className="text-sm font-medium text-muted-foreground"
             >
-              Artifact label
+              File label
             </label>
             <input
               id="field-104"
@@ -351,7 +413,7 @@ export function UploadArtifactModal({
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="text-foreground font-medium">
-                  Securing artifact...
+                  Uploading…
                 </span>
                 <span className="text-muted-foreground tabular-nums">
                   {uploadProgress}%
@@ -374,7 +436,7 @@ export function UploadArtifactModal({
             {uploading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Securing Artifact...
+                Uploading…
               </>
             ) : lastFailure ? (
               <>
@@ -384,7 +446,7 @@ export function UploadArtifactModal({
             ) : (
               <>
                 <ShieldCheck className="h-4 w-4" />
-                Upload to Vault
+                Upload to the vault
               </>
             )}
           </button>

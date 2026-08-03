@@ -13,6 +13,7 @@ export default function StandaloneOrganizationOrgIdAuditError({
     <RouteErrorCard
       error={error}
       reset={reset}
+      fullHeight
       area="Audit log"
     />
   );

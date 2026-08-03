@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import {
   FileText,
@@ -23,14 +24,15 @@ import { Button } from '@/components/ui/button';
  * =========================================================
  *
  * Unified zero-state framework for FormaOS.
- * Every empty table/list should use this instead of ad-hoc text.
+ * Every empty table/list should use this instead of ad-hoc text — including
+ * the mobile card lists, which render it through EmptyRecordState.
  *
- * Features:
- * - Contextual icons per module
- * - Suggested next action (primary CTA)
- * - Template suggestion (secondary CTA)
- * - Owner suggestion text
- * - Responsive, accessible, theme-aware
+ * Rules the presets below follow:
+ * - a truly-empty state carries exactly one primary action, and that action
+ *   performs the thing it names (no links to pages that only describe it)
+ * - a filtered-to-nothing state offers "clear filters", never a create action
+ * - copy uses the words the user's industry uses (participant / patient /
+ *   resident / child), not internal vocabulary
  */
 
 // Preset icons mapped to module contexts
@@ -51,18 +53,20 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
 
 export type EmptyStateTone =
   | 'primary'
-  | 'emerald'
-  | 'amber'
-  | 'rose'
-  | 'slate';
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'neutral';
 
+// Status tones route to the functional tokens. The title always states the
+// meaning, so the tint is reinforcement rather than the only signal.
 const TONE_TILE: Record<EmptyStateTone, string> = {
   primary:
     'bg-[hsl(var(--app-primary))]/10 ring-[hsl(var(--app-primary))]/10 text-[hsl(var(--app-primary))]',
-  emerald: 'bg-emerald-500/10 ring-emerald-500/10 text-emerald-500',
-  amber: 'bg-amber-500/10 ring-amber-500/10 text-amber-500',
-  rose: 'bg-rose-500/10 ring-rose-500/10 text-rose-500',
-  slate: 'bg-slate-500/10 ring-slate-500/10 text-slate-500',
+  success: 'bg-success/10 ring-success/10 text-success',
+  warning: 'bg-warning/10 ring-warning/10 text-warning',
+  danger: 'bg-destructive/10 ring-destructive/10 text-destructive',
+  neutral: 'bg-muted ring-muted text-muted-foreground',
 };
 
 export interface EmptyStateAction {
@@ -85,6 +89,12 @@ export interface EmptyStateProps {
   action?: EmptyStateAction;
   /** Secondary/template action */
   secondaryAction?: EmptyStateAction;
+  /**
+   * Pre-composed action node, for when the affordance already exists as a
+   * component (an upload dialog trigger, an invite modal button). Use instead
+   * of `action`; a server component can pass a node, a callback it cannot.
+   */
+  actions?: ReactNode;
   /** Suggested owner/assignee text */
   ownerSuggestion?: string;
   /** Color accent for the icon tile */
@@ -102,12 +112,21 @@ export function EmptyState({
   description,
   action,
   secondaryAction,
+  actions,
   ownerSuggestion,
   tone = 'primary',
   className,
   compact = false,
 }: EmptyStateProps) {
   const Icon = CustomIcon || MODULE_ICONS[module] || MODULE_ICONS.default;
+
+  // A button with neither handler nor href is a dead control: it reads as an
+  // affordance and does nothing. Drop it rather than render it.
+  const primary = action?.onClick || action?.href ? action : undefined;
+  const secondary =
+    secondaryAction?.onClick || secondaryAction?.href
+      ? secondaryAction
+      : undefined;
 
   return (
     <div
@@ -158,35 +177,36 @@ export function EmptyState({
         </p>
       )}
 
-      {(action || secondaryAction) && (
+      {(primary || secondary || actions) && (
         <div
           className={cn('flex items-center gap-3', compact ? 'mt-4' : 'mt-6')}
         >
-          {action && (
+          {actions}
+          {primary && (
             <Button
-              variant={action.variant || 'default'}
+              variant={primary.variant || 'default'}
               size={compact ? 'sm' : 'default'}
-              onClick={action.onClick}
-              {...(action.href ? { asChild: true } : {})}
+              onClick={primary.onClick}
+              {...(primary.href ? { asChild: true } : {})}
             >
-              {action.href ? (
-                <a href={action.href}>{action.label}</a>
+              {primary.href ? (
+                <a href={primary.href}>{primary.label}</a>
               ) : (
-                action.label
+                primary.label
               )}
             </Button>
           )}
-          {secondaryAction && (
+          {secondary && (
             <Button
-              variant={secondaryAction.variant || 'outline'}
+              variant={secondary.variant || 'outline'}
               size={compact ? 'sm' : 'default'}
-              onClick={secondaryAction.onClick}
-              {...(secondaryAction.href ? { asChild: true } : {})}
+              onClick={secondary.onClick}
+              {...(secondary.href ? { asChild: true } : {})}
             >
-              {secondaryAction.href ? (
-                <a href={secondaryAction.href}>{secondaryAction.label}</a>
+              {secondary.href ? (
+                <a href={secondary.href}>{secondary.label}</a>
               ) : (
-                secondaryAction.label
+                secondary.label
               )}
             </Button>
           )}
@@ -200,25 +220,24 @@ export function EmptyState({
  * Pre-configured empty states for common modules
  */
 
+/**
+ * The upload button is passed in rather than built here: uploading opens a
+ * dialog that only the vault owns, and the vault page is a server component,
+ * so a callback cannot cross the boundary. Requiring the node keeps this
+ * state from shipping as a dead end.
+ */
 export function EvidenceEmptyState({
-  onUploadAction,
+  uploadButton,
 }: {
-  onUploadAction?: () => void;
+  uploadButton: ReactNode;
 }) {
   return (
     <EmptyState
       module="evidence"
-      title="No evidence collected yet"
-      description="Start collecting evidence to demonstrate compliance. Upload documents, screenshots, or connect integrations."
-      action={{
-        label: 'Upload Evidence',
-        onClick: onUploadAction,
-      }}
-      secondaryAction={{
-        label: 'Use Template',
-        href: '/app/evidence?template=true',
-      }}
-      ownerSuggestion="Compliance Lead or assigned control owner"
+      title="No evidence uploaded yet"
+      description="Evidence is the proof behind a control: a policy, a certificate, a signed form, a photo. Upload a file to start the record."
+      actions={uploadButton}
+      ownerSuggestion="Compliance lead, or whoever owns the control"
     />
   );
 }
@@ -232,17 +251,13 @@ export function PoliciesEmptyState({
     <EmptyState
       module="policies"
       title="Your policy library is empty"
-      description="Policies define your governance posture. Draft with AI, start from a template, or upload an existing document."
+      description="Policies set out how your organisation works and what staff have to follow. Write the first one and add the rest as you go."
       action={
         onCreateAction
-          ? { label: 'Draft with AI', onClick: onCreateAction }
-          : { label: 'Draft with AI', href: '/app/policies/new' }
+          ? { label: 'Write a policy', onClick: onCreateAction }
+          : { label: 'Write a policy', href: '/app/policies/new' }
       }
-      secondaryAction={{
-        label: 'Use a template',
-        href: '/app/policies?templates=true',
-      }}
-      ownerSuggestion="Compliance Lead or department head"
+      ownerSuggestion="Compliance lead or department head"
     />
   );
 }
@@ -255,12 +270,13 @@ export function TasksEmptyState({
   return (
     <EmptyState
       module="tasks"
-      title="No tasks assigned"
-      description="Tasks help your team stay on track with compliance activities. Create tasks manually or let automation handle it."
-      action={{
-        label: 'Create Task',
-        onClick: onCreateAction,
-      }}
+      title="No tasks yet"
+      description="Most tasks come from the frameworks you turn on, and you can add your own on top. Turning on a framework creates the first set."
+      action={
+        onCreateAction
+          ? { label: 'Create a task', onClick: onCreateAction }
+          : { label: 'Choose a framework', href: '/app/compliance/frameworks' }
+      }
       ownerSuggestion="Team lead or compliance manager"
     />
   );
@@ -275,39 +291,12 @@ export function TeamEmptyState({
     <EmptyState
       module="team"
       title="No team members yet"
-      description="Invite your team to collaborate on compliance. Each member can be assigned a specific role."
+      // Without a handler the page owns the invite affordance in its header,
+      // so no button is rendered here rather than a button that does nothing.
+      description="Invite the people who do the work. Each person gets a role that decides what they can see and change."
       action={{
-        label: 'Invite Team Member',
+        label: 'Invite a team member',
         onClick: onInviteAction,
-      }}
-    />
-  );
-}
-
-export function SearchEmptyState({ query }: { query?: string }) {
-  return (
-    <EmptyState
-      module="search"
-      title={query ? `No results for "${query}"` : 'No results found'}
-      description="Try adjusting your search terms or filters to find what you're looking for."
-      compact
-    />
-  );
-}
-
-export function ComplianceEmptyState() {
-  return (
-    <EmptyState
-      module="compliance"
-      title="No frameworks enabled"
-      description="Enable a compliance framework to start tracking controls, evidence, and audit readiness."
-      action={{
-        label: 'Enable Framework',
-        href: '/app/compliance',
-      }}
-      secondaryAction={{
-        label: 'View Available Frameworks',
-        href: '/app/compliance?browse=true',
       }}
     />
   );
@@ -318,7 +307,9 @@ export function IncidentsEmptyState() {
     <EmptyState
       module="incidents"
       title="No incidents recorded"
-      description="When incidents occur, they'll appear here with full audit trail. This is a good sign — your organization is running smoothly."
+      tone="neutral"
+      description="A quiet log is a good sign. When something happens, record it here and it keeps a full audit trail."
+      action={{ label: 'Report an incident', href: '/app/incidents/new' }}
     />
   );
 }
@@ -332,11 +323,12 @@ export function CertificatesEmptyState({
     <EmptyState
       module="certificates"
       title="No certificates tracked"
-      description="Track team certifications, licenses, and credentials with automatic expiry alerts."
-      action={{
-        label: 'Add Certificate',
-        onClick: onAddAction,
-      }}
+      description="Track staff certifications, licences and clearances in one place, and get warned before any of them expire."
+      action={
+        onAddAction
+          ? { label: 'Add a certificate', onClick: onAddAction }
+          : { label: 'Add a certificate', href: '/app/staff-compliance/new' }
+      }
     />
   );
 }
@@ -377,10 +369,6 @@ export function CarePlansEmptyState({
       title={`No ${planLabel}s yet`}
       description={`${planLabel.charAt(0).toUpperCase() + planLabel.slice(1)}s turn assessed needs into daily routines your team can run against — with goals, supports, and review schedules.`}
       action={{ label: `Create first ${planLabel}`, href: '/app/care-plans/new' }}
-      secondaryAction={{
-        label: 'Browse templates',
-        href: '/app/care-plans?templates=true',
-      }}
       ownerSuggestion="Care coordinator or clinical lead"
     />
   );
@@ -420,25 +408,10 @@ export function ParticipantsEmptyState({
     <EmptyState
       module="participants"
       title={`No ${l.plural} yet`}
-      description={`Add your first ${l.singular} to start tracking care records, goals, and visit schedules. You can also import a CSV.`}
+      // Bulk import is not built yet, so this state does not advertise it.
+      description={`Add your first ${l.singular} to start tracking care records, goals, and visit schedules.`}
       action={{ label: `Add first ${l.singular}`, href: '/app/participants/new' }}
-      secondaryAction={{
-        label: 'Import CSV',
-        href: '/app/participants/import',
-      }}
       ownerSuggestion="Intake coordinator"
-    />
-  );
-}
-
-export function EvidenceExpiringEmptyState() {
-  return (
-    <EmptyState
-      module="evidence"
-      icon={CheckCircle}
-      title="Nothing expiring soon"
-      description="All collected evidence is current. We'll alert you 30 days before any item expires."
-      compact
     />
   );
 }

@@ -151,7 +151,7 @@ export default async function AdminSystemPage() {
                 {data.recent_admin_actions_24h}
               </p>
             </div>
-            <FileText className="h-8 w-8 text-muted-foreground/40" />
+            <FileText className="h-8 w-8 text-muted-foreground" />
           </div>
           <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-muted/20">
             <div>
@@ -160,7 +160,7 @@ export default async function AdminSystemPage() {
                 {data.recent_billing_events_24h}
               </p>
             </div>
-            <Zap className="h-8 w-8 text-muted-foreground/40" />
+            <Zap className="h-8 w-8 text-muted-foreground" />
           </div>
           <div className="flex items-center justify-between p-4 rounded-lg border border-border/50 bg-muted/20">
             <div>
@@ -169,7 +169,7 @@ export default async function AdminSystemPage() {
                 {metric(data.total_subscriptions)}
               </p>
             </div>
-            <Activity className="h-8 w-8 text-muted-foreground/40" />
+            <Activity className="h-8 w-8 text-muted-foreground" />
           </div>
         </div>
       </section>

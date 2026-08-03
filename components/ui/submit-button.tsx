@@ -176,11 +176,17 @@ export function AdminActionButton({
  * Shows success state briefly after successful save
  */
 interface SaveButtonProps {
+  /** Label for the resting state. Name what is being saved when it is not "changes". */
+  children?: React.ReactNode
   className?: string
   disabled?: boolean
 }
 
-export function SaveButton({ className, disabled = false }: SaveButtonProps) {
+export function SaveButton({
+  children = "Save changes",
+  className,
+  disabled = false,
+}: SaveButtonProps) {
   const { pending } = useFormStatus()
   
   const isDisabled = disabled || pending
@@ -209,7 +215,7 @@ export function SaveButton({ className, disabled = false }: SaveButtonProps) {
       ) : (
         <>
           <Check className="h-4 w-4 transition-transform group-hover/btn:scale-110" />
-          <span>Commit Profile</span>
+          <span>{children}</span>
         </>
       )}
     </button>
