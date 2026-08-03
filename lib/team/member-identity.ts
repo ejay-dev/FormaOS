@@ -54,11 +54,20 @@ export async function getOrgMemberIdentities(): Promise<MemberIdentityMap> {
   if (!membership) return {};
 
   const db = await createSupabaseServerClient();
-  const { data: memberRows } = await db
+  const { data: memberRows, error: memberError } = await db
     .from('org_members')
     .select('user_id')
     .eq('organization_id', membership.orgId)
     .limit(500);
+
+  // supabase-js resolves with { data, error } rather than rejecting, so an
+  // unchecked failure here would silently return {} and every caller would
+  // render an empty picker as though the org had no members.
+  if (memberError) {
+    throw new Error(
+      `getOrgMemberIdentities: failed to read org members: ${memberError.message}`,
+    );
+  }
 
   const userIds = Array.from(
     new Set(
